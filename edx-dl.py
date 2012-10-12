@@ -127,4 +127,4 @@ for v in video_link:
     os.system('youtube-dl -o "Downloaded/'+str(c)+'- %(stitle)s.%(ext)s" -f '+str(format)+" "  + v)
 
 #Say Good Bye :)
-print "Videos have been downloaded, Good Bye :)"
+print "Videos have been downloaded, thanks for using our tool, Good Bye :)"
