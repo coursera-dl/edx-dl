@@ -35,7 +35,7 @@ then updated by emadshaaban92 using 2to3 .
 ### For Python2.x 
 use edx-dl.py , simply excute it with 2 agrument "email,password"
 ###### Example 
-    **python edx-dl.py user@user.com 123456**
+    python edx-dl.py user@user.com 123456
     
 Your downloaded videos will be placed in a new Directory called "Downloaded"
 
@@ -45,5 +45,5 @@ The script is very interactive , if you have a issue please tell us .
 ### For Python3.x 
 Instructions are the same as Python2.x except you should use edx-downloader.py instead of edx-dl.py
 ###### Example 
-    **python3 edx-downloader.py user@user.com 123456**
+    python3 edx-downloader.py user@user.com 123456
 
