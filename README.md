@@ -18,9 +18,12 @@ Scrapping the web can be very silly task, but BeautifulSoup makes it so easy :),
 it isn't included in the python standard library .
 Make sure you have BeautifulSoup installed .
 
-You can install it with 
+You can install it with
+ 
     pip install beautifulsoup4 
+
 or 
+
     easy_install beautifulsoup4.
 
 For more info : http://www.crummy.com/software/BeautifulSoup/#Download
