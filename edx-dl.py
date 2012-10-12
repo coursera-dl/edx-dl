@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json
+import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json,re
 from bs4 import BeautifulSoup
 from datetime import timedelta, datetime
 
@@ -76,37 +76,71 @@ c_number = int(raw_input("Enter Course Number : "))
 while c_number > numOfCourses or courses[c_number-1][2] != "Started" :
     print "Enter a valid Number for a Started Course ! between 1 and ",numOfCourses 
     c_number = int(raw_input("Enter Course Number : "))
+selected_course = courses[c_number-1]
+COURSEWARE = selected_course[1].replace("info","courseware")
+#print COURSEWARE
+
+## Getting Current Lectures
+req = urllib2.Request(COURSEWARE,None,headers)
+resp = urllib2.urlopen(req)
+courseware = resp.read()
+soup = BeautifulSoup(courseware)
+data = soup.section.section.div.div.nav
+WEEKS = data.find_all('div')
+weeks = [(w.h3.a.string,["https://www.edx.org"+a['href'] for a in w.ul.find_all('a')]) for w in WEEKS]
+#print WEEKS[2].h3.a.string
+#print WEEKS[2].ul.find_all('a')
+#print weeks[0]
+numOfWeeks = len(weeks)
+w = 0
+print selected_course[0] ," has ", numOfWeeks, " Weeks so far"
+for week in weeks :
+    w+=1
+    print w, "- Dowload ", week[0], " videos"
+print numOfWeeks+1, "- Download them all"
+w_number = int(raw_input("Enter Your Choice : "))
+while w_number > numOfWeeks + 1  :
+    print "Enter a valid Number between 1 and ",numOfWeeks+1 
+    w_number = int(raw_input("Enter Your Choice : "))
+
+if w_number == numOfWeeks+1 :
+    links = [link for week in weeks for link in week[1]]
+else :
+    links = weeks[w_number-1][1]
+
 #exit(2)
 
 
 ########
+"""
 links = []
 links.append("https://www.edx.org/courses/BerkeleyX/CS188.1x/2012_Fall/courseware/Week_3/Lecture_4_CSPs")
 links.append("https://www.edx.org/courses/BerkeleyX/CS188.1x/2012_Fall/courseware/Week_3/Lecture_4_CSPs_continued/")
 links.append("https://www.edx.org/courses/BerkeleyX/CS188.1x/2012_Fall/courseware/Week_3/Lecture_5_CSPs_II/")
 links.append("https://www.edx.org/courses/BerkeleyX/CS188.1x/2012_Fall/courseware/Week_3/Lecture_5_CSPs_II_continued/")
-
+"""
 video_id = []
 for link in links :
-	req = urllib2.Request(link,None,headers)
-	
-	resp = urllib2.urlopen(req)
+    req = urllib2.Request(link,None,headers)
 
-	page =  resp.read()
+    resp = urllib2.urlopen(req)
 
-	id_container = page.split("data-streams=&#34;1.0:")[1:]
-
-	video_id += [link[:11] for link in id_container]
-
+    page =  resp.read()
+    splitter = re.compile('data-streams=(?:&#34;|\")1.0:')
+    id_container = splitter.split(page)[1:]
+    #print link
+    video_id += [link[:11] for link in id_container]
+    #print video_id
 
 
 video_link = ["http://youtube.com/watch?v="+ v_id for v_id in video_id]
-print video_link
+#print video_link
 ### Downloading 
 
-"""
+os.system('youtube-dl -F '+video_link[-1])
+format = int(raw_input("Choose Format code : "))
 c = 0
 for v in video_link:
     c += 1
-    os.system("youtube-dl -o "+str(c)+".mp4 -f 18 " + v)
-"""    
+    os.system('youtube-dl -o "Downloaded/'+str(c)+'- %(stitle)s.%(ext)s" -f '+str(format)+" "  + v)
+
