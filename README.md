@@ -29,3 +29,21 @@ Python2 implementation for edx-downloader
 The original file written by shk3 in/for python3
 then updated by emadshaaban92 using 2to3 . 
 
+
+# USAGE
+
+### For Python2.x 
+use edx-dl.py , simply excute it with 2 agrument "email,password"
+###### Example 
+    **python edx-dl.py user@user.com 123456**
+    
+Your downloaded videos will be placed in a new Directory called "Downloaded"
+
+The script is very interactive , if you have a issue please tell us .
+
+
+### For Python3.x 
+Instructions are the same as Python2.x except you should use edx-downloader.py instead of edx-dl.py
+###### Example 
+    **python3 edx-downloader.py user@user.com 123456**
+
