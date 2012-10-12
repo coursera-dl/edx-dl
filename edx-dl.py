@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json , ClientCookie
+import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json
 from bs4 import BeautifulSoup
 from datetime import timedelta, datetime
 
@@ -43,13 +43,9 @@ if not resp.get('success', False):
     print 'Wrong Email or Password.'
     exit(2)
 
-#### Loged in - > saving cookies
-c = ClientCookie.Cookies()
-c.extract_cookies(response, request)
 
 ####Getting user info 
 req = urllib2.Request(DASHBOARD,None,headers)
-c.add_cookie_header(req)
 resp = urllib2.urlopen(req)
 #print resp.info()
 dash = resp.read()
@@ -80,7 +76,7 @@ c_number = int(raw_input("Enter Course Number : "))
 while c_number > numOfCourses or courses[c_number-1][2] != "Started" :
     print "Enter a valid Number for a Started Course ! between 1 and ",numOfCourses 
     c_number = int(raw_input("Enter Course Number : "))
-exit(2)
+#exit(2)
 
 
 ########
@@ -94,7 +90,6 @@ video_id = []
 for link in links :
 	req = urllib2.Request(link,None,headers)
 	
-	c.add_cookie_header(req)
 	resp = urllib2.urlopen(req)
 
 	page =  resp.read()
@@ -106,7 +101,7 @@ for link in links :
 
 
 video_link = ["http://youtube.com/watch?v="+ v_id for v_id in video_id]
-#print video_link
+print video_link
 ### Downloading 
 
 """

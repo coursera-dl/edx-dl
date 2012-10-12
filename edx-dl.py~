@@ -1,5 +1,5 @@
 #!/usr/bin/env python
-import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json , ClientCookie
+import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json
 from bs4 import BeautifulSoup
 from datetime import timedelta, datetime
 
@@ -40,16 +40,16 @@ request = urllib2.Request(LOGIN_API, post_data,headers)
 response = urllib2.urlopen(request)
 resp = json.loads(response.read().decode(encoding = 'utf-8'))
 if not resp.get('success', False):
-    print 'Wrong Email or Password.'#, file = sys.stderr
+    print 'Wrong Email or Password.'
     exit(2)
 
 #### Loged in - > saving cookies
-c = ClientCookie.Cookies()
-c.extract_cookies(response, request)
+#c = ClientCookie.Cookies()
+#c.extract_cookies(response, request)
 
 ####Getting user info 
 req = urllib2.Request(DASHBOARD,None,headers)
-c.add_cookie_header(req)
+#c.add_cookie_header(req)
 resp = urllib2.urlopen(req)
 #print resp.info()
 dash = resp.read()
