@@ -107,6 +107,7 @@ else :
 
 video_id = []
 for link in links :
+    print 'Processing \'%s\'...' % link
     req = urllib2.Request(link,None,headers)
     resp = urllib2.urlopen(req)
     page =  resp.read()
