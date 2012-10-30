@@ -36,7 +36,7 @@ post_data = urllib.urlencode({
             }).encode('utf-8')
 request = urllib2.Request(LOGIN_API, post_data,headers)
 response = urllib2.urlopen(request)
-resp = json.loads(response.read().decode(encoding = 'utf-8'))
+resp = json.loads(response.read().decode('utf-8'))
 if not resp.get('success', False):
     print 'Wrong Email or Password.'
     exit(2)
