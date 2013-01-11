@@ -49,7 +49,7 @@ soup = BeautifulSoup(dash)
 data = soup.find_all('ul')[1]
 USERNAME =  data.find_all('span')[1].string
 USEREMAIL = data.find_all('span')[3].string
-COURSES = soup.find_all('article')
+COURSES = soup.find_all('article','my-course')
 courses = []
 for COURSE in COURSES :
     c_name = COURSE.h3.string
