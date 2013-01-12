@@ -92,7 +92,7 @@ print selected_course[0] ," has ", numOfWeeks, " Weeks so far"
 w = 0
 for week in weeks :
     w+=1
-    print w, "- Dowload ", week[0], " videos"
+    print w, "- Download ", week[0], " videos"
 print numOfWeeks+1, "- Download them all"
 
 w_number = int(raw_input("Enter Your Choice : "))
@@ -111,7 +111,7 @@ for link in links :
     req = urllib2.Request(link,None,headers)
     resp = urllib2.urlopen(req)
     page =  resp.read()
-    splitter = re.compile('data-streams=(?:&#34;|\")1.0:')
+    splitter = re.compile('data-streams=(?:&#34;|\").*:')
     id_container = splitter.split(page)[1:]
     video_id += [link[:11] for link in id_container]
     
