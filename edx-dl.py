@@ -6,6 +6,7 @@ from datetime import timedelta, datetime
 EDX_HOMEPAGE = 'https://www.edx.org'
 LOGIN_API = 'https://www.edx.org/login'
 DASHBOARD = 'https://www.edx.org/dashboard'
+YOUTUBE_VIDEO_ID_LENGTH=11
 save_path = 'temp'
 user_email = sys.argv[1]
 user_pswd = sys.argv[2]
@@ -113,7 +114,7 @@ for link in links :
     page =  resp.read()
     splitter = re.compile('data-streams=(?:&#34;|\").*:')
     id_container = splitter.split(page)[1:]
-    video_id += [link[:11] for link in id_container]
+    video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in id_container]
     
 video_link = ["http://youtube.com/watch?v="+ v_id for v_id in video_id]
 
