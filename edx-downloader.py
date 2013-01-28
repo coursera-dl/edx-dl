@@ -6,6 +6,7 @@ from datetime import timedelta, datetime
 EDX_HOMEPAGE = 'https://www.edx.org'
 LOGIN_API = 'https://www.edx.org/login'
 DASHBOARD = 'https://www.edx.org/dashboard'
+YOUTUBE_VIDEO_ID_LENGTH=11
 save_path = 'temp'
 user_email = sys.argv[1]
 user_pswd = sys.argv[2]
@@ -92,7 +93,7 @@ print(selected_course[0] ," has ", numOfWeeks, " Weeks so far")
 w = 0
 for week in weeks :
     w+=1
-    print(w, "- Dowload ", week[0], " videos")
+    print(w, "- Download ", week[0], " videos")
 print(numOfWeeks+1, "- Download them all")
 
 w_number = int(input("Enter Your Choice : "))
@@ -111,9 +112,9 @@ for link in links :
     req = urllib.request.Request(link,None,headers)
     resp = urllib.request.urlopen(req)
     page =  str(resp.read())
-    splitter = re.compile('data-streams=(?:&#34;|\")1.0:')
+    splitter = re.compile('data-streams=(?:&#34;|\").*:')
     id_container = splitter.split(page)[1:]
-    video_id += [link[:11] for link in id_container]
+    video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in id_container]
     
 video_link = ["http://youtube.com/watch?v="+ v_id for v_id in video_id]
 
