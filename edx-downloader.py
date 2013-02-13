@@ -7,13 +7,15 @@ EDX_HOMEPAGE = 'https://www.edx.org'
 LOGIN_API = 'https://www.edx.org/login'
 DASHBOARD = 'https://www.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH=11
+PROXY_DICT = {}
 save_path = 'temp'
 user_email = sys.argv[1]
 user_pswd = sys.argv[2]
 
 #Get Token
 cj = http.cookiejar.CookieJar()
-opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj))
+opener = urllib.request.build_opener(urllib.request.HTTPCookieProcessor(cj), \
+        urllib.request.ProxyHandler(PROXY_DICT))
 urllib.request.install_opener(opener)
 response = opener.open(EDX_HOMEPAGE)
 set_cookie = {}
