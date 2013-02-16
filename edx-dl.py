@@ -1,7 +1,6 @@
 #!/usr/bin/env python
-import os, pprint, sys, math, urllib,urllib2, cookielib, shutil, json,re
+import os, sys, urllib, urllib2, cookielib, json, re
 from bs4 import BeautifulSoup
-from datetime import timedelta, datetime
 
 EDX_HOMEPAGE = 'https://www.edx.org'
 LOGIN_API = 'https://www.edx.org/login'
