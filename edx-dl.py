@@ -1,5 +1,12 @@
 #!/usr/bin/env python
-import os, sys, urllib, urllib2, cookielib, json, re
+import cookielib
+import json
+import os
+import re
+import sys
+import urllib
+import urllib2
+
 from bs4 import BeautifulSoup
 
 EDX_HOMEPAGE = 'https://www.edx.org'
