@@ -38,6 +38,15 @@ def get_initial_token():
     return ''
 
 
+def get_page_contents(url, headers):
+    """
+    Get the contents of the page at the URL given by url. While making the
+    request, we use the headers given in the dictionary in headers.
+    """
+    result = urllib2.urlopen(urllib2.Request(url, None, headers))
+    return result.read()
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         sys.exit(1)
@@ -68,9 +77,7 @@ if __name__ == '__main__':
 
 
     # Get user info/courses
-    req = urllib2.Request(DASHBOARD, None, headers)
-    resp = urllib2.urlopen(req)
-    dash = resp.read()
+    dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
     USERNAME = data.find_all('span')[1].string
@@ -107,9 +114,7 @@ if __name__ == '__main__':
 
 
     ## Getting Available Weeks
-    req = urllib2.Request(COURSEWARE, None, headers)
-    resp = urllib2.urlopen(req)
-    courseware = resp.read()
+    courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
     data = soup.section.section.div.div.nav
     WEEKS = data.find_all('div')
@@ -140,9 +145,7 @@ if __name__ == '__main__':
     video_id = []
     for link in links:
         print 'Processing \'%s\'...' % link
-        req = urllib2.Request(link, None, headers)
-        resp = urllib2.urlopen(req)
-        page = resp.read()
+        page = get_page_contents(link, headers)
         splitter = re.compile('data-streams=(?:&#34;|").*:')
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
