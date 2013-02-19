@@ -17,23 +17,33 @@ LOGIN_API = 'https://www.edx.org/login'
 DASHBOARD = 'https://www.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
+
+def get_initial_token():
+    """
+    Create initial connection to get authentication token for future requests.
+
+    Returns a string to be used in subsequent connections with the
+    X-CSRFToken header or the empty string if we didn't find any token in
+    the cookies.
+    """
+    cj = cookielib.CookieJar()
+    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
+    urllib2.install_opener(opener)
+    opener.open(EDX_HOMEPAGE)
+
+    for cookie in cj:
+        if cookie.name == 'csrftoken':
+            return cookie.value
+
+    return ''
+
+
 if __name__ == '__main__':
     if len(sys.argv) != 3:
         sys.exit(1)
 
     user_email = sys.argv[1]
     user_pswd = sys.argv[2]
-
-
-    # Get Token
-    cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    urllib2.install_opener(opener)
-    response = opener.open(EDX_HOMEPAGE)
-    set_cookie = {}
-    for cookie in cj:
-        set_cookie[cookie.name] = cookie.value
-
 
     # Prepare Headers
     headers = {
@@ -42,9 +52,8 @@ if __name__ == '__main__':
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': set_cookie.get('csrftoken', ''),
+        'X-CSRFToken': get_initial_token(),
         }
-
 
     # Login
     post_data = urllib.urlencode({'email': user_email,
