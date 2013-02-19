@@ -16,7 +16,6 @@ EDX_HOMEPAGE = 'https://www.edx.org'
 LOGIN_API = 'https://www.edx.org/login'
 DASHBOARD = 'https://www.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
-save_path = 'temp'
 user_email = sys.argv[1]
 user_pswd = sys.argv[2]
 
