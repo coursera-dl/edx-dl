@@ -96,13 +96,13 @@ if __name__ == '__main__':
 
     # Welcome and Choose Course
 
-    print 'Welcome ', USERNAME
-    print 'You can access ', numOfCourses, ' Courses on edX'
+    print 'Welcome %s' % USERNAME
+    print 'You can access %d courses on edX' % numOfCourses
 
     c = 0
     for course in courses:
         c += 1
-        print c, '-', course[0], ' -> ', course[2]
+        print '%d - %s -> %s' % (c, course[0], course[2])
 
     c_number = int(raw_input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
@@ -124,16 +124,16 @@ if __name__ == '__main__':
 
 
     # Choose Week or choose all
-    print selected_course[0], ' has ', numOfWeeks, ' Weeks so far'
+    print '%s has %d weeks so far' % (selected_course[0], numOfWeeks)
     w = 0
     for week in weeks:
         w += 1
-        print w, '- Download ', week[0], ' videos'
-    print numOfWeeks + 1, '- Download them all'
+        print '%d - Download %s videos' % (w, week[0])
+    print '%d - Download them all' % (numOfWeeks + 1)
 
     w_number = int(raw_input('Enter Your Choice: '))
     while w_number > numOfWeeks + 1:
-        print 'Enter a valid Number between 1 and ', numOfWeeks + 1
+        print 'Enter a valid Number between 1 and %d' % (numOfWeeks + 1)
         w_number = int(raw_input('Enter Your Choice: '))
 
     if w_number == numOfWeeks + 1:
@@ -144,7 +144,7 @@ if __name__ == '__main__':
 
     video_id = []
     for link in links:
-        print 'Processing \'%s\'...' % link
+        print "Processing '%s'..." % link
         page = get_page_contents(link, headers)
         splitter = re.compile('data-streams=(?:&#34;|").*:')
         id_container = splitter.split(page)[1:]
@@ -155,7 +155,7 @@ if __name__ == '__main__':
 
 
     # Get Available Video_Fmts
-    os.system('youtube-dl -F ' + video_link[-1])
+    os.system('youtube-dl -F %s' % video_link[-1])
     video_fmt = int(raw_input('Choose Format code: '))
 
     # Get subtitles
