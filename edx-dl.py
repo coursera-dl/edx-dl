@@ -155,14 +155,18 @@ if __name__ == '__main__':
     os.system('youtube-dl -F ' + video_link[-1])
     video_fmt = int(raw_input('Choose Format code: '))
 
-
+    # Get subtitles
+    subtitles = raw_input('Download subtitles (y/n) ? ') == 'y'
+        
     # Download Videos
     c = 0
     for v in video_link:
         c += 1
-        os.system('youtube-dl -o "Downloaded/' + str(c)
-                  + '- %(stitle)s.%(ext)s" -f ' + str(video_fmt) + ' ' + v)
-
+        cmd = 'youtube-dl -o "Downloaded/' + str(c) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
+        if(subtitles):
+            cmd += ' --write-srt'
+        cmd += ' ' + v
+        os.system(cmd)
 
     # Say Good Bye :)
     print 'Videos have been downloaded, thanks for using our tool, Good Bye :)'
