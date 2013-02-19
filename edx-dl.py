@@ -95,7 +95,7 @@ if __name__ == '__main__':
     c = 0
     for course in courses:
         c += 1
-        print c, '- ', course[0], ' -> ', course[2]
+        print c, '-', course[0], ' -> ', course[2]
 
     c_number = int(raw_input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
@@ -155,14 +155,18 @@ if __name__ == '__main__':
     os.system('youtube-dl -F ' + video_link[-1])
     video_fmt = int(raw_input('Choose Format code: '))
 
-
+    # Get subtitles
+    subtitles = raw_input('Download subtitles (y/n)? ') == 'y'
+        
     # Download Videos
     c = 0
     for v in video_link:
         c += 1
-        os.system('youtube-dl -o "Downloaded/' + str(c)
-                  + '- %(stitle)s.%(ext)s" -f ' + str(video_fmt) + ' ' + v)
-
+        cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
+        if(subtitles):
+            cmd += ' --write-srt'
+        cmd += ' ' + v
+        os.system(cmd)
 
     # Say Good Bye :)
     print 'Videos have been downloaded, thanks for using our tool, Good Bye :)'
