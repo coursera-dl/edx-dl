@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
 import cookielib
 import json
 import logging
@@ -48,12 +49,78 @@ def get_page_contents(url, headers):
     return result.read()
 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
+def parse_args():
+    """
+    Parse the arguments/options passed to the program on the command line.
+    """
+
+    parser = argparse.ArgumentParser(description='Download videos from edX.')
+
+    # positional
+    parser.add_argument('course_ids',
+                        action='store',
+                        nargs='+',
+                        help='course(s) id(s) (e.g., BerkeleyX/CS184.1x/2013_Spring)')
+
+    parser.add_argument('-u',
+                        '--username',
+                        dest='username',
+                        action='store',
+                        default=None,
+                        help='your edX username (email)')
+    parser.add_argument('-p',
+                        '--password',
+                        dest='password',
+                        action='store',
+                        default=None,
+                        help='your edX password')
+
+    # optional
+    parser.add_argument('-s',
+                        '--with-subtitles',
+                        dest='subtitles',
+                        action='store_true',
+                        default=False,
+                        help='download subtitles with the videos')
+    parser.add_argument('-w',
+                        '--weeks',
+                        dest='weeks',
+                        action='store',
+                        default=None,
+                        help='weeks of classes do download (default: all)')
+    parser.add_argument('-f',
+                        '--format',
+                        dest='format',
+                        action='store',
+                        default=None,
+                        help='format of videos to download (default: best)')
+    parser.add_argument('-S',
+                        '--show-courses',
+                        dest='show_courses',
+                        action='store_true',
+                        default=False,
+                        help='show list of ids of currently enrolled courses; the output format is "name of course:course_id:status"; the course_id is what should be specified as arguments for download')
+
+
+    args = parser.parse_args()
+
+    # FIXME: check arguments
+    if not args.username:
+        logging.error('No username specified.')
+        sys.exit(1)
+    if not args.password:
+        logging.error('No password specified.')
         sys.exit(1)
 
-    user_email = sys.argv[1]
-    user_pswd = sys.argv[2]
+    return args
+
+
+if __name__ == '__main__':
+    args = parse_args()
+
+    user_email = args.username
+    user_pswd = args.password
+    video_fmt = args.format
 
     # Prepare Headers
     headers = {
@@ -155,19 +222,13 @@ if __name__ == '__main__':
     video_link = ['http://youtube.com/watch?v=' + v_id for v_id in video_id]
 
 
-    # Get Available Video_Fmts
-    os.system('youtube-dl -F %s' % video_link[-1])
-    video_fmt = int(raw_input('Choose Format code: '))
 
-    # Get subtitles
-    subtitles = raw_input('Download subtitles (y/n)? ') == 'y'
-        
     # Download Videos
     c = 0
     for v in video_link:
         c += 1
         cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
-        if(subtitles):
+        if args.subtitles:
             cmd += ' --write-srt'
         cmd += ' ' + v
         os.system(cmd)
