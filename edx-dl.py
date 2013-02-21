@@ -61,27 +61,21 @@ def parse_args():
         )
 
     # positional
-    parser.add_argument('username',
-                        action='store',
-                        help='your edX username (email)')
-    parser.add_argument('password',
-                        action='store',
-                        help='your edX password')
-
-    # optional
-    parser.add_argument('-i',
-                        '--course_id',
-                        dest='course_id',
+    parser.add_argument('course_id',
+                        nargs='+',
                         action='store',
                         default=None,
                         help='target course id which can be obtained by \'-l\'')
 
-    parser.add_argument('-s',
-                        '--with-subtitles',
-                        dest='subtitles',
-                        action='store_true',
-                        default=False,
-                        help='download subtitles with the videos')
+    # optional
+    parser.add_argument('-u',
+                        '--username',
+                        action='store',
+                        help='your edX username (email)')
+    parser.add_argument('-p',
+                        '--password',
+                        action='store',
+                        help='your edX password')
     parser.add_argument('-w',
                         '--weeks',
                         dest='weeks',
@@ -96,22 +90,27 @@ def parse_args():
                         help='format of videos to download (default: best)')
     parser.add_argument('-l',
                         '--list-courses',
-                        dest='show_courses',
+                        dest='list_courses',
                         action='store_true',
                         default=False,
-                        help='show list of courses currently enrolled')
+                        help='list courses currently enrolled')
+    parser.add_argument('-s',
+                        '--with-subtitles',
+                        dest='subtitles',
+                        action='store_true',
+                        default=False,
+                        help='download subtitles with the videos')
 
 
     args = parser.parse_args()
 
-    # The following friendly
-    # # FIXME: check arguments
-    # if not args.username:
-        # logging.error('No username specified.')
-        # sys.exit(1)
-    # if not args.password:
-        # logging.error('No password specified.')
-        # sys.exit(1)
+    # FIXME: check arguments
+    if not args.username:
+        logging.error('No username specified.')
+        sys.exit(1)
+    if not args.password:
+        logging.error('No password specified.')
+        sys.exit(1)
 
     return args
 
