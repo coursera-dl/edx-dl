@@ -25,8 +25,8 @@ def get_initial_token():
     Create initial connection to get authentication token for future requests.
 
     Returns a string to be used in subsequent connections with the
-    X-CSRFToken header or the empty string if we didn't find any token in
-    the cookies.
+    X-CSRFToken (Cross-Site Request Forgery) header or the empty string if
+    we didn't find any token in the cookies.
     """
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
