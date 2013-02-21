@@ -3,6 +3,7 @@
 
 import cookielib
 import json
+import logging
 import os
 import re
 import sys
@@ -72,7 +73,7 @@ if __name__ == '__main__':
     response = urllib2.urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
-        print 'Wrong Email or Password.'
+        logging.error('Problems suppling credentials to edX.')
         exit(2)
 
 
@@ -96,8 +97,8 @@ if __name__ == '__main__':
 
     # Welcome and Choose Course
 
-    print 'Welcome %s' % USERNAME
-    print 'You can access %d courses on edX' % numOfCourses
+    logging.info('Logged as %s.', USERNAME)
+    logging.info('Number of courses on edX: %d', numOfCourses)
 
     c = 0
     for course in courses:
@@ -144,7 +145,7 @@ if __name__ == '__main__':
 
     video_id = []
     for link in links:
-        print "Processing '%s'..." % link
+        logging.info("Processing '%s'...", link)
         page = get_page_contents(link, headers)
         splitter = re.compile('data-streams=(?:&#34;|").*:')
         id_container = splitter.split(page)[1:]
@@ -170,6 +171,3 @@ if __name__ == '__main__':
             cmd += ' --write-srt'
         cmd += ' ' + v
         os.system(cmd)
-
-    # Say Good Bye :)
-    print 'Videos have been downloaded, thanks for using our tool, Good Bye :)'
