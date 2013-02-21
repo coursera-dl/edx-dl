@@ -36,8 +36,6 @@ For more info, see <http://www.crummy.com/software/BeautifulSoup/#Download>.
 ## edx-dl.py
 Python implementation for edx-downloader
 
-## edx-dl.py
-
 The original file was written by @shk3 in/for `python3` then updated
 by @emadshaaban92 for python2, and migrated for versions superior to
 2.6 by @iemejia.
