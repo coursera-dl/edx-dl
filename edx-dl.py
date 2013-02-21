@@ -54,7 +54,11 @@ def parse_args():
     Parse the arguments/options passed to the program on the command line.
     """
 
-    parser = argparse.ArgumentParser(description='Download videos from edX.')
+    parser = argparse.ArgumentParser(
+        prog='edx-dl',
+        description='Download videos from edx.org',
+        epilog='For further use information, see the file README.md',
+        )
 
     # positional
     parser.add_argument('username',
