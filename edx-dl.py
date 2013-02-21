@@ -144,6 +144,26 @@ def get_course_list(headers):
     return courses_list
 
 
+def download_videos(video_urls, opts):
+    """
+    Receives a list of URLs given in video_urls and a dictionary called opts
+    with the preferences made by the user and performs the actual download
+    of the videos with URLs with the options given in opts.
+    """
+    # FIXME: This is just a stub for now
+    sys.exit(1)
+
+    c = 0
+    for v in video_urls:
+        c += 1
+        cmd = ('youtube-dl -o "Downloaded/' + selected_course[0] + '/' +
+               str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt))
+        if(subtitles):
+            cmd += ' --write-srt'
+        cmd += ' ' + v
+        os.system(cmd)
+
+
 if __name__ == '__main__':
     args = parse_args()
 
@@ -235,13 +255,5 @@ if __name__ == '__main__':
     video_link = ['http://youtube.com/watch?v=' + v_id for v_id in video_id]
 
 
-
-    # Download Videos
-    c = 0
     for v in video_link:
-        c += 1
-        cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
-        if args.subtitles:
-            cmd += ' --write-srt'
-        cmd += ' ' + v
-        os.system(cmd)
+        print v
