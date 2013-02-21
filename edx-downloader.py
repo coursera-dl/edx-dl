@@ -57,25 +57,22 @@ def parse_args():
     parser = argparse.ArgumentParser(description='Download videos from edX.')
 
     # positional
-    parser.add_argument('course_ids',
+    parser.add_argument('username',
                         action='store',
-                        nargs='+',
-                        help='course(s) id(s) (e.g., BerkeleyX/CS184.1x/2013_Spring)')
-
-    parser.add_argument('-u',
-                        '--username',
-                        dest='username',
-                        action='store',
-                        default=None,
                         help='your edX username (email)')
-    parser.add_argument('-p',
-                        '--password',
-                        dest='password',
+    parser.add_argument('password',
                         action='store',
-                        default=None,
                         help='your edX password')
 
     # optional
+    parser.add_argument('-i',
+                        '--course_ids',
+                        dest='course_ids',
+                        action='store',
+                        default=None,
+                        nargs='+',
+                        help='course(s) id(s) (e.g., BerkeleyX/CS184.1x/2013_Spring)')
+
     parser.add_argument('-s',
                         '--with-subtitles',
                         dest='subtitles',
@@ -104,13 +101,14 @@ def parse_args():
 
     args = parser.parse_args()
 
-    # FIXME: check arguments
-    if not args.username:
-        logging.error('No username specified.')
-        sys.exit(1)
-    if not args.password:
-        logging.error('No password specified.')
-        sys.exit(1)
+    # The following friendly
+    # # FIXME: check arguments
+    # if not args.username:
+        # logging.error('No username specified.')
+        # sys.exit(1)
+    # if not args.password:
+        # logging.error('No password specified.')
+        # sys.exit(1)
 
     return args
 
