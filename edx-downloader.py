@@ -1,8 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import argparse
 import http.cookiejar
 import json
+import logging
 import os
 import re
 import sys
@@ -38,12 +40,87 @@ def get_initial_token():
     return ''
 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
+def get_page_contents(url, headers):
+    """
+    Get the contents of the page at the URL given by url. While making the
+    request, we use the headers given in the dictionary in headers.
+    """
+    result = urllib.request.urlopen(urllib.request.Request(url, None, headers))
+    return result.read()
+
+
+def parse_args():
+    """
+    Parse the arguments/options passed to the program on the command line.
+    """
+
+    parser = argparse.ArgumentParser(description='Download videos from edX.')
+
+    # positional
+    parser.add_argument('course_ids',
+                        action='store',
+                        nargs='+',
+                        help='course(s) id(s) (e.g., BerkeleyX/CS184.1x/2013_Spring)')
+
+    parser.add_argument('-u',
+                        '--username',
+                        dest='username',
+                        action='store',
+                        default=None,
+                        help='your edX username (email)')
+    parser.add_argument('-p',
+                        '--password',
+                        dest='password',
+                        action='store',
+                        default=None,
+                        help='your edX password')
+
+    # optional
+    parser.add_argument('-s',
+                        '--with-subtitles',
+                        dest='subtitles',
+                        action='store_true',
+                        default=False,
+                        help='download subtitles with the videos')
+    parser.add_argument('-w',
+                        '--weeks',
+                        dest='weeks',
+                        action='store',
+                        default=None,
+                        help='weeks of classes do download (default: all)')
+    parser.add_argument('-f',
+                        '--format',
+                        dest='format',
+                        action='store',
+                        default=None,
+                        help='format of videos to download (default: best)')
+    parser.add_argument('-S',
+                        '--show-courses',
+                        dest='show_courses',
+                        action='store_true',
+                        default=False,
+                        help='show list of ids of currently enrolled courses; the output format is "name of course:course_id:status"; the course_id is what should be specified as arguments for download')
+
+
+    args = parser.parse_args()
+
+    # FIXME: check arguments
+    if not args.username:
+        logging.error('No username specified.')
+        sys.exit(1)
+    if not args.password:
+        logging.error('No password specified.')
         sys.exit(1)
 
-    user_email = sys.argv[1]
-    user_pswd = sys.argv[2]
+    return args
+
+
+if __name__ == '__main__':
+    args = parse_args()
+
+    user_email = args.username
+    user_pswd = args.password
+    video_fmt = args.format
 
     # Prepare Headers
     headers = {
@@ -63,14 +140,12 @@ if __name__ == '__main__':
     response = urllib.request.urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
-        print('Wrong Email or Password.')
+        logging.error('Problems suppling credentials to edX.')
         exit(2)
 
 
     # Get user info/courses
-    req = urllib.request.Request(DASHBOARD, None, headers)
-    resp = urllib.request.urlopen(req)
-    dash = resp.read()
+    dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
     USERNAME = data.find_all('span')[1].string
@@ -89,13 +164,13 @@ if __name__ == '__main__':
 
     # Welcome and Choose Course
 
-    print('Welcome ', USERNAME)
-    print('You can access ', numOfCourses, ' Courses on edX')
+    logging.info('Logged as %s.', USERNAME)
+    logging.info('Number of courses on edX: %d', numOfCourses)
 
     c = 0
     for course in courses:
         c += 1
-        print(c, '-', course[0], ' -> ', course[2])
+        print('%d - %s -> %s' % (c, course[0], course[2]))
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
@@ -107,9 +182,7 @@ if __name__ == '__main__':
 
 
     ## Getting Available Weeks
-    req = urllib.request.Request(COURSEWARE, None, headers)
-    resp = urllib.request.urlopen(req)
-    courseware = resp.read()
+    courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
     data = soup.section.section.div.div.nav
     WEEKS = data.find_all('div')
@@ -119,16 +192,16 @@ if __name__ == '__main__':
 
 
     # Choose Week or choose all
-    print(selected_course[0], ' has ', numOfWeeks, ' Weeks so far')
+    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
     w = 0
     for week in weeks:
         w += 1
-        print(w, '- Download ', week[0], ' videos')
-    print(numOfWeeks + 1, '- Download them all')
+        print('%d - Download %s videos' % (w, week[0]))
+    print('%d - Download them all' % (numOfWeeks + 1))
 
     w_number = int(input('Enter Your Choice: '))
     while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and ', numOfWeeks + 1)
+        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
         w_number = int(input('Enter Your Choice: '))
 
     if w_number == numOfWeeks + 1:
@@ -139,10 +212,8 @@ if __name__ == '__main__':
 
     video_id = []
     for link in links:
-        print('Processing \'%s\'...' % link)
-        req = urllib.request.Request(link, None, headers)
-        resp = urllib.request.urlopen(req)
-        page = resp.read()
+        logging.info("Processing '%s'...", link)
+        page = get_page_contents(link, headers)
         splitter = re.compile('data-streams=(?:&#34;|").*:')
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -151,22 +222,13 @@ if __name__ == '__main__':
     video_link = ['http://youtube.com/watch?v=' + v_id for v_id in video_id]
 
 
-    # Get Available Video_Fmts
-    os.system('youtube-dl -F ' + video_link[-1])
-    video_fmt = int(input('Choose Format code: '))
 
-    # Get subtitles
-    subtitles = input('Download subtitles (y/n)? ') == 'y'
-        
     # Download Videos
     c = 0
     for v in video_link:
         c += 1
         cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
-        if(subtitles):
+        if args.subtitles:
             cmd += ' --write-srt'
         cmd += ' ' + v
         os.system(cmd)
-
-    # Say Good Bye :)
-    print('Videos have been downloaded, thanks for using our tool, Good Bye :)')
