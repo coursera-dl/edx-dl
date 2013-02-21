@@ -115,6 +115,35 @@ def parse_args():
     return args
 
 
+def get_course_list(headers):
+    """
+    Returns a list of tuples with each tuple consisting of:
+
+    * Course name: name of the course we are currently enrolled in.
+    * Course ID: the 'id' of the course.
+    * State: a string saying if the course has started or not.
+    """
+    dash = get_page_contents(DASHBOARD, headers)
+    soup = BeautifulSoup(dash)
+    courses = soup.find_all('article', 'my-course')
+
+    courses_list = []
+    for course in courses:
+        c_name = course.h3.string
+        c_id = course.a['href'].lstrip('/courses/')
+
+        if c_id.endswith('info') or c_id.endswith('info/'):
+            c_id = c_id.rstrip('/info/')
+            state = 'Started'
+        else:
+            c_id = c_id.rstrip('/about/')
+            state = 'Not started'
+
+        courses_list.append((c_id, c_name, state))
+
+    return courses_list
+
+
 if __name__ == '__main__':
     args = parse_args()
 
@@ -144,28 +173,12 @@ if __name__ == '__main__':
         exit(2)
 
 
-    # Get user info/courses
-    dash = get_page_contents(DASHBOARD, headers)
-    soup = BeautifulSoup(dash)
-    data = soup.find_all('ul')[1]
-    USERNAME = data.find_all('span')[1].string
-    USEREMAIL = data.find_all('span')[3].string
-    COURSES = soup.find_all('article', 'my-course')
-    courses = []
-    for COURSE in COURSES:
-        c_name = COURSE.h3.string
-        c_link = 'https://www.edx.org' + COURSE.a['href']
-        if c_link.endswith('info') or c_link.endswith('info/'):
-            state = 'Started'
-        else:
-            state = 'Not yet'
-        courses.append((c_name, c_link, state))
-    numOfCourses = len(courses)
+    if args.list_courses:
+        courses = get_course_list(headers)
+        for course in courses:
+            print '%s:%s:%s' % course
+        sys.exit(0)
 
-    # Welcome and Choose Course
-
-    logging.info('Logged as %s.', USERNAME)
-    logging.info('Number of courses on edX: %d', numOfCourses)
 
     c = 0
     for course in courses:
