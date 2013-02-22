@@ -65,7 +65,9 @@ def parse_args():
                         nargs='*',
                         action='store',
                         default=None,
-                        help='target course id which can be obtained by \'-l\'')
+                        help='target course id '
+                        '(e.g., BerkeleyX/CS191x/2013_Spring);'
+                        ' the list can be obtained by \'-l\'')
 
     # optional
     parser.add_argument('-u',
