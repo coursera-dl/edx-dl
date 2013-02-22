@@ -62,7 +62,7 @@ def parse_args():
 
     # positional
     parser.add_argument('course_id',
-                        nargs='+',
+                        nargs='*',
                         action='store',
                         default=None,
                         help='target course id which can be obtained by \'-l\'')
@@ -110,6 +110,11 @@ def parse_args():
         sys.exit(1)
     if not args.password:
         logging.error('No password specified.')
+        sys.exit(1)
+
+    if not args.list_courses and len(args.course_id) == 0:
+        logging.error('You must specify at least one course_id'
+                      ' or the \'-l\' switch. Please see the documentation.')
         sys.exit(1)
 
     return args
