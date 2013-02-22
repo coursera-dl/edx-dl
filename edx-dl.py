@@ -1,16 +1,44 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import cookielib
+# python 2/3 compatibility imports
+from __future__ import print_function
+from __future__ import unicode_literals
+
+try:
+    from http.cookiejar import CookieJar
+except ImportError:
+    from cookielib import CookieJar
+
+try:
+    from urllib.parse import urlencode
+except ImportError:
+    from urllib import urlencode
+
+try:
+    from urllib.request import urlopen
+    from urllib.request import build_opener
+    from urllib.request import install_opener
+    from urllib.request import HTTPCookieProcessor
+    from urllib.request import Request
+except ImportError:
+    from urllib2 import urlopen
+    from urllib2 import build_opener
+    from urllib2 import install_opener
+    from urllib2 import HTTPCookieProcessor
+    from urllib2 import Request
+# we alias the raw_input function for python 3 compatibility
+try:
+    input = raw_input
+except:
+    pass
+
 import json
 import os
 import re
 import sys
-import urllib
-import urllib2
 
 from bs4 import BeautifulSoup
-
 
 EDX_HOMEPAGE = 'https://www.edx.org'
 LOGIN_API = 'https://www.edx.org/login'
@@ -26,9 +54,9 @@ def get_initial_token():
     X-CSRFToken header or the empty string if we didn't find any token in
     the cookies.
     """
-    cj = cookielib.CookieJar()
-    opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
-    urllib2.install_opener(opener)
+    cj = CookieJar()
+    opener = build_opener(HTTPCookieProcessor(cj))
+    install_opener(opener)
     opener.open(EDX_HOMEPAGE)
 
     for cookie in cj:
@@ -43,7 +71,7 @@ def get_page_contents(url, headers):
     Get the contents of the page at the URL given by url. While making the
     request, we use the headers given in the dictionary in headers.
     """
-    result = urllib2.urlopen(urllib2.Request(url, None, headers))
+    result = urlopen(Request(url, None, headers))
     return result.read()
 
 
@@ -65,14 +93,14 @@ if __name__ == '__main__':
         }
 
     # Login
-    post_data = urllib.urlencode({'email': user_email,
+    post_data = urlencode({'email': user_email,
                                  'password': user_pswd,
                                  'remember': False}).encode('utf-8')
-    request = urllib2.Request(LOGIN_API, post_data, headers)
-    response = urllib2.urlopen(request)
+    request = Request(LOGIN_API, post_data, headers)
+    response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
-        print 'Wrong Email or Password.'
+        print("Wrong Email or Password.")
         exit(2)
 
 
@@ -96,19 +124,19 @@ if __name__ == '__main__':
 
     # Welcome and Choose Course
 
-    print 'Welcome %s' % USERNAME
-    print 'You can access %d courses on edX' % numOfCourses
+    print('Welcome %s' % USERNAME)
+    print('You can access %d courses on edX' % numOfCourses)
 
     c = 0
     for course in courses:
         c += 1
-        print '%d - %s -> %s' % (c, course[0], course[2])
+        print('%d - %s -> %s' % (c, course[0], course[2]))
 
-    c_number = int(raw_input('Enter Course Number: '))
+    c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print 'Enter a valid Number for a Started Course ! between 1 and ', \
-            numOfCourses
-        c_number = int(raw_input('Enter Course Number: '))
+        print('Enter a valid Number for a Started Course ! between 1 and ', \
+            numOfCourses)
+        c_number = int(input('Enter Course Number: '))
     selected_course = courses[c_number - 1]
     COURSEWARE = selected_course[1].replace('info', 'courseware')
 
@@ -124,17 +152,17 @@ if __name__ == '__main__':
 
 
     # Choose Week or choose all
-    print '%s has %d weeks so far' % (selected_course[0], numOfWeeks)
+    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
     w = 0
     for week in weeks:
         w += 1
-        print '%d - Download %s videos' % (w, week[0])
-    print '%d - Download them all' % (numOfWeeks + 1)
+        print('%d - Download %s videos' % (w, week[0]))
+    print('%d - Download them all' % (numOfWeeks + 1))
 
-    w_number = int(raw_input('Enter Your Choice: '))
+    w_number = int(input('Enter Your Choice: '))
     while w_number > numOfWeeks + 1:
-        print 'Enter a valid Number between 1 and %d' % (numOfWeeks + 1)
-        w_number = int(raw_input('Enter Your Choice: '))
+        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
+        w_number = int(input('Enter Your Choice: '))
 
     if w_number == numOfWeeks + 1:
         links = [link for week in weeks for link in week[1]]
@@ -144,22 +172,22 @@ if __name__ == '__main__':
 
     video_id = []
     for link in links:
-        print "Processing '%s'..." % link
+        print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
-        splitter = re.compile('data-streams=(?:&#34;|").*:')
+        splitter = re.compile(b'data-streams=(?:&#34;|").*:')
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
 
-    video_link = ['http://youtube.com/watch?v=' + v_id for v_id in video_id]
+    video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8") for v_id in video_id]
 
-
+    print(video_link)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
-    video_fmt = int(raw_input('Choose Format code: '))
+    video_fmt = int(input('Choose Format code: '))
 
     # Get subtitles
-    subtitles = raw_input('Download subtitles (y/n)? ') == 'y'
+    subtitles = input('Download subtitles (y/n)? ') == 'y'
         
     # Download Videos
     c = 0
@@ -168,8 +196,8 @@ if __name__ == '__main__':
         cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
         if(subtitles):
             cmd += ' --write-srt'
-        cmd += ' ' + v
+        cmd += ' ' + str(v)
         os.system(cmd)
 
     # Say Good Bye :)
-    print 'Videos have been downloaded, thanks for using our tool, Good Bye :)'
+    print('Videos have been downloaded, thanks for using our tool, Good Bye :)')
