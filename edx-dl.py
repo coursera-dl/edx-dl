@@ -174,14 +174,13 @@ if __name__ == '__main__':
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
-        splitter = re.compile(b'data-streams=(?:&#34;|").*:')
+        splitter = re.compile(b'data-streams=(?:&#34;|").*1.0:')
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
 
     video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8") for v_id in video_id]
 
-    print(video_link)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
     video_fmt = int(input('Choose Format code: '))
