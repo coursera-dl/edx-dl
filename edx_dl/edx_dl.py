@@ -1,5 +1,12 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+"""
+edx-dl is a simple tool to download video lectures from edx.org.
+
+It requires a Python interpreter (>= 2.6), youtube-dl, BeautifulSoup4 and
+should be platform independent, meaning that it should work fine in your
+Unix box, in Windows or in Mac OS X.
+"""
 
 import argparse
 import cookielib
