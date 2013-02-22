@@ -181,7 +181,6 @@ if __name__ == '__main__':
 
     video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8") for v_id in video_id]
 
-    print(video_link)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
     video_fmt = int(input('Choose Format code: '))
