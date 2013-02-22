@@ -22,7 +22,7 @@ from bs4 import BeautifulSoup
 
 
 EDX_HOMEPAGE = 'https://www.edx.org'
-LOGIN_API = 'https://www.edx.org/login'
+LOGIN_URL = 'https://www.edx.org/login'
 DASHBOARD = 'https://www.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
@@ -199,7 +199,7 @@ if __name__ == '__main__':
     post_data = urllib.urlencode({'email': user_email,
                                  'password': user_pswd,
                                  'remember': False}).encode('utf-8')
-    request = urllib2.Request(LOGIN_API, post_data, headers)
+    request = urllib2.Request(LOGIN_URL, post_data, headers)
     response = urllib2.urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
