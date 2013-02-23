@@ -12,8 +12,8 @@ import argparse
 import cookielib
 import json
 import logging
-import os
 import re
+import subprocess
 import sys
 import urllib
 import urllib2
@@ -173,18 +173,19 @@ def download_videos(video_urls, opts):
     with the preferences made by the user and performs the actual download
     of the videos with URLs with the options given in opts.
     """
-    # FIXME: This is just a stub for now
-    sys.exit(1)
+    # FIXME: Create subdirectories for each lecture and name the files under
+    # those directories
 
-    c = 0
-    for v in video_urls:
-        c += 1
-        cmd = ('youtube-dl -o "Downloaded/' + selected_course[0] + '/' +
-               str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt))
-        if(subtitles):
-            cmd += ' --write-srt'
-        cmd += ' ' + v
-        os.system(cmd)
+    cmd = ['youtube-dl', '-A']
+
+    if opts.format:
+        cmd.append('-f %d' % opts.format)
+    if opts.subtitles:
+        cmd.append('--write-srt')
+
+    cmd.extend(video_urls)
+
+    subprocess.call(cmd)
 
 
 if __name__ == '__main__':
