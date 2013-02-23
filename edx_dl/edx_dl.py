@@ -267,17 +267,15 @@ if __name__ == '__main__':
         links = weeks[w_number - 1][1]
 
 
-    video_id = []
+    video_ids = []
     for link in links:
         logging.info("Processing '%s'...", link)
         page = get_page_contents(link, headers)
         splitter = re.compile(b'data-streams=(?:&#34;|").*1.0:')
         id_container = splitter.split(page)[1:]
-        video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
+        video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
 
-    video_link = ['http://youtube.com/watch?v=' + v_id for v_id in video_id]
-
-
-    for v in video_link:
-        print v
+    # FIXME: call here download_videos
+    for video_id in video_ids:
+        print video_id
