@@ -217,55 +217,45 @@ if __name__ == '__main__':
         exit(2)
 
 
+    # This doesn't belong here, probably, but in the validation of the
+    # command line options, instead.
     if args.list_courses:
         courses = get_course_list(headers)
         for course in courses:
             print '%s:%s:%s' % course
         sys.exit(0)
 
+    course_urls = []
+    for c_id in args.course_id:
+        course_urls.append("%s/courses/%s/courseware" % (EDX_HOMEPAGE, c_id))
 
-    c = 0
-    for course in courses:
-        c += 1
-        print '%d - %s -> %s' % (c, course[0], course[2])
+    # FIXME: Put this in a function called get_week_urls_for_course() or
+    # similar in intent.
 
-    c_number = int(raw_input('Enter Course Number: '))
-    while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print 'Enter a valid Number for a Started Course ! between 1 and ', \
-            numOfCourses
-        c_number = int(raw_input('Enter Course Number: '))
-    selected_course = courses[c_number - 1]
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
+    # FIXME: Consider all courses here.
+    # ...
+    url = course_urls[0]
 
-
-    ## Getting Available Weeks
-    courseware = get_page_contents(COURSEWARE, headers)
+    courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
     data = soup.section.section.div.div.nav
-    WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, ['https://www.edx.org' + a['href'] for a in
-             w.ul.find_all('a')]) for w in WEEKS]
-    numOfWeeks = len(weeks)
+    weeks_soup = data.find_all('div')
 
+    weeks = []
+    for week_soup in weeks_soup:
+        week_name = week_soup.h3.a.string
+        week_urls = [
+            '%s%s' % (EDX_HOMEPAGE, a['href'])
+            for a in week_soup.ul.find_all('a')
+            ]
 
-    # Choose Week or choose all
-    print '%s has %d weeks so far' % (selected_course[0], numOfWeeks)
-    w = 0
-    for week in weeks:
-        w += 1
-        print '%d - Download %s videos' % (w, week[0])
-    print '%d - Download them all' % (numOfWeeks + 1)
+        weeks.append((week_name, week_urls))
 
-    w_number = int(raw_input('Enter Your Choice: '))
-    while w_number > numOfWeeks + 1:
-        print 'Enter a valid Number between 1 and %d' % (numOfWeeks + 1)
-        w_number = int(raw_input('Enter Your Choice: '))
+    # FIXME: Take the week into consideration
+    # FIXME: Transform this into a function
+    logging.info('%s has %d weeks so far.', c_id, len(weeks))
 
-    if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
-    else:
-        links = weeks[w_number - 1][1]
-
+    links = [lec_url for week in weeks for lec_url in week[1]]
 
     video_ids = []
     for link in links:
