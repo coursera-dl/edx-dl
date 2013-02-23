@@ -109,11 +109,20 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='download subtitles with the videos')
+    parser.add_argument('-d',
+                        '--debug',
+                        dest='debug',
+                        action='store_true',
+                        default=False,
+                        help='print debugging information')
 
 
     args = parser.parse_args()
 
     # FIXME: check arguments
+    if args.debug:
+        logging.basicConfig(level=logging.DEBUG)
+
     if not args.username:
         logging.error('No username specified.')
         sys.exit(1)
