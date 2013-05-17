@@ -192,7 +192,7 @@ if __name__ == '__main__':
         c += 1
         cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + \
               str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
-        if(subtitles):
+        if subtitles:
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
         os.system(cmd)
