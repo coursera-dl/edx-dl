@@ -90,19 +90,17 @@ if __name__ == '__main__':
         'Referer': EDX_HOMEPAGE,
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': get_initial_token(),
-        }
+    }
 
     # Login
-    post_data = urlencode({'email': user_email,
-                                 'password': user_pswd,
-                                 'remember': False}).encode('utf-8')
+    post_data = urlencode({'email': user_email, 'password': user_pswd,
+                           'remember': False}).encode('utf-8')
     request = Request(LOGIN_API, post_data, headers)
     response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
         print("Wrong Email or Password.")
         exit(2)
-
 
     # Get user info/courses
     dash = get_page_contents(DASHBOARD, headers)
@@ -134,22 +132,22 @@ if __name__ == '__main__':
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ', \
-            numOfCourses)
+        print('Enter a valid Number for a Started Course ! between 1 and ',
+              numOfCourses)
         c_number = int(input('Enter Course Number: '))
     selected_course = courses[c_number - 1]
     COURSEWARE = selected_course[1].replace('info', 'courseware')
 
-
     ## Getting Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
-    data = soup.section.section.div.div.nav
+
+    data = soup.find("section",
+                     {"class": "content-wrapper"}).section.div.div.nav
     WEEKS = data.find_all('div')
     weeks = [(w.h3.a.string, ['https://www.edx.org' + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
     numOfWeeks = len(weeks)
-
 
     # Choose Week or choose all
     print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
@@ -169,7 +167,6 @@ if __name__ == '__main__':
     else:
         links = weeks[w_number - 1][1]
 
-
     video_id = []
     for link in links:
         print("Processing '%s'..." % link)
@@ -179,7 +176,8 @@ if __name__ == '__main__':
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
 
-    video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8") for v_id in video_id]
+    video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8")
+                  for v_id in video_id]
 
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
@@ -187,16 +185,18 @@ if __name__ == '__main__':
 
     # Get subtitles
     subtitles = input('Download subtitles (y/n)? ') == 'y'
-        
+
     # Download Videos
     c = 0
     for v in video_link:
         c += 1
-        cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
+        cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + \
+              str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
         if(subtitles):
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
         os.system(cmd)
 
     # Say Good Bye :)
-    print('Videos have been downloaded, thanks for using our tool, Good Bye :)')
+    print('Videos have been downloaded, thanks for using our tool, \
+           Good Bye :)')
