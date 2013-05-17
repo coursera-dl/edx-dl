@@ -196,7 +196,3 @@ if __name__ == '__main__':
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
         os.system(cmd)
-
-    # Say Good Bye :)
-    print('Videos have been downloaded, thanks for using our tool, \
-           Good Bye :)')
