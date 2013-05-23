@@ -40,9 +40,9 @@ import sys
 
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://www.edx.org'
-LOGIN_API = 'https://www.edx.org/login'
-DASHBOARD = 'https://www.edx.org/dashboard'
+EDX_HOMEPAGE = 'https://courses.edx.org'
+LOGIN_API = 'https://courses.edx.org/login'
+DASHBOARD = 'https://courses.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
@@ -112,7 +112,7 @@ if __name__ == '__main__':
     courses = []
     for COURSE in COURSES:
         c_name = COURSE.h3.string
-        c_link = 'https://www.edx.org' + COURSE.a['href']
+        c_link = 'https://courses.edx.org' + COURSE.a['href']
         if c_link.endswith('info') or c_link.endswith('info/'):
             state = 'Started'
         else:
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     data = soup.find("section",
                      {"class": "content-wrapper"}).section.div.div.nav
     WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, ['https://www.edx.org' + a['href'] for a in
+    weeks = [(w.h3.a.string, ['https://courses.edx.org' + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
     numOfWeeks = len(weeks)
 
