@@ -99,7 +99,7 @@ if __name__ == '__main__':
     response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
-        print("Wrong Email or Password.")
+        print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
     # Get user info/courses
