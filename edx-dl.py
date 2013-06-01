@@ -111,7 +111,7 @@ if __name__ == '__main__':
     COURSES = soup.find_all('article', 'my-course')
     courses = []
     for COURSE in COURSES:
-        c_name = COURSE.h3.string
+        c_name = COURSE.h3.text.strip()
         c_link = 'https://courses.edx.org' + COURSE.a['href']
         if c_link.endswith('info') or c_link.endswith('info/'):
             state = 'Started'
