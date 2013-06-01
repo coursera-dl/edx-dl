@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+﻿#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # python 2/3 compatibility imports
@@ -40,9 +40,9 @@ import sys
 
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://www.edx.org'
-LOGIN_API = 'https://www.edx.org/login'
-DASHBOARD = 'https://www.edx.org/dashboard'
+EDX_HOMEPAGE = 'https://courses.edx.org/login_ajax'
+LOGIN_API = 'https://courses.edx.org/login_ajax'
+DASHBOARD = 'https://courses.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
@@ -99,7 +99,7 @@ if __name__ == '__main__':
     response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
-        print("Wrong Email or Password.")
+        print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
     # Get user info/courses
@@ -111,8 +111,8 @@ if __name__ == '__main__':
     COURSES = soup.find_all('article', 'my-course')
     courses = []
     for COURSE in COURSES:
-        c_name = COURSE.h3.string
-        c_link = 'https://www.edx.org' + COURSE.a['href']
+        c_name = COURSE.h3.text.strip()
+        c_link = 'https://courses.edx.org' + COURSE.a['href']
         if c_link.endswith('info') or c_link.endswith('info/'):
             state = 'Started'
         else:
@@ -145,7 +145,7 @@ if __name__ == '__main__':
     data = soup.find("section",
                      {"class": "content-wrapper"}).section.div.div.nav
     WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, ['https://www.edx.org' + a['href'] for a in
+    weeks = [(w.h3.a.string, ['https://courses.edx.org' + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
     numOfWeeks = len(weeks)
 
