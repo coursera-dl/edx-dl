@@ -40,7 +40,7 @@ import sys
 
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://courses.edx.org/login'
+EDX_HOMEPAGE = 'https://courses.edx.org/login_ajax'
 LOGIN_API = 'https://courses.edx.org/login_ajax'
 DASHBOARD = 'https://courses.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
