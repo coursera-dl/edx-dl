@@ -1,0 +1,34 @@
+#+TITLE: Personal to_do
+
+
+* Main topics:
+
+* Multiple user agents
+
+edx-dl users should be able to pick a different user agent in order to
+prevent edx from filtering http requests on user agents.
+
+Edx doesn't yet, but they could.
+
+** How ?
+
+Provide some default user agents: Firefox, Chrome, Chromium, Internet
+Exploder.
+
+Then provide an option to use a command-line provided user agent or a
+user agent from a environment variable.
+
+* Alternative download directory
+
+I like to keep all of my courses into a different directory, and I'd
+like to be able to specify that somewhere.
+
+
+* Handle CTRL-C properly
+
+Just implement a "catch KeyboardInterrupt" in the main loop.
+
+* Configuration file
+
+Settings like the above ones should be saveable in a dotfile in the
+user home directory, except for (at least) password.
