@@ -3,7 +3,8 @@
 
 * Main topics:
 
-* Multiple user agents
+* DONE Multiple user agents
+  CLOSED: [2013-06-10 lun 23:46]
 
 edx-dl users should be able to pick a different user agent in order to
 prevent edx from filtering http requests on user agents.
@@ -18,7 +19,8 @@ Exploder.
 Then provide an option to use a command-line provided user agent or a
 user agent from a environment variable.
 
-* Alternative download directory
+* DONE Alternative download directory
+  CLOSED: [2013-06-10 lun 23:15]
 
 I like to keep all of my courses into a different directory, and I'd
 like to be able to specify that somewhere.
