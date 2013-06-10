@@ -106,6 +106,8 @@ def parse_commandline_options(argv):
             USER_PSWD = arg
 
         elif opt == "--download-dir" :
+            if arg.strip()[0] == "~" :
+                arg = os.path.expanduser(arg)
             DOWNLOAD_DIRECTORY = arg
 
         elif opt == "--user-agent" :
