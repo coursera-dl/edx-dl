@@ -28,7 +28,8 @@ like to be able to specify that somewhere.
 
 Just implement a "catch KeyboardInterrupt" in the main loop.
 
-* Configuration file
+* DONE Configuration file
+  CLOSED: [2013-06-10 lun 22:36]
 
 Settings like the above ones should be saveable in a dotfile in the
 user home directory, except for (at least) password.

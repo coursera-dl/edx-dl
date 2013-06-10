@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # python 2/3 compatibility imports
@@ -75,7 +75,9 @@ def get_page_contents(url, headers):
     return result.read()
 
 
-if __name__ == '__main__':
+
+
+def main():    
     if len(sys.argv) != 3:
         sys.exit(1)
 
@@ -196,3 +198,10 @@ if __name__ == '__main__':
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
         os.system(cmd)
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt :
+        print("\n\nCTRL-C detected, shutting down....")
+        sys.exit(0)
