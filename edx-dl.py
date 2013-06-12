@@ -1,4 +1,4 @@
-﻿#!/usr/bin/env python
+#!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
 # python 2/3 compatibility imports
@@ -40,9 +40,13 @@ import sys
 
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://courses.edx.org/login_ajax'
-LOGIN_API = 'https://courses.edx.org/login_ajax'
-DASHBOARD = 'https://courses.edx.org/dashboard'
+#ROOT_PAGE = 'https://courses.edx.org/'
+ROOT_PAGE = 'https://class.stanford.edu/'
+
+EDX_HOMEPAGE = ROOT_PAGE+'login_ajax'
+LOGIN_API = ROOT_PAGE+'login_ajax'
+DASHBOARD = ROOT_PAGE+'dashboard'
+
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
@@ -112,7 +116,7 @@ if __name__ == '__main__':
     courses = []
     for COURSE in COURSES:
         c_name = COURSE.h3.text.strip()
-        c_link = 'https://courses.edx.org' + COURSE.a['href']
+        c_link = ROOT_PAGE + COURSE.a['href']
         if c_link.endswith('info') or c_link.endswith('info/'):
             state = 'Started'
         else:
@@ -145,7 +149,7 @@ if __name__ == '__main__':
     data = soup.find("section",
                      {"class": "content-wrapper"}).section.div.div.nav
     WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, ['https://courses.edx.org' + a['href'] for a in
+    weeks = [(w.h3.a.string, [ROOT_PAGE + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
     numOfWeeks = len(weeks)
 
