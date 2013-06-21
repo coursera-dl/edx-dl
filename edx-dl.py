@@ -74,6 +74,14 @@ def get_page_contents(url, headers):
     result = urlopen(Request(url, None, headers))
     return result.read()
 
+def directory_name(initial_name):
+    import string
+    allowed_chars = string.digits+string.ascii_letters+" _."
+    result_name = ""
+    for ch in initial_name:
+        if allowed_chars.find(ch) != -1:
+            result_name+=ch
+    return result_name if result_name != "" else "course_folder" 
 
 if __name__ == '__main__':
     if len(sys.argv) != 3:
@@ -190,7 +198,7 @@ if __name__ == '__main__':
     c = 0
     for v in video_link:
         c += 1
-        cmd = 'youtube-dl -o "Downloaded/' + selected_course[0] + '/' + \
+        cmd = 'youtube-dl -o "Downloaded/' + directory_name(selected_course[0]) + '/' + \
               str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
         if subtitles:
             cmd += ' --write-srt'
