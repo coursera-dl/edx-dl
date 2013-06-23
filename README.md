@@ -9,11 +9,13 @@ X.
 
 ## youtube-dl
 
-We use youtube-dl to download video lectures from youtube "We don't wanna
-reinvent the wheel :)".  Make sure you have youtube-dl installed in your
-system.
+We use `youtube-dl` to download video lectures from Youtube, with the main
+idea being that "we don't want to reinvent the wheel".  Make sure you have
+`youtube-dl` installed in your system.  Also, since Youtube changes its
+layout frequently, make sure that the version of `youtube-dl` that you have
+installed is the latest. If in doubt, run `youtube-dl --update`.
 
-You can find youtube-dl at <https://github.com/rg3/youtube-dl>.
+You can find `youtube-dl` at <https://github.com/rg3/youtube-dl>.
 
 ## BeautifulSoup
 
