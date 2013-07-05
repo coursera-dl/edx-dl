@@ -185,10 +185,13 @@ if __name__ == '__main__':
     for link in links:
         logging.info("Processing '%s'...", link)
         page = get_page_contents(link, headers)
-        splitter = re.compile(b'data-streams=(?:&#34;|").*?(?:1.0)?:')
-        id_container = splitter.split(page)[1:]
-        video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
-                      id_container]
+        logging.info('Got the contents of page %s', link)
+
+        regexp = b'data-youtube-id-1-0=&#34;(.{11})&#34;'
+        id_container = re.findall(regexp, page)
+        logging.debug('Got: %s', id_container)
+
+        video_ids.extend(id_container)
 
     # FIXME: call here download_videos
     for video_id in video_ids:
