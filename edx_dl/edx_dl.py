@@ -117,7 +117,7 @@ if __name__ == '__main__':
         'Referer': EDX_HOMEPAGE,
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': get_initial_token(),
-        }
+    }
 
     logging.debug('Preparing login information.')
     post_data = urllib.urlencode({'email': user_email,
@@ -165,7 +165,7 @@ if __name__ == '__main__':
         week_urls = [
             '%s%s' % (EDX_HOMEPAGE, a['href'])
             for a in week_soup.ul.find_all('a')
-            ]
+        ]
 
         weeks.append((week_name, week_urls))
 
