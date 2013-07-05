@@ -5,14 +5,15 @@ This module contains a set of functions to be used by edx-dl.
 """
 
 import cookielib
+import logging
 import subprocess
 import urllib2
 
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://www.edx.org'
-LOGIN_URL = 'https://www.edx.org/login'
-DASHBOARD = 'https://www.edx.org/dashboard'
+EDX_HOMEPAGE = 'https://courses.edx.org'
+LOGIN_URL = 'https://courses.edx.org/login_ajax'
+DASHBOARD = 'https://courses.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
