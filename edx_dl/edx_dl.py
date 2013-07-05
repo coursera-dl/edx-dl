@@ -165,7 +165,7 @@ if __name__ == '__main__':
     for week_soup in weeks_soup:
         week_name = week_soup.h3.a.string
         week_urls = [
-            '%s%s' % (EDX_HOMEPAGE, a['href'])
+            '%s/%s' % (EDX_HOMEPAGE, a['href'])
             for a in week_soup.ul.find_all('a')
         ]
 
