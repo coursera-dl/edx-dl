@@ -156,7 +156,9 @@ if __name__ == '__main__':
 
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
-    data = soup.section.section.div.div.nav
+    data = soup.find("section",
+                     {"class": "content-wrapper"}).section.div.div.nav
+
     weeks_soup = data.find_all('div')
 
     weeks = []

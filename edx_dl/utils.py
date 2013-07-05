@@ -65,7 +65,7 @@ def get_course_list(headers):
 
     courses_list = []
     for course in courses:
-        c_name = course.h3.string
+        c_name = course.h3.text.strip()
         c_id = course.a['href'].lstrip('/courses/')
 
         if c_id.endswith('info') or c_id.endswith('info/'):
