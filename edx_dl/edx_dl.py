@@ -145,7 +145,9 @@ if __name__ == '__main__':
 
     course_urls = []
     for c_id in args.course_id:
-        course_urls.append("%s/courses/%s/courseware" % (EDX_HOMEPAGE, c_id))
+        new_url = "%s/courses/%s/courseware" % (EDX_HOMEPAGE, c_id)
+        logging.info('Found new course URL: %s', new_url)
+        course_urls.append(new_url)
 
     # FIXME: Put this in a function called get_week_urls_for_course() or
     # similar in intent.
