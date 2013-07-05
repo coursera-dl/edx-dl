@@ -109,7 +109,7 @@ if __name__ == '__main__':
     user_pswd = args.password
     video_fmt = args.format
 
-    # Prepare Headers
+    logging.debug('Preparing headers.')
     headers = {
         'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -119,13 +119,18 @@ if __name__ == '__main__':
         'X-CSRFToken': get_initial_token(),
         }
 
-    # Login
+    logging.debug('Preparing login information.')
     post_data = urllib.urlencode({'email': user_email,
                                  'password': user_pswd,
                                  'remember': False}).encode('utf-8')
     request = urllib2.Request(LOGIN_URL, post_data, headers)
     response = urllib2.urlopen(request)
-    resp = json.loads(response.read().decode('utf-8'))
+    logging.debug('Opened request to %s', LOGIN_URL)
+
+    logging.debug('Grabbing response data')
+    data = response.read().decode('utf-8')
+    resp = json.loads(data)
+    logging.debug('Got: %s', data)
     if not resp.get('success', False):
         logging.error('Problems suppling credentials to edX.')
         exit(2)

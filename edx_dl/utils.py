@@ -22,7 +22,12 @@ def get_page_contents(url, headers):
     Get the contents of the page at the URL given by url. While making the
     request, we use the headers given in the dictionary in headers.
     """
-    result = urllib2.urlopen(urllib2.Request(url, None, headers))
+    logging.debug('Getting page at %s with headers %s', url, headers)
+    req = urllib2.Request(url, None, headers)
+    logging.debug('Created request: %s', req)
+    result = urllib2.urlopen(req)
+    logging.debug('Got result %s', result)
+
     return result.read()
 
 
