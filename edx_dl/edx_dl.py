@@ -186,11 +186,20 @@ if __name__ == '__main__':
         page = get_page_contents(link, headers)
         logging.info('Got the contents of page %s', link)
 
-        regexp = b'data-youtube-id-1-0=&#34;(.{11})&#34;'
-        id_container = re.findall(regexp, page)
-        logging.debug('Got: %s', id_container)
+        # As edX has changed its layout during the time, here we try
+        # matching all the URL styles that we know about (so far).
+        #
+        # Old style:
+        # b'data-streams=&#34;(?:0.75:.{11}),1.00?:.{11},1.25:.{11},1.50:.{11}&#34;'
+        # New style:
+        # b'data-youtube-id-1-0=&#34;(.{11})&#34;'
 
-        video_ids.extend(id_container)
+        regexps = [b'data-streams=&#34;(?:0.75:.{11}),1.00?:(.{11})',
+                   b'data-youtube-id-1-0=&#34;(.{11})&#34;']
+        for regexp in regexps:
+            id_container = re.findall(regexp, page)
+            logging.debug('New style got: %s', id_container)
+            video_ids.extend(id_container)
 
     # FIXME: call here download_videos
     for video_id in video_ids:
