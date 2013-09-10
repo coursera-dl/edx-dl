@@ -194,7 +194,7 @@ if __name__ == '__main__':
         # New style:
         # b'data-youtube-id-1-0=&#34;(.{11})&#34;'
 
-        regexps = [b'data-streams=&#34;(?:0.75:.{11}),1.00?:(.{11})',
+        regexps = [b'data-streams=&#34;(?:0.75:.{11},)?1.00?:(.{11})',
                    b'data-youtube-id-1-0=&#34;(.{11})&#34;']
         for regexp in regexps:
             id_container = re.findall(regexp, page)
