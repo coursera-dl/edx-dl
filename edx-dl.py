@@ -33,6 +33,8 @@ try:
 except:
     pass
 
+import getopt
+
 import json
 import os
 import re
@@ -44,6 +46,22 @@ EDX_HOMEPAGE = 'https://courses.edx.org/login_ajax'
 LOGIN_API = 'https://courses.edx.org/login_ajax'
 DASHBOARD = 'https://courses.edx.org/dashboard'
 YOUTUBE_VIDEO_ID_LENGTH = 11
+
+
+## If no download directory is specified, we use the default one
+DEFAULT_DOWNLOAD_DIRECTORY = "./Downloaded/"
+DOWNLOAD_DIRECTORY = DEFAULT_DOWNLOAD_DIRECTORY
+
+## If nothing else is chosen, we chose the default user agent:
+
+DEFAULT_USER_AGENTS = {"google-chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
+                       "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
+                       "default": 'edX-downloader/0.01'}
+
+USER_AGENT = DEFAULT_USER_AGENTS["default"]
+
+USER_EMAIL = ""
+USER_PSWD = ""
 
 
 def get_initial_token():
@@ -83,16 +101,61 @@ def directory_name(initial_name):
             result_name+=ch
     return result_name if result_name != "" else "course_folder" 
 
-if __name__ == '__main__':
-    if len(sys.argv) != 3:
-        sys.exit(1)
+def parse_commandline_options(argv):
+    global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT
+    opts, args = getopt.getopt(argv, 
+                               "u:p:", 
+                               ["download-dir=", "user-agent=", "custom-user-agent="])
+    for opt, arg in opts :
+        if opt == "-u" :
+            USER_EMAIL = arg
+        
+        elif opt == "-p" :
+            USER_PSWD = arg
 
-    user_email = sys.argv[1]
-    user_pswd = sys.argv[2]
+        elif opt == "--download-dir" :
+            if arg.strip()[0] == "~" :
+                arg = os.path.expanduser(arg)
+            DOWNLOAD_DIRECTORY = arg
+
+        elif opt == "--user-agent" :
+            if arg in DEFAULT_USER_AGENTS.keys():
+                USER_AGENT = DEFAULT_USER_AGENTS[arg]
+
+
+        elif opt == "--custom-user-agent":
+            USER_AGENT = arg
+            
+        elif opt == "-h":
+            usage()
+
+
+def usage() :
+    print("command-line options:") 
+    print("""--download-dir=<path> will save downloaded files in <path>
+--user-agent=<chrome|firefox> will use Google Chrome's of Firefox 24's default
+             user agent as user agent
+--custom-user-agent="MYUSERAGENT" will use the string "MYUSERAGENT" as user
+             agent
+""")
+    
+
+
+def main():
+    
+    try:
+        parse_commandline_options(sys.argv[1:])
+    except getopt.GetoptError :
+        usage();
+        sys.exit(2)
+
+    if USER_EMAIL == "" or USER_PSWD == "":
+        print("You must supply username AND password to log-in") 
+        sys.exit(2)
 
     # Prepare Headers
     headers = {
-        'User-Agent': 'edX-downloader/0.01',
+        'User-Agent': USER_AGENT,
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
@@ -101,7 +164,7 @@ if __name__ == '__main__':
     }
 
     # Login
-    post_data = urlencode({'email': user_email, 'password': user_pswd,
+    post_data = urlencode({'email': USER_EMAIL, 'password': USER_PSWD,
                            'remember': False}).encode('utf-8')
     request = Request(LOGIN_API, post_data, headers)
     response = urlopen(request)
@@ -194,13 +257,24 @@ if __name__ == '__main__':
     # Get subtitles
     subtitles = input('Download subtitles (y/n)? ') == 'y'
 
+    # Say where it's gonna download files, just for clarity's sake.
+    print("Saving videos into: " + DOWNLOAD_DIRECTORY)
+    print("\n\n")
+    
     # Download Videos
     c = 0
     for v in video_link:
         c += 1
-        cmd = 'youtube-dl -o "Downloaded/' + directory_name(selected_course[0]) + '/' + \
-              str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
+        cmd = 'youtube-dl -o "' + DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' + \
+		str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
         if subtitles:
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
         os.system(cmd)
+
+if __name__ == '__main__':
+    try:
+        main()
+    except KeyboardInterrupt :
+        print("\n\nCTRL-C detected, shutting down....")
+        sys.exit(0)
