@@ -133,11 +133,13 @@ def parse_commandline_options(argv):
 
 def usage() :
     print("command-line options:") 
-    print("""--download-dir=<path> will save downloaded files in <path>
---user-agent=<chrome|firefox> will use Google Chrome's of Firefox 24's default
-             user agent as user agent
---custom-user-agent="MYUSERAGENT" will use the string "MYUSERAGENT" as user
-             agent
+    print("""-u <username>: (Optional) indicate the username.
+-p <password>: (Optional) indicate the password.
+--download-dir=<path>: (Optional) save downloaded files in <path>
+--user-agent=<chrome|firefox>: (Optional) use Google Chrome's of Firefox 24's
+             default user agent as user agent
+--custom-user-agent="MYUSERAGENT": (Optional) use the string "MYUSERAGENT" as
+             user agent
 """)
     
 
