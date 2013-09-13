@@ -233,7 +233,7 @@ def main():
     w = 0
     for week in weeks:
         w += 1
-        print('%d - Download %s videos' % (w, week[0]))
+        print('%d - Download %s videos' % (w, week[0].strip()))
     print('%d - Download them all' % (numOfWeeks + 1))
 
     w_number = int(input('Enter Your Choice: '))
