@@ -274,7 +274,7 @@ def main():
     for v in video_link:
         c += 1
         cmd = 'youtube-dl -o "' + DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' + \
-		str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
+        str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
         if subtitles:
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
