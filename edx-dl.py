@@ -34,6 +34,7 @@ except:
     pass
 
 import getopt
+import getpass
 
 import json
 import os
@@ -142,13 +143,18 @@ def usage() :
 
 
 def main():
-    
+    global USER_EMAIL, USER_PSWD
     try:
         parse_commandline_options(sys.argv[1:])
     except getopt.GetoptError :
         usage();
         sys.exit(2)
 
+    if USER_EMAIL == "":
+        USER_EMAIL = input('Username: ')
+    if  USER_PSWD == "":
+        USER_PSWD = getpass.getpass()
+    
     if USER_EMAIL == "" or USER_PSWD == "":
         print("You must supply username AND password to log-in") 
         sys.exit(2)
