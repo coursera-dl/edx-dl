@@ -199,8 +199,5 @@ if __name__ == '__main__':
         for regexp in regexps:
             id_container = re.findall(regexp, page)
             logging.debug('New style got: %s', id_container)
-            video_ids.extend(id_container)
-
-    # FIXME: call here download_videos
-    for video_id in video_ids:
-        print video_id
+            for id in id_container:
+                print id
