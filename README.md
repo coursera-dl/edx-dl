@@ -47,8 +47,9 @@ by @emadshaaban92 for python2, and migrated for versions superior to
 To use `edx-dl.py`, simply excute it, as in:
 
     python edx-dl.py
+
 You will then be asked your username and password.
-    
+
 Your downloaded videos will be placed in a new Directory called
 "Downloaded".  The script is very interactive, and if you have a issue
 please tell us.
@@ -57,5 +58,3 @@ You can also excute it with arguments given: email and password,
 as in:
 
     python edx-dl.py [-u user@user.com] [-p password]
-
-
