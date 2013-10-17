@@ -35,8 +35,8 @@ def parse_args():
                         action='store',
                         default=None,
                         help='target course id '
-                        '(e.g., BerkeleyX/CS191x/2013_Spring);'
-                        ' the list can be obtained by \'-l\'')
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/courseware/)'
+                        )
 
     # optional
     parser.add_argument('-u',
