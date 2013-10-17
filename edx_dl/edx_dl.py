@@ -226,5 +226,5 @@ if __name__ == '__main__':
         for regexp in regexps:
             id_container = re.findall(regexp, page)
             logging.debug('New style got: %s', id_container)
-            for id in id_container:
-                print id
+            for vid in id_container:
+                print vid
