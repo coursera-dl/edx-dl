@@ -11,11 +11,6 @@ import urllib2
 
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://courses.edx.org'
-LOGIN_URL = 'https://courses.edx.org/login_ajax'
-DASHBOARD = 'https://courses.edx.org/dashboard'
-YOUTUBE_VIDEO_ID_LENGTH = 11
-
 
 def get_page_contents(url, headers):
     """
