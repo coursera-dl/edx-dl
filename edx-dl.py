@@ -40,12 +40,15 @@ import json
 import os
 import re
 import sys
-
+from subprocess import Popen, PIPE
+from datetime import timedelta, datetime
 from bs4 import BeautifulSoup
 
-EDX_HOMEPAGE = 'https://courses.edx.org/login_ajax'
-LOGIN_API = 'https://courses.edx.org/login_ajax'
-DASHBOARD = 'https://courses.edx.org/dashboard'
+BASE_URL = 'https://courses.edx.org'
+EDX_HOMEPAGE = BASE_URL + '/login_ajax'
+LOGIN_API = BASE_URL + '/login_ajax'
+DASHBOARD = BASE_URL + '/dashboard'
+
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
@@ -141,6 +144,36 @@ def usage() :
 --custom-user-agent="MYUSERAGENT": (Optional) use the string "MYUSERAGENT" as
              user agent
 """)
+
+
+def downloadEdxSubs(url, headers):
+    jsonString = get_page_contents(url, headers)
+    jsonObject = json.loads(jsonString)
+
+    starts = jsonObject['start']
+    ends = jsonObject['end']
+    texts = jsonObject['text']
+
+    i = 1
+
+    output = ''
+
+    for (s, e, t) in zip(starts, ends, texts):
+        if t == "":
+            continue
+
+        output += str(i) + '\n'
+        s = datetime(1, 1, 1) + timedelta(seconds=s/1000.)
+        e = datetime(1, 1, 1) + timedelta(seconds=e/1000.)
+        output += "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d" % \
+              (s.hour, s.minute, s.second, s.microsecond/1000,
+               e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
+        output += t + "\n\n"
+        i += 1
+
+    return output
+
+
 
 
 
@@ -247,13 +280,18 @@ def main():
         links = weeks[w_number - 1][1]
 
     video_id = []
+    subsUrls = []
+    regexpSubs = re.compile(b'data-caption-asset-path=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    splitter = re.compile(b'data-streams=(?:&#34;|").*1.0[0]*:')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
-        splitter = re.compile(b'data-streams=(?:&#34;|").*1.0[0]*:')
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
+
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + id + ".srt.sjson"
+                        for id, container in zip(video_id[-len(id_container):], id_container)]
 
     video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8")
                   for v_id in video_id]
@@ -263,7 +301,33 @@ def main():
     video_fmt = int(input('Choose Format code: '))
 
     # Get subtitles
-    subtitles = input('Download subtitles (y/n)? ') == 'y'
+    if input('Download subtitles (y/n)? ') == 'y':
+        print("""Get from:
+1) YouTube with fallback from edX (default)
+2) YouTube only
+3) edX's subs only""")
+        try:
+            temp = int(input(""))
+            if temp not in (1, 2, 3):
+                raise ValueError
+        except ValueError:
+            temp = 1
+
+        if temp == 1:
+            youtube_subs = True
+            fallback_subs = True
+            edx_subs = False
+            print("Selected: YouTube with fallback from edX")
+        elif temp == 2:
+            youtube_subs = True
+            fallback_subs = False
+            edx_subs = False
+            print("Selected: YouTube only")
+        elif temp == 3:
+            youtube_subs = False
+            fallback_subs = False
+            edx_subs = True
+            print("Selected: edX's subs only")
 
     # Say where it's gonna download files, just for clarity's sake.
     print("Saving videos into: " + DOWNLOAD_DIRECTORY)
@@ -271,14 +335,46 @@ def main():
 
     # Download Videos
     c = 0
-    for v in video_link:
+    for v, s in zip(video_link, subsUrls):
         c += 1
         cmd = 'youtube-dl -o "' + DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' + \
         str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
-        if subtitles:
+        if youtube_subs:
             cmd += ' --write-srt'
         cmd += ' ' + str(v)
-        os.system(cmd)
+
+        popen_youtube = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+
+        if edx_subs:  # If the user selected download from edX: download simultaneously video and subs
+            subs_string = downloadEdxSubs(s, headers)
+
+        youtube_stdout = ''
+        regexp_filename = re.compile(
+            r'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
+        while True:
+            tmp = popen_youtube.stdout.readline()
+            youtube_stdout += tmp
+            print(tmp, end="")
+            if popen_youtube.poll() is not None:
+                break
+
+        youtube_stderr = popen_youtube.communicate()[1]
+        if re.search('Some error while getting the subtitles', youtube_stderr):
+            if fallback_subs:
+                print("YouTube hasn't subtitles. Fallbacking from edX")
+                edx_subs = True
+            else:
+                print("WARNING: Subtitles missing")
+
+        if edx_subs:  # write edX subs
+            if fallback_subs:  # if edx_subs and fallback_subs are True this means YouTube hasn't subtitles
+                               # and the user select fallback from edX
+                subs_string = downloadEdxSubs(s, headers)
+            match = re.search(regexp_filename, youtube_stdout)
+            subs_filename = match.group(1) or match.group(2)
+            subs_filename = subs_filename[:-4]
+            file(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
+
 
 if __name__ == '__main__':
     try:
