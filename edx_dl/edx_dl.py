@@ -97,8 +97,7 @@ def parse_args():
 
     return args
 
-from utils import (EDX_HOMEPAGE, LOGIN_URL, YOUTUBE_VIDEO_ID_LENGTH,
-                   get_initial_token, get_course_list, get_page_contents)
+from utils import (get_initial_token, get_course_list, get_page_contents)
 
 
 if __name__ == '__main__':
@@ -108,23 +107,50 @@ if __name__ == '__main__':
     user_pswd = args.password
     video_fmt = args.format
 
+    # FIXME: Proof of concept---refactor this to a function to the utils
+    # module.
+    regex = r'(?:https?://)(?P<site>[^/]+)/(?P<baseurl>[^/]+)/(?P<institution>[^/]+)/(?P<class>[^/]+)/(?P<offering>[^/]+).*'
+    m = re.match(regex, args.course_id[0]) # FIXME: considering only the first one
+
+    if m is None:
+        logging.error('The URL provided is not valid for edX.')
+        sys.exit(0)
+
+    if m.group('site') in ['courses.edx.org', 'class.stanford.edu']:
+        login_suffix = 'login_ajax'
+    else:
+        login_suffix = 'login'
+
+    homepage = 'https://' + m.group('site')
+    login_url = homepage + '/' + login_suffix
+    dashboard = homepage + '/dashboard'
+    course_id = '%s/%s/%s' % (m.group('institution'),
+                               m.group('class'),
+                               m.group('offering'))
+
+    logging.debug('Homepage: %s', homepage)
+    logging.debug('Login URL: %s', login_url)
+    logging.debug('Dashboard: %s', dashboard)
+    logging.debug('Course ID: %s', course_id)
+
+
     logging.debug('Preparing headers.')
     headers = {
         'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Referer': EDX_HOMEPAGE,
+        'Referer': homepage,
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': get_initial_token(),
+        'X-CSRFToken': get_initial_token(homepage),
     }
 
     logging.debug('Preparing login information.')
     post_data = urllib.urlencode({'email': user_email,
                                  'password': user_pswd,
                                  'remember': False}).encode('utf-8')
-    request = urllib2.Request(LOGIN_URL, post_data, headers)
+    request = urllib2.Request(login_url, post_data, headers)
     response = urllib2.urlopen(request)
-    logging.debug('Opened request to %s', LOGIN_URL)
+    logging.debug('Opened request to %s', login_url)
 
     logging.debug('Grabbing response data')
     data = response.read().decode('utf-8')
@@ -134,19 +160,20 @@ if __name__ == '__main__':
         logging.error('Problems suppling credentials to edX.')
         exit(2)
 
-    # This doesn't belong here, probably, but in the validation of the
-    # command line options, instead.
+    # FIXME: This doesn't belong here, probably, but in the validation of
+    # the command line options, instead.
     if args.list_courses:
-        courses = get_course_list(headers)
+        courses = get_course_list(headers, dashboard)
         for course in courses:
             print '%s:%s:%s' % course
         sys.exit(0)
 
     course_urls = []
-    for c_id in args.course_id:
-        new_url = "%s/courses/%s/courseware" % (EDX_HOMEPAGE, c_id)
-        logging.info('Found new course URL: %s', new_url)
-        course_urls.append(new_url)
+
+    # FIXME: Kludgy
+    new_url = "%s/courses/%s/courseware" % (homepage, course_id)
+    logging.info('Found new course URL: %s', new_url)
+    course_urls.append(new_url)
 
     # FIXME: Put this in a function called get_week_urls_for_course() or
     # similar in intent.
@@ -166,7 +193,7 @@ if __name__ == '__main__':
     for week_soup in weeks_soup:
         week_name = week_soup.h3.a.string
         week_urls = [
-            '%s/%s' % (EDX_HOMEPAGE, a['href'])
+            '%s/%s' % (homepage, a['href'])
             for a in week_soup.ul.find_all('a')
         ]
 

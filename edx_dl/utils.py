@@ -31,7 +31,7 @@ def get_page_contents(url, headers):
     return result.read()
 
 
-def get_initial_token():
+def get_initial_token(homepage):
     """
     Create initial connection to get authentication token for future requests.
 
@@ -42,7 +42,7 @@ def get_initial_token():
     cj = cookielib.CookieJar()
     opener = urllib2.build_opener(urllib2.HTTPCookieProcessor(cj))
     urllib2.install_opener(opener)
-    opener.open(EDX_HOMEPAGE)
+    opener.open(homepage)
 
     for cookie in cj:
         if cookie.name == 'csrftoken':
@@ -51,7 +51,7 @@ def get_initial_token():
     return ''
 
 
-def get_course_list(headers):
+def get_course_list(headers, dashboard):
     """
     Returns a list of tuples with each tuple consisting of:
 
@@ -59,7 +59,7 @@ def get_course_list(headers):
     * Course ID: the 'id' of the course.
     * State: a string saying if the course has started or not.
     """
-    dash = get_page_contents(DASHBOARD, headers)
+    dash = get_page_contents(dashboard, headers)
     soup = BeautifulSoup(dash)
     courses = soup.find_all('article', 'my-course')
 
