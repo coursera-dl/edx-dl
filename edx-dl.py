@@ -94,7 +94,12 @@ def get_page_contents(url, headers):
     request, we use the headers given in the dictionary in headers.
     """
     result = urlopen(Request(url, None, headers))
-    return result.read()
+    try:
+        charset = result.headers.get_content_charset(failobj="utf-8")  #for python3
+    except:
+        charset = result.info().getparam('charset') or 'utf-8'
+
+    return result.read().decode(charset)
 
 def directory_name(initial_name):
     import string
@@ -174,20 +179,17 @@ def downloadEdxSubs(url, headers):
     return output
 
 
-
-
-
 def main():
     global USER_EMAIL, USER_PSWD
     try:
         parse_commandline_options(sys.argv[1:])
-    except getopt.GetoptError :
-        usage();
+    except getopt.GetoptError:
+        usage()
         sys.exit(2)
 
     if USER_EMAIL == "":
         USER_EMAIL = input('Username: ')
-    if  USER_PSWD == "":
+    if USER_PSWD == "":
         USER_PSWD = getpass.getpass()
 
     if USER_EMAIL == "" or USER_PSWD == "":
@@ -281,8 +283,8 @@ def main():
 
     video_id = []
     subsUrls = []
-    regexpSubs = re.compile(b'data-caption-asset-path=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    splitter = re.compile(b'data-streams=(?:&#34;|").*1.0[0]*:')
+    regexpSubs = re.compile(r'data-caption-asset-path=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
@@ -293,7 +295,7 @@ def main():
         subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + id + ".srt.sjson"
                         for id, container in zip(video_id[-len(id_container):], id_container)]
 
-    video_link = ['http://youtube.com/watch?v=' + v_id.decode("utf-8")
+    video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
 
     # Get Available Video_Fmts
@@ -301,7 +303,11 @@ def main():
     video_fmt = int(input('Choose Format code: '))
 
     # Get subtitles
-    if input('Download subtitles (y/n)? ') == 'y':
+    temp = input('Download subtitles (Y/n)? ')
+    if str.lower(temp) == 'n':
+        youtube_subs = False
+        edx_subs = False
+    else:
         print("""Get from:
 1) YouTube with fallback from edX (default)
 2) YouTube only
@@ -337,43 +343,46 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        cmd = 'youtube-dl -o "' + DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' + \
-        str(c).zfill(2) + '-%(title)s.%(ext)s" -f ' + str(video_fmt)
+        cmd = ["youtube-dl", "-o", DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' +
+                                   str(c).zfill(2) + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
         if youtube_subs:
-            cmd += ' --write-srt'
-        cmd += ' ' + str(v)
+            cmd.append('--write-srt')
+        cmd.append(str(v))
 
-        popen_youtube = Popen(cmd, shell=True, stdout=PIPE, stderr=PIPE)
+        popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
 
         if edx_subs:  # If the user selected download from edX: download simultaneously video and subs
             subs_string = downloadEdxSubs(s, headers)
 
-        youtube_stdout = ''
-        regexp_filename = re.compile(
-            r'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
-        while True:
-            tmp = popen_youtube.stdout.readline()
+        youtube_stdout = b''
+        enc = sys.getdefaultencoding()
+        while True:  # Save the output to youtube_stdout while this being echoed
+            tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
-            print(tmp, end="")
-            if popen_youtube.poll() is not None:
+            print(tmp.decode(enc), end="")
+            sys.stdout.flush()
+            # do it until the process finish and there isn't output
+            if tmp == b"" and popen_youtube.poll() is not None:
                 break
 
-        youtube_stderr = popen_youtube.communicate()[1]
-        if re.search('Some error while getting the subtitles', youtube_stderr):
-            if fallback_subs:
-                print("YouTube hasn't subtitles. Fallbacking from edX")
-                edx_subs = True
-            else:
-                print("WARNING: Subtitles missing")
+        if youtube_subs:
+            youtube_stderr = popen_youtube.communicate()[1]
+            if re.search(b'Some error while getting the subtitles', youtube_stderr):
+                if fallback_subs:
+                    print("YouTube hasn't subtitles. Fallbacking from edX")
+                    edx_subs = True
+                else:
+                    print("WARNING: Subtitles missing")
 
         if edx_subs:  # write edX subs
             if fallback_subs:  # if edx_subs and fallback_subs are True this means YouTube hasn't subtitles
                                # and the user select fallback from edX
                 subs_string = downloadEdxSubs(s, headers)
+            regexp_filename = re.compile(
+                b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
             match = re.search(regexp_filename, youtube_stdout)
-            subs_filename = match.group(1) or match.group(2)
-            subs_filename = subs_filename[:-4]
-            file(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
+            subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
+            open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
 
 
 if __name__ == '__main__':
