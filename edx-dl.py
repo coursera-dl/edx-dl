@@ -303,15 +303,16 @@ def main():
     video_fmt = int(input('Choose Format code: '))
 
     # Get subtitles
-    temp = input('Download subtitles (Y/n)? ')
-    if str.lower(temp) == 'n':
-        youtube_subs = False
-        edx_subs = False
-    else:
-        print("""Get from:
-1) YouTube with fallback from edX (default)
-2) YouTube only
-3) edX's subs only""")
+    youtube_subs = False
+    edx_subs = False
+
+    temp = input('Download subtitles (y/n)? ')
+    if str.lower(temp) == 'y':
+        print('Get from:')
+        print('1) YouTube with fallback from edX (default)')
+        print('2) YouTube only')
+        print('3) edX\'s subs only')
+
         try:
             temp = int(input(""))
             if temp not in (1, 2, 3):
@@ -321,23 +322,17 @@ def main():
 
         if temp == 1:
             youtube_subs = True
-            fallback_subs = True
-            edx_subs = False
+            edx_subs = True
             print("Selected: YouTube with fallback from edX")
         elif temp == 2:
             youtube_subs = True
-            fallback_subs = False
-            edx_subs = False
             print("Selected: YouTube only")
         elif temp == 3:
-            youtube_subs = False
-            fallback_subs = False
             edx_subs = True
             print("Selected: edX's subs only")
 
     # Say where it's gonna download files, just for clarity's sake.
-    print("Saving videos into: " + DOWNLOAD_DIRECTORY)
-    print("\n\n")
+    print("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
 
     # Download Videos
     c = 0
@@ -350,9 +345,6 @@ def main():
         cmd.append(str(v))
 
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
-
-        if edx_subs:  # If the user selected download from edX: download simultaneously video and subs
-            subs_string = downloadEdxSubs(s, headers)
 
         youtube_stdout = b''
         enc = sys.getdefaultencoding()
@@ -368,20 +360,18 @@ def main():
         if youtube_subs:
             youtube_stderr = popen_youtube.communicate()[1]
             if re.search(b'Some error while getting the subtitles', youtube_stderr):
-                if fallback_subs:
+                if edx_subs:
                     print("YouTube hasn't subtitles. Fallbacking from edX")
-                    edx_subs = True
                 else:
                     print("WARNING: Subtitles missing")
 
         if edx_subs:  # write edX subs
-            if fallback_subs:  # if edx_subs and fallback_subs are True this means YouTube hasn't subtitles
-                               # and the user select fallback from edX
-                subs_string = downloadEdxSubs(s, headers)
+            subs_string = downloadEdxSubs(s, headers)
             regexp_filename = re.compile(
                 b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
             match = re.search(regexp_filename, youtube_stdout)
             subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
+            print('[download] ed-x subtitles: %s' % subs_filename)
             open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
 
 
