@@ -377,6 +377,10 @@ def main():
 
 if __name__ == '__main__':
     try:
+        if hasattr(sys.stdout, 'detach'):
+            sys.stdout = codecs.getwriter("utf-8")(sys.stdout.detach())
+        else:
+            sys.stdout = codecs.getwriter("utf-8")(sys.stdout)
         main()
     except KeyboardInterrupt :
         print("\n\nCTRL-C detected, shutting down....")
