@@ -21,12 +21,14 @@ try:
     from urllib.request import install_opener
     from urllib.request import HTTPCookieProcessor
     from urllib.request import Request
+    from urllib.request import URLError
 except ImportError:
     from urllib2 import urlopen
     from urllib2 import build_opener
     from urllib2 import install_opener
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
+    from urllib2 import URLError
 # we alias the raw_input function for python 3 compatibility
 try:
     input = raw_input
@@ -98,7 +100,6 @@ def get_page_contents(url, headers):
         charset = result.headers.get_content_charset(failobj="utf-8")  #for python3
     except:
         charset = result.info().getparam('charset') or 'utf-8'
-
     return result.read().decode(charset)
 
 def directory_name(initial_name):
@@ -151,22 +152,12 @@ def usage() :
 """)
 
 
-def downloadEdxSubs(url, headers):
-    jsonString = get_page_contents(url, headers)
-    jsonObject = json.loads(jsonString)
-
-    starts = jsonObject['start']
-    ends = jsonObject['end']
-    texts = jsonObject['text']
-
+def json2srt(o):
     i = 1
-
     output = ''
-
-    for (s, e, t) in zip(starts, ends, texts):
+    for (s, e, t) in zip(o['start'], o['end'], o['text']):
         if t == "":
             continue
-
         output += str(i) + '\n'
         s = datetime(1, 1, 1) + timedelta(seconds=s/1000.)
         e = datetime(1, 1, 1) + timedelta(seconds=e/1000.)
@@ -175,9 +166,7 @@ def downloadEdxSubs(url, headers):
                e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
         output += t + "\n\n"
         i += 1
-
     return output
-
 
 def main():
     global USER_EMAIL, USER_PSWD
@@ -308,13 +297,11 @@ def main():
 
     temp = input('Download subtitles (y/n)? ')
     if str.lower(temp) == 'y':
-        print('Get from:')
         print('1) YouTube with fallback from edX (default)')
         print('2) YouTube only')
-        print('3) edX\'s subs only')
-
+        print('3) edX only')
         try:
-            temp = int(input(""))
+            temp = int(input("Get from:"))
             if temp not in (1, 2, 3):
                 raise ValueError
         except ValueError:
@@ -365,14 +352,20 @@ def main():
                 else:
                     print("WARNING: Subtitles missing")
 
-        if edx_subs:  # write edX subs
-            subs_string = downloadEdxSubs(s, headers)
-            regexp_filename = re.compile(
-                b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
-            match = re.search(regexp_filename, youtube_stdout)
-            subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
-            print('[download] ed-x subtitles: %s' % subs_filename)
-            open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
+        if edx_subs:
+            try:
+                jsonString = get_page_contents(s, headers)
+                jsonObject = json.loads(jsonString)
+                subs_string = json2srt(jsonObject)
+
+                regexp_filename = re.compile(
+                    b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
+                match = re.search(regexp_filename, youtube_stdout)
+                subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
+                print('[download] ed-x subtitles: %s' % subs_filename+'.srt')
+                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
+            except URLError as e:
+                print('Warning: edX subtitles (error:%s)' % e.reason)
 
 
 if __name__ == '__main__':
