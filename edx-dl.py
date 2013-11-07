@@ -363,7 +363,7 @@ def main():
                 match = re.search(regexp_filename, youtube_stdout)
                 subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
                 print('[download] ed-x subtitles: %s' % subs_filename+'.srt')
-                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string.encode('utf-8'))
+                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'wb+').write(subs_string.encode('utf-8'))
             except URLError as e:
                 print('Warning: edX subtitles (error:%s)' % e.reason)
 
