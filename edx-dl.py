@@ -285,19 +285,28 @@ def main():
     subsUrls = []
     regexpSubs = re.compile(r'data-caption-asset-path=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+    extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
+        
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-
         subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + id + ".srt.sjson"
                         for id, container in zip(video_id[-len(id_container):], id_container)]
+        # Try to download some extra videos which is referred by iframe
+        extra_ids = extra_youtube.findall(page)
+        video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
+                     extra_ids]
+        subsUrls += ['' for link in extra_ids]
 
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
 
+    if (len(video_link) < 1):
+      print('WARNING: No downloadable video found. ')
+      sys.exit(0)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
     video_fmt = int(input('Choose Format code: '))
@@ -365,7 +374,7 @@ def main():
                 else:
                     print("WARNING: Subtitles missing")
 
-        if edx_subs:  # write edX subs
+        if edx_subs and s != '':  # write edX subs
             subs_string = downloadEdxSubs(s, headers)
             regexp_filename = re.compile(
                 b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
