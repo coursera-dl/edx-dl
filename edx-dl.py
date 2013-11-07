@@ -337,7 +337,7 @@ def main():
         cmd = ["youtube-dl", "-o", DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' +
                                    str(c).zfill(2) + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
         if youtube_subs:
-            cmd.append('--write-srt')
+            cmd.append('--write-sub')
         cmd.append(str(v))
 
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
