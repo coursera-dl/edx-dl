@@ -295,26 +295,26 @@ def main():
     youtube_subs = False
     edx_subs = False
 
-    temp = input('Download subtitles (y/n)? ')
-    if str.lower(temp) == 'y':
-        print('1) YouTube with fallback from edX (default)')
-        print('2) YouTube only')
-        print('3) edX only')
+    down_subs = input('Download subtitles (y/n)? ')
+    if str.lower(down_subs) == 'y':
+        print('1 - YouTube with fallback from edX (default)')
+        print('2 - YouTube only')
+        print('3 - edX only')
         try:
-            temp = int(input("Get from:"))
-            if temp not in (1, 2, 3):
+            down_subs = int(input("Get from: "))
+            if down_subs not in (1, 2, 3):
                 raise ValueError
         except ValueError:
-            temp = 1
+            down_subs = 1
 
-        if temp == 1:
+        if down_subs == 1:
             youtube_subs = True
             edx_subs = True
             print("Selected: YouTube with fallback from edX")
-        elif temp == 2:
+        elif down_subs == 2:
             youtube_subs = True
             print("Selected: YouTube only")
-        elif temp == 3:
+        elif down_subs == 3:
             edx_subs = True
             print("Selected: edX's subs only")
 
@@ -363,7 +363,7 @@ def main():
                 match = re.search(regexp_filename, youtube_stdout)
                 subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
                 print('[download] ed-x subtitles: %s' % subs_filename+'.srt')
-                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string)
+                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'w+').write(subs_string.encode('utf-8'))
             except URLError as e:
                 print('Warning: edX subtitles (error:%s)' % e.reason)
 
