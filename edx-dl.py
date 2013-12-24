@@ -338,6 +338,7 @@ def main():
                                    str(c).zfill(2) + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
+        cmd.append('--get-filename')    # Print the filename for edx_subs module
         cmd.append(str(v))
 
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
@@ -371,7 +372,7 @@ def main():
                     b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
                 match = re.search(regexp_filename, youtube_stdout)
                 subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
-                print('[download] ed-x subtitles: %s' % subs_filename+'.srt')
+                print('[download] edx subtitles: %s' % subs_filename+'.srt')
                 open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'wb+').write(subs_string.encode('utf-8'))
             except URLError as e:
                 print('Warning: edX subtitles (error:%s)' % e.reason)
