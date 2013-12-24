@@ -15,7 +15,7 @@ idea being that "we don't want to reinvent the wheel".  Make sure you have
 layout frequently, make sure that the version of `youtube-dl` that you have
 installed is the latest. If in doubt, run `youtube-dl --update`.
 
-You can find `youtube-dl` at <https://github.com/rg3/youtube-dl>.
+You can find `youtube-dl` at <http://rg3.github.io/youtube-dl/download.html>.
 
 ## BeautifulSoup
 
