@@ -361,8 +361,9 @@ def main():
                     jsonObject = json.loads(jsonString)
                     subs_string = json2srt(jsonObject)
 
-                    print('[download] edx subtitles: %s.srt' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename + '.srt'), 'wb+').write(subs_string.encode('utf-8'))
+                    subs_filename.append('.srt')
+                    print('[download] edx subtitles: %s' % subs_filename)
+                    open(os.path.join(os.getcwd(), subs_filename), 'wb+').write(subs_string.encode('utf-8'))
                 except URLError as e:
                     print('Warning: edX subtitles (error:%s)' % e.reason)
 
