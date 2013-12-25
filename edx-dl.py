@@ -42,6 +42,7 @@ import json
 import os
 import re
 import sys
+import locale
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
 from bs4 import BeautifulSoup
@@ -69,6 +70,13 @@ USER_AGENT = DEFAULT_USER_AGENTS["default"]
 USER_EMAIL = ""
 USER_PSWD = ""
 
+def myprint(text, *args, **kargs):
+    """
+    Works as a mask of the original print to solve the window console encoding problem.
+    It will try to convert text to the console encoding before print to prevent crashes.
+    """
+    filtered_text = text.encode(locale.getpreferredencoding(), errors='ignore').decode(locale.getpreferredencoding())
+    print(filtered_text, *args, **kargs)
 
 def get_initial_token():
     """
@@ -141,8 +149,8 @@ def parse_commandline_options(argv):
 
 
 def usage() :
-    print("command-line options:")
-    print("""-u <username>: (Optional) indicate the username.
+    myprint("command-line options:")
+    myprint("""-u <username>: (Optional) indicate the username.
 -p <password>: (Optional) indicate the password.
 --download-dir=<path>: (Optional) save downloaded files in <path>
 --user-agent=<chrome|firefox>: (Optional) use Google Chrome's of Firefox 24's
@@ -182,7 +190,7 @@ def main():
         USER_PSWD = getpass.getpass()
 
     if USER_EMAIL == "" or USER_PSWD == "":
-        print("You must supply username AND password to log-in")
+        myprint("You must supply username AND password to log-in")
         sys.exit(2)
 
     # Prepare Headers
@@ -202,7 +210,7 @@ def main():
     response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
-        print(resp.get('value', "Wrong Email or Password."))
+        myprint(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
     # Get user info/courses
@@ -225,17 +233,17 @@ def main():
 
     # Welcome and Choose Course
 
-    print('Welcome %s' % USERNAME)
-    print('You can access %d courses on edX' % numOfCourses)
+    myprint('Welcome %s' % USERNAME)
+    myprint('You can access %d courses on edX' % numOfCourses)
 
     c = 0
     for course in courses:
         c += 1
-        print('%d - %s -> %s' % (c, course[0], course[2]))
+        myprint('%d - %s -> %s' % (c, course[0], course[2]))
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ',
+        myprint('Enter a valid Number for a Started Course ! between 1 and ',
               numOfCourses)
         c_number = int(input('Enter Course Number: '))
     selected_course = courses[c_number - 1]
@@ -253,16 +261,16 @@ def main():
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
+    myprint('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
     w = 0
     for week in weeks:
         w += 1
-        print('%d - Download %s videos' % (w, week[0].strip()))
-    print('%d - Download them all' % (numOfWeeks + 1))
+        myprint('%d - Download %s videos' % (w, week[0].strip()))
+    myprint('%d - Download them all' % (numOfWeeks + 1))
 
     w_number = int(input('Enter Your Choice: '))
     while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
+        myprint('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
         w_number = int(input('Enter Your Choice: '))
 
     if w_number == numOfWeeks + 1:
@@ -276,7 +284,7 @@ def main():
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
-        print("Processing '%s'..." % link)
+        myprint("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
         
         id_container = splitter.split(page)[1:]
@@ -294,7 +302,7 @@ def main():
                   for v_id in video_id]
 
     if (len(video_link) < 1):
-      print('WARNING: No downloadable video found. ')
+      myprint('WARNING: No downloadable video found. ')
       sys.exit(0)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
@@ -306,9 +314,9 @@ def main():
 
     down_subs = input('Download subtitles (y/n)? ')
     if str.lower(down_subs) == 'y':
-        print('1 - YouTube with fallback from edX (default)')
-        print('2 - YouTube only')
-        print('3 - edX only')
+        myprint('1 - YouTube with fallback from edX (default)')
+        myprint('2 - YouTube only')
+        myprint('3 - edX only')
         try:
             down_subs = int(input("Get from: "))
             if down_subs not in (1, 2, 3):
@@ -319,16 +327,16 @@ def main():
         if down_subs == 1:
             youtube_subs = True
             edx_subs = True
-            print("Selected: YouTube with fallback from edX")
+            myprint("Selected: YouTube with fallback from edX")
         elif down_subs == 2:
             youtube_subs = True
-            print("Selected: YouTube only")
+            myprint("Selected: YouTube only")
         elif down_subs == 3:
             edx_subs = True
-            print("Selected: edX's subs only")
+            myprint("Selected: edX's subs only")
 
     # Say where it's gonna download files, just for clarity's sake.
-    print("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
+    myprint("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
 
     # Download Videos
     c = 0
@@ -347,7 +355,7 @@ def main():
         while True:  # Save the output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
-            print(tmp.decode(enc), end="")
+            myprint(tmp.decode(enc), end="")
             sys.stdout.flush()
             # do it until the process finish and there isn't output
             if tmp == b"" and popen_youtube.poll() is not None:
@@ -357,9 +365,9 @@ def main():
             youtube_stderr = popen_youtube.communicate()[1]
             if re.search(b'Some error while getting the subtitles', youtube_stderr):
                 if edx_subs:
-                    print("YouTube hasn't subtitles. Fallbacking from edX")
+                    myprint("YouTube hasn't subtitles. Fallbacking from edX")
                 else:
-                    print("WARNING: Subtitles missing")
+                    myprint("WARNING: Subtitles missing")
 
         if edx_subs and s != '':  # write edX subs
             try:
@@ -371,15 +379,15 @@ def main():
                     b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
                 match = re.search(regexp_filename, youtube_stdout)
                 subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
-                print('[download] ed-x subtitles: %s' % subs_filename+'.srt')
+                myprint('[download] ed-x subtitles: %s' % subs_filename+'.srt')
                 open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'wb+').write(subs_string.encode('utf-8'))
             except URLError as e:
-                print('Warning: edX subtitles (error:%s)' % e.reason)
+                myprint('Warning: edX subtitles (error:%s)' % e.reason)
 
 
 if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt :
-        print("\n\nCTRL-C detected, shutting down....")
+        myprint("\n\nCTRL-C detected, shutting down....")
         sys.exit(0)
