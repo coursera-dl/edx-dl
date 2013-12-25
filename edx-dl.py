@@ -309,26 +309,6 @@ def main():
     if str.lower(down_subs) == 'y':
         youtube_subs = True
         edx_subs = True
-        # print('1 - YouTube with fallback from edX (default)')
-        # print('2 - YouTube only')
-        # print('3 - edX only')
-        # try:
-            # down_subs = int(input("Get from: "))
-            # if down_subs not in (1, 2, 3):
-                # raise ValueError
-        # except ValueError:
-            # down_subs = 1
-
-        # if down_subs == 1:
-            # youtube_subs = True
-            # edx_subs = True
-            # print("Selected: YouTube with fallback from edX")
-        # elif down_subs == 2:
-            # youtube_subs = True
-            # print("Selected: YouTube only")
-        # elif down_subs == 3:
-            # edx_subs = True
-            # print("Selected: edX's subs only")
 
     # Say where it's gonna download files, just for clarity's sake.
     print("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
