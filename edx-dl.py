@@ -40,6 +40,7 @@ import getpass
 
 import json
 import os
+import os.path
 import re
 import sys
 from subprocess import Popen, PIPE
@@ -336,11 +337,11 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        cmd = ["youtube-dl", "-o", DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' +
-                                   str(c).zfill(2) + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
+        target_dir = DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/'
+        filename_prefix = str(c).zfill(2);
+        cmd = ["youtube-dl", "-o", target_dir + filename_prefix + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
-        cmd.append('--get-filename')    # Print the filename for edx_subs module
         cmd.append(str(v))
 
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
@@ -365,19 +366,25 @@ def main():
                     print("WARNING: Subtitles missing")
 
         if edx_subs and s != '':  # write edX subs
-            try:
-                jsonString = get_page_contents(s, headers)
-                jsonObject = json.loads(jsonString)
-                subs_string = json2srt(jsonObject)
+            filenames = os.listdir(target_dir)
+            subs_filename = filename_prefix;
+            for name in filenames:  # Find the filename of the downloaded video
+                if name.startswith(filename_prefix):
+                    (basename, ext) = os.path.splitext(name)
+                    subs_filename = basename
+                    if ext == '.srt':
+                        subs_filename = ''  # Do not download if the sub is already downloaded
+                        break
+            if subs_filename != '':
+                try:
+                    jsonString = get_page_contents(s, headers)
+                    jsonObject = json.loads(jsonString)
+                    subs_string = json2srt(jsonObject)
 
-                regexp_filename = re.compile(
-                    b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
-                match = re.search(regexp_filename, youtube_stdout)
-                subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
-                print('[download] edx subtitles: %s' % subs_filename+'.srt')
-                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'wb+').write(subs_string.encode('utf-8'))
-            except URLError as e:
-                print('Warning: edX subtitles (error:%s)' % e.reason)
+                    print('[download] edx subtitles: %s' % subs_filename+'.srt')
+                    open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'wb+').write(subs_string.encode('utf-8'))
+                except URLError as e:
+                    print('Warning: edX subtitles (error:%s)' % e.reason)
 
 
 if __name__ == '__main__':
