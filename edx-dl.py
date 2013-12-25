@@ -56,7 +56,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
 ## If no download directory is specified, we use the default one
-DEFAULT_DOWNLOAD_DIRECTORY = "./Downloaded/"
+DEFAULT_DOWNLOAD_DIRECTORY = "Downloaded"
 DOWNLOAD_DIRECTORY = DEFAULT_DOWNLOAD_DIRECTORY
 
 ## If nothing else is chosen, we chose the default user agent:
@@ -317,9 +317,9 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/'
+        target_dir = os.path.join(DOWNLOAD_DIRECTORY, directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2);
-        cmd = ["youtube-dl", "-o", target_dir + filename_prefix + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
+        cmd = ["youtube-dl", "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"), "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
         cmd.append(str(v))
