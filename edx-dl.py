@@ -110,7 +110,7 @@ def directory_name(initial_name):
     result_name = ""
     for ch in initial_name:
         if allowed_chars.find(ch) != -1:
-            result_name+=ch
+            result_name += ch
     return result_name if result_name != "" else "course_folder"
 
 
@@ -281,7 +281,7 @@ def main():
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
-        
+
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
