@@ -115,7 +115,7 @@ def directory_name(initial_name):
     return result_name if result_name != "" else "course_folder"
 
 def parse_commandline_options():
-    global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT
+    global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT, youtube_subs, edx_subs
     parser = argparse.ArgumentParser(description='A simple tool to download video lectures from edx.org.')
     parser.add_argument('-u', '--user', '--username', action='store', help='username in edX', default='')
     parser.add_argument('-p', '--pswd', '--password', action='store', help='password in edX', default='')
@@ -125,6 +125,11 @@ def parse_commandline_options():
     group_ua.add_argument('--user-agent', action='store', help='use popular softwares\' user agent', default='edx', \
                           choices=DEFAULT_USER_AGENTS.keys())
     group_ua.add_argument('--custom-user-agent', metavar='USER-AGENT-STRING', action='store', help='specify the user agent string')
+    group_st = parser.add_mutually_exclusive_group()
+    group_st.add_argument('--subs', '--subtitles', dest='subs', action='store_const', const=(True, True), default=(None, None), help='download the corresponding subtitles')
+    group_st.add_argument('--nosubs', '--nosubtitles', dest='subs', action='store_const', const=(False, False), default=(None, None), help='do not download subtitles') 
+    group_st.add_argument('--youtube-subs', dest='subs', action='store_const', const=(True, False), default=(None, None), help='only download subtitles from youtube') 
+    group_st.add_argument('--edx-subs', dest='subs', action='store_const', const=(False, True), default=(None, None), help='only download subtitles from edx') 
     args = parser.parse_args()
     
     USER_EMAIL = args.user
@@ -135,6 +140,7 @@ def parse_commandline_options():
     USER_AGENT = DEFAULT_USER_AGENTS[args.user_agent]
     if (args.custom_user_agent is not None):
         USER_AGENT = args.custom_user_agent
+    youtube_subs, edx_subs = args.subs
 
 def json2srt(o):
     i = 1
