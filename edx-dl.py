@@ -98,10 +98,11 @@ def get_page_contents(url, headers):
     """
     result = urlopen(Request(url, None, headers))
     try:
-        charset = result.headers.get_content_charset(failobj="utf-8")  #for python3
+        charset = result.headers.get_content_charset(failobj="utf-8")  # for python3
     except:
         charset = result.info().getparam('charset') or 'utf-8'
     return result.read().decode(charset)
+
 
 def directory_name(initial_name):
     import string
@@ -111,6 +112,7 @@ def directory_name(initial_name):
         if allowed_chars.find(ch) != -1:
             result_name+=ch
     return result_name if result_name != "" else "course_folder"
+
 
 def parse_commandline_options(argv):
     global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT
@@ -132,7 +134,6 @@ def parse_commandline_options(argv):
         elif opt == "--user-agent":
             if arg in DEFAULT_USER_AGENTS.keys():
                 USER_AGENT = DEFAULT_USER_AGENTS[arg]
-
 
         elif opt == "--custom-user-agent":
             USER_AGENT = arg
@@ -168,6 +169,7 @@ def json2srt(o):
         output += t + "\n\n"
         i += 1
     return output
+
 
 def main():
     global USER_EMAIL, USER_PSWD
