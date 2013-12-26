@@ -29,6 +29,7 @@ except ImportError:
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
     from urllib2 import URLError
+
 # we alias the raw_input function for python 3 compatibility
 try:
     input = raw_input
@@ -43,6 +44,7 @@ import os
 import os.path
 import re
 import sys
+
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
 from bs4 import BeautifulSoup
