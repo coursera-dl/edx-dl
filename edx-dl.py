@@ -35,7 +35,7 @@ try:
 except:
     pass
 
-import getopt
+import argparse
 import getpass
 
 import json
@@ -61,11 +61,11 @@ DOWNLOAD_DIRECTORY = DEFAULT_DOWNLOAD_DIRECTORY
 
 ## If nothing else is chosen, we chose the default user agent:
 
-DEFAULT_USER_AGENTS = {"google-chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
+DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
                        "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-                       "default": 'edX-downloader/0.01'}
+                       "edx": 'edX-downloader/0.01'}
 
-USER_AGENT = DEFAULT_USER_AGENTS["default"]
+USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 USER_EMAIL = ""
 USER_PSWD = ""
@@ -114,46 +114,27 @@ def directory_name(initial_name):
             result_name+=ch
     return result_name if result_name != "" else "course_folder"
 
-def parse_commandline_options(argv):
+def parse_commandline_options():
     global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT
-    opts, args = getopt.getopt(argv,
-                               "u:p:",
-                               ["download-dir=", "user-agent=", "custom-user-agent="])
-    for opt, arg in opts :
-        if opt == "-u" :
-            USER_EMAIL = arg
-
-        elif opt == "-p" :
-            USER_PSWD = arg
-
-        elif opt == "--download-dir" :
-            if arg.strip()[0] == "~" :
-                arg = os.path.expanduser(arg)
-            DOWNLOAD_DIRECTORY = arg
-
-        elif opt == "--user-agent" :
-            if arg in DEFAULT_USER_AGENTS.keys():
-                USER_AGENT = DEFAULT_USER_AGENTS[arg]
-
-
-        elif opt == "--custom-user-agent":
-            USER_AGENT = arg
-
-        elif opt == "-h":
-            usage()
-
-
-def usage() :
-    print("command-line options:")
-    print("""-u <username>: (Optional) indicate the username.
--p <password>: (Optional) indicate the password.
---download-dir=<path>: (Optional) save downloaded files in <path>
---user-agent=<chrome|firefox>: (Optional) use Google Chrome's of Firefox 24's
-             default user agent as user agent
---custom-user-agent="MYUSERAGENT": (Optional) use the string "MYUSERAGENT" as
-             user agent
-""")
-
+    parser = argparse.ArgumentParser(description='A simple tool to download video lectures from edx.org.')
+    parser.add_argument('-u', '--user', '--username', action='store', help='username in edX', default='')
+    parser.add_argument('-p', '--pswd', '--password', action='store', help='password in edX', default='')
+    parser.add_argument('-d', '--dir', '--download-dir', action='store', help='store the files to the specified directory', \
+                        default=DEFAULT_DOWNLOAD_DIRECTORY)
+    group_ua = parser.add_mutually_exclusive_group()
+    group_ua.add_argument('--user-agent', action='store', help='use popular softwares\' user agent', default='edx', \
+                          choices=DEFAULT_USER_AGENTS.keys())
+    group_ua.add_argument('--custom-user-agent', metavar='USER-AGENT-STRING', action='store', help='specify the user agent string')
+    args = parser.parse_args()
+    
+    USER_EMAIL = args.user
+    USER_PSWD = args.pswd
+    if args.dir.strip()[0] == "~" :
+        args.dir = os.path.expanduser(args.dir)
+    DOWNLOAD_DIRECTORY = args.dir
+    USER_AGENT = DEFAULT_USER_AGENTS[args.user_agent]
+    if (args.custom_user_agent is not None):
+        USER_AGENT = args.custom_user_agent
 
 def json2srt(o):
     i = 1
@@ -173,11 +154,7 @@ def json2srt(o):
 
 def main():
     global USER_EMAIL, USER_PSWD, youtube_subs, edx_subs
-    try:
-        parse_commandline_options(sys.argv[1:])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(2)
+    parse_commandline_options()
 
     if USER_EMAIL == "":
         USER_EMAIL = input('Username: ')
