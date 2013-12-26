@@ -70,6 +70,8 @@ USER_AGENT = DEFAULT_USER_AGENTS["default"]
 USER_EMAIL = ""
 USER_PSWD = ""
 
+youtube_subs = None
+edx_subs = None
 
 def get_initial_token():
     """
@@ -170,7 +172,7 @@ def json2srt(o):
     return output
 
 def main():
-    global USER_EMAIL, USER_PSWD
+    global USER_EMAIL, USER_PSWD, youtube_subs, edx_subs
     try:
         parse_commandline_options(sys.argv[1:])
     except getopt.GetoptError:
@@ -302,13 +304,14 @@ def main():
     video_fmt = int(input('Choose Format code: '))
 
     # Get subtitles
-    youtube_subs = False
-    edx_subs = False
-
-    down_subs = input('Download subtitles (y/n)? ')
-    if str.lower(down_subs) == 'y':
-        youtube_subs = True
-        edx_subs = True
+    if (youtube_subs is None or edx_subs is None):
+        down_subs = input('Download subtitles (y/n)? ')
+        if str.lower(down_subs) == 'y':
+            youtube_subs = True
+            edx_subs = True
+        else:
+            youtube_subs = False
+            edx_subs = False
 
     # Say where it's gonna download files, just for clarity's sake.
     print("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
