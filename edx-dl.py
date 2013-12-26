@@ -297,8 +297,8 @@ def main():
                   for v_id in video_id]
 
     if (len(video_link) < 1):
-      print('WARNING: No downloadable video found. ')
-      sys.exit(0)
+        print('WARNING: No downloadable video found. ')
+        sys.exit(0)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
     video_fmt = int(input('Choose Format code: '))
