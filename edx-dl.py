@@ -298,7 +298,7 @@ def main():
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
 
-    if (len(video_link) < 1):
+    if len(video_link) < 1:
         print('WARNING: No downloadable video found. ')
         sys.exit(0)
     # Get Available Video_Fmts
