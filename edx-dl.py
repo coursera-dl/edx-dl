@@ -29,6 +29,7 @@ except ImportError:
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
     from urllib2 import URLError
+
 # we alias the raw_input function for python 3 compatibility
 try:
     input = raw_input
@@ -37,14 +38,15 @@ except:
 
 import getopt
 import getpass
-
 import json
 import os
 import os.path
 import re
 import sys
+
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
+
 from bs4 import BeautifulSoup
 
 BASE_URL = 'https://courses.edx.org'
@@ -98,10 +100,11 @@ def get_page_contents(url, headers):
     """
     result = urlopen(Request(url, None, headers))
     try:
-        charset = result.headers.get_content_charset(failobj="utf-8")  #for python3
+        charset = result.headers.get_content_charset(failobj="utf-8")  # for python3
     except:
         charset = result.info().getparam('charset') or 'utf-8'
     return result.read().decode(charset)
+
 
 def directory_name(initial_name):
     import string
@@ -109,30 +112,30 @@ def directory_name(initial_name):
     result_name = ""
     for ch in initial_name:
         if allowed_chars.find(ch) != -1:
-            result_name+=ch
+            result_name += ch
     return result_name if result_name != "" else "course_folder"
+
 
 def parse_commandline_options(argv):
     global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT
     opts, args = getopt.getopt(argv,
                                "u:p:",
                                ["download-dir=", "user-agent=", "custom-user-agent="])
-    for opt, arg in opts :
-        if opt == "-u" :
+    for opt, arg in opts:
+        if opt == "-u":
             USER_EMAIL = arg
 
-        elif opt == "-p" :
+        elif opt == "-p":
             USER_PSWD = arg
 
-        elif opt == "--download-dir" :
-            if arg.strip()[0] == "~" :
+        elif opt == "--download-dir":
+            if arg.strip()[0] == "~":
                 arg = os.path.expanduser(arg)
             DOWNLOAD_DIRECTORY = arg
 
-        elif opt == "--user-agent" :
+        elif opt == "--user-agent":
             if arg in DEFAULT_USER_AGENTS.keys():
                 USER_AGENT = DEFAULT_USER_AGENTS[arg]
-
 
         elif opt == "--custom-user-agent":
             USER_AGENT = arg
@@ -141,7 +144,7 @@ def parse_commandline_options(argv):
             usage()
 
 
-def usage() :
+def usage():
     print("command-line options:")
     print("""-u <username>: (Optional) indicate the username.
 -p <password>: (Optional) indicate the password.
@@ -168,6 +171,7 @@ def json2srt(o):
         output += t + "\n\n"
         i += 1
     return output
+
 
 def main():
     global USER_EMAIL, USER_PSWD
@@ -279,7 +283,7 @@ def main():
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
-        
+
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
@@ -294,9 +298,9 @@ def main():
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
 
-    if (len(video_link) < 1):
-      print('WARNING: No downloadable video found. ')
-      sys.exit(0)
+    if len(video_link) < 1:
+        print('WARNING: No downloadable video found. ')
+        sys.exit(0)
     # Get Available Video_Fmts
     os.system('youtube-dl -F %s' % video_link[-1])
     video_fmt = int(input('Choose Format code: '))
@@ -318,7 +322,7 @@ def main():
     for v, s in zip(video_link, subsUrls):
         c += 1
         target_dir = os.path.join(DOWNLOAD_DIRECTORY, directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2);
+        filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl", "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"), "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
@@ -347,7 +351,7 @@ def main():
 
         if edx_subs and s != '':  # write edX subs
             filenames = os.listdir(target_dir)
-            subs_filename = filename_prefix;
+            subs_filename = filename_prefix
             for name in filenames:  # Find the filename of the downloaded video
                 if name.startswith(filename_prefix):
                     (basename, ext) = os.path.splitext(name)
@@ -371,6 +375,6 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except KeyboardInterrupt :
+    except KeyboardInterrupt:
         print("\n\nCTRL-C detected, shutting down....")
         sys.exit(0)
