@@ -117,19 +117,19 @@ def parse_commandline_options(argv):
     opts, args = getopt.getopt(argv,
                                "u:p:",
                                ["download-dir=", "user-agent=", "custom-user-agent="])
-    for opt, arg in opts :
-        if opt == "-u" :
+    for opt, arg in opts:
+        if opt == "-u":
             USER_EMAIL = arg
 
-        elif opt == "-p" :
+        elif opt == "-p":
             USER_PSWD = arg
 
-        elif opt == "--download-dir" :
-            if arg.strip()[0] == "~" :
+        elif opt == "--download-dir":
+            if arg.strip()[0] == "~":
                 arg = os.path.expanduser(arg)
             DOWNLOAD_DIRECTORY = arg
 
-        elif opt == "--user-agent" :
+        elif opt == "--user-agent":
             if arg in DEFAULT_USER_AGENTS.keys():
                 USER_AGENT = DEFAULT_USER_AGENTS[arg]
 
@@ -141,7 +141,7 @@ def parse_commandline_options(argv):
             usage()
 
 
-def usage() :
+def usage():
     print("command-line options:")
     print("""-u <username>: (Optional) indicate the username.
 -p <password>: (Optional) indicate the password.
@@ -371,6 +371,6 @@ def main():
 if __name__ == '__main__':
     try:
         main()
-    except KeyboardInterrupt :
+    except KeyboardInterrupt:
         print("\n\nCTRL-C detected, shutting down....")
         sys.exit(0)
