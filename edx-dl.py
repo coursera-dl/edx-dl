@@ -320,7 +320,7 @@ def main():
     for v, s in zip(video_link, subsUrls):
         c += 1
         target_dir = os.path.join(DOWNLOAD_DIRECTORY, directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2);
+        filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl", "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"), "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
@@ -349,7 +349,7 @@ def main():
 
         if edx_subs and s != '':  # write edX subs
             filenames = os.listdir(target_dir)
-            subs_filename = filename_prefix;
+            subs_filename = filename_prefix
             for name in filenames:  # Find the filename of the downloaded video
                 if name.startswith(filename_prefix):
                     (basename, ext) = os.path.splitext(name)
