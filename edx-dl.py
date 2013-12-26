@@ -38,7 +38,6 @@ except:
 
 import getopt
 import getpass
-
 import json
 import os
 import os.path
@@ -47,6 +46,7 @@ import sys
 
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
+
 from bs4 import BeautifulSoup
 
 BASE_URL = 'https://courses.edx.org'
