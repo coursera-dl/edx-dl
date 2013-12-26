@@ -40,6 +40,7 @@ import getpass
 
 import json
 import os
+import os.path
 import re
 import sys
 from subprocess import Popen, PIPE
@@ -55,7 +56,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 
 
 ## If no download directory is specified, we use the default one
-DEFAULT_DOWNLOAD_DIRECTORY = "./Downloaded/"
+DEFAULT_DOWNLOAD_DIRECTORY = "Downloaded"
 DOWNLOAD_DIRECTORY = DEFAULT_DOWNLOAD_DIRECTORY
 
 ## If nothing else is chosen, we chose the default user agent:
@@ -306,26 +307,8 @@ def main():
 
     down_subs = input('Download subtitles (y/n)? ')
     if str.lower(down_subs) == 'y':
-        print('1 - YouTube with fallback from edX (default)')
-        print('2 - YouTube only')
-        print('3 - edX only')
-        try:
-            down_subs = int(input("Get from: "))
-            if down_subs not in (1, 2, 3):
-                raise ValueError
-        except ValueError:
-            down_subs = 1
-
-        if down_subs == 1:
-            youtube_subs = True
-            edx_subs = True
-            print("Selected: YouTube with fallback from edX")
-        elif down_subs == 2:
-            youtube_subs = True
-            print("Selected: YouTube only")
-        elif down_subs == 3:
-            edx_subs = True
-            print("Selected: edX's subs only")
+        youtube_subs = True
+        edx_subs = True
 
     # Say where it's gonna download files, just for clarity's sake.
     print("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
@@ -334,8 +317,9 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        cmd = ["youtube-dl", "-o", DOWNLOAD_DIRECTORY + '/' + directory_name(selected_course[0]) + '/' +
-                                   str(c).zfill(2) + "-%(title)s.%(ext)s", "-f", str(video_fmt)]
+        target_dir = os.path.join(DOWNLOAD_DIRECTORY, directory_name(selected_course[0]))
+        filename_prefix = str(c).zfill(2);
+        cmd = ["youtube-dl", "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"), "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
         cmd.append(str(v))
@@ -362,19 +346,26 @@ def main():
                     print("WARNING: Subtitles missing")
 
         if edx_subs and s != '':  # write edX subs
-            try:
-                jsonString = get_page_contents(s, headers)
-                jsonObject = json.loads(jsonString)
-                subs_string = json2srt(jsonObject)
+            filenames = os.listdir(target_dir)
+            subs_filename = filename_prefix;
+            for name in filenames:  # Find the filename of the downloaded video
+                if name.startswith(filename_prefix):
+                    (basename, ext) = os.path.splitext(name)
+                    subs_filename = basename
+                    if ext == '.srt':
+                        subs_filename = ''  # Do not download if the sub is already downloaded
+                        break
+            if subs_filename != '':
+                try:
+                    jsonString = get_page_contents(s, headers)
+                    jsonObject = json.loads(jsonString)
+                    subs_string = json2srt(jsonObject)
 
-                regexp_filename = re.compile(
-                    b'(?:\[download\] ([^\n^\r]*?)(?: has already been downloaded))|(?:Destination: *([^\n^\r]*))')
-                match = re.search(regexp_filename, youtube_stdout)
-                subs_filename = (match.group(1) or match.group(2)).decode('utf-8')[:-4]
-                print('[download] ed-x subtitles: %s' % subs_filename+'.srt')
-                open(os.path.join(os.getcwd(), subs_filename)+'.srt', 'wb+').write(subs_string.encode('utf-8'))
-            except URLError as e:
-                print('Warning: edX subtitles (error:%s)' % e.reason)
+                    subs_filename.append('.srt')
+                    print('[download] edx subtitles: %s' % subs_filename)
+                    open(os.path.join(os.getcwd(), subs_filename), 'wb+').write(subs_string.encode('utf-8'))
+                except URLError as e:
+                    print('Warning: edX subtitles (error:%s)' % e.reason)
 
 
 if __name__ == '__main__':
