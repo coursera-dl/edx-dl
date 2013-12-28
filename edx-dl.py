@@ -130,8 +130,6 @@ def parse_commandline_options():
     group_st = parser.add_mutually_exclusive_group()
     group_st.add_argument('--subs', '--subtitles', dest='subs', action='store_const', const=(True, True), default=(None, None), help='download the corresponding subtitles')
     group_st.add_argument('--nosubs', '--nosubtitles', dest='subs', action='store_const', const=(False, False), default=(None, None), help='do not download subtitles') 
-    group_st.add_argument('--youtube-subs', dest='subs', action='store_const', const=(True, False), default=(None, None), help='only download subtitles from youtube') 
-    group_st.add_argument('--edx-subs', dest='subs', action='store_const', const=(False, True), default=(None, None), help='only download subtitles from edx') 
     parser.add_argument('--format-id', action='store', type=int, help='specify the format id of video files', default=None)
     args = parser.parse_args()
     
