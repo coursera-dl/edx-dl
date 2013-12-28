@@ -351,7 +351,7 @@ def main():
 
         if edx_subs and s != '':  # write edX subs
             filenames = os.listdir(target_dir)
-            subs_filename = filename_prefix
+            subs_filename = ''  # skip subtitles if the video file is not downloaded
             for name in filenames:  # Find the filename of the downloaded video
                 if name.startswith(filename_prefix):
                     (basename, ext) = os.path.splitext(name)
