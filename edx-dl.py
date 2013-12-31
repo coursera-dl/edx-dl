@@ -351,7 +351,7 @@ def main():
 
         if edx_subs and s != '':  # write edX subs
             filenames = os.listdir(target_dir)
-            subs_filename = filename_prefix
+            subs_filename = ''  # skip subtitles if the video file is not downloaded
             for name in filenames:  # Find the filename of the downloaded video
                 if name.startswith(filename_prefix):
                     (basename, ext) = os.path.splitext(name)
@@ -367,7 +367,7 @@ def main():
 
                     subs_filename += '.srt'
                     print('[download] edx subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename), 'wb+').write(subs_string.encode('utf-8'))
+                    open(os.path.join(target_dir, subs_filename), 'wb+').write(subs_string.encode('utf-8'))
                 except URLError as e:
                     print('Warning: edX subtitles (error:%s)' % e.reason)
 
