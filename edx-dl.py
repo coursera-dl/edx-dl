@@ -367,7 +367,7 @@ def main():
 
                     subs_filename += '.srt'
                     print('[download] edx subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename), 'wb+').write(subs_string.encode('utf-8'))
+                    open(os.path.join(target_dir, subs_filename), 'wb+').write(subs_string.encode('utf-8'))
                 except URLError as e:
                     print('Warning: edX subtitles (error:%s)' % e.reason)
 
