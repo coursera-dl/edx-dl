@@ -187,7 +187,7 @@ def main():
     args = parse_args()
 
     # if no args means we are calling the interactive version
-    is_interactive = not len(sys.argv)
+    is_interactive = len(sys.argv) == 1
     if is_interactive:
         args.username = input('Username: ')
         args.password = getpass.getpass()
@@ -310,11 +310,9 @@ def main():
     if is_interactive:
         # Get Available Video formats
         os.system('youtube-dl -F %s' % video_link[-1])
-        args.format = int(input('Choose Format code: '))
+        print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
+        args.format = input('Choose Format code: ')
 
-        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
-
-    if not args.subtitles:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     print("[info] Output directory: " + args.output_dir)
@@ -327,8 +325,11 @@ def main():
                                   directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
-               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"),
-               "-f", str(args.format)]
+               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
+        if args.format:
+            cmd.append("-f")
+            # defaults to mp4 in case the requested format isn't available
+            cmd.append(args.format + '/mp4')
         if args.subtitles:
             cmd.append('--write-sub')
         cmd.append(str(v))
