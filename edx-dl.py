@@ -365,7 +365,7 @@ def get_filename(target_dir, filename_prefix):
     # this whole function is not the nicest thing, but isolating it makes
     # things clearer , a good refactoring would be to get
     # the info from the video_url or the current output, to avoid the
-    # iteration from the current dirœ
+    # iteration from the current dir
     filenames = os.listdir(target_dir)
     subs_filename = filename_prefix
     for name in filenames:  # Find the filename of the downloaded video
