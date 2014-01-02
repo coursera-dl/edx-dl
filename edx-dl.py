@@ -77,6 +77,7 @@ video_fmt = None
 youtube_subs = None
 edx_subs = None
 
+
 def get_initial_token():
     """
     Create initial connection to get authentication token for future requests.
@@ -119,13 +120,16 @@ def directory_name(initial_name):
             result_name += ch
     return result_name if result_name != "" else "course_folder"
 
+
 def parse_commandline_options():
     global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT, youtube_subs, edx_subs, video_fmt
+
     parser = argparse.ArgumentParser(description='A simple tool to download video lectures from edx.org.')
     parser.add_argument('-u', '--user', '--username', action='store', help='username in edX', default='')
     parser.add_argument('-p', '--pswd', '--password', action='store', help='password in edX', default='')
     parser.add_argument('-d', '--dir', '--download-dir', action='store', help='store the files to the specified directory', \
                         default=DEFAULT_DOWNLOAD_DIRECTORY)
+
     group_ua = parser.add_mutually_exclusive_group()
     group_ua.add_argument('--user-agent', action='store', help='use popular softwares\' user agent', default='edx', \
                           choices=DEFAULT_USER_AGENTS.keys())
@@ -135,10 +139,10 @@ def parse_commandline_options():
     group_st.add_argument('--nosubs', '--nosubtitles', dest='subs', action='store_const', const=(False, False), default=(None, None), help='do not download subtitles') 
     parser.add_argument('--format-id', action='store', type=int, help='specify the format id of video files', default=None)
     args = parser.parse_args()
-    
+
     USER_EMAIL = args.user
     USER_PSWD = args.pswd
-    if args.dir.strip()[0] == "~" :
+    if args.dir.strip()[0] == "~":
         args.dir = os.path.expanduser(args.dir)
     DOWNLOAD_DIRECTORY = args.dir
     USER_AGENT = DEFAULT_USER_AGENTS[args.user_agent]
@@ -146,6 +150,7 @@ def parse_commandline_options():
         USER_AGENT = args.custom_user_agent
     video_fmt = args.format_id
     youtube_subs, edx_subs = args.subs
+
 
 def json2srt(o):
     i = 1
@@ -157,8 +162,8 @@ def json2srt(o):
         s = datetime(1, 1, 1) + timedelta(seconds=s/1000.)
         e = datetime(1, 1, 1) + timedelta(seconds=e/1000.)
         output += "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d" % \
-              (s.hour, s.minute, s.second, s.microsecond/1000,
-               e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
+            (s.hour, s.minute, s.second, s.microsecond/1000,
+             e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
         output += t + "\n\n"
         i += 1
     return output
@@ -202,7 +207,6 @@ def main():
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
     USERNAME = data.find_all('span')[1].string
-    USEREMAIL = data.find_all('span')[3].string
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -286,7 +290,7 @@ def main():
                   for v_id in video_id]
 
     if len(video_link) < 1:
-      print('WARNING: No downloadable video found. ')
+      print('WARNING: No downloadable video found.')
       sys.exit(0)
     if video_fmt is None:
         # Get Available Video_Fmts
@@ -310,9 +314,12 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = os.path.join(DOWNLOAD_DIRECTORY, directory_name(selected_course[0]))
+        target_dir = os.path.join(DOWNLOAD_DIRECTORY,
+                                  directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
-        cmd = ["youtube-dl", "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"), "-f", str(video_fmt)]
+        cmd = ["youtube-dl",
+               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"),
+               "-f", str(video_fmt)]
         if youtube_subs:
             cmd.append('--write-sub')
         cmd.append(str(v))
@@ -321,7 +328,7 @@ def main():
 
         youtube_stdout = b''
         enc = sys.getdefaultencoding()
-        while True:  # Save the output to youtube_stdout while this being echoed
+        while True:  # Save output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
             print(tmp.decode(enc), end="")
@@ -332,7 +339,8 @@ def main():
 
         if youtube_subs:
             youtube_stderr = popen_youtube.communicate()[1]
-            if re.search(b'Some error while getting the subtitles', youtube_stderr):
+            if re.search(b'Some error while getting the subtitles',
+                         youtube_stderr):
                 if edx_subs:
                     print("YouTube hasn't subtitles. Fallbacking from edX")
                 else:
@@ -346,7 +354,7 @@ def main():
                     (basename, ext) = os.path.splitext(name)
                     subs_filename = basename
                     if ext == '.srt':
-                        subs_filename = ''  # Do not download if the sub is already downloaded
+                        subs_filename = ''  # Don't download if sub is there
                         break
             if subs_filename != '':
                 try:
@@ -355,8 +363,9 @@ def main():
                     subs_string = json2srt(jsonObject)
 
                     subs_filename += '.srt'
-                    print('[download] edx subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename), 'wb+').write(subs_string.encode('utf-8'))
+                    print('[download] edX subtitles: %s' % subs_filename)
+                    open(os.path.join(os.getcwd(), subs_filename),
+                         'wb+').write(subs_string.encode('utf-8'))
                 except URLError as e:
                     print('Warning: edX subtitles (error:%s)' % e.reason)
 
