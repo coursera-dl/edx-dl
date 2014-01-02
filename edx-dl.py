@@ -121,23 +121,48 @@ def directory_name(initial_name):
     return result_name if result_name != "" else "course_folder"
 
 
-def parse_commandline_options():
+def parse_args():
+    """
+    Parse the arguments/options passed to the program on the command line.
+    """
+
     global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT, youtube_subs, edx_subs, video_fmt
 
-    parser = argparse.ArgumentParser(description='A simple tool to download video lectures from edx.org.')
-    parser.add_argument('-u', '--user', '--username', action='store', help='username in edX', default='')
-    parser.add_argument('-p', '--pswd', '--password', action='store', help='password in edX', default='')
+    parser = argparse.ArgumentParser(prog='edx-dl',
+                                     description='Get videos from edx.org',
+                                     epilog='For further use information,'
+                                     'see the file README.md',)
+
+    # optional
+    parser.add_argument('-u',
+                        '--username',
+                        action='store',
+                        help='your edX username (email)')
+    parser.add_argument('-p',
+                        '--password',
+                        action='store',
+                        help='your edX password')
+    parser.add_argument('-f',
+                        '--format',
+                        dest='format',
+                        action='store',
+                        default=None,
+                        help='format of videos to download (default: best)')
+    parser.add_argument('-s',
+                        '--with-subtitles',
+                        dest='subtitles',
+                        action='store_true',
+                        default=False,
+                        help='download subtitles with the videos')
+
     parser.add_argument('-d', '--dir', '--download-dir', action='store', help='store the files to the specified directory', \
                         default=DEFAULT_DOWNLOAD_DIRECTORY)
-
     group_ua = parser.add_mutually_exclusive_group()
     group_ua.add_argument('--user-agent', action='store', help='use popular softwares\' user agent', default='edx', \
                           choices=DEFAULT_USER_AGENTS.keys())
     group_ua.add_argument('--custom-user-agent', metavar='USER-AGENT-STRING', action='store', help='specify the user agent string')
     group_st = parser.add_mutually_exclusive_group()
-    group_st.add_argument('--subs', '--subtitles', dest='subs', action='store_const', const=(True, True), default=(None, None), help='download the corresponding subtitles')
-    group_st.add_argument('--nosubs', '--nosubtitles', dest='subs', action='store_const', const=(False, False), default=(None, None), help='do not download subtitles') 
-    parser.add_argument('--format-id', action='store', type=int, help='specify the format id of video files', default=None)
+
     args = parser.parse_args()
 
     USER_EMAIL = args.user
@@ -171,7 +196,7 @@ def json2srt(o):
 
 def main():
     global USER_EMAIL, USER_PSWD, youtube_subs, edx_subs, video_fmt
-    parse_commandline_options()
+    parse_args()
 
     if USER_EMAIL == "":
         USER_EMAIL = input('Username: ')
