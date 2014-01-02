@@ -36,7 +36,7 @@ try:
 except:
     pass
 
-import getopt
+import argparse
 import getpass
 import json
 import os
@@ -56,22 +56,13 @@ DASHBOARD = BASE_URL + '/dashboard'
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-
-## If no download directory is specified, we use the default one
-DEFAULT_DOWNLOAD_DIRECTORY = "Downloaded"
-DOWNLOAD_DIRECTORY = DEFAULT_DOWNLOAD_DIRECTORY
-
 ## If nothing else is chosen, we chose the default user agent:
 
-DEFAULT_USER_AGENTS = {"google-chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
+DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
                        "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-                       "default": 'edX-downloader/0.01'}
+                       "edx": 'edX-downloader/0.01'}
 
-USER_AGENT = DEFAULT_USER_AGENTS["default"]
-
-USER_EMAIL = ""
-USER_PSWD = ""
-
+USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 def get_initial_token():
     """
@@ -116,47 +107,7 @@ def directory_name(initial_name):
     return result_name if result_name != "" else "course_folder"
 
 
-def parse_commandline_options(argv):
-    global USER_EMAIL, USER_PSWD, DOWNLOAD_DIRECTORY, USER_AGENT
-    opts, args = getopt.getopt(argv,
-                               "u:p:",
-                               ["download-dir=", "user-agent=", "custom-user-agent="])
-    for opt, arg in opts:
-        if opt == "-u":
-            USER_EMAIL = arg
-
-        elif opt == "-p":
-            USER_PSWD = arg
-
-        elif opt == "--download-dir":
-            if arg.strip()[0] == "~":
-                arg = os.path.expanduser(arg)
-            DOWNLOAD_DIRECTORY = arg
-
-        elif opt == "--user-agent":
-            if arg in DEFAULT_USER_AGENTS.keys():
-                USER_AGENT = DEFAULT_USER_AGENTS[arg]
-
-        elif opt == "--custom-user-agent":
-            USER_AGENT = arg
-
-        elif opt == "-h":
-            usage()
-
-
-def usage():
-    print("command-line options:")
-    print("""-u <username>: (Optional) indicate the username.
--p <password>: (Optional) indicate the password.
---download-dir=<path>: (Optional) save downloaded files in <path>
---user-agent=<chrome|firefox>: (Optional) use Google Chrome's of Firefox 24's
-             default user agent as user agent
---custom-user-agent="MYUSERAGENT": (Optional) use the string "MYUSERAGENT" as
-             user agent
-""")
-
-
-def json2srt(o):
+def edx_json2srt(o):
     i = 1
     output = ''
     for (s, e, t) in zip(o['start'], o['end'], o['text']):
@@ -166,27 +117,81 @@ def json2srt(o):
         s = datetime(1, 1, 1) + timedelta(seconds=s/1000.)
         e = datetime(1, 1, 1) + timedelta(seconds=e/1000.)
         output += "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d" % \
-              (s.hour, s.minute, s.second, s.microsecond/1000,
-               e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
+            (s.hour, s.minute, s.second, s.microsecond/1000,
+             e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
         output += t + "\n\n"
         i += 1
     return output
 
 
-def main():
-    global USER_EMAIL, USER_PSWD
+def edx_get_subtitle(url, headers):
+    """ returns a string with the subtitles content from the url """
     try:
-        parse_commandline_options(sys.argv[1:])
-    except getopt.GetoptError:
-        usage()
-        sys.exit(2)
+        jsonString = get_page_contents(url, headers)
+        jsonObject = json.loads(jsonString)
+        return edx_json2srt(jsonObject)
+    except URLError as e:
+        print('Warning: edX subtitles (error:%s)' % e.reason)
 
-    if USER_EMAIL == "":
-        USER_EMAIL = input('Username: ')
-    if USER_PSWD == "":
-        USER_PSWD = getpass.getpass()
 
-    if USER_EMAIL == "" or USER_PSWD == "":
+def parse_args():
+    """
+    Parse the arguments/options passed to the program on the command line.
+    """
+    parser = argparse.ArgumentParser(prog='edx-dl',
+                                     description='Get videos from edx.org',
+                                     epilog='For further use information,'
+                                     'see the file README.md',)
+    # positional
+    parser.add_argument('course_id',
+                        nargs='*',
+                        action='store',
+                        default=None,
+                        help='target course id '
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
+                        )
+
+    # optional
+    parser.add_argument('-u',
+                        '--username',
+                        action='store',
+                        help='your edX username (email)')
+    parser.add_argument('-p',
+                        '--password',
+                        action='store',
+                        help='your edX password')
+    parser.add_argument('-f',
+                        '--format',
+                        dest='format',
+                        action='store',
+                        default=None,
+                        help='format of videos to download')
+    parser.add_argument('-s',
+                        '--with-subtitles',
+                        dest='subtitles',
+                        action='store_true',
+                        default=False,
+                        help='download subtitles with the videos')
+    parser.add_argument('-o',
+                        '--output-dir',
+                        action='store',
+                        dest='output_dir',
+                        help='store the files to the specified directory',
+                        default='Downloaded')
+
+    args = parser.parse_args()
+    return args
+
+
+def main():
+    args = parse_args()
+
+    if not args.username:
+        args.username = input('Username: ')
+    if not args.password:
+        args.password = getpass.getpass()
+
+    if not args.username or not args.password:
         print("You must supply username AND password to log-in")
         sys.exit(2)
 
@@ -201,7 +206,7 @@ def main():
     }
 
     # Login
-    post_data = urlencode({'email': USER_EMAIL, 'password': USER_PSWD,
+    post_data = urlencode({'email': args.username, 'password': args.password,
                            'remember': False}).encode('utf-8')
     request = Request(LOGIN_API, post_data, headers)
     response = urlopen(request)
@@ -215,7 +220,6 @@ def main():
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
     USERNAME = data.find_all('span')[1].string
-    USEREMAIL = data.find_all('span')[3].string
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -288,7 +292,7 @@ def main():
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
         subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + id + ".srt.sjson"
-                        for id, container in zip(video_id[-len(id_container):], id_container)]
+                     for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -299,32 +303,30 @@ def main():
                   for v_id in video_id]
 
     if len(video_link) < 1:
-        print('WARNING: No downloadable video found. ')
+        print('WARNING: No downloadable video found.')
         sys.exit(0)
-    # Get Available Video_Fmts
-    os.system('youtube-dl -F %s' % video_link[-1])
-    video_fmt = int(input('Choose Format code: '))
 
-    # Get subtitles
-    youtube_subs = False
-    edx_subs = False
+    if args.format is None:
+        # Get Available Video formats
+        os.system('youtube-dl -F %s' % video_link[-1])
+        args.format = int(input('Choose Format code: '))
 
-    down_subs = input('Download subtitles (y/n)? ')
-    if str.lower(down_subs) == 'y':
-        youtube_subs = True
-        edx_subs = True
+    if not args.subtitles:
+        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    # Say where it's gonna download files, just for clarity's sake.
-    print("[download] Saving videos into: " + DOWNLOAD_DIRECTORY)
+    print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = os.path.join(DOWNLOAD_DIRECTORY, directory_name(selected_course[0]))
+        target_dir = os.path.join(args.output_dir,
+                                  directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
-        cmd = ["youtube-dl", "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"), "-f", str(video_fmt)]
-        if youtube_subs:
+        cmd = ["youtube-dl",
+               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"),
+               "-f", str(args.format)]
+        if args.subtitles:
             cmd.append('--write-sub')
         cmd.append(str(v))
 
@@ -332,7 +334,7 @@ def main():
 
         youtube_stdout = b''
         enc = sys.getdefaultencoding()
-        while True:  # Save the output to youtube_stdout while this being echoed
+        while True:  # Save output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
             print(tmp.decode(enc), end="")
@@ -341,36 +343,28 @@ def main():
             if tmp == b"" and popen_youtube.poll() is not None:
                 break
 
-        if youtube_subs:
-            youtube_stderr = popen_youtube.communicate()[1]
-            if re.search(b'Some error while getting the subtitles', youtube_stderr):
-                if edx_subs:
-                    print("YouTube hasn't subtitles. Fallbacking from edX")
-                else:
-                    print("WARNING: Subtitles missing")
+        if args.subtitles:
+            filename = get_filename(target_dir, filename_prefix)
+            subs_filename = os.path.join(target_dir, filename + '.srt')
+            if not os.path.exists(subs_filename):
+                print('[info] Writing edX subtitles: %s' % subs_filename)
+                subs_string = edx_get_subtitle(s, headers)
+                open(os.path.join(os.getcwd(), subs_filename),
+                     'wb+').write(subs_string.encode('utf-8'))
 
-        if edx_subs and s != '':  # write edX subs
-            filenames = os.listdir(target_dir)
-            subs_filename = ''  # skip subtitles if the video file is not downloaded
-            for name in filenames:  # Find the filename of the downloaded video
-                if name.startswith(filename_prefix):
-                    (basename, ext) = os.path.splitext(name)
-                    subs_filename = basename
-                    if ext == '.srt':
-                        subs_filename = ''  # Do not download if the sub is already downloaded
-                        break
-            if subs_filename != '':
-                try:
-                    jsonString = get_page_contents(s, headers)
-                    jsonObject = json.loads(jsonString)
-                    subs_string = json2srt(jsonObject)
 
-                    subs_filename += '.srt'
-                    print('[download] edx subtitles: %s' % subs_filename)
-                    open(os.path.join(target_dir, subs_filename), 'wb+').write(subs_string.encode('utf-8'))
-                except URLError as e:
-                    print('Warning: edX subtitles (error:%s)' % e.reason)
-
+def get_filename(target_dir, filename_prefix):
+    """ returns the basename for the corresponding filename_prefix """
+    # this whole function is not the nicest thing, but isolating it makes
+    # things clearer , a good refactoring would be to get
+    # the info from the video_url or the current output, to avoid the
+    # iteration from the current dirœ
+    filenames = os.listdir(target_dir)
+    subs_filename = filename_prefix
+    for name in filenames:  # Find the filename of the downloaded video
+        if name.startswith(filename_prefix):
+            (basename, ext) = os.path.splitext(name)
+            return basename
 
 if __name__ == '__main__':
     try:
