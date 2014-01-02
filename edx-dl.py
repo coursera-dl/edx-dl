@@ -126,12 +126,14 @@ def edx_json2srt(o):
 
 def edx_get_subtitle(url, headers):
     """ returns a string with the subtitles content from the url """
+    """ or None if no subtitles are available """
     try:
         jsonString = get_page_contents(url, headers)
         jsonObject = json.loads(jsonString)
         return edx_json2srt(jsonObject)
     except URLError as e:
-        print('Warning: edX subtitles (error:%s)' % e.reason)
+        print('[warning] edX subtitles (error:%s)' % e.reason)
+        return None
 
 
 def parse_args():
@@ -186,9 +188,10 @@ def parse_args():
 def main():
     args = parse_args()
 
-    if not args.username:
+    # if no args means we are calling the interactive version
+    is_interactive = len(sys.argv) == 1
+    if is_interactive:
         args.username = input('Username: ')
-    if not args.password:
         args.password = getpass.getpass()
 
     if not args.username or not args.password:
@@ -306,12 +309,12 @@ def main():
         print('WARNING: No downloadable video found.')
         sys.exit(0)
 
-    if args.format is None:
+    if is_interactive:
         # Get Available Video formats
         os.system('youtube-dl -F %s' % video_link[-1])
-        args.format = int(input('Choose Format code: '))
+        print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
+        args.format = input('Choose Format code: ')
 
-    if not args.subtitles:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     print("[info] Output directory: " + args.output_dir)
@@ -324,8 +327,11 @@ def main():
                                   directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
-               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s"),
-               "-f", str(args.format)]
+               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
+        if args.format:
+            cmd.append("-f")
+            # defaults to mp4 in case the requested format isn't available
+            cmd.append(args.format + '/mp4')
         if args.subtitles:
             cmd.append('--write-sub')
         cmd.append(str(v))
@@ -347,10 +353,11 @@ def main():
             filename = get_filename(target_dir, filename_prefix)
             subs_filename = os.path.join(target_dir, filename + '.srt')
             if not os.path.exists(subs_filename):
-                print('[info] Writing edX subtitles: %s' % subs_filename)
                 subs_string = edx_get_subtitle(s, headers)
-                open(os.path.join(os.getcwd(), subs_filename),
-                     'wb+').write(subs_string.encode('utf-8'))
+                if subs_string:
+                    print('[info] Writing edX subtitles: %s' % subs_filename)
+                    open(os.path.join(os.getcwd(), subs_filename),
+                         'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
@@ -358,7 +365,7 @@ def get_filename(target_dir, filename_prefix):
     # this whole function is not the nicest thing, but isolating it makes
     # things clearer , a good refactoring would be to get
     # the info from the video_url or the current output, to avoid the
-    # iteration from the current dirœ
+    # iteration from the current dir
     filenames = os.listdir(target_dir)
     subs_filename = filename_prefix
     for name in filenames:  # Find the filename of the downloaded video
