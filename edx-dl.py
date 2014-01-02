@@ -186,9 +186,10 @@ def parse_args():
 def main():
     args = parse_args()
 
-    if not args.username:
+    # if no args means we are calling the interactive version
+    is_interactive = not len(sys.argv)
+    if is_interactive:
         args.username = input('Username: ')
-    if not args.password:
         args.password = getpass.getpass()
 
     if not args.username or not args.password:
@@ -306,10 +307,12 @@ def main():
         print('WARNING: No downloadable video found.')
         sys.exit(0)
 
-    if args.format is None:
+    if is_interactive:
         # Get Available Video formats
         os.system('youtube-dl -F %s' % video_link[-1])
         args.format = int(input('Choose Format code: '))
+
+        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     if not args.subtitles:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
