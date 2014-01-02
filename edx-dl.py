@@ -126,12 +126,14 @@ def edx_json2srt(o):
 
 def edx_get_subtitle(url, headers):
     """ returns a string with the subtitles content from the url """
+    """ or None if no subtitles are available """
     try:
         jsonString = get_page_contents(url, headers)
         jsonObject = json.loads(jsonString)
         return edx_json2srt(jsonObject)
     except URLError as e:
-        print('Warning: edX subtitles (error:%s)' % e.reason)
+        print('[warning] edX subtitles (error:%s)' % e.reason)
+        return None
 
 
 def parse_args():
@@ -351,10 +353,11 @@ def main():
             filename = get_filename(target_dir, filename_prefix)
             subs_filename = os.path.join(target_dir, filename + '.srt')
             if not os.path.exists(subs_filename):
-                print('[info] Writing edX subtitles: %s' % subs_filename)
                 subs_string = edx_get_subtitle(s, headers)
-                open(os.path.join(os.getcwd(), subs_filename),
-                     'wb+').write(subs_string.encode('utf-8'))
+                if subs_string:
+                    print('[info] Writing edX subtitles: %s' % subs_filename)
+                    open(os.path.join(os.getcwd(), subs_filename),
+                         'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
