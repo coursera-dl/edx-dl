@@ -142,6 +142,14 @@ def parse_args():
                                      description='Get videos from edx.org',
                                      epilog='For further use information,'
                                      'see the file README.md',)
+    # positional
+    parser.add_argument('course_id',
+                        nargs='*',
+                        action='store',
+                        default=None,
+                        help='target course id '
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
+                        )
 
     # optional
     parser.add_argument('-u',
