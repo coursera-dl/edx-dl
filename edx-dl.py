@@ -64,6 +64,7 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
+
 def get_initial_token():
     """
     Create initial connection to get authentication token for future requests.
@@ -185,6 +186,35 @@ def parse_args():
     return args
 
 
+def get_course_list(dashboard, headers):
+    """
+    Returns a list of tuples with each tuple consisting of:
+
+    * Course name: name of the course we are currently enrolled in.
+    * Course ID: the 'id' of the course.
+    * State: a string saying if the course has started or not.
+    """
+    dash = get_page_contents(dashboard, headers)
+    soup = BeautifulSoup(dash)
+    courses = soup.find_all('article', 'course')
+
+    courses_list = []
+    for course in courses:
+        c_name = course.h3.text.strip()
+        c_link = 'https://courses.edx.org' + course.a['href']
+        c_id = course.a['href'].lstrip('/courses/')
+        if c_id.endswith('info') or c_id.endswith('info/'):
+            c_id = c_id.rstrip('/info/')
+            state = 'Started'
+        else:
+            c_id = c_id.rstrip('/about/')
+            state = 'Not started'
+
+        courses_list.append((c_name, c_link, state))
+
+    return courses_list
+
+
 def main():
     args = parse_args()
 
@@ -218,32 +248,14 @@ def main():
         print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
-    # Get user info/courses
-    dash = get_page_contents(DASHBOARD, headers)
-    soup = BeautifulSoup(dash)
-    data = soup.find_all('ul')[1]
-    USERNAME = data.find_all('span')[1].string
-    COURSES = soup.find_all('article', 'course')
-    courses = []
-    for COURSE in COURSES:
-        c_name = COURSE.h3.text.strip()
-        c_link = 'https://courses.edx.org' + COURSE.a['href']
-        if c_link.endswith('info') or c_link.endswith('info/'):
-            state = 'Started'
-        else:
-            state = 'Not yet'
-        courses.append((c_name, c_link, state))
+    # Get user courses
+    courses = get_course_list(DASHBOARD, headers)
     numOfCourses = len(courses)
-
-    # Welcome and Choose Course
-
-    print('Welcome %s' % USERNAME)
     print('You can access %d courses on edX' % numOfCourses)
-
-    c = 0
+    i = 0
     for course in courses:
-        c += 1
-        print('%d - %s -> %s' % (c, course[0], course[2]))
+        i += 1
+        print('%d - %s -> %s' % (i, course[0], course[2]))
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
