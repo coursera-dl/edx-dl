@@ -145,14 +145,6 @@ def parse_args():
                                      description='Get videos from edx.org',
                                      epilog='For further use information,'
                                      'see the file README.md',)
-    # positional
-    parser.add_argument('--course-url',
-                        action='store',
-                        default=None,
-                        help='target course url'
-                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
-                        )
-
     # optional
     parser.add_argument('-u',
                         '--username',
@@ -180,6 +172,12 @@ def parse_args():
                         dest='output_dir',
                         help='store the files to the specified directory',
                         default='Downloaded')
+    parser.add_argument('--course-url',
+                        action='store',
+                        default=None,
+                        help='target course url'
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
+                        )
 
     args = parser.parse_args()
     return args
