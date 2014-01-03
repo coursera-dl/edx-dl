@@ -146,11 +146,10 @@ def parse_args():
                                      epilog='For further use information,'
                                      'see the file README.md',)
     # positional
-    parser.add_argument('course_id',
-                        nargs='*',
+    parser.add_argument('--course-url',
                         action='store',
                         default=None,
-                        help='target course id '
+                        help='target course url'
                         '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
                         )
 
@@ -196,22 +195,20 @@ def get_course_list(dashboard, headers):
     """
     dash = get_page_contents(dashboard, headers)
     soup = BeautifulSoup(dash)
-    courses = soup.find_all('article', 'course')
-
     courses_list = []
+    courses = soup.find_all('article', 'course')
     for course in courses:
-        c_name = course.h3.text.strip()
-        c_link = 'https://courses.edx.org' + course.a['href']
-        c_id = course.a['href'].lstrip('/courses/')
-        if c_id.endswith('info') or c_id.endswith('info/'):
-            c_id = c_id.rstrip('/info/')
-            state = 'Started'
+        c = {}
+        c['name'] = course.h3.text.strip()
+        c['url'] = 'https://courses.edx.org' + course.a['href']
+        c['id'] = course.a['href'].lstrip('/courses/')
+        if c['id'].endswith('info') or c['id'].endswith('info/'):
+            c['id'] = c['id'].rstrip('/info/')
+            c['state'] = 'Started'
         else:
-            c_id = c_id.rstrip('/about/')
-            state = 'Not started'
-
-        courses_list.append((c_name, c_link, state))
-
+            c['id'] = c['id'].rstrip('/about/')
+            c['state'] = 'Not started'
+        courses_list.append(c)
     return courses_list
 
 
@@ -251,22 +248,33 @@ def main():
     # Get user courses
     courses = get_course_list(DASHBOARD, headers)
     numOfCourses = len(courses)
-    print('You can access %d courses on edX' % numOfCourses)
-    i = 0
-    for course in courses:
-        i += 1
-        print('%d - %s -> %s' % (i, course[0], course[2]))
+    selected_course = None
+    if is_interactive:
+        print('You can access %d courses on edX' % numOfCourses)
+        i = 0
+        for c in courses:
+            i += 1
+            print('%d - %s -> %s' % (i, c['name'], c['state']))
 
-    c_number = int(input('Enter Course Number: '))
-    while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ',
-              numOfCourses)
         c_number = int(input('Enter Course Number: '))
-    selected_course = courses[c_number - 1]
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
+        while c_number > numOfCourses or courses[c_number - 1]['state'] != 'Started':
+            print('Enter a valid Number for a Started Course ! between 1 and ',
+                  numOfCourses)
+            c_number = int(input('Enter Course Number: '))
+        selected_course = courses[c_number - 1]
+    else:
+        for c in courses:
+            if c['url'] == args.course_url:
+                selected_course = c
+                break
+        if not selected_course:
+            print('[error] Invalid course url, or user not registered %s' % args.course_url)
+            sys.exit(3)
+
+    courseware_url = selected_course['url'].replace('info', 'courseware')
 
     ## Getting Available Weeks
-    courseware = get_page_contents(COURSEWARE, headers)
+    courseware = get_page_contents(courseware_url, headers)
     soup = BeautifulSoup(courseware)
 
     data = soup.find("section",
@@ -277,7 +285,7 @@ def main():
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
+    print('%s has %d weeks so far' % (selected_course['name'], numOfWeeks))
     w = 0
     for week in weeks:
         w += 1
@@ -336,7 +344,7 @@ def main():
     for v, s in zip(video_link, subsUrls):
         c += 1
         target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
+                                  directory_name(selected_course))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
