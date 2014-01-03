@@ -44,17 +44,24 @@ by @emadshaaban92 for python2, and migrated for versions superior to
 
 # Quick Start
 
-To use `edx-dl.py`, simply excute it, as in:
+To use `edx-dl.py`, simply execute the command:
 
     python edx-dl.py
 
 You will then be asked your username and password.
 
 Your downloaded videos will be placed in a new Directory called
-"Downloaded".  The script is very interactive, and if you have a issue
-please tell us.
+"Downloaded".  The script is very interactive, and if you found some issue
+please report it via github issues.
 
-You can also excute it with arguments given: email and password,
-as in:
+# Non-interactive mode
 
-    python edx-dl.py [-u user@user.com] [-p password]
+A non-interactive version of the script is currently in beta.
+
+If you want to see the valid arguments for the non-interactive execute:
+
+	python edx-dl.py -h
+
+An example of a non-interactive execution would be:
+
+    python edx-dl.py -u user@user.com -p password -s [-f FORMAT] --course-url COURSE_URL
