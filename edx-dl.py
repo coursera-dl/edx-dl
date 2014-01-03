@@ -187,11 +187,13 @@ def parse_args():
 
 def get_course_list(dashboard, headers):
     """
-    Returns a list of tuples with each tuple consisting of:
+    Returns a list of dicts with each dict consisting of:
 
-    * Course name: name of the course we are currently enrolled in.
-    * Course ID: the 'id' of the course.
-    * State: a string saying if the course has started or not.
+    * id: the 'id' of the course, e.g. 'HarvardX/SPU27x/2013_Oct'
+    * name: name of the course we are currently enrolled in.
+    * state: a string saying if the course has started or not.
+    * url: url of the course e.g. https://courses.edx.org/courses/HarvardX/SPU27x/2013_Oct/info
+    
     """
     dash = get_page_contents(dashboard, headers)
     soup = BeautifulSoup(dash)
