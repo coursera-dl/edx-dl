@@ -342,7 +342,7 @@ def main():
     for v, s in zip(video_link, subsUrls):
         c += 1
         target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course))
+                                  directory_name(selected_course['name']))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
