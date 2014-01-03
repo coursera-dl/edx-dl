@@ -16,6 +16,11 @@ except ImportError:
     from urllib import urlencode
 
 try:
+    from urllib.parse import urlparse
+except ImportError:
+    from urlparse import urlparse
+
+try:
     from urllib.request import urlopen
     from urllib.request import build_opener
     from urllib.request import install_opener
@@ -49,22 +54,8 @@ from datetime import timedelta, datetime
 
 from bs4 import BeautifulSoup
 
-BASE_URL = 'https://courses.edx.org'
-EDX_HOMEPAGE = BASE_URL + '/login_ajax'
-LOGIN_API = BASE_URL + '/login_ajax'
-DASHBOARD = BASE_URL + '/dashboard'
 
-YOUTUBE_VIDEO_ID_LENGTH = 11
-
-## If nothing else is chosen, we chose the default user agent:
-
-DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
-                       "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-                       "edx": 'edX-downloader/0.01'}
-
-USER_AGENT = DEFAULT_USER_AGENTS["edx"]
-
-def get_initial_token():
+def get_initial_token(base_url):
     """
     Create initial connection to get authentication token for future requests.
 
@@ -75,7 +66,7 @@ def get_initial_token():
     cj = CookieJar()
     opener = build_opener(HTTPCookieProcessor(cj))
     install_opener(opener)
-    opener.open(EDX_HOMEPAGE)
+    opener.open(base_url)
 
     for cookie in cj:
         if cookie.name == 'csrftoken':
@@ -98,6 +89,7 @@ def get_page_contents(url, headers):
 
 
 def directory_name(initial_name):
+    """ cleans the string from non-allowed characters """
     import string
     allowed_chars = string.digits+string.ascii_letters+" _."
     result_name = ""
@@ -108,6 +100,7 @@ def directory_name(initial_name):
 
 
 def edx_json2srt(o):
+    """ converts subtitles from the json format to srt """
     i = 1
     output = ''
     for (s, e, t) in zip(o['start'], o['end'], o['text']):
@@ -144,15 +137,6 @@ def parse_args():
                                      description='Get videos from edx.org',
                                      epilog='For further use information,'
                                      'see the file README.md',)
-    # positional
-    parser.add_argument('course_id',
-                        nargs='*',
-                        action='store',
-                        default=None,
-                        help='target course id '
-                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
-                        )
-
     # optional
     parser.add_argument('-u',
                         '--username',
@@ -167,7 +151,7 @@ def parse_args():
                         dest='format',
                         action='store',
                         default=None,
-                        help='format of videos to download')
+                        help='maximum resolution format to download')
     parser.add_argument('-s',
                         '--with-subtitles',
                         dest='subtitles',
@@ -180,9 +164,79 @@ def parse_args():
                         dest='output_dir',
                         help='store the files to the specified directory',
                         default='Downloaded')
+    parser.add_argument('--course-url',
+                        action='store',
+                        default=None,
+                        help='target course url'
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
+                        )
 
     args = parser.parse_args()
     return args
+
+
+def get_website_info(url):
+    """ returns a dict with the appropriate url schemas needed to access """
+    """ the courses: """
+
+    """ * base_url: the base url e.g. https://courses.edx.org """
+    """ * login_url: the login url e.g. https://courses.edx.org/login_ajax """
+    """ * dashboard_url: the dashboard url e.g. https://courses.edx.org/dashboard """
+
+    website_info = {}
+    if not url:
+        # FIXME: we default to edx if no url is passed for the interactive version
+        url = 'https://courses.edx.org'
+    website_info['base_url'] = url
+    website_info['login_url'] = url + '/login_ajax'
+    website_info['dashboard_url'] = url + '/dashboard'
+    return website_info
+
+
+def get_course_list(website_info, headers):
+    """
+    Returns a list of dicts with each dict consisting of:
+
+    * id: the 'id' of the course, e.g. 'HarvardX/SPU27x/2013_Oct'
+    * name: name of the course we are currently enrolled in.
+    * state: a string saying if the course has started or not.
+    * url: url of the course e.g. https://courses.edx.org/courses/HarvardX/SPU27x/2013_Oct/info
+    
+    """
+    dash = get_page_contents(website_info['dashboard_url'], headers)
+    soup = BeautifulSoup(dash)
+    courses_list = []
+    courses = soup.find_all('article', 'course')
+    for course in courses:
+        c = {}
+        c['name'] = course.h3.text.strip()
+        c['url'] = website_info['base_url'] + course.a['href']
+        c['id'] = course.a['href'].lstrip('/courses/')
+        if c['id'].endswith('info') or c['id'].endswith('info/'):
+            c['id'] = c['id'].rstrip('/info/')
+            c['state'] = 'Started'
+        else:
+            c['id'] = c['id'].rstrip('/about/')
+            c['state'] = 'Not started'
+        courses_list.append(c)
+    return courses_list
+
+
+def build_headers(base_url):
+    # If nothing else is chosen, we chose the default user agent:
+    default_user_agents = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
+                           "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
+                           "edx": 'edX-downloader/0.01'}
+    user_agent = default_user_agents['edx']
+    headers = {
+        'User-Agent': user_agent,
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Referer': base_url,
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': get_initial_token(base_url),
+    }
+    return headers
 
 
 def main():
@@ -198,63 +252,55 @@ def main():
         print("You must supply username AND password to log-in")
         sys.exit(2)
 
+    #FIXME: When we remove the interactive version course_url will be mandatory
+    website_url = None
+    if args.course_url:
+        urlparse_res = urlparse(args.course_url)
+        website_url = urlparse_res.scheme + "://" + urlparse_res.netloc
+
+    website_info = get_website_info(website_url)
+
     # Prepare Headers
-    headers = {
-        'User-Agent': USER_AGENT,
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Referer': EDX_HOMEPAGE,
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': get_initial_token(),
-    }
+    headers = build_headers(website_info['base_url'])
 
     # Login
     post_data = urlencode({'email': args.username, 'password': args.password,
                            'remember': False}).encode('utf-8')
-    request = Request(LOGIN_API, post_data, headers)
+    request = Request(website_info['login_url'], post_data, headers)
     response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
     if not resp.get('success', False):
         print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
-    # Get user info/courses
-    dash = get_page_contents(DASHBOARD, headers)
-    soup = BeautifulSoup(dash)
-    data = soup.find_all('ul')[1]
-    USERNAME = data.find_all('span')[1].string
-    COURSES = soup.find_all('article', 'course')
-    courses = []
-    for COURSE in COURSES:
-        c_name = COURSE.h3.text.strip()
-        c_link = 'https://courses.edx.org' + COURSE.a['href']
-        if c_link.endswith('info') or c_link.endswith('info/'):
-            state = 'Started'
-        else:
-            state = 'Not yet'
-        courses.append((c_name, c_link, state))
-    numOfCourses = len(courses)
+    # Get user courses
+    courses = get_course_list(website_info, headers)
+    selected_course = None
+    if is_interactive or not args.course_url:
+        print('You can access %d courses on edX' % len(courses))
+        i = 0
+        for c in courses:
+            i += 1
+            print('%d - %s -> %s' % (i, c['name'], c['state']))
 
-    # Welcome and Choose Course
-
-    print('Welcome %s' % USERNAME)
-    print('You can access %d courses on edX' % numOfCourses)
-
-    c = 0
-    for course in courses:
-        c += 1
-        print('%d - %s -> %s' % (c, course[0], course[2]))
-
-    c_number = int(input('Enter Course Number: '))
-    while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ',
-              numOfCourses)
         c_number = int(input('Enter Course Number: '))
-    selected_course = courses[c_number - 1]
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
+        while c_number > len(courses) or courses[c_number - 1]['state'] != 'Started':
+            print('Enter a valid Number for a Started Course ! between 1 and ',
+                  len(courses))
+            c_number = int(input('Enter Course Number: '))
+        selected_course = courses[c_number - 1]
+    else:
+        for c in courses:
+            if c['url'] == args.course_url:
+                selected_course = c
+                break
+        if not selected_course:
+            print('[error] Invalid course url, or user not registered (course_url=%s)' % args.course_url)
+            sys.exit(3)
 
     ## Getting Available Weeks
-    courseware = get_page_contents(COURSEWARE, headers)
+    courseware_url = selected_course['url'].replace('info', 'courseware')
+    courseware = get_page_contents(courseware_url, headers)
     soup = BeautifulSoup(courseware)
 
     data = soup.find("section",
@@ -265,7 +311,7 @@ def main():
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
+    print('%s has %d weeks so far' % (selected_course['name'], numOfWeeks))
     w = 0
     for week in weeks:
         w += 1
@@ -292,10 +338,12 @@ def main():
         page = get_page_contents(link, headers)
 
         id_container = splitter.split(page)[1:]
-        video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
+        # 11 is the length of a basic youtube url
+        video_id += [link[:11] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + id + ".srt.sjson"
-                     for id, container in zip(video_id[-len(id_container):], id_container)]
+        subsUrls += [website_info['base_url'] +
+                     regexpSubs.search(container).group(1) + id + ".srt.sjson"
+                     for id, container in zip(video_id[-len(id_container):],id_container)]
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -324,14 +372,13 @@ def main():
     for v, s in zip(video_link, subsUrls):
         c += 1
         target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
+                                  directory_name(selected_course['name']))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
         if args.format:
-            cmd.append("-f")
-            # defaults to mp4 in case the requested format isn't available
-            cmd.append(args.format + '/mp4')
+            cmd.append("--max-quality")
+            cmd.append(args.format)
         if args.subtitles:
             cmd.append('--write-sub')
         cmd.append(str(v))
