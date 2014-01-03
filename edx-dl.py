@@ -247,19 +247,18 @@ def main():
 
     # Get user courses
     courses = get_course_list(DASHBOARD, headers)
-    numOfCourses = len(courses)
     selected_course = None
-    if is_interactive:
-        print('You can access %d courses on edX' % numOfCourses)
+    if is_interactive or not args.course_url:
+        print('You can access %d courses on edX' % len(courses))
         i = 0
         for c in courses:
             i += 1
             print('%d - %s -> %s' % (i, c['name'], c['state']))
 
         c_number = int(input('Enter Course Number: '))
-        while c_number > numOfCourses or courses[c_number - 1]['state'] != 'Started':
+        while c_number > len(courses) or courses[c_number - 1]['state'] != 'Started':
             print('Enter a valid Number for a Started Course ! between 1 and ',
-                  numOfCourses)
+                  len(courses))
             c_number = int(input('Enter Course Number: '))
         selected_course = courses[c_number - 1]
     else:
@@ -268,12 +267,11 @@ def main():
                 selected_course = c
                 break
         if not selected_course:
-            print('[error] Invalid course url, or user not registered %s' % args.course_url)
+            print('[error] Invalid course url, or user not registered (course_url=%s)' % args.course_url)
             sys.exit(3)
 
-    courseware_url = selected_course['url'].replace('info', 'courseware')
-
     ## Getting Available Weeks
+    courseware_url = selected_course['url'].replace('info', 'courseware')
     courseware = get_page_contents(courseware_url, headers)
     soup = BeautifulSoup(courseware)
 
