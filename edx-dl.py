@@ -159,7 +159,7 @@ def parse_args():
                         dest='format',
                         action='store',
                         default=None,
-                        help='format of videos to download')
+                        help='maximum resolution format to download')
     parser.add_argument('-s',
                         '--with-subtitles',
                         dest='subtitles',
@@ -347,9 +347,8 @@ def main():
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
         if args.format:
-            cmd.append("-f")
-            # defaults to mp4 in case the requested format isn't available
-            cmd.append(args.format + '/mp4')
+            cmd.append("--max-quality")
+            cmd.append(args.format)
         if args.subtitles:
             cmd.append('--write-sub')
         cmd.append(str(v))
