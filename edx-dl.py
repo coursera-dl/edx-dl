@@ -49,7 +49,8 @@ from datetime import timedelta, datetime
 
 from bs4 import BeautifulSoup
 
-BASE_URL = 'https://courses.edx.org'
+OPENEDX_SITES = {'edx': 'https://courses.edx.org', 'stanford': 'https://class.stanford.edu'}
+BASE_URL = OPENEDX_SITES['edx']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
@@ -63,6 +64,17 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
                        "edx": 'edX-downloader/0.01'}
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
+
+def change_openedx_site(base_url):
+    global BASE_URL
+    global EDX_HOMEPAGE
+    global LOGIN_API
+    global DASHBOARD
+
+    BASE_URL = base_url
+    EDX_HOMEPAGE = BASE_URL + '/login_ajax'
+    LOGIN_API = BASE_URL + '/login_ajax'
+    DASHBOARD = BASE_URL + '/dashboard'
 
 def get_initial_token():
     """
@@ -141,7 +153,7 @@ def parse_args():
     Parse the arguments/options passed to the program on the command line.
     """
     parser = argparse.ArgumentParser(prog='edx-dl',
-                                     description='Get videos from edx.org',
+                                     description='Get videos from the OpenEdX platform',
                                      epilog='For further use information,'
                                      'see the file README.md',)
     # positional
@@ -180,6 +192,12 @@ def parse_args():
                         dest='output_dir',
                         help='store the files to the specified directory',
                         default='Downloaded')
+    parser.add_argument('-x',
+                        '--platform',
+                        action='store',
+                        dest='platform',
+                        help='OpenEdX platform, currently either "edx" or "stanford"',
+                        default='edx')
 
     args = parser.parse_args()
     return args
@@ -191,8 +209,15 @@ def main():
     # if no args means we are calling the interactive version
     is_interactive = len(sys.argv) == 1
     if is_interactive:
+        args.platform = input('Platform: ')
         args.username = input('Username: ')
         args.password = getpass.getpass()
+
+    if args.platform not in OPENEDX_SITES.keys():
+        print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
+        sys.exit(2)
+
+    change_openedx_site(OPENEDX_SITES[args.platform])
 
     if not args.username or not args.password:
         print("You must supply username AND password to log-in")
@@ -227,7 +252,7 @@ def main():
     courses = []
     for COURSE in COURSES:
         c_name = COURSE.h3.text.strip()
-        c_link = 'https://courses.edx.org' + COURSE.a['href']
+        c_link = BASE_URL + COURSE.a['href']
         if c_link.endswith('info') or c_link.endswith('info/'):
             state = 'Started'
         else:
@@ -238,7 +263,7 @@ def main():
     # Welcome and Choose Course
 
     print('Welcome %s' % USERNAME)
-    print('You can access %d courses on edX' % numOfCourses)
+    print('You can access %d courses' % numOfCourses)
 
     c = 0
     for course in courses:
@@ -260,7 +285,7 @@ def main():
     data = soup.find("section",
                      {"class": "content-wrapper"}).section.div.div.nav
     WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, ['https://courses.edx.org' + a['href'] for a in
+    weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
     numOfWeeks = len(weeks)
 
