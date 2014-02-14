@@ -282,8 +282,8 @@ def main():
     courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
 
-    data = soup.find("section",
-                     {"class": "content-wrapper"}).section.div.div.nav
+    data = soup.find('nav',
+                     {'aria-label':'Course Navigation'})
     WEEKS = data.find_all('div')
     weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
