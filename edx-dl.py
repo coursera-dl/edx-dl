@@ -49,11 +49,21 @@ from datetime import timedelta, datetime
 
 from bs4 import BeautifulSoup
 
-OPENEDX_SITES = {'edx': 'https://courses.edx.org', 'stanford': 'https://class.stanford.edu'}
-BASE_URL = OPENEDX_SITES['edx']
+OPENEDX_SITES = {
+    'edx': {
+        'url': 'https://courses.edx.org', 
+        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+    }, 
+    'stanford': {
+        'url': 'https://class.stanford.edu',
+        'courseware-selector': ('section', {'aria-label':'Course Navigation'}),
+    },
+}
+BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
+COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
@@ -65,16 +75,22 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
-def change_openedx_site(base_url):
+def change_openedx_site(site_name):
     global BASE_URL
     global EDX_HOMEPAGE
     global LOGIN_API
     global DASHBOARD
+    global COURSEWARE_SEL
 
-    BASE_URL = base_url
+    if site_name not in OPENEDX_SITES.keys():
+        print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
+        sys.exit(2)
+    
+    BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
+    COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 def get_initial_token():
     """
@@ -213,11 +229,7 @@ def main():
         args.username = input('Username: ')
         args.password = getpass.getpass()
 
-    if args.platform not in OPENEDX_SITES.keys():
-        print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
-        sys.exit(2)
-
-    change_openedx_site(OPENEDX_SITES[args.platform])
+    change_openedx_site(args.platform)
 
     if not args.username or not args.password:
         print("You must supply username AND password to log-in")
@@ -282,8 +294,7 @@ def main():
     courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
 
-    data = soup.find('nav',
-                     {'aria-label':'Course Navigation'})
+    data = soup.find(*COURSEWARE_SEL)
     WEEKS = data.find_all('div')
     weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
