@@ -320,7 +320,7 @@ def main():
 
     video_id = []
     subsUrls = []
-    regexpSubs = re.compile(r'data-caption-asset-path=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
@@ -330,7 +330,7 @@ def main():
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + id + ".srt.sjson"
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
