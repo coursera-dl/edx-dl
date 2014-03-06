@@ -374,15 +374,26 @@ def main():
 
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
 
-        youtube_stdout = b''
         enc = sys.getdefaultencoding()
-        while True:  # Save output to youtube_stdout while this being echoed
-            tmp = popen_youtube.stdout.read(1)
-            youtube_stdout += tmp
-            print(tmp.decode(enc), end="")
+        # on Ubuntu 12.04 and Python 2.7.3 'enc' is evaluated to ascii, even though the console encoding is utf-8, so I just uncomment the following line
+	# enc = 'utf-8'
+        # you can just install and use Python 3 and 'enc' will be evaluated correctly
+
+        while True:
+            valid_character = False
+            character = b''
+            while not valid_character:
+                character += popen_youtube.stdout.read(1)
+                try:
+                    character.decode(enc)
+                    valid_character = True
+                except ValueError:
+                    valid_character = False
+
+            print(character.decode(enc), end="")
             sys.stdout.flush()
             # do it until the process finish and there isn't output
-            if tmp == b"" and popen_youtube.poll() is not None:
+            if character == b"" and popen_youtube.poll() is not None:
                 break
 
         if args.subtitles:
