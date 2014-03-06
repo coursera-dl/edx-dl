@@ -315,6 +315,11 @@ def main():
     else:
         links = weeks[w_number - 1][1]
 
+    target_dir = os.path.join(args.output_dir,
+                              directory_name(selected_course[0]))
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
     video_id = []
     subsUrls = []
     regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
@@ -354,8 +359,6 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
