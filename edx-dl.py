@@ -22,6 +22,7 @@ try:
     from urllib.request import HTTPCookieProcessor
     from urllib.request import Request
     from urllib.request import URLError
+    from urllib.request import urlretrieve
 except ImportError:
     from urllib2 import urlopen
     from urllib2 import build_opener
@@ -29,6 +30,7 @@ except ImportError:
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
     from urllib2 import URLError
+    from urllib import urlretrieve
 
 # we alias the raw_input function for python 3 compatibility
 try:
@@ -125,6 +127,19 @@ def get_page_contents(url, headers):
     return result.read().decode(charset)
 
 
+def download_cdn_videos(video_urls, target_dir):
+    """ This function downloads the videos from video_urls """
+    """ using a simple file downloader """
+    for i, v in enumerate(video_urls):
+        filename_prefix = str(i+1).zfill(2) + '-'
+        original_filename = v.rsplit('/', 1)[1]
+        video_filename = filename_prefix + original_filename
+        video_path = os.path.join(target_dir, video_filename)
+        # print('[debug] GET %s' % v)
+        print('[download] Destination: %s' % video_path)
+        urlretrieve(v, video_path)
+
+
 def directory_name(initial_name):
     import string
     allowed_chars = string.digits+string.ascii_letters+" _."
@@ -214,6 +229,12 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx" or "stanford"',
                         default='edx')
+    parser.add_argument('-c',
+                        '--use-cdn',
+                        action='store_true',
+                        dest='use_cdn',
+                        help='use cdn instead of youtube-dl to get the videos',
+                        default=False)
 
     args = parser.parse_args()
     return args
@@ -320,20 +341,33 @@ def main():
     if not os.path.exists(target_dir):
         os.makedirs(target_dir)
 
+    if is_interactive:
+        args.use_cdn = input('Use youtube-dl to download videos (y/n)? ').lower() == 'n'
+
     video_id = []
     subsUrls = []
+    cdn_video_urls = []
     regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+    # notice that not all the webpages have this field (opposite of data-streams)
+    re_cdn_video_urls = re.compile(r'data-mp4-source=(?:&#34;|")([^"&]*)(?:&#34;|")')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
+
+        if args.use_cdn:
+            page_video_urls = re_cdn_video_urls.findall(page)
+            # print("[debug] Found %s cdn videos" % len(page_video_urls))
+            cdn_video_urls.extend(page_video_urls)
+            continue
 
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
         subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      for id, container in zip(video_id[-len(id_container):], id_container)]
+
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -342,6 +376,13 @@ def main():
 
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
+
+    # download cdn videos
+    if args.use_cdn:
+        if args.subtitles:
+            print('[warning] cdn downloads skips subtitles download')
+        download_cdn_videos(cdn_video_urls, target_dir)
+        sys.exit(0)
 
     if len(video_link) < 1:
         print('WARNING: No downloadable video found.')
