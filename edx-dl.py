@@ -259,7 +259,6 @@ def main():
     dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
-    USERNAME = data.find_all('span')[1].string
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -273,8 +272,6 @@ def main():
     numOfCourses = len(courses)
 
     # Welcome and Choose Course
-
-    print('Welcome %s' % USERNAME)
     print('You can access %d courses' % numOfCourses)
 
     c = 0
@@ -352,8 +349,6 @@ def main():
         args.format = input('Choose Format code: ')
 
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
-
-    print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
     c = 0
