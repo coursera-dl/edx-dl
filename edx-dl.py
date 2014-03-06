@@ -43,6 +43,7 @@ import os
 import os.path
 import re
 import sys
+import locale
 
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
@@ -74,6 +75,21 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
                        "edx": 'edX-downloader/0.01'}
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
+
+# To replace the print function, the following function must be placed before any other call for print
+def print(*objects, **kwargs):
+    """
+    Overload the print function to adapt for the encoding bug in Windows Console.
+    It will try to convert text to the console encoding before print to prevent crashes.
+    """
+    texts = []
+    for object in objects:
+        try:
+            original_text = str(object)
+        except UnicodeEncodeError:
+            original_text = unicode(object)
+        texts.append(original_text.encode(locale.getpreferredencoding(), errors='replace').decode(locale.getpreferredencoding()))
+    return __builtins__.print(*texts, **kwargs)
 
 def change_openedx_site(site_name):
     global BASE_URL
