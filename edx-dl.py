@@ -81,7 +81,12 @@ def print(*objects, **kwargs):
     Overload the print function to adapt for the encoding bug in Windows Console.
     It will try to convert text to the console encoding before print to prevent crashes.
     """
-    if kwargs.get('file', sys.stdout) is not sys.stdout:
+    try:
+        stream = kwargs.get('file', None)
+        if stream is None:
+            stream = sys.stdout
+        enc = stream.encoding
+    except AttributeError:
         return __builtins__.print(*objects, **kwargs)
     texts = []
     for object in objects:
@@ -89,7 +94,7 @@ def print(*objects, **kwargs):
             original_text = str(object)
         except UnicodeEncodeError:
             original_text = unicode(object)
-        texts.append(original_text.encode(sys.stdout.encoding, errors='replace').decode(sys.stdout.encoding))
+        texts.append(original_text.encode(enc, errors='replace').decode(enc))
     return __builtins__.print(*texts, **kwargs)
 
 def change_openedx_site(site_name):
