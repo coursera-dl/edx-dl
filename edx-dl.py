@@ -81,7 +81,7 @@ def print(*objects, **kwargs):
     Overload the print function to adapt for the encoding bug in Windows Console.
     It will try to convert text to the console encoding before print to prevent crashes.
     """
-    if kwargs.get('file', '') != '':
+    if kwargs.get('file', sys.stdout) is not sys.stdout:
         return __builtins__.print(*objects, **kwargs)
     texts = []
     for object in objects:
