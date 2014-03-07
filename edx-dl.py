@@ -86,6 +86,8 @@ def print(*objects, **kwargs):
         if stream is None:
             stream = sys.stdout
         enc = stream.encoding
+        if enc is None:
+            enc = sys.getdefaultencoding()
     except AttributeError:
         return __builtins__.print(*objects, **kwargs)
     texts = []
