@@ -43,7 +43,6 @@ import os
 import os.path
 import re
 import sys
-import locale
 
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
@@ -90,7 +89,7 @@ def print(*objects, **kwargs):
             original_text = str(object)
         except UnicodeEncodeError:
             original_text = unicode(object)
-        texts.append(original_text.encode(locale.getpreferredencoding(), errors='replace').decode(locale.getpreferredencoding()))
+        texts.append(original_text.encode(sys.stdout.encoding, errors='replace').decode(sys.stdout.encoding))
     return __builtins__.print(*texts, **kwargs)
 
 def change_openedx_site(site_name):
