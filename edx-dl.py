@@ -393,11 +393,10 @@ def main():
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
 
         youtube_stdout = b''
-        enc = sys.getdefaultencoding()
         while True:  # Save output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
-            print(tmp.decode(enc), end="")
+            print(tmp, end="")
             sys.stdout.flush()
             # do it until the process finish and there isn't output
             if tmp == b"" and popen_youtube.poll() is not None:
