@@ -215,6 +215,13 @@ def parse_args():
                         help='OpenEdX platform, currently either "edx" or "stanford"',
                         default='edx')
 
+    parser.add_argument('-np',
+                        '--name-prefix',
+                        action='store',
+                        dest='name_prefix',
+                        help='Try to prefix video name with numeric id and key from the link',
+                        default=False)
+
     args = parser.parse_args()
     return args
 
@@ -320,14 +327,27 @@ def main():
         # links = weeks[w_number - 1][1]
 
     if w_number == numOfWeeks + 1:
+        wct = 1
         for week in weeks:
-            #print(week[0].strip())
-            dlLinks(week[1],week[0].strip(),headers,is_interactive,args,selected_course)
+            dd = weekNum2str(wct) + week[0].strip()
+            dlLinks(week[1],dd,headers,is_interactive,args,selected_course)
+            wct = wct + 1
             print("----------\n")
     else:
         links = weeks[w_number - 1][1]
-        dd = weeks[w_number - 1][0].strip()
+        dd = weekNum2str(w_number) + weeks[w_number - 1][0].strip()
         dlLinks(links,dd,headers,is_interactive,args,selected_course)
+
+
+def weekNum2str(wnum):
+    if(wnum>=10):
+        wstr = str(wnum)
+    else:
+        wstr = '0' + str(wnum)
+
+    wstr = wstr + ' - '
+
+    return(wstr)
 
 def dlLinks(links,dd,headers,is_interactive,args,selected_course):
 
@@ -393,7 +413,11 @@ def dlLinks(links,dd,headers,is_interactive,args,selected_course):
 ##        target_dir = os.path.join(args.output_dir,
 ##                                  directory_name(selected_course[0]))
 
-        filename_prefix = N[c-1] + ' ' + str(c).zfill(2)
+        if(args.name_prefix):
+            filename_prefix = N[c-1] + ' ' + str(c).zfill(2)
+        else:
+            filename_prefix = str(c).zfill(2)
+
         #filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
