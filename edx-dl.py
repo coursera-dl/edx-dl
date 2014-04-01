@@ -58,7 +58,7 @@ OPENEDX_SITES = {
         'url': 'https://class.stanford.edu',
         'courseware-selector': ('section', {'aria-label':'Course Navigation'}),
     },
-    'usyd': {
+    'usyd-sit': {
         'url': 'http://online.it.usyd.edu.au',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
     },
@@ -216,7 +216,7 @@ def parse_args():
                         '--platform',
                         action='store',
                         dest='platform',
-                        help='OpenEdX platform, currently either "edx", "stanford" or "usyd"',
+                        help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
 
     args = parser.parse_args()
