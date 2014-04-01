@@ -166,6 +166,9 @@ def edx_get_subtitle(url, headers):
     except URLError as e:
         print('[warning] edX subtitles (error:%s)' % e.reason)
         return None
+    except ValueError as e:
+        print('[warning] edX subtitles (error:%s)' % e.message)
+        return None
 
 
 def parse_args():
@@ -334,12 +337,9 @@ def main():
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        if args.platform == 'usyd':
-            # there are no subtitles for usyd
-            subsUrls += ['' for link in video_id[-len(id_container):]]
-        else:
-            subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
-                         for id, container in zip(video_id[-len(id_container):], id_container)]
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
+                     if regexpSubs.search(container) is not None else ''
+                     for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
