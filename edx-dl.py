@@ -75,6 +75,30 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
+# To replace the print function, the following function must be placed before any other call for print
+def print(*objects, **kwargs):
+    """
+    Overload the print function to adapt for the encoding bug in Windows Console.
+    It will try to convert text to the console encoding before print to prevent crashes.
+    """
+    try:
+        stream = kwargs.get('file', None)
+        if stream is None:
+            stream = sys.stdout
+        enc = stream.encoding
+        if enc is None:
+            enc = sys.getdefaultencoding()
+    except AttributeError:
+        return __builtins__.print(*objects, **kwargs)
+    texts = []
+    for object in objects:
+        try:
+            original_text = str(object)
+        except UnicodeEncodeError:
+            original_text = unicode(object)
+        texts.append(original_text.encode(enc, errors='replace').decode(enc))
+    return __builtins__.print(*texts, **kwargs)
+
 def change_openedx_site(site_name):
     global BASE_URL
     global EDX_HOMEPAGE
@@ -375,11 +399,10 @@ def main():
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
 
         youtube_stdout = b''
-        enc = sys.getdefaultencoding()
         while True:  # Save output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
             youtube_stdout += tmp
-            print(tmp.decode(enc), end="")
+            print(tmp, end="")
             sys.stdout.flush()
             # do it until the process finish and there isn't output
             if tmp == b"" and popen_youtube.poll() is not None:
