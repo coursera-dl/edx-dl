@@ -51,12 +51,12 @@ from bs4 import BeautifulSoup
 
 OPENEDX_SITES = {
     'edx': {
-        'url': 'https://courses.edx.org', 
+        'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
-    }, 
+    },
     'stanford': {
         'url': 'https://class.stanford.edu',
-        'courseware-selector': ('section', {'aria-label':'Course Navigation'}),
+        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
     },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
@@ -109,7 +109,7 @@ def change_openedx_site(site_name):
     if site_name not in OPENEDX_SITES.keys():
         print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
         sys.exit(2)
-    
+
     BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
@@ -239,6 +239,13 @@ def parse_args():
                         help='OpenEdX platform, currently either "edx" or "stanford"',
                         default='edx')
 
+    parser.add_argument('-np',
+                        '--name-prefix',
+                        action='store',
+                        dest='name_prefix',
+                        help='Try to prefix video name with numeric id and key from the link',
+                        default=False)
+
     args = parser.parse_args()
     return args
 
@@ -252,6 +259,7 @@ def main():
         args.platform = input('Platform: ')
         args.username = input('Username: ')
         args.password = getpass.getpass()
+
 
     change_openedx_site(args.platform)
 
@@ -337,19 +345,56 @@ def main():
         print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
         w_number = int(input('Enter Your Choice: '))
 
+    # if w_number == numOfWeeks + 1:
+        # links = [link for week in weeks for link in week[1]]
+    # else:
+        # links = weeks[w_number - 1][1]
+
     if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
+        wct = 1
+        for week in weeks:
+            dd = weekNum2str(wct) + week[0].strip()
+            dlLinks(week[1],dd,headers,is_interactive,args,selected_course)
+            wct = wct + 1
+            print("----------\n")
     else:
         links = weeks[w_number - 1][1]
+        dd = weekNum2str(w_number) + weeks[w_number - 1][0].strip()
+        dlLinks(links,dd,headers,is_interactive,args,selected_course)
+
+
+def weekNum2str(wnum):
+    if(wnum>=10):
+        wstr = str(wnum)
+    else:
+        wstr = '0' + str(wnum)
+
+    wstr = wstr + ' - '
+
+    return(wstr)
+
+def dlLinks(links,dd,headers,is_interactive,args,selected_course):
+
+    target_dir = os.path.join(args.output_dir,
+                                 directory_name(selected_course[0]),directory_name(dd))
+
+    if(os.path.isdir(target_dir)):
+        print('directory exists: skipping')
+        return
 
     video_id = []
     subsUrls = []
+    N = []
     regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
+
+        yy = link.split('/')[-2]
+        yy.strip()
+        xx = directory_name(yy)
 
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -362,12 +407,18 @@ def main():
                      extra_ids]
         subsUrls += ['' for link in extra_ids]
 
+        for ii in range(len(video_id)):
+            N.append(xx)
+
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
 
+    video_link = list(set(video_link))
+
     if len(video_link) < 1:
         print('WARNING: No downloadable video found.')
-        sys.exit(0)
+        return
+        #sys.exit(0)
 
     if is_interactive:
         # Get Available Video formats
@@ -383,9 +434,15 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2)
+##        target_dir = os.path.join(args.output_dir,
+##                                  directory_name(selected_course[0]))
+
+        if(args.name_prefix):
+            filename_prefix = N[c-1] + ' ' + str(c).zfill(2)
+        else:
+            filename_prefix = str(c).zfill(2)
+
+        #filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
         if args.format:
@@ -409,14 +466,14 @@ def main():
                 break
 
         if args.subtitles:
-            filename = get_filename(target_dir, filename_prefix)
-            subs_filename = os.path.join(target_dir, filename + '.srt')
-            if not os.path.exists(subs_filename):
-                subs_string = edx_get_subtitle(s, headers)
-                if subs_string:
-                    print('[info] Writing edX subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename),
-                         'wb+').write(subs_string.encode('utf-8'))
+             filename = get_filename(target_dir, filename_prefix)
+             subs_filename = os.path.join(target_dir, filename + '.srt')
+             if not os.path.exists(subs_filename):
+                 subs_string = edx_get_subtitle(s, headers)
+                 if subs_string:
+                     print('[info] Writing edX subtitles: %s' % subs_filename)
+                     open(os.path.join(os.getcwd(), subs_filename),
+                          'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
