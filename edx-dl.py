@@ -56,7 +56,7 @@ OPENEDX_SITES = {
     }, 
     'stanford': {
         'url': 'https://class.stanford.edu',
-        'courseware-selector': ('section', {'aria-label':'Course Navigation'}),
+        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
     },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
