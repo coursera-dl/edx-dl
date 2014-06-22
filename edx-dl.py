@@ -22,6 +22,7 @@ try:
     from urllib.request import HTTPCookieProcessor
     from urllib.request import Request
     from urllib.request import URLError
+    from urllib.request import urlretrieve
 except ImportError:
     from urllib2 import urlopen
     from urllib2 import build_opener
@@ -29,6 +30,7 @@ except ImportError:
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
     from urllib2 import URLError
+    from urllib import urlretrieve
 
 # we alias the raw_input function for python 3 compatibility
 try:
@@ -61,6 +63,10 @@ OPENEDX_SITES = {
     'usyd-sit': {
         'url': 'http://online.it.usyd.edu.au',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+    },
+    'fun': {
+        'url': 'https://www.france-universite-numerique-mooc.fr',
+        'courseware-selector': ('section', {'aria-label': 'Menu du cours'}),
     },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
@@ -151,6 +157,19 @@ def get_page_contents(url, headers):
     except:
         charset = result.info().getparam('charset') or 'utf-8'
     return result.read().decode(charset)
+
+
+def download_cdn_videos(video_urls, target_dir):
+    """ This function downloads the videos from video_urls """
+    """ using a simple file downloader """
+    for i, v in enumerate(video_urls):
+        filename_prefix = str(i+1).zfill(2) + '-'
+        original_filename = v.rsplit('/', 1)[1]
+        video_filename = filename_prefix + original_filename
+        video_path = os.path.join(target_dir, video_filename)
+        # print('[debug] GET %s' % v)
+        print('[download] Destination: %s' % video_path)
+        urlretrieve(v, video_path)
 
 
 def directory_name(initial_name):
@@ -245,6 +264,12 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-c',
+                        '--use-cdn',
+                        action='store_true',
+                        dest='use_cdn',
+                        help='use cdn instead of youtube-dl to get the videos',
+                        default=False)
 
     args = parser.parse_args()
     return args
@@ -290,7 +315,6 @@ def main():
     dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
-    USERNAME = data.find_all('span')[1].string
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -304,8 +328,6 @@ def main():
     numOfCourses = len(courses)
 
     # Welcome and Choose Course
-
-    print('Welcome %s' % USERNAME)
     print('You can access %d courses' % numOfCourses)
 
     c = 0
@@ -349,14 +371,31 @@ def main():
     else:
         links = weeks[w_number - 1][1]
 
+    target_dir = os.path.join(args.output_dir,
+                              directory_name(selected_course[0]))
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
+    if is_interactive:
+        args.use_cdn = input('Use youtube-dl to download videos (y/n)? ').lower() == 'n'
+
     video_id = []
     subsUrls = []
+    cdn_video_urls = []
     regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+    # notice that not all the webpages have this field (opposite of data-streams)
+    re_cdn_video_urls = re.compile(r'data-mp4-source=(?:&#34;|")([^"&]*)(?:&#34;|")')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
+
+        if args.use_cdn:
+            page_video_urls = re_cdn_video_urls.findall(page)
+            # print("[debug] Found %s cdn videos" % len(page_video_urls))
+            cdn_video_urls.extend(page_video_urls)
+            continue
 
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -364,6 +403,7 @@ def main():
         subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
                      if regexpSubs.search(container) is not None else ''
                      for id, container in zip(video_id[-len(id_container):], id_container)]
+
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -372,6 +412,13 @@ def main():
 
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
+
+    # download cdn videos
+    if args.use_cdn:
+        if args.subtitles:
+            print('[warning] cdn downloads skips subtitles download')
+        download_cdn_videos(cdn_video_urls, target_dir)
+        sys.exit(0)
 
     if len(video_link) < 1:
         print('WARNING: No downloadable video found.')
@@ -385,14 +432,10 @@ def main():
 
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    print("[info] Output directory: " + args.output_dir)
-
     # Download Videos
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
