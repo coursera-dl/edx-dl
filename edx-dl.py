@@ -361,7 +361,7 @@ def main():
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      if regexpSubs.search(container) is not None else ''
                      for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
