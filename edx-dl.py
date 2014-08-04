@@ -51,9 +51,9 @@ from bs4 import BeautifulSoup
 
 OPENEDX_SITES = {
     'edx': {
-        'url': 'https://courses.edx.org', 
+        'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
-    }, 
+    },
     'stanford': {
         'url': 'https://class.stanford.edu',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
@@ -113,7 +113,7 @@ def change_openedx_site(site_name):
     if site_name not in OPENEDX_SITES.keys():
         print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
         sys.exit(2)
-    
+
     BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
@@ -245,6 +245,12 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-l',
+                        '--list',
+                        dest='list',
+                        action='store_true',
+                        default=False,
+                        help='list available courses without downloading')
 
     args = parser.parse_args()
     return args
@@ -312,6 +318,10 @@ def main():
     for course in courses:
         c += 1
         print('%d - %s -> %s' % (c, course[0], course[2]))
+
+    ## If list option was given, list courses and exit
+    if args.list == True:
+        sys.exit(0)
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
