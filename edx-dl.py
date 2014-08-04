@@ -260,6 +260,12 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-l',
+                        '--list',
+                        dest='list',
+                        action='store_true',
+                        default=False,
+                        help='list available courses without downloading')
 
     args = parser.parse_args()
     return args
@@ -327,6 +333,10 @@ def main():
 
     for idx, course in enumerate(courses, 1):
         print('%d - %s -> %s' % (idx, course[0], course[2]))
+
+    ## If list option was given, list courses and exit
+    if args.list == True:
+        sys.exit(0)
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
