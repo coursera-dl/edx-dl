@@ -251,6 +251,12 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='list available courses without downloading')
+    parser.add_argument('-c',
+                        '--course-number',
+                        action='store',
+                        dest='course_number',
+                        default=None,
+                        help='specify course number based on the list of courses (use -l option to get it)')
 
     args = parser.parse_args()
     return args
@@ -310,20 +316,25 @@ def main():
     numOfCourses = len(courses)
 
     # Welcome and Choose Course
+    if not args.course_number:
+        print('Welcome %s' % USERNAME)
+        print('You can access %d courses' % numOfCourses)
 
-    print('Welcome %s' % USERNAME)
-    print('You can access %d courses' % numOfCourses)
-
-    c = 0
-    for course in courses:
-        c += 1
-        print('%d - %s -> %s' % (c, course[0], course[2]))
+        c = 0
+        for course in courses:
+            c += 1
+            print('%d - %s -> %s' % (c, course[0], course[2]))
 
     ## If list option was given, list courses and exit
     if args.list == True:
         sys.exit(0)
 
-    c_number = int(input('Enter Course Number: '))
+    ## If course number was given, just use it. Otherwise, ask for one
+    if not args.course_number:
+        c_number = int(input('Enter Course Number: '))
+    else:
+        c_number = int(args.course_number)
+
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
         print('Enter a valid Number for a Started Course ! between 1 and ',
               numOfCourses)
