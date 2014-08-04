@@ -257,6 +257,18 @@ def parse_args():
                         dest='course_number',
                         default=None,
                         help='specify course number based on the list of courses (use -l option to get it)')
+    parser.add_argument('-w',
+                        '--week',
+                        action='store',
+                        dest='week',
+                        default=None,
+                        help='specify which week to download)')
+    parser.add_argument('-lw',
+                        '--list-weeks',
+                        action='store_true',
+                        dest='week_list',
+                        default=False,
+                        help='list available weeks to download)')
 
     args = parser.parse_args()
     return args
@@ -271,6 +283,10 @@ def main():
         args.platform = input('Platform: ')
         args.username = input('Username: ')
         args.password = getpass.getpass()
+
+    if args.week_list and not args.course_number:
+        print("You must specify a course number with the -c option in order to list its week numbers")
+        sys.exit(2)
 
     change_openedx_site(args.platform)
 
@@ -353,14 +369,22 @@ def main():
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    w = 0
-    for week in weeks:
-        w += 1
-        print('%d - Download %s videos' % (w, week[0].strip()))
-    print('%d - Download them all' % (numOfWeeks + 1))
+    if not args.week or args.week_list:
+        print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
+        w = 0
+        for week in weeks:
+            w += 1
+            print('%d - Download %s videos' % (w, week[0].strip()))
+        print('%d - Download them all' % (numOfWeeks + 1))
 
-    w_number = int(input('Enter Your Choice: '))
+        if not args.week_list:
+            w_number = int(input('Enter Your Choice: '))
+        else:
+            sys.exit(0)
+
+    else:
+        w_number = int(args.week)
+
     while w_number > numOfWeeks + 1:
         print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
         w_number = int(input('Enter Your Choice: '))
@@ -382,7 +406,7 @@ def main():
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      if regexpSubs.search(container) is not None else ''
                      for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
