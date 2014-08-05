@@ -80,28 +80,28 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 # To replace the print function, the following function must be placed before any other call for print
-def print(*objects, **kwargs):
-    """
-    Overload the print function to adapt for the encoding bug in Windows Console.
-    It will try to convert text to the console encoding before print to prevent crashes.
-    """
-    try:
-        stream = kwargs.get('file', None)
-        if stream is None:
-            stream = sys.stdout
-        enc = stream.encoding
-        if enc is None:
-            enc = sys.getdefaultencoding()
-    except AttributeError:
-        return __builtins__.print(*objects, **kwargs)
-    texts = []
-    for object in objects:
-        try:
-            original_text = str(object)
-        except UnicodeEncodeError:
-            original_text = unicode(object)
-        texts.append(original_text.encode(enc, errors='replace').decode(enc))
-    return __builtins__.print(*texts, **kwargs)
+#def print(*objects, **kwargs):
+    #"""
+    #Overload the print function to adapt for the encoding bug in Windows Console.
+    #It will try to convert text to the console encoding before print to prevent crashes.
+    #"""
+    #try:
+        #stream = kwargs.get('file', None)
+        #if stream is None:
+            #stream = sys.stdout
+        #enc = stream.encoding
+        #if enc is None:
+            #enc = sys.getdefaultencoding()
+    #except AttributeError:
+        #return __builtins__.print(*objects, **kwargs)
+    #texts = []
+    #for object in objects:
+        #try:
+            #original_text = str(object)
+        #except UnicodeEncodeError:
+            #original_text = unicode(object)
+        #texts.append(original_text.encode(enc, errors='replace').decode(enc))
+    #return __builtins__.print(*texts, **kwargs)
 
 def change_openedx_site(site_name):
     global BASE_URL
