@@ -51,9 +51,9 @@ from bs4 import BeautifulSoup
 
 OPENEDX_SITES = {
     'edx': {
-        'url': 'https://courses.edx.org', 
+        'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
-    }, 
+    },
     'stanford': {
         'url': 'https://class.stanford.edu',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
@@ -80,28 +80,28 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 # To replace the print function, the following function must be placed before any other call for print
-def print(*objects, **kwargs):
-    """
-    Overload the print function to adapt for the encoding bug in Windows Console.
-    It will try to convert text to the console encoding before print to prevent crashes.
-    """
-    try:
-        stream = kwargs.get('file', None)
-        if stream is None:
-            stream = sys.stdout
-        enc = stream.encoding
-        if enc is None:
-            enc = sys.getdefaultencoding()
-    except AttributeError:
-        return __builtins__.print(*objects, **kwargs)
-    texts = []
-    for object in objects:
-        try:
-            original_text = str(object)
-        except UnicodeEncodeError:
-            original_text = unicode(object)
-        texts.append(original_text.encode(enc, errors='replace').decode(enc))
-    return __builtins__.print(*texts, **kwargs)
+#def print(*objects, **kwargs):
+    #"""
+    #Overload the print function to adapt for the encoding bug in Windows Console.
+    #It will try to convert text to the console encoding before print to prevent crashes.
+    #"""
+    #try:
+        #stream = kwargs.get('file', None)
+        #if stream is None:
+            #stream = sys.stdout
+        #enc = stream.encoding
+        #if enc is None:
+            #enc = sys.getdefaultencoding()
+    #except AttributeError:
+        #return __builtins__.print(*objects, **kwargs)
+    #texts = []
+    #for object in objects:
+        #try:
+            #original_text = str(object)
+        #except UnicodeEncodeError:
+            #original_text = unicode(object)
+        #texts.append(original_text.encode(enc, errors='replace').decode(enc))
+    #return __builtins__.print(*texts, **kwargs)
 
 def change_openedx_site(site_name):
     global BASE_URL
@@ -113,7 +113,7 @@ def change_openedx_site(site_name):
     if site_name not in OPENEDX_SITES.keys():
         print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
         sys.exit(2)
-    
+
     BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
@@ -245,6 +245,30 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-l',
+                        '--list',
+                        dest='list',
+                        action='store_true',
+                        default=False,
+                        help='list available courses without downloading')
+    parser.add_argument('-c',
+                        '--course-number',
+                        action='store',
+                        dest='course_number',
+                        default=None,
+                        help='specify course number based on the list of courses (use -l option to get it)')
+    parser.add_argument('-w',
+                        '--week',
+                        action='store',
+                        dest='week',
+                        default=None,
+                        help='specify which week to download)')
+    parser.add_argument('-lw',
+                        '--list-weeks',
+                        action='store_true',
+                        dest='week_list',
+                        default=False,
+                        help='list available weeks to download)')
 
     args = parser.parse_args()
     return args
@@ -259,6 +283,10 @@ def main():
         args.platform = input('Platform: ')
         args.username = input('Username: ')
         args.password = getpass.getpass()
+
+    if args.week_list and not args.course_number:
+        print("You must specify a course number with the -c option in order to list its week numbers")
+        sys.exit(2)
 
     change_openedx_site(args.platform)
 
@@ -304,16 +332,25 @@ def main():
     numOfCourses = len(courses)
 
     # Welcome and Choose Course
+    if not args.course_number:
+        print('Welcome %s' % USERNAME)
+        print('You can access %d courses' % numOfCourses)
 
-    print('Welcome %s' % USERNAME)
-    print('You can access %d courses' % numOfCourses)
+        c = 0
+        for course in courses:
+            c += 1
+            print('%d - %s -> %s' % (c, course[0], course[2]))
 
-    c = 0
-    for course in courses:
-        c += 1
-        print('%d - %s -> %s' % (c, course[0], course[2]))
+    ## If list option was given, list courses and exit
+    if args.list == True:
+        sys.exit(0)
 
-    c_number = int(input('Enter Course Number: '))
+    ## If course number was given, just use it. Otherwise, ask for one
+    if not args.course_number:
+        c_number = int(input('Enter Course Number: '))
+    else:
+        c_number = int(args.course_number)
+
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
         print('Enter a valid Number for a Started Course ! between 1 and ',
               numOfCourses)
@@ -332,14 +369,22 @@ def main():
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    w = 0
-    for week in weeks:
-        w += 1
-        print('%d - Download %s videos' % (w, week[0].strip()))
-    print('%d - Download them all' % (numOfWeeks + 1))
+    if not args.week or args.week_list:
+        print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
+        w = 0
+        for week in weeks:
+            w += 1
+            print('%d - Download %s videos' % (w, week[0].strip()))
+        print('%d - Download them all' % (numOfWeeks + 1))
 
-    w_number = int(input('Enter Your Choice: '))
+        if not args.week_list:
+            w_number = int(input('Enter Your Choice: '))
+        else:
+            sys.exit(0)
+
+    else:
+        w_number = int(args.week)
+
     while w_number > numOfWeeks + 1:
         print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
         w_number = int(input('Enter Your Choice: '))
@@ -361,7 +406,7 @@ def main():
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      if regexpSubs.search(container) is not None else ''
                      for id, container in zip(video_id[-len(id_container):], id_container)]
         # Try to download some extra videos which is referred by iframe
@@ -391,8 +436,13 @@ def main():
     c = 0
     for v, s in zip(video_link, subsUrls):
         c += 1
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
+        if not args.output_dir:
+            # If output directory is not given, use course name for output directory name
+            target_dir = os.path.join(args.output_dir,
+                                      directory_name(selected_course[0]))
+        else:
+            target_dir = os.path.join(args.output_dir)
+
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
