@@ -97,10 +97,10 @@ def print(*objects, **kwargs):
     texts = []
     for object in objects:
         try:
-            original_text = str(object)
+            original_text = str(object).decode(enc, errors='replace')
         except UnicodeEncodeError:
-            original_text = unicode(object)
-        texts.append(original_text.encode(enc, errors='replace').decode(enc))
+            original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
+        texts.append(original_text)
     return __builtins__.print(*texts, **kwargs)
 
 def change_openedx_site(site_name):
