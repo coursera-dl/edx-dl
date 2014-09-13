@@ -260,6 +260,12 @@ def main():
         args.username = input('Username: ')
         args.password = getpass.getpass()
 
+    # If just the password is missing, query it interactively. This allows to
+    # specify everything else on the command line without having your password
+    # saved in the history.
+    if None == args.password:
+        args.password = getpass.getpass()
+
     change_openedx_site(args.platform)
 
     if not args.username or not args.password:
