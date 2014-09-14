@@ -69,6 +69,9 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
+# Empty set indicating a parse error or no week selected at all.
+NO_WEEKS = frozenset()
+
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 ## If nothing else is chosen, we chose the default user agent:
@@ -151,6 +154,15 @@ def get_page_contents(url, headers):
     except:
         charset = result.info().getparam('charset') or 'utf-8'
     return result.read().decode(charset)
+
+
+def input_week_numbers():
+    choices = input('Enter Your Choice: ').split()
+    try:
+        w_numbers = frozenset(map(int, choices))
+    except ValueError:
+        w_numbers = NO_WEEKS
+    return w_numbers
 
 
 def directory_name(initial_name):
@@ -250,6 +262,27 @@ def parse_args():
     return args
 
 
+def query_week_numbers(weeks):
+    VALID_W_NUMBERS = frozenset(range(1, weeks + 1))
+    # A magic week number to download them all
+    ALL_WEEKS = frozenset([weeks + 1])
+
+    w_numbers = input_week_numbers()
+    if ALL_WEEKS == w_numbers:
+        w_numbers = VALID_W_NUMBERS
+
+    while not (NO_WEEKS < w_numbers and w_numbers <= VALID_W_NUMBERS):
+        print('Enter valid week numbers between %d and %d, or %d for all weeks'
+            % (min(VALID_W_NUMBERS), max(VALID_W_NUMBERS), min(ALL_WEEKS)))
+
+        w_numbers = input_week_numbers()
+        if ALL_WEEKS == w_numbers:
+            w_numbers = VALID_W_NUMBERS
+
+    return w_numbers
+
+
+
 def main():
     args = parse_args()
 
@@ -345,15 +378,11 @@ def main():
         print('%d - Download %s videos' % (w, week[0].strip()))
     print('%d - Download them all' % (numOfWeeks + 1))
 
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
-        w_number = int(input('Enter Your Choice: '))
+    w_numbers = query_week_numbers(numOfWeeks);
 
-    if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
-    else:
-        links = weeks[w_number - 1][1]
+    links = []
+    for w_number in w_numbers:
+        links += [link for link in weeks[w_number - 1][1]]
 
     video_id = []
     subsUrls = []
