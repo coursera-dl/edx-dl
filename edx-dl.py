@@ -380,17 +380,21 @@ def main():
 
     w_numbers = query_week_numbers(numOfWeeks);
 
-    links = []
+    link_infos = []
     for w_number in w_numbers:
-        links += [link for link in weeks[w_number - 1][1]]
+        link_infos += [(w_number, link) for link in weeks[w_number - 1][1]]
 
     video_id = []
     subsUrls = []
+    sections = []
     regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
-    for link in links:
-        print("Processing '%s'..." % link)
+    for link_info in link_infos:
+        section = link_info[0];
+        link = link_info[1];
+
+        print("Processing %d: '%s'..." % (section, link))
         page = get_page_contents(link, headers)
 
         id_container = splitter.split(page)[1:]
@@ -399,11 +403,14 @@ def main():
         subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      if regexpSubs.search(container) is not None else ''
                      for id, container in zip(video_id[-len(id_container):], id_container)]
+        sections += [section for link in id_container]
+
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      extra_ids]
         subsUrls += ['' for link in extra_ids]
+        sections += [section for link in extra_ids]
 
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
@@ -423,12 +430,17 @@ def main():
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
+    last_section = None
     c = 0
-    for v, s in zip(video_link, subsUrls):
+    for v, s, section in zip(video_link, subsUrls, sections):
+        if last_section != section:
+            c = 0
+        last_section = section
+
         c += 1
         target_dir = os.path.join(args.output_dir,
                                   directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2)
+        filename_prefix = str(section).zfill(2) + '-' + str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
         if args.format:
