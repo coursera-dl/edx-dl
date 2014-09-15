@@ -69,6 +69,9 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
+# Empty set indicating a parse error or no week selected at all.
+NO_WEEKS = frozenset()
+
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 ## If nothing else is chosen, we chose the default user agent:
@@ -151,6 +154,15 @@ def get_page_contents(url, headers):
     except:
         charset = result.info().getparam('charset') or 'utf-8'
     return result.read().decode(charset)
+
+
+def input_week_numbers():
+    choices = input('Enter Your Choice: ').split()
+    try:
+        w_numbers = frozenset(map(int, choices))
+    except ValueError:
+        w_numbers = NO_WEEKS
+    return w_numbers
 
 
 def directory_name(initial_name):
@@ -250,6 +262,27 @@ def parse_args():
     return args
 
 
+def query_week_numbers(weeks):
+    VALID_W_NUMBERS = frozenset(range(1, weeks + 1))
+    # A magic week number to download them all
+    ALL_WEEKS = frozenset([weeks + 1])
+
+    w_numbers = input_week_numbers()
+    if ALL_WEEKS == w_numbers:
+        w_numbers = VALID_W_NUMBERS
+
+    while not (NO_WEEKS < w_numbers and w_numbers <= VALID_W_NUMBERS):
+        print('Enter valid week numbers between %d and %d, or %d for all weeks'
+            % (min(VALID_W_NUMBERS), max(VALID_W_NUMBERS), min(ALL_WEEKS)))
+
+        w_numbers = input_week_numbers()
+        if ALL_WEEKS == w_numbers:
+            w_numbers = VALID_W_NUMBERS
+
+    return w_numbers
+
+
+
 def main():
     args = parse_args()
 
@@ -258,6 +291,12 @@ def main():
     if is_interactive:
         args.platform = input('Platform: ')
         args.username = input('Username: ')
+        args.password = getpass.getpass()
+
+    # If just the password is missing, query it interactively. This allows to
+    # specify everything else on the command line without having your password
+    # saved in the history.
+    if None == args.password:
         args.password = getpass.getpass()
 
     change_openedx_site(args.platform)
@@ -339,36 +378,39 @@ def main():
         print('%d - Download %s videos' % (w, week[0].strip()))
     print('%d - Download them all' % (numOfWeeks + 1))
 
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
-        w_number = int(input('Enter Your Choice: '))
+    w_numbers = query_week_numbers(numOfWeeks);
 
-    if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
-    else:
-        links = weeks[w_number - 1][1]
+    link_infos = []
+    for w_number in w_numbers:
+        link_infos += [(w_number, link) for link in weeks[w_number - 1][1]]
 
     video_id = []
     subsUrls = []
+    sections = []
     regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
-    for link in links:
-        print("Processing '%s'..." % link)
+    for link_info in link_infos:
+        section = link_info[0];
+        link = link_info[1];
+
+        print("Processing %d: '%s'..." % (section, link))
         page = get_page_contents(link, headers)
 
         id_container = splitter.split(page)[1:]
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
+        subsUrls += [BASE_URL + regexpSubs.search(container).group(1) + "?videoId=" + id + "&language=en"
                      if regexpSubs.search(container) is not None else ''
                      for id, container in zip(video_id[-len(id_container):], id_container)]
+        sections += [section for link in id_container]
+
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      extra_ids]
         subsUrls += ['' for link in extra_ids]
+        sections += [section for link in extra_ids]
 
     video_link = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_id]
@@ -388,12 +430,17 @@ def main():
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
+    last_section = None
     c = 0
-    for v, s in zip(video_link, subsUrls):
+    for v, s, section in zip(video_link, subsUrls, sections):
+        if last_section != section:
+            c = 0
+        last_section = section
+
         c += 1
         target_dir = os.path.join(args.output_dir,
                                   directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2)
+        filename_prefix = str(section).zfill(2) + '-' + str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
         if args.format:
