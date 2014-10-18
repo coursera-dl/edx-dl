@@ -113,7 +113,7 @@ def change_openedx_site(site_name):
     if site_name not in OPENEDX_SITES.keys():
         print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
         sys.exit(2)
-    
+
     BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
@@ -349,47 +349,51 @@ def main():
     else:
         links = weeks[w_number - 1][1]
 
-    video_id = []
-    subsUrls = []
-    regexpSubs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    if is_interactive:
+        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
+
+    video_ids = []
+    sub_urls = []
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
-
-        id_container = splitter.split(page)[1:]
-        video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
-                     id_container]
-        subsUrls += [BASE_URL + regexpSubs.search(container).group(2) + "?videoId=" + id + "&language=en"
-                     if regexpSubs.search(container) is not None else ''
-                     for id, container in zip(video_id[-len(id_container):], id_container)]
+        sections = splitter.split(page)[1:]
+        for section in sections:
+            video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
+            sub_url = ''
+            if args.subtitles:
+                match_subs = re_subs.search(section)
+                if match_subs:
+                    sub_url = BASE_URL + match_subs.group(1) + "en" + "?videoId=" + video_id
+            video_ids += [video_id]
+            sub_urls += [sub_url]
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
-        video_id += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
+        video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                      extra_ids]
-        subsUrls += ['' for link in extra_ids]
+        sub_urls += ['' for e_id in extra_ids]
 
-    video_link = ['http://youtube.com/watch?v=' + v_id
-                  for v_id in video_id]
+    video_urls = ['http://youtube.com/watch?v=' + v_id
+                  for v_id in video_ids]
 
-    if len(video_link) < 1:
+    if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
 
     if is_interactive:
         # Get Available Video formats
-        os.system('youtube-dl -F %s' % video_link[-1])
+        os.system('youtube-dl -F %s' % video_urls[-1])
         print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
         args.format = input('Choose Format code: ')
-
-        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
     c = 0
-    for v, s in zip(video_link, subsUrls):
+    for v, s in zip(video_urls, sub_urls):
         c += 1
         target_dir = os.path.join(args.output_dir,
                                   directory_name(selected_course[0]))
