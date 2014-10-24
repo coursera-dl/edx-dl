@@ -153,6 +153,60 @@ def get_page_contents(url, headers):
     return result.read().decode(charset)
 
 
+def download_cdn_videos(names,cdn_sub_urls,video_urls, target_dir):
+    """ This function downloads the videos from video_urls """
+    """ using a simple file downloader """
+    for i, v in enumerate(video_urls):
+        filename_prefix = str(i+1).zfill(2) + '-'
+        original_filename = v.rsplit('/', 1)[1]
+        video_filename = names[i] + '.mp4'
+        srt_filename = names[i] + '.srt'
+        video_path = os.path.join(target_dir, video_filename)
+        srt_path = os.path.join(target_dir, srt_filename)
+        #print('[debug] GET %s' % v)
+        print('[download] Destination: %s' % video_path)
+        req = Request(v)
+        video = urlopen(v)
+        fileSize = int(video.headers['content-length'])
+        finish = False
+        existSize = 0
+        if os.path.exists(video_path):
+            output = open(video_path,"ab")
+            existSize = os.path.getsize(video_path)
+            #If the file exists, then only download the remainder
+            if existSize < fileSize:
+                #print("[debug] bytes range is: %s-%s" % (existSize,fileSize))
+                req.headers["Range"]= "bytes=%s-%s" % (existSize,fileSize)
+                video = urlopen(req)
+            else:
+                finish = True
+        else:
+            output = open(video_path,"wb")
+        if finish == False:
+            file_size_dl = existSize
+            block_sz = 65536
+            while True:
+                buffer = video.read(block_sz)
+                if not buffer:
+                    break
+                                                                                             
+                file_size_dl += len(buffer)
+                output.write(buffer)
+                status = r"%10d  [%3.2f%%]" % (file_size_dl, file_size_dl * 100. / fileSize)
+                status = status + chr(8)*(len(status)+1)
+                sys.stdout.write(status)
+                sys.stdout.flush()
+            
+        output.close()
+        if cdn_sub_urls[i] != "":
+            #print('[debug] GET %s' % BASE_URL+cdn_sub_urls[i])
+            srtfile = urlopen(BASE_URL+cdn_sub_urls[i])
+            output = open(srt_path,'wb')
+            output.write(srtfile.read())
+            output.close()
+
+
+
 def directory_name(initial_name):
     import string
     allowed_chars = string.digits+string.ascii_letters+" _."
@@ -245,6 +299,12 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-c',
+                        '--use-cdn',
+                        action='store_true',
+                        dest='use_cdn',
+                        help='use cdn instead of youtube-dl to get the videos',
+                        default=False)
 
     args = parser.parse_args()
     return args
@@ -329,7 +389,13 @@ def main():
     WEEKS = data.find_all('div')
     weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
+    
     numOfWeeks = len(weeks)
+    ## Getting filenames
+    #soup2 = BeautifulSoup(ul[2].string)
+    #lis = soup2.select("li")
+    fileweeks = [(w.h3.a.string, [a.getText().replace('\n', '').replace('  ','')  for a in
+             w.ul.select('li > a')]) for w in WEEKS]
 
     # Choose Week or choose all
     print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
@@ -338,6 +404,7 @@ def main():
         w += 1
         print('%d - Download %s videos' % (w, week[0].strip()))
     print('%d - Download them all' % (numOfWeeks + 1))
+    
 
     w_number = int(input('Enter Your Choice: '))
     while w_number > numOfWeeks + 1:
@@ -346,20 +413,52 @@ def main():
 
     if w_number == numOfWeeks + 1:
         links = [link for week in weeks for link in week[1]]
+        files = [file for week in fileweeks for file in week[1]]
     else:
         links = weeks[w_number - 1][1]
+        files = fileweeks[w_number - 1][1]
+
+    target_dir = os.path.join(args.output_dir,
+                              directory_name(selected_course[0]))
+    if not os.path.exists(target_dir):
+        os.makedirs(target_dir)
+
+    if is_interactive:
+        args.use_cdn = input('Use youtube-dl to download videos (y/n)? ').lower() == 'n'
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     video_ids = []
     sub_urls = []
+    cdn_video_urls = []
+    cdn_sub_urls = []
+    
     splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    # notice that not all the webpages have this field (opposite of data-streams)
+    re_cdn_video_urls = re.compile(r'href=&#34;(https://[^"&]*mp4)')
+    re_cdn_sub_urls = re.compile(r'href=&#34;([^"&]*transcript/download)')
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
+    i = 0
+    filenames = []
     for link in links:
         print("Processing '%s'..." % link)
         page = get_page_contents(link, headers)
+
+        if args.use_cdn:
+            page_video_urls = re_cdn_video_urls.findall(page)
+            cdn_suburl = re_cdn_sub_urls.findall(page)
+            #print("[debug] Found %s cdn videos" % len(page_video_urls))
+            cdn_video_urls.extend(page_video_urls)
+            if len(page_video_urls) != 0:
+               filenames.append(files[i])
+               if len(cdn_suburl) != 0:           
+                  cdn_sub_urls.extend(cdn_suburl)
+               else:
+                  cdn_sub_urls.append("")
+            i = i + 1
+            continue
         sections = splitter.split(page)[1:]
         for section in sections:
             video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
@@ -370,6 +469,7 @@ def main():
                     sub_url = BASE_URL + match_subs.group(1) + "en" + "?videoId=" + video_id
             video_ids += [video_id]
             sub_urls += [sub_url]
+
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
@@ -378,6 +478,11 @@ def main():
 
     video_urls = ['http://youtube.com/watch?v=' + v_id
                   for v_id in video_ids]
+    # download cdn videos
+    if args.use_cdn:
+        #print(filenames)
+        download_cdn_videos(filenames,cdn_sub_urls,cdn_video_urls, target_dir)
+        sys.exit(0)
 
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
@@ -395,8 +500,6 @@ def main():
     c = 0
     for v, s in zip(video_urls, sub_urls):
         c += 1
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
