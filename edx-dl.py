@@ -51,23 +51,21 @@ from bs4 import BeautifulSoup
 
 OPENEDX_SITES = {
     'edx': {
-        'url': 'https://courses.edx.org', 
-        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+        'url': 'https://courses.edx.org'
     }, 
     'stanford': {
-        'url': 'https://class.stanford.edu',
-        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+        'url': 'https://class.stanford.edu'
     },
     'usyd-sit': {
-        'url': 'http://online.it.usyd.edu.au',
-        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+        'url': 'http://online.it.usyd.edu.au'
     },
 }
+
+COURSEWARE_NAV={ 'en':'Course Navigation','zh-cn':'课程导航','fr':'Menu du cours','es-419':'Navegación del curso','hi':'पाठ्यक्रम नेविगेशन','pt-br':'Navegação do curso' }
 BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
-COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
@@ -108,7 +106,6 @@ def change_openedx_site(site_name):
     global EDX_HOMEPAGE
     global LOGIN_API
     global DASHBOARD
-    global COURSEWARE_SEL
 
     if site_name not in OPENEDX_SITES.keys():
         print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
@@ -118,7 +115,6 @@ def change_openedx_site(site_name):
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
-    COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 def get_initial_token():
     """
@@ -336,6 +332,8 @@ def html_decode(s):
     return s
 
 def main():
+    reload(sys)  
+    sys.setdefaultencoding('utf8')
     global args 
     args = parse_args()
     # if no args means we are calling the interactive version
@@ -410,7 +408,7 @@ def main():
     ## Getting Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
-
+    COURSEWARE_SEL= ('nav',{'aria-label':COURSEWARE_NAV[soup.html.get('lang')]})
     data = soup.find(*COURSEWARE_SEL)
     WEEKS = data.find_all('div')
     weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
