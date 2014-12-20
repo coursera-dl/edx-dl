@@ -22,6 +22,7 @@ try:
     from urllib.request import HTTPCookieProcessor
     from urllib.request import Request
     from urllib.request import URLError
+    import configparser
 except ImportError:
     from urllib2 import urlopen
     from urllib2 import build_opener
@@ -29,10 +30,16 @@ except ImportError:
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
     from urllib2 import URLError
+    import ConfigParser
 
 # we alias the raw_input function for python 3 compatibility
 try:
     input = raw_input
+except:
+    pass
+
+try:
+    ConfigParser = configparser
 except:
     pass
 
@@ -43,6 +50,7 @@ import os
 import os.path
 import re
 import sys
+import imp
 
 from subprocess import Popen, PIPE
 from datetime import timedelta, datetime
@@ -197,7 +205,7 @@ def download_cdn_videos(filenames,sub_urls,video_urls, target_dir):
                   
               output.close()
 
-           except URLError, e:
+           except URLError as e:
                 print("[warning]error: %r when downloading %s" % (e.reason,v) )
 
         else:
@@ -332,12 +340,26 @@ def html_decode(s):
     return s
 
 def main():
-    reload(sys)  
-    sys.setdefaultencoding('utf8')
+    try:
+        imp.reload(sys)  
+        sys.setdefaultencoding('utf8')
+    except:
+        pass
+    PYTHONIOENCODING="utf-8"
+    config = ConfigParser.ConfigParser()
     global args 
     args = parse_args()
+    for loc in os.curdir, os.path.expanduser("~")+"/.edx-dl" :
+        try: 
+            with open(os.path.join(loc,"config")) as source:
+                config.readfp( source )
+                args.platform = config.get('basic','platform')
+                args.username = config.get('basic','username')
+                args.password = config.get('basic','password')
+        except IOError:
+            pass
     # if no args means we are calling the interactive version
-    is_interactive = len(sys.argv) == 1
+    is_interactive = len(sys.argv) == 1 and args.username == ""
     if is_interactive:
         args.platform = input('Platform: ')
         args.username = input('Username: ')
@@ -462,7 +484,7 @@ def main():
     wsub_urls = []
     wfolders = []
     NoOfVideo = 0
-    for iw in xrange(startw,endw+1):
+    for iw in range(startw,endw+1):
         video_urls = []
         sub_urls = []
         i = 0
