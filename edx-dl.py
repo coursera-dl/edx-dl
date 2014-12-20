@@ -359,7 +359,7 @@ def main():
         except IOError:
             pass
     # if no args means we are calling the interactive version
-    is_interactive = len(sys.argv) == 1 and args.username == ""
+    is_interactive = len(sys.argv) == 1 and (args.username == "" or args.username==None)
     if is_interactive:
         args.platform = input('Platform: ')
         args.username = input('Username: ')
