@@ -548,7 +548,7 @@ def download_youtube_video(video_id, file_path):
     try:                                                                                                                       
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)                                                                   
     except OSError:                                                                                                            
-        print("[warning] youtube-dl not installed, video:%s couldn't be downloaed" %v)                                         
+        print("[warning] youtube-dl not installed, video:%s couldn't be downloaed" %video_id)                                         
         return                                                                                                               
     youtube_stdout = b''                                                                                                       
     while True:  # Save output to youtube_stdout while this being echoed                                                       
