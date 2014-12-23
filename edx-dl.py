@@ -443,6 +443,8 @@ def get_filename(target_dir, filename_prefix):
         if name.startswith(filename_prefix):
             (basename, ext) = os.path.splitext(name)
             return basename
+    print('[warning] no video downloaded for %s' % filename_prefix)
+    return filename_prefix
 
 if __name__ == '__main__':
     try:
