@@ -228,12 +228,12 @@ def download_cdn_videos(filenames,sub_urls,video_urls, target_dir):
 
 
 def directory_name(initial_name):
-    import string
-    allowed_chars = string.digits+string.ascii_letters+" _.&-"
-    result_name = ""
-    for ch in initial_name:
-        if allowed_chars.find(ch) != -1:
-            result_name += ch
+    import re
+    #allowed_chars = string.digits+string.ascii_letters+" _.&-"
+    result_name = re.sub('[\\/:"*?<>|]+','',html_decode(initial_name).replace(': ','-')).strip()
+    #for ch in initial_name:
+        #if allowed_chars.find(ch) != -1:
+            #result_name += ch
     return result_name if result_name != "" else "course_folder"
 
 
@@ -473,7 +473,7 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
     
-    re_videomules  = re.compile(r'xmodule_VideoModule.*?h2(?:>|&gt;)(.*?)(?:&lt;|<)\/h2.*?data-streams=(?:&#34;|").*1.0[0]*:(.*?)(?:&#34;|").*?data-transcript-translation-url=(?:&#34;|")(.*?)(?:&#34;|").*?wrapper-downloads(.*?)(?:&lt;|<)\/ul',re.DOTALL)
+    re_videomules  = re.compile(r'xmodule_VideoModule.*?h2(?:>|&gt;)(.*?)(?:&lt;|<)\/h2.*?data-streams=(?:&#34;|").*?(?:1.0[0]*:|.*?)(.*?)(?:&#34;|").*?data-sources=&#39;\[(.*?)\]&#39;.*?data-transcript-translation-url=(?:&#34;|")(.*?)(?:&#34;|").*?wrapper-downloads(.*?)(?:&lt;|<)\/ul',re.DOTALL)
     # notice that not all the webpages have this field (opposite of data-streams)
     re_video_urls = re.compile(r'href=(?:&#34;|")([^"&]*mp4)')
     
@@ -503,18 +503,22 @@ def main():
                 else : #If only one video in this section && the video's name is Video, use section name as filename instead
                     tmpname=re.sub('[\\/:"*?<>|]+','',html_decode(fileweeks[iw][1][i]).replace(': ','-')).strip()
                     filenames.append(tmpname)
-                
-                sub_urls.append(BASE_URL + video_m[2] + "en" + "?videoId=" + video_m[1]) 
-                if args.use_cdn:    
-                    page_video_urls = re_video_urls.findall(video_m[3])                                                         
-                    if len(page_video_urls) != 0:                                                                               
-                        video_urls.extend(page_video_urls)                                                                      
+                if video_m[1]=="":
+                   video_sources=video_m[2].split(",")
+                   video_urls.append(html_decode(video_sources[0]).replace('"',''))
+                   sub_urls.append("")
+                else:   
+                    sub_urls.append(BASE_URL + video_m[3] + "en" + "?videoId=" + video_m[1]) 
+                    if args.use_cdn:    
+                        page_video_urls = re_video_urls.findall(video_m[4])                                                     
+                        if len(page_video_urls) != 0:                                                                           
+                            video_urls.extend(page_video_urls)                                                                  
+                        else:                                                                                                   
+                            video_urls.append(video_m[1])
+                        #print(page_video_urls)                                                                                 
                     else:                                                                                                       
-                        video_urls.append(video_m[1])
-                    #print(page_video_urls)                                                                                 
-                else:                                                                                                       
-                    video_urls.append(video_m[1])                                                                           
-                    #print(video_m[1])                                                                                      
+                        video_urls.append(video_m[1])                                                                           
+                        #print(video_m[1])                                                                                      
                                                                                                                             
             #print("[debug] Found %s cdn videos" % len(page_video_urls))                                                    
             i = i + 1                                                                                                       
