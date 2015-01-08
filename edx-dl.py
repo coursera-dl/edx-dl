@@ -157,7 +157,7 @@ def get_page_contents(url, headers):
     return result.read().decode(charset)
 
 
-def download_cdn_videos(filenames,sub_urls,video_urls, target_dir):
+def download_cdn_videos(filenames,sub_urls,handout_urls,video_urls, target_dir):
     """ This function downloads the videos from video_urls """
     """ using a simple file downloader """
     for i, v in enumerate(video_urls):
@@ -165,8 +165,10 @@ def download_cdn_videos(filenames,sub_urls,video_urls, target_dir):
         #original_filename = v.rsplit('/', 1)[1]
         video_filename = filename_prefix + filenames[i] + '.mp4'
         sub_filename = filename_prefix + filenames[i] + '.srt'
+        handout_filename = filename_prefix + filenames[i] + '.srt'
         video_path = os.path.join(target_dir, video_filename)
         sub_path = os.path.join(target_dir, sub_filename)
+        handout_path = os.path.join(target_dir, handout_filename)
         #print('[debug] GET %s' % v)
         print('[download] Destination: %s' % video_path)
         if len(v) != YOUTUBE_VIDEO_ID_LENGTH:
@@ -220,6 +222,14 @@ def download_cdn_videos(filenames,sub_urls,video_urls, target_dir):
                     open(os.path.join(os.getcwd(), sub_path),
                          'wb+').write(subs_string.encode('utf-8'))
 
+        if handout_urls[i] != "":
+            #print('[debug] GET %s' % BASE_URL+sub_urls[i])
+            if not os.path.exists(handout_path):
+                handout_content = urlopen(BASE_URL+handout_urls[i]).read()
+                if handout_content:
+                    print('[info] Writing handout: %s' % handout_path)
+                    open(os.path.join(os.getcwd(), handout_path),
+                         'wb+').write(handout_content)
             #srtfile = urlopen(BASE_URL+sub_urls[i])
             #output = open(srt_path,'wb')
             #output.write(srtfile.read())
@@ -476,17 +486,19 @@ def main():
     re_videomules  = re.compile(r'xmodule_VideoModule.*?h2(?:>|&gt;)(.*?)(?:&lt;|<)\/h2.*?data-streams=(?:&#34;|").*?(?:1.0[0]*:|.*?)(.*?)(?:&#34;|").*?data-sources=&#39;\[(.*?)\]&#39;.*?data-transcript-translation-url=(?:&#34;|")(.*?)(?:&#34;|").*?wrapper-downloads(.*?)(?:&lt;|<)\/ul',re.DOTALL)
     # notice that not all the webpages have this field (opposite of data-streams)
     re_video_urls = re.compile(r'href=(?:&#34;|")([^"&]*mp4)')
-    
+    re_handout_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
      
     extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     wfilenames = []
     wvideo_urls = []
     wsub_urls = []
+    whandout_urls = []
     wfolders = []
     NoOfVideo = 0
     for iw in range(startw,endw+1):
         video_urls = []
         sub_urls = []
+        handout_urls = []
         i = 0
         filenames = []
         for link in weeks[iw][1]:                                                                   
@@ -511,10 +523,16 @@ def main():
                     sub_urls.append(BASE_URL + video_m[3] + "en" + "?videoId=" + video_m[1]) 
                     if args.use_cdn:    
                         page_video_urls = re_video_urls.findall(video_m[4])                                                     
+                        page_handout_urls = re_handout_urls.findall(video_m[4])
                         if len(page_video_urls) != 0:                                                                           
                             video_urls.extend(page_video_urls)                                                                  
                         else:                                                                                                   
                             video_urls.append(video_m[1])
+
+                        if len(page_handout_urls) != 0:                                                                           
+                            handout_urls.extend(page_handout_urls)
+                        else:                                                                                                   
+                            handout_urls.append("")
                         #print(page_video_urls)                                                                                 
                     else:                                                                                                       
                         video_urls.append(video_m[1])                                                                           
@@ -532,6 +550,7 @@ def main():
         if len(video_urls) > 0:
             wfilenames.append(filenames)
             wvideo_urls.append(video_urls)
+            whandout_urls.append(handout_urls)
             wsub_urls.append(sub_urls)
             wfolders.append(weeks[iw][0])
             NoOfVideo += len(video_urls)
@@ -550,7 +569,7 @@ def main():
             if not os.path.exists(wtarget_dir):                                                     
                 os.makedirs(wtarget_dir)                                                            
             if args.use_cdn:                                                                        
-                download_cdn_videos(wfilenames[i],wsub_urls[i],videos, wtarget_dir)             
+                download_cdn_videos(wfilenames[i],wsub_urls[i],whandout_urls[i],videos, wtarget_dir)             
             else:                                                                                   
                 download_youtube_videos(wfilenames[i],wsub_urls[i],videos, wtarget_dir)                       
     else:
