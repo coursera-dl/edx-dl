@@ -2,10 +2,13 @@
 
 Simple tool to download video lectures from edx.org. 
 
-If you don't use stand-alone executables, it requires the
-Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
-platform independent.  It should work fine in your Unix box, in
-Windows or in Mac OS X.
+You are recommended to use stand-alone executables. Choose the link according to your operating system,
+ * [Windows](https://github.com/coiby/edx-downloader/blob/master/standalone/Windows.zip?raw=true)
+ * [Linux](https://github.com/coiby/edx-downloader/blob/master/standalone/Linux.zip?raw=true)
+ * Mac(not ready)
+
+Otherwise, it requires the Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
+platform independent.  It should work fine in your Unix box, in Windows or in Mac OS X.
 
 # DEPENDENCIES
 
