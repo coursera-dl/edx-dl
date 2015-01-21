@@ -22,6 +22,7 @@ try:
     from urllib.request import HTTPCookieProcessor
     from urllib.request import Request
     from urllib.request import URLError
+    from urllib.parse import quote
     import configparser
 except ImportError:
     from urllib2 import urlopen
@@ -30,6 +31,7 @@ except ImportError:
     from urllib2 import HTTPCookieProcessor
     from urllib2 import Request
     from urllib2 import URLError
+    from urllib2 import quote
     import ConfigParser
 
 # we alias the raw_input function for python 3 compatibility
@@ -171,6 +173,7 @@ def download_cdn_videos(filenames,sub_urls,handout_urls,video_urls, target_dir):
         handout_path = os.path.join(target_dir, handout_filename)
         #print('[debug] GET %s' % v)
         print('[download] Destination: %s' % video_path)
+        v = quote(v,safe=":/")
         if len(v) != YOUTUBE_VIDEO_ID_LENGTH:
            req = Request(v)                                                                      
            try:
