@@ -19,4 +19,4 @@ There are some videos hosted only on youtube, you need to install `youtube-dl`. 
 
 Credits
 -------
-The original file was written by @shk3 in/for python3 then updated by @emadshaaban92 for python2, and migrated for versions superior to 2.6 by @iemejia. Then Coiby add 
+The original file was written by @shk3 in/for python3 then updated by @emadshaaban92 for python2, and migrated for versions superior to 2.6 by @iemejia, then updated and converted to stand-alone executables by @coiby.
