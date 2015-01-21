@@ -518,6 +518,13 @@ def main():
                 else : #If only one video in this section && the video's name is Video, use section name as filename instead
                     tmpname=re.sub('[\\/:"*?<>|]+','',html_decode(fileweeks[iw][1][i]).replace(': ','-')).strip()
                     filenames.append(tmpname)
+
+                page_handout_urls = re_handout_urls.findall(video_m[4])
+                if len(page_handout_urls) != 0:                                                                           
+                    handout_urls.extend(page_handout_urls)
+                else:                                                                                                   
+                    handout_urls.append("")
+
                 if video_m[1]=="":
                    video_sources=video_m[2].split(",")
                    video_urls.append(html_decode(video_sources[0]).replace('"',''))
@@ -526,16 +533,12 @@ def main():
                     sub_urls.append(BASE_URL + video_m[3] + "en" + "?videoId=" + video_m[1]) 
                     if args.use_cdn:    
                         page_video_urls = re_video_urls.findall(video_m[4])                                                     
-                        page_handout_urls = re_handout_urls.findall(video_m[4])
+                        
                         if len(page_video_urls) != 0:                                                                           
                             video_urls.extend(page_video_urls)                                                                  
                         else:                                                                                                   
                             video_urls.append(video_m[1])
 
-                        if len(page_handout_urls) != 0:                                                                           
-                            handout_urls.extend(page_handout_urls)
-                        else:                                                                                                   
-                            handout_urls.append("")
                         #print(page_video_urls)                                                                                 
                     else:                                                                                                       
                         video_urls.append(video_m[1])                                                                           
@@ -549,6 +552,7 @@ def main():
             video_urls += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
                          extra_ids]
             sub_urls += ['' for e_id in extra_ids]
+            handout_urls += ['' for e_id in extra_ids]
 
         if len(video_urls) > 0:
             wfilenames.append(filenames)
