@@ -11,8 +11,12 @@ Usage
 
 Open the file `config` using text editor, replace yourusername, yourpassword with your own username and password. 
 
-For Windows users, double click `edx-dl.exe` to execute the program. For Linux users, execute `edx-dl` from terminal.
+For Windows users, double click `edx-dl.exe` to execute the program. For Linux and Mac users, execute `edx-dl` from terminal.
 
 Notes
 ------
 There are some videos hosted only on youtube, you need to install `youtube-dl`. Please visit http://rg3.github.io/youtube-dl/download.html.
+
+Credits
+-------
+The original file was written by @shk3 in/for python3 then updated by @emadshaaban92 for python2, and migrated for versions superior to 2.6 by @iemejia. Then Coiby add 
