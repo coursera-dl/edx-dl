@@ -11,7 +11,7 @@ Usage
 
 Open the file `config` using text editor, replace yourusername, yourpassword with your own username and password. 
 
-For Windows users, double click `edx-dl.exe` to execute the program. For Linux and Mac users, execute `edx-dl` from terminal.
+For Windows users, double click `edx-dl.bat` to execute the program. For Linux and Mac users, execute `edx-dl` from terminal.
 
 Notes
 ------
