@@ -1,19 +1,23 @@
 # DESCRIPTION
 
-Simple tool to download video lectures from edx.org.  It requires the
-Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
-platform independent.  It should work fine in your Unix box, in
-Windows or in Mac OS X.
+Simple tool to download video lectures from edx.org. 
+
+You are recommended to use stand-alone executables. Choose the link according to your operating system,
+ * [Windows](https://github.com/coiby/edx-downloader/blob/master/standalone/Windows.zip?raw=true)
+ * [Linux](https://github.com/coiby/edx-downloader/blob/master/standalone/Linux.zip?raw=true)
+ * [Mac](https://github.com/coiby/edx-downloader/blob/master/standalone/Mac.zip?raw=true)
+
+Otherwise, it requires the Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
+platform independent.  It should work fine in your Unix box, in Windows or in Mac OS X.
 
 # DEPENDENCIES
 
-## youtube-dl
+If you use the stand-alone executables converted by PyInstaller, ignore this part.
 
-We use `youtube-dl` to download video lectures from Youtube, with the main
-idea being that "we don't want to reinvent the wheel".  Make sure you have
-`youtube-dl` installed in your system.  Also, since Youtube changes its
+## youtube-dl
+By default, this program will download video from CDN directly. However there may be some videos hosted only on youtube. So you are recommened to install `youtube-dl`. Also, since Youtube changes its
 layout frequently, make sure that the version of `youtube-dl` that you have
-installed is the latest. If in doubt, run `youtube-dl --update`.
+installed is the latest. If in doubt, run `youtube-dl --update`. 
 
 You can find `youtube-dl` at <http://rg3.github.io/youtube-dl/download.html>.
 
@@ -58,3 +62,7 @@ You can also excute it with arguments given: email and password,
 as in:
 
     python edx-dl.py [-u user@user.com] [-p password]
+    
+If you want to download video from youtube instead of CDN, append the parameter `--no-cdn` to the command,
+
+    python edx-dl.py [-u user@user.com] [-p password] --no-cdn
