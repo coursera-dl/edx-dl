@@ -51,9 +51,9 @@ from bs4 import BeautifulSoup
 
 OPENEDX_SITES = {
     'edx': {
-        'url': 'https://courses.edx.org', 
+        'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
-    }, 
+    },
     'stanford': {
         'url': 'https://class.stanford.edu',
         'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
@@ -290,7 +290,7 @@ def main():
     dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
-    USERNAME = data.find_all('span')[1].string
+    USERNAME = soup.find(id='dashboard-main').find('span', class_='data').string
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -438,7 +438,6 @@ def get_filename(target_dir, filename_prefix):
     # the info from the video_url or the current output, to avoid the
     # iteration from the current dir
     filenames = os.listdir(target_dir)
-    subs_filename = filename_prefix
     for name in filenames:  # Find the filename of the downloaded video
         if name.startswith(filename_prefix):
             (basename, ext) = os.path.splitext(name)
