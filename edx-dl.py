@@ -73,9 +73,11 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 
 # If nothing else is chosen, we chose the default user agent
 
-DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
-                       "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-                       "edx": 'edX-downloader/0.01'}
+DEFAULT_USER_AGENTS = {
+    "chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
+    "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
+    "edx": 'edX-downloader/0.01'
+}
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
