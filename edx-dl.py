@@ -315,10 +315,8 @@ def main():
     print('Welcome %s' % USERNAME)
     print('You can access %d courses' % numOfCourses)
 
-    c = 0
-    for course in courses:
-        c += 1
-        print('%d - %s -> %s' % (c, course[0], course[2]))
+    for idx, course in enumerate(courses, 1):
+        print('%d - %s -> %s' % (idx, course[0], course[2]))
 
     c_number = int(input('Enter Course Number: '))
     while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
