@@ -52,15 +52,15 @@ from bs4 import BeautifulSoup
 OPENEDX_SITES = {
     'edx': {
         'url': 'https://courses.edx.org',
-        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
     'stanford': {
         'url': 'https://class.stanford.edu',
-        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
     'usyd-sit': {
         'url': 'http://online.it.usyd.edu.au',
-        'courseware-selector': ('nav', {'aria-label':'Course Navigation'}),
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
@@ -71,7 +71,7 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-## If nothing else is chosen, we chose the default user agent:
+# If nothing else is chosen, we chose the default user agent
 
 DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
                        "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
@@ -79,7 +79,10 @@ DEFAULT_USER_AGENTS = {"chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/53
 
 USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
-# To replace the print function, the following function must be placed before any other call for print
+# To replace the print function, the following function must be placed
+# before any other call for print
+
+
 def print(*objects, **kwargs):
     """
     Overload the print function to adapt for the encoding bug in Windows Console.
@@ -103,6 +106,7 @@ def print(*objects, **kwargs):
         texts.append(original_text.encode(enc, errors='replace').decode(enc))
     return __builtins__.print(*texts, **kwargs)
 
+
 def change_openedx_site(site_name):
     global BASE_URL
     global EDX_HOMEPAGE
@@ -119,6 +123,7 @@ def change_openedx_site(site_name):
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
+
 
 def get_initial_token():
     """
@@ -155,7 +160,7 @@ def get_page_contents(url, headers):
 
 def directory_name(initial_name):
     import string
-    allowed_chars = string.digits+string.ascii_letters+" _."
+    allowed_chars = string.digits + string.ascii_letters + " _."
     result_name = ""
     for ch in initial_name:
         if allowed_chars.find(ch) != -1:
@@ -321,7 +326,7 @@ def main():
     selected_course = courses[c_number - 1]
     COURSEWARE = selected_course[1].replace('info', 'courseware')
 
-    ## Getting Available Weeks
+    # Get Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
     soup = BeautifulSoup(courseware)
 
@@ -373,7 +378,7 @@ def main():
         # Try to download some extra videos which is referred by iframe
         extra_ids = extra_youtube.findall(page)
         video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
-                     extra_ids]
+                      extra_ids]
         sub_urls += ['' for e_id in extra_ids]
 
     video_urls = ['http://youtube.com/watch?v=' + v_id
