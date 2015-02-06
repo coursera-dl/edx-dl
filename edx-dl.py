@@ -202,6 +202,24 @@ def edx_get_subtitle(url, headers):
         return None
 
 
+def remove_duplicated_urls(video_urls, sub_urls):
+    """ remove duplicated video urls and corresponding subtitle urls."""
+    """ there are some courses, sections of one chapter are pointing to"""
+    """ different positions of a same large video, """
+    """ for an example, the Stanford CVX101 Convex Optimization."""
+
+    vid = set()
+    video_urls_s, sub_urls_s = list(), list()
+    for v, s in zip(video_urls, sub_urls):
+        youtube_id = v[-YOUTUBE_VIDEO_ID_LENGTH:]
+        if youtube_id not in vid:
+            video_urls_s += [v]
+            sub_urls_s += [s]
+            vid.add(youtube_id)
+
+    return video_urls_s, sub_urls_s
+
+
 def parse_args():
     """
     Parse the arguments/options passed to the program on the command line.
@@ -387,6 +405,8 @@ def main():
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
+
+    video_urls, sub_urls = remove_duplicated_urls(video_urls, sub_urls)
 
     if is_interactive:
         # Get Available Video formats
