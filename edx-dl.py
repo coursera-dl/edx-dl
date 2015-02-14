@@ -252,6 +252,18 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-w',
+                        '--week',
+                        action='store',
+                        dest='week',
+                        help='Choose a week number to download or "all" to download all',
+                        default=None)
+    parser.add_argument('-a',
+                        '--all',
+                        action='store_true',
+                        dest='all_courses',
+                        help='Flag used to download all the courses that have started',
+                        default=False)
 
     args = parser.parse_args()
     return args
@@ -308,132 +320,167 @@ def main():
         else:
             state = 'Not yet'
         courses.append((c_name, c_link, state))
+
+    # Option for downloading all courses
+    courses.append(('All Started Courses', 'None', 'All Started'))
     numOfCourses = len(courses)
 
     # Welcome and Choose Course
 
     print('Welcome %s' % USERNAME)
-    print('You can access %d courses' % numOfCourses)
+    print('You can access %d courses' % (numOfCourses - 1))
 
     for idx, course in enumerate(courses, 1):
         print('%d - %s -> %s' % (idx, course[0], course[2]))
 
-    c_number = int(input('Enter Course Number: '))
-    while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ',
-              numOfCourses)
-        c_number = int(input('Enter Course Number: '))
-    selected_course = courses[c_number - 1]
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
+    # -a flag is used for downloading all courses
+    if not args.all_courses:
+        while True:
+            print('Enter a valid Number for a Started Course between 1 and',
+                 (numOfCourses -1), ', or %d for All Started Courses'
+                 % numOfCourses)
+            c_number = int(input('Enter Your Choice: '))
 
-    # Get Available Weeks
-    courseware = get_page_contents(COURSEWARE, headers)
-    soup = BeautifulSoup(courseware)
-
-    data = soup.find(*COURSEWARE_SEL)
-    WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
-             w.ul.find_all('a')]) for w in WEEKS]
-    numOfWeeks = len(weeks)
-
-    # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    w = 0
-    for week in weeks:
-        w += 1
-        print('%d - Download %s videos' % (w, week[0].strip()))
-    print('%d - Download them all' % (numOfWeeks + 1))
-
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
-        w_number = int(input('Enter Your Choice: '))
-
-    if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
-    else:
-        links = weeks[w_number - 1][1]
-
-    if is_interactive:
-        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
-
-    video_ids = []
-    sub_urls = []
-    splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
-    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
-    for link in links:
-        print("Processing '%s'..." % link)
-        page = get_page_contents(link, headers)
-        sections = splitter.split(page)[1:]
-        for section in sections:
-            video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
-            sub_url = ''
-            if args.subtitles:
-                match_subs = re_subs.search(section)
-                if match_subs:
-                    sub_url = BASE_URL + match_subs.group(1) + "en" + "?videoId=" + video_id
-            video_ids += [video_id]
-            sub_urls += [sub_url]
-        # Try to download some extra videos which is referred by iframe
-        extra_ids = extra_youtube.findall(page)
-        video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
-                      extra_ids]
-        sub_urls += ['' for e_id in extra_ids]
-
-    video_urls = ['http://youtube.com/watch?v=' + v_id
-                  for v_id in video_ids]
-
-    if len(video_urls) < 1:
-        print('WARNING: No downloadable video found.')
-        sys.exit(0)
-
-    if is_interactive:
-        # Get Available Video formats
-        os.system('youtube-dl -F %s' % video_urls[-1])
-        print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
-        args.format = input('Choose Format code: ')
-
-    print("[info] Output directory: " + args.output_dir)
-
-    # Download Videos
-    c = 0
-    for v, s in zip(video_urls, sub_urls):
-        c += 1
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2)
-        cmd = ["youtube-dl",
-               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
-        if args.format:
-            cmd.append("-f")
-            # defaults to mp4 in case the requested format isn't available
-            cmd.append(args.format + '/mp4')
-        if args.subtitles:
-            cmd.append('--write-sub')
-        cmd.append(str(v))
-
-        popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
-
-        youtube_stdout = b''
-        while True:  # Save output to youtube_stdout while this being echoed
-            tmp = popen_youtube.stdout.read(1)
-            youtube_stdout += tmp
-            print(tmp, end="")
-            sys.stdout.flush()
-            # do it until the process finish and there isn't output
-            if tmp == b"" and popen_youtube.poll() is not None:
+            if (0 < c_number < numOfCourses) and \
+               (courses[c_number - 1][2] == 'Started'):
+                selected_courses = [courses[c_number - 1]]
+                print('Downloading %s' % courses[c_number - 1][0])
                 break
+            elif c_number == numOfCourses:
+                selected_courses = [course for course in courses \
+                                    if course[2] == 'Started']
+                print('Downloading All Started Courses')
+                break
+    else:
+        c_number = numOfCourses
+        selected_courses = [course for course in courses if course[2] == 'Started']
+        print("Downloading All Started Courses")
 
-        if args.subtitles:
-            filename = get_filename(target_dir, filename_prefix)
-            subs_filename = os.path.join(target_dir, filename + '.srt')
-            if not os.path.exists(subs_filename):
-                subs_string = edx_get_subtitle(s, headers)
-                if subs_string:
-                    print('[info] Writing edX subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename),
-                         'wb+').write(subs_string.encode('utf-8'))
+    for selected_course in selected_courses:
+        COURSEWARE = selected_course[1].replace('info', 'courseware')
+
+        # Get Available Weeks
+        courseware = get_page_contents(COURSEWARE, headers)
+        soup = BeautifulSoup(courseware)
+
+        data = soup.find(*COURSEWARE_SEL)
+        WEEKS = data.find_all('div')
+        weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
+                 w.ul.find_all('a')]) for w in WEEKS]
+        numOfWeeks = len(weeks)
+
+        # Choose Week or choose all
+        print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
+        w = 0
+        for week in weeks:
+            w += 1
+            print('%d - Download %s videos' % (w, week[0].strip()))
+        print('%d - Download them all' % (numOfWeeks + 1))
+
+        if args.week != None:
+            if args.week == 'all':
+                w_number = numOfWeeks + 1
+                print('Downloading all weeks')
+            elif int(args.week) <= (numOfWeeks + 1) and int(args.week) > 0:
+                w_number = int(args.week)
+            else:
+                print ('Argument passed not correct. \n')
+                while True:
+                    print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
+                    w_number = int(input('Enter Your Choice: '))
+                    if int(args.week) <= (numOfWeeks + 1) and int(args.week) > 0:
+                        break
+        else:
+            w_number = int(input('Enter Your Choice: '))
+            while w_number > numOfWeeks + 1 or w_number <= 0:
+                print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
+                w_number = int(input('Enter Your Choice: '))
+
+        if w_number == numOfWeeks + 1:
+            links = [link for week in weeks for link in week[1]]
+        else:
+            links = weeks[w_number - 1][1]
+
+        if is_interactive:
+            args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
+
+        video_ids = []
+        sub_urls = []
+        splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+        re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+        extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
+        for link in links:
+            print("Processing '%s'..." % link)
+            page = get_page_contents(link, headers)
+            sections = splitter.split(page)[1:]
+            for section in sections:
+                video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
+                sub_url = ''
+                if args.subtitles:
+                    match_subs = re_subs.search(section)
+                    if match_subs:
+                        sub_url = BASE_URL + match_subs.group(1) + "en" + "?videoId=" + video_id
+                video_ids += [video_id]
+                sub_urls += [sub_url]
+            # Try to download some extra videos which is referred by iframe
+            extra_ids = extra_youtube.findall(page)
+            video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
+                          extra_ids]
+            sub_urls += ['' for e_id in extra_ids]
+
+        video_urls = ['http://youtube.com/watch?v=' + v_id
+                      for v_id in video_ids]
+
+        if len(video_urls) < 1:
+            print('WARNING: No downloadable video found.')
+            sys.exit(0)
+
+        if is_interactive:
+            # Get Available Video formats
+            os.system('youtube-dl -F %s' % video_urls[-1])
+            print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
+            args.format = input('Choose Format code: ')
+
+        print("[info] Output directory: " + args.output_dir)
+
+        # Download Videos
+        c = 0
+        for v, s in zip(video_urls, sub_urls):
+            c += 1
+            target_dir = os.path.join(args.output_dir,
+                                      directory_name(selected_course[0]))
+            filename_prefix = str(c).zfill(2)
+            cmd = ["youtube-dl",
+                   "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
+            if args.format:
+                cmd.append("-f")
+                # defaults to mp4 in case the requested format isn't available
+                cmd.append(args.format + '/mp4')
+            if args.subtitles:
+                cmd.append('--write-sub')
+            cmd.append(str(v))
+
+            popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
+
+            youtube_stdout = b''
+            while True:  # Save output to youtube_stdout while this being echoed
+                tmp = popen_youtube.stdout.read(1)
+                youtube_stdout += tmp
+                print(tmp, end="")
+                sys.stdout.flush()
+                # do it until the process finish and there isn't output
+                if tmp == b"" and popen_youtube.poll() is not None:
+                    break
+
+            if args.subtitles:
+                filename = get_filename(target_dir, filename_prefix)
+                subs_filename = os.path.join(target_dir, filename + '.srt')
+                if not os.path.exists(subs_filename):
+                    subs_string = edx_get_subtitle(s, headers)
+                    if subs_string:
+                        print('[info] Writing edX subtitles: %s' % subs_filename)
+                        open(os.path.join(os.getcwd(), subs_filename),
+                             'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
