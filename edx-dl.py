@@ -372,7 +372,7 @@ def main():
             if args.subtitles:
                 match_subs = re_subs.search(section)
                 if match_subs:
-                    sub_url = BASE_URL + match_subs.group(1) + "en" + "?videoId=" + video_id
+                    sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
             video_ids += [video_id]
             sub_urls += [sub_url]
         # Try to download some extra videos which is referred by iframe
