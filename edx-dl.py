@@ -331,7 +331,12 @@ def main():
     soup = BeautifulSoup(courseware)
 
     data = soup.find(*COURSEWARE_SEL)
-    WEEKS = data.find_all('div')
+
+    if not data:
+        WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
+    else:
+        WEEKS = data.find_all('div')
+
     weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
              w.ul.find_all('a')]) for w in WEEKS]
     numOfWeeks = len(weeks)
