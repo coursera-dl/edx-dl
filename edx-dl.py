@@ -302,11 +302,15 @@ def main():
     courses = []
     for COURSE in COURSES:
         c_name = COURSE.h3.text.strip()
-        c_link = BASE_URL + COURSE.a['href']
-        if c_link.endswith('info') or c_link.endswith('info/'):
-            state = 'Started'
-        else:
-            state = 'Not yet'
+        c_link = None
+        state = 'Not yet'
+        try:
+            # started courses include the course link in the href attribute
+            c_link = BASE_URL + COURSE.a['href']
+            if c_link.endswith('info') or c_link.endswith('info/'):
+                state = 'Started'
+        except KeyError:
+            pass
         courses.append((c_name, c_link, state))
     numOfCourses = len(courses)
 
