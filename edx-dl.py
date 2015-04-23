@@ -297,7 +297,6 @@ def main():
     dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
     data = soup.find_all('ul')[1]
-    USERNAME = soup.find(id='dashboard-main').find('span', class_='data').string
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -316,7 +315,6 @@ def main():
 
     # Welcome and Choose Course
 
-    print('Welcome %s' % USERNAME)
     print('You can access %d courses' % numOfCourses)
 
     for idx, course in enumerate(courses, 1):
