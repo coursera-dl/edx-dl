@@ -1,10 +1,9 @@
 # DESCRIPTION
 
-
-Simple tool to download video lectures from edx.org.  It requires the
-Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
-platform independent.  It should work fine in your Unix box, in
-Windows or in Mac OS X.
+Simple tool to download video lectures from edx.org.  It requires a
+Python interpreter (> 2.6), youtube-dl, and BeautifulSoup4. It is
+platform independent, and should work fine under Unix, Windows or
+Mac OS X.
 
 # DEPENDENCIES
 
@@ -32,16 +31,7 @@ or
 
     easy_install beautifulsoup4.
 
-For more info, see <http://www.crummy.com/software/BeautifulSoup/#Download>.
-
-# Files
-
-## edx-dl.py
-Python implementation for edx-downloader
-
-The original file was written by @shk3 in/for `python3` then updated
-by @emadshaaban92 for python2, and migrated for versions superior to
-2.6 by @iemejia.
+For more information, please see <http://www.crummy.com/software/BeautifulSoup/#Download>.
 
 # Quick Start
 
@@ -71,3 +61,8 @@ These are the current supported sites:
 This is the full [list of sites powered by Open
 edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel free to contribute your patches to include them.
 
+# Authors
+
+The original file was written by @shk3 in/for `python3` then updated
+by @emadshaaban92 for python2, and migrated for versions superior to
+2.6 by @iemejia.
