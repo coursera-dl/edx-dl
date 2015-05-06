@@ -146,6 +146,19 @@ def get_initial_token():
 
     return ''
 
+def get_available_weeks(courseware):
+    soup = BeautifulSoup(courseware)
+    data = soup.find(*COURSEWARE_SEL)
+
+    if not data:
+        WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
+    else:
+        WEEKS = data.find_all('div')
+
+    weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
+             w.ul.find_all('a')]) for w in WEEKS]
+
+    return weeks
 
 def get_page_contents(url, headers):
     """
@@ -330,12 +343,7 @@ def main():
 
     # Get Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
-    soup = BeautifulSoup(courseware)
-
-    data = soup.find(*COURSEWARE_SEL)
-    WEEKS = data.find_all('div')
-    weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
-             w.ul.find_all('a')]) for w in WEEKS]
+    weeks = get_available_weeks(courseware)
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
