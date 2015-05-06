@@ -31,7 +31,7 @@ or
 
     easy_install beautifulsoup4.
 
-For more info, see <http://www.crummy.com/software/BeautifulSoup/#Download>.
+For more information, please see <http://www.crummy.com/software/BeautifulSoup/#Download>.
 
 # Quick Start
 
