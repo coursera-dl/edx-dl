@@ -33,15 +33,6 @@ or
 
 For more info, see <http://www.crummy.com/software/BeautifulSoup/#Download>.
 
-# Files
-
-## edx-dl.py
-Python implementation for edx-downloader
-
-The original file was written by @shk3 in/for `python3` then updated
-by @emadshaaban92 for python2, and migrated for versions superior to
-2.6 by @iemejia.
-
 # Quick Start
 
 To use `edx-dl.py`, simply excute it, as in:
@@ -70,3 +61,8 @@ These are the current supported sites:
 This is the full [list of sites powered by Open
 edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel free to contribute your patches to include them.
 
+# Authors
+
+The original file was written by @shk3 in/for `python3` then updated
+by @emadshaaban92 for python2, and migrated for versions superior to
+2.6 by @iemejia.
