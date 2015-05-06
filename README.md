@@ -66,7 +66,7 @@ These are the current supported sites:
 
 - [edX](http://edx.org)
 - [Stanford](http://lagunita.stanford.edu/)
-- [University of Sidney](http://online.it.usyd.edu.au)
+- [University of Sydney](http://online.it.usyd.edu.au)
 
 This is the full [list of sites powered by Open
 edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel free to contribute your patches to include them.
