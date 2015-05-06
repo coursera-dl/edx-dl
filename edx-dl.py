@@ -260,6 +260,13 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
+    parser.add_argument('-r',
+                        '--rate-limit',
+                        action='store',
+                        dest='rate_limit',
+                        help='maximum download rate in bytes per second (e.g. 50K or 4.2M)',
+                        default=None)
+
 
     args = parser.parse_args()
     return args
@@ -399,6 +406,11 @@ def main():
         print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
         args.format = input('Choose Format code: ')
 
+    if is_interactive:
+        # Limit your download rate
+        print('Enter a download rate in bytes per second (e.g. 50K or 4.2M):')
+        args.rate_limit = input('Download rate: ')
+
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
@@ -410,6 +422,9 @@ def main():
         filename_prefix = str(c).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
+        if args.rate_limit:
+            cmd.append('--rate-limit')
+            cmd.append(args.rate_limit)
         if args.format:
             cmd.append("-f")
             # defaults to mp4 in case the requested format isn't available
