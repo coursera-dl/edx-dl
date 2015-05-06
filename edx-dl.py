@@ -55,7 +55,7 @@ OPENEDX_SITES = {
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
     'stanford': {
-        'url': 'https://class.stanford.edu',
+        'url': 'https://lagunita.stanford.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
     'usyd-sit': {
