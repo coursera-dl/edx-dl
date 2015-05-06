@@ -1,5 +1,6 @@
 # DESCRIPTION
 
+
 Simple tool to download video lectures from edx.org.  It requires the
 Python interpreter (> 2.6), youtube-dl, BeautifulSoup4 and it's
 platform independent.  It should work fine in your Unix box, in
@@ -58,3 +59,15 @@ You can also excute it with arguments given: email and password,
 as in:
 
     python edx-dl.py [-u user@user.com] [-p password]
+
+# Supported sites
+
+These are the current supported sites:
+
+- [EdX|http://www.edx.org]
+- [Stanford|http://class.stanford.edu/]
+- [University of Sidney|http://online.it.usyd.edu.au]
+
+This is [the full list of sites powered by Open
+edX|https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX]. Feel free to contribute your patches to include them.
+
