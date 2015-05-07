@@ -127,14 +127,16 @@ def change_openedx_site(site_name):
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 def display_welcome_page(courses):
+    """ List the courses that the user has enrolled. """
+
     print('You can access %d courses' % len(courses))
-    for x in courses:
-        print(x)
+
     for idx, (course_name, _, status) in enumerate(courses, 1):
         print('%d - [%s] - %s' % (idx, status, course_name))
 
 
 def get_selected_courseware(courses):
+    """ retrieve the courseware that the user selected. """
     num_of_courses = len(courses)
 
     c_number = None
