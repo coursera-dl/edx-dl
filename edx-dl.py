@@ -128,9 +128,10 @@ def change_openedx_site(site_name):
 
 def display_welcome_page(courses):
     print('You can access %d courses' % len(courses))
-
-    for idx, course in enumerate(courses, 1):
-        print('%d - %s -> %s' % (idx, course[0], course[2]))
+    for x in courses:
+        print(x)
+    for idx, (course_name, _, status) in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (idx, status, course_name))
 
 
 def get_selected_courseware(courses):
@@ -139,7 +140,7 @@ def get_selected_courseware(courses):
     c_number = None
     while True:
         c_number = int(input('Enter Course Number: '))
-        
+
         if c_number not in range(1, num_of_courses+1):
             print('Enter a valid number between 1 and ', num_of_courses)
             continue
