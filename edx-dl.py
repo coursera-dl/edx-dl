@@ -126,6 +126,32 @@ def change_openedx_site(site_name):
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
+def display_welcome_page(courses):
+    print('You can access %d courses' % len(courses))
+
+    for idx, course in enumerate(courses, 1):
+        print('%d - %s -> %s' % (idx, course[0], course[2]))
+
+
+def get_selected_courseware(courses):
+    num_of_courses = len(courses)
+
+    c_number = None
+    while True:
+        c_number = int(input('Enter Course Number: '))
+        
+        if c_number not in range(1, num_of_courses+1):
+            print('Enter a valid number between 1 and ', num_of_courses)
+            continue
+        elif courses[c_number - 1][2] != 'Started':
+            print('The course has not started!')
+            continue
+        else:
+            break
+
+    selected_course = courses[c_number - 1]
+    courseware = selected_course[1].replace('info', 'courseware')
+    return courseware
 
 def get_initial_token():
     """
@@ -319,22 +345,10 @@ def main():
         except KeyError:
             pass
         courses.append((c_name, c_link, state))
-    numOfCourses = len(courses)
-
-    # Welcome and Choose Course
-
-    print('You can access %d courses' % numOfCourses)
-
-    for idx, course in enumerate(courses, 1):
-        print('%d - %s -> %s' % (idx, course[0], course[2]))
-
-    c_number = int(input('Enter Course Number: '))
-    while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ',
-              numOfCourses)
-        c_number = int(input('Enter Course Number: '))
-    selected_course = courses[c_number - 1]
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
+    
+    # Display welcome page 
+    display_welcome_page(courses)
+    COURSEWARE = get_selected_courseware(courses)
 
     # Get Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
