@@ -402,12 +402,10 @@ def main():
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
-    c = 0
-    for v, s in zip(video_urls, sub_urls):
-        c += 1
+    for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
         target_dir = os.path.join(args.output_dir,
                                   directory_name(selected_course[0]))
-        filename_prefix = str(c).zfill(2)
+        filename_prefix = str(i).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
         if args.format:
