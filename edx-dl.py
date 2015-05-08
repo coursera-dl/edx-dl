@@ -432,6 +432,9 @@ def main():
 
         if args.subtitles:
             filename = get_filename(target_dir, filename_prefix)
+            if filename is None:
+                print('[warning] no video downloaded for %s' % filename_prefix)
+                continue
             subs_filename = os.path.join(target_dir, filename + '.srt')
             if not os.path.exists(subs_filename):
                 subs_string = edx_get_subtitle(s, headers)
@@ -452,8 +455,7 @@ def get_filename(target_dir, filename_prefix):
         if name.startswith(filename_prefix):
             (basename, ext) = os.path.splitext(name)
             return basename
-    print('[warning] no video downloaded for %s' % filename_prefix)
-    return filename_prefix
+    return None
 
 if __name__ == '__main__':
     try:
