@@ -102,10 +102,10 @@ def print(*objects, **kwargs):
     texts = []
     for object in objects:
         try:
-            original_text = str(object)
+            original_text = str(object).decode(enc, errors='replace')
         except UnicodeEncodeError:
-            original_text = unicode(object)
-        texts.append(original_text.encode(enc, errors='replace').decode(enc))
+            original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
+        texts.append(original_text)
     return __builtins__.print(*texts, **kwargs)
 
 
@@ -452,6 +452,8 @@ def get_filename(target_dir, filename_prefix):
         if name.startswith(filename_prefix):
             (basename, ext) = os.path.splitext(name)
             return basename
+    print('[warning] no video downloaded for %s' % filename_prefix)
+    return filename_prefix
 
 if __name__ == '__main__':
     try:
