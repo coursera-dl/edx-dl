@@ -130,6 +130,36 @@ def change_openedx_site(site_name):
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 
+def display_welcome_page(courses):
+    """ List the courses that the user has enrolled. """
+
+    print('You can access %d courses' % len(courses))
+
+    for idx, (course_name, _, status) in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (idx, status, course_name))
+
+
+def get_selected_course(courses):
+    """ retrieve the course that the user selected. """
+    num_of_courses = len(courses)
+
+    c_number = None
+    while True:
+        c_number = int(input('Enter Course Number: '))
+
+        if c_number not in range(1, num_of_courses+1):
+            print('Enter a valid number between 1 and ', num_of_courses)
+            continue
+        elif courses[c_number - 1][2] != 'Started':
+            print('The course has not started!')
+            continue
+        else:
+            break
+
+    selected_course = courses[c_number - 1]
+    return selected_course
+
+
 def get_initial_token():
     """
     Create initial connection to get authentication token for future
@@ -331,28 +361,13 @@ def main():
         except KeyError:
             pass
         courses.append((c_name, c_link, state))
-    numOfCourses = len(courses)
 
-    # Welcome and Choose Course
-
-    print('You can access %d courses' % numOfCourses)
-
-    for idx, course in enumerate(courses, 1):
-        print('%d - %s -> %s' % (idx, course[0], course[2]))
-
-    # If list option was given, list courses and exit
-    if args.list is True:
-        sys.exit(0)
-
-    c_number = int(input('Enter Course Number: '))
-    while c_number > numOfCourses or courses[c_number - 1][2] != 'Started':
-        print('Enter a valid Number for a Started Course ! between 1 and ',
-              numOfCourses)
-        c_number = int(input('Enter Course Number: '))
-    selected_course = courses[c_number - 1]
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
+    # Display welcome page
+    display_welcome_page(courses)
+    selected_course = get_selected_course(courses)
 
     # Get Available Weeks
+    COURSEWARE = selected_course[1].replace('info', 'courseware')
     courseware = get_page_contents(COURSEWARE, headers)
     weeks = get_available_weeks(courseware)
     numOfWeeks = len(weeks)
