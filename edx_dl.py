@@ -36,6 +36,7 @@ try:
 except:
     pass
 
+import __builtin__
 import argparse
 import getpass
 import json
@@ -105,7 +106,7 @@ def print(*objects, **kwargs):
         if enc is None:
             enc = sys.getdefaultencoding()
     except AttributeError:
-        return __builtins__.print(*objects, **kwargs)
+        return __builtin__.print(*objects, **kwargs)
     texts = []
     for object in objects:
         try:
@@ -113,7 +114,7 @@ def print(*objects, **kwargs):
         except UnicodeEncodeError:
             original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
         texts.append(original_text)
-    return __builtins__.print(*texts, **kwargs)
+    return __builtin__.print(*texts, **kwargs)
 
 
 def change_openedx_site(site_name):
