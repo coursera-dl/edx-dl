@@ -322,6 +322,18 @@ def parse_args():
     return args
 
 
+def edx_get_headers():
+    headers = {
+        'User-Agent': USER_AGENT,
+        'Accept': 'application/json, text/javascript, */*; q=0.01',
+        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
+        'Referer': EDX_HOMEPAGE,
+        'X-Requested-With': 'XMLHttpRequest',
+        'X-CSRFToken': get_initial_token(),
+    }
+    return headers
+
+
 def main():
     args = parse_args()
 
@@ -339,14 +351,7 @@ def main():
         sys.exit(2)
 
     # Prepare Headers
-    headers = {
-        'User-Agent': USER_AGENT,
-        'Accept': 'application/json, text/javascript, */*; q=0.01',
-        'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
-        'Referer': EDX_HOMEPAGE,
-        'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': get_initial_token(),
-    }
+    headers = edx_get_headers()
 
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
