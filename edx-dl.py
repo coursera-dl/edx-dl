@@ -87,8 +87,11 @@ USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 def print(*objects, **kwargs):
     """
-    Overload the print function to adapt for the encoding bug in Windows Console.
-    It will try to convert text to the console encoding before print to prevent crashes.
+    Overload the print function to adapt for the encoding bug in Windows
+    console.
+
+    It will try to convert text to the console encoding before printing to
+    prevent crashes.
     """
     try:
         stream = kwargs.get('file', None)
@@ -126,6 +129,7 @@ def change_openedx_site(site_name):
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
+
 def display_welcome_page(courses):
     """ List the courses that the user has enrolled. """
 
@@ -135,8 +139,8 @@ def display_welcome_page(courses):
         print('%d - [%s] - %s' % (idx, status, course_name))
 
 
-def get_selected_courseware(courses):
-    """ retrieve the courseware that the user selected. """
+def get_selected_course(courses):
+    """ retrieve the course that the user selected. """
     num_of_courses = len(courses)
 
     c_number = None
@@ -153,12 +157,13 @@ def get_selected_courseware(courses):
             break
 
     selected_course = courses[c_number - 1]
-    courseware = selected_course[1].replace('info', 'courseware')
-    return courseware
+    return selected_course
+
 
 def get_initial_token():
     """
-    Create initial connection to get authentication token for future requests.
+    Create initial connection to get authentication token for future
+    requests.
 
     Returns a string to be used in subsequent connections with the
     X-CSRFToken header or the empty string if we didn't find any token in
@@ -225,8 +230,10 @@ def edx_json2srt(o):
 
 
 def edx_get_subtitle(url, headers):
-    """ returns a string with the subtitles content from the url """
-    """ or None if no subtitles are available """
+    """
+    Return a string with the subtitles content from the url or None if no
+    subtitles are available.
+    """
     try:
         jsonString = get_page_contents(url, headers)
         jsonObject = json.loads(jsonString)
@@ -327,7 +334,8 @@ def main():
     }
 
     # Login
-    post_data = urlencode({'email': args.username, 'password': args.password,
+    post_data = urlencode({'email': args.username,
+                           'password': args.password,
                            'remember': False}).encode('utf-8')
     request = Request(LOGIN_API, post_data, headers)
     response = urlopen(request)
@@ -339,7 +347,6 @@ def main():
     # Get user info/courses
     dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
-    data = soup.find_all('ul')[1]
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
@@ -354,21 +361,20 @@ def main():
         except KeyError:
             pass
         courses.append((c_name, c_link, state))
-    
-    # Display welcome page 
+
+    # Display welcome page
     display_welcome_page(courses)
-    COURSEWARE = get_selected_courseware(courses)
+    selected_course = get_selected_course(courses)
 
     # Get Available Weeks
+    COURSEWARE = selected_course[1].replace('info', 'courseware')
     courseware = get_page_contents(COURSEWARE, headers)
     weeks = get_available_weeks(courseware)
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
     print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    w = 0
-    for week in weeks:
-        w += 1
+    for w, week in enumerate(weeks, 1):
         print('%d - Download %s videos' % (w, week[0].strip()))
     print('%d - Download them all' % (numOfWeeks + 1))
 
@@ -466,17 +472,20 @@ def main():
 
 
 def get_filename(target_dir, filename_prefix):
-    """ returns the basename for the corresponding filename_prefix """
-    # this whole function is not the nicest thing, but isolating it makes
-    # things clearer , a good refactoring would be to get
-    # the info from the video_url or the current output, to avoid the
-    # iteration from the current dir
+    """
+    Return the basename for the corresponding filename_prefix.
+    """
+    # This whole function is not the nicest thing, but isolating it makes
+    # things clearer. A good refactoring would be to get the info from the
+    # video_url or the current output, to avoid the iteration from the
+    # current dir.
     filenames = os.listdir(target_dir)
     for name in filenames:  # Find the filename of the downloaded video
         if name.startswith(filename_prefix):
             (basename, ext) = os.path.splitext(name)
             return basename
     return None
+
 
 if __name__ == '__main__':
     try:
