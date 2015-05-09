@@ -87,8 +87,11 @@ USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 def print(*objects, **kwargs):
     """
-    Overload the print function to adapt for the encoding bug in Windows Console.
-    It will try to convert text to the console encoding before print to prevent crashes.
+    Overload the print function to adapt for the encoding bug in Windows
+    console.
+
+    It will try to convert text to the console encoding before printing to
+    prevent crashes.
     """
     try:
         stream = kwargs.get('file', None)
@@ -129,7 +132,8 @@ def change_openedx_site(site_name):
 
 def get_initial_token():
     """
-    Create initial connection to get authentication token for future requests.
+    Create initial connection to get authentication token for future
+    requests.
 
     Returns a string to be used in subsequent connections with the
     X-CSRFToken header or the empty string if we didn't find any token in
@@ -196,8 +200,10 @@ def edx_json2srt(o):
 
 
 def edx_get_subtitle(url, headers):
-    """ returns a string with the subtitles content from the url """
-    """ or None if no subtitles are available """
+    """
+    Return a string with the subtitles content from the url or None if no
+    subtitles are available.
+    """
     try:
         jsonString = get_page_contents(url, headers)
         jsonObject = json.loads(jsonString)
@@ -453,17 +459,20 @@ def main():
 
 
 def get_filename(target_dir, filename_prefix):
-    """ returns the basename for the corresponding filename_prefix """
-    # this whole function is not the nicest thing, but isolating it makes
-    # things clearer , a good refactoring would be to get
-    # the info from the video_url or the current output, to avoid the
-    # iteration from the current dir
+    """
+    Return the basename for the corresponding filename_prefix.
+    """
+    # This whole function is not the nicest thing, but isolating it makes
+    # things clearer. A good refactoring would be to get the info from the
+    # video_url or the current output, to avoid the iteration from the
+    # current dir.
     filenames = os.listdir(target_dir)
     for name in filenames:  # Find the filename of the downloaded video
         if name.startswith(filename_prefix):
             (basename, ext) = os.path.splitext(name)
             return basename
     return None
+
 
 if __name__ == '__main__':
     try:
