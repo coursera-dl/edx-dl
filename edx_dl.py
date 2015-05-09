@@ -251,6 +251,16 @@ def edx_get_subtitle(url, headers):
         return None
 
 
+def edx_login(url, headers, username, password):
+    post_data = urlencode({'email': username,
+                           'password': password,
+                           'remember': False}).encode('utf-8')
+    request = Request(url, post_data, headers)
+    response = urlopen(request)
+    resp = json.loads(response.read().decode('utf-8'))
+    return resp
+
+
 def parse_args():
     """
     Parse the arguments/options passed to the program on the command line.
@@ -339,12 +349,7 @@ def main():
     }
 
     # Login
-    post_data = urlencode({'email': args.username,
-                           'password': args.password,
-                           'remember': False}).encode('utf-8')
-    request = Request(LOGIN_API, post_data, headers)
-    response = urlopen(request)
-    resp = json.loads(response.read().decode('utf-8'))
+    resp = edx_login(LOGIN_API, headers, args.username, args.password)
     if not resp.get('success', False):
         print(resp.get('value', "Wrong Email or Password."))
         exit(2)
