@@ -304,7 +304,8 @@ def main():
     }
 
     # Login
-    post_data = urlencode({'email': args.username, 'password': args.password,
+    post_data = urlencode({'email': args.username,
+                           'password': args.password,
                            'remember': False}).encode('utf-8')
     request = Request(LOGIN_API, post_data, headers)
     response = urlopen(request)
