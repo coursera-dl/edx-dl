@@ -57,6 +57,7 @@ These are the current supported sites:
 - [edX](http://edx.org)
 - [Stanford](http://lagunita.stanford.edu/)
 - [University of Sydney](http://online.it.usyd.edu.au)
+- [France Université Numérique](https://www.france-universite-numerique-mooc.fr/)
 
 This is the full [list of sites powered by Open
 edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel free to contribute your patches to include them.
