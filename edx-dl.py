@@ -334,8 +334,8 @@ def main():
     for idx, course in enumerate(courses, 1):
         print('%d - %s -> %s' % (idx, course[0], course[2]))
 
-    ## If list option was given, list courses and exit
-    if args.list == True:
+    # If list option was given, list courses and exit
+    if args.list is True:
         sys.exit(0)
 
     c_number = int(input('Enter Course Number: '))
