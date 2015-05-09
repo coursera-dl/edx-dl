@@ -360,9 +360,7 @@ def main():
 
     # Choose Week or choose all
     print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    w = 0
-    for week in weeks:
-        w += 1
+    for w, week in enumerate(weeks, 1):
         print('%d - Download %s videos' % (w, week[0].strip()))
     print('%d - Download them all' % (numOfWeeks + 1))
 
