@@ -317,7 +317,6 @@ def main():
     # Get user info/courses
     dash = get_page_contents(DASHBOARD, headers)
     soup = BeautifulSoup(dash)
-    data = soup.find_all('ul')[1]
     COURSES = soup.find_all('article', 'course')
     courses = []
     for COURSE in COURSES:
