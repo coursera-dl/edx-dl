@@ -154,7 +154,7 @@ def get_selected_courseware(courses):
 
     selected_course = courses[c_number - 1]
     courseware = selected_course[1].replace('info', 'courseware')
-    return courseware
+    return courseware, selected_course
 
 def get_initial_token():
     """
@@ -357,7 +357,7 @@ def main():
     
     # Display welcome page 
     display_welcome_page(courses)
-    COURSEWARE = get_selected_courseware(courses)
+    COURSEWARE, selected_course = get_selected_courseware(courses)
 
     # Get Available Weeks
     courseware = get_page_contents(COURSEWARE, headers)
