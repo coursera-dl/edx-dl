@@ -144,6 +144,26 @@ def display_welcome_page(courses):
         print('%d - [%s] - %s' % (idx, status, course_name))
 
 
+def get_courses_info(url, headers):
+    dash = get_page_contents(url, headers)
+    soup = BeautifulSoup(dash)
+    COURSES = soup.find_all('article', 'course')
+    courses = []
+    for COURSE in COURSES:
+        c_name = COURSE.h3.text.strip()
+        c_link = None
+        state = 'Not yet'
+        try:
+            # started courses include the course link in the href attribute
+            c_link = BASE_URL + COURSE.a['href']
+            if c_link.endswith('info') or c_link.endswith('info/'):
+                state = 'Started'
+        except KeyError:
+            pass
+        courses.append((c_name, c_link, state))
+    return courses
+
+
 def get_selected_course(courses):
     """ retrieve the course that the user selected. """
     num_of_courses = len(courses)
@@ -186,7 +206,8 @@ def get_initial_token():
     return ''
 
 
-def get_available_weeks(courseware):
+def get_available_weeks(url, headers):
+    courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
     WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
     weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
@@ -359,32 +380,13 @@ def main():
         print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
-    # Get user info/courses
-    dash = get_page_contents(DASHBOARD, headers)
-    soup = BeautifulSoup(dash)
-    COURSES = soup.find_all('article', 'course')
-    courses = []
-    for COURSE in COURSES:
-        c_name = COURSE.h3.text.strip()
-        c_link = None
-        state = 'Not yet'
-        try:
-            # started courses include the course link in the href attribute
-            c_link = BASE_URL + COURSE.a['href']
-            if c_link.endswith('info') or c_link.endswith('info/'):
-                state = 'Started'
-        except KeyError:
-            pass
-        courses.append((c_name, c_link, state))
-
-    # Display welcome page
+    courses = get_courses_info(DASHBOARD, headers)
     display_welcome_page(courses)
     selected_course = get_selected_course(courses)
 
     # Get Available Weeks
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
-    courseware = get_page_contents(COURSEWARE, headers)
-    weeks = get_available_weeks(courseware)
+    courseware_url = selected_course[1].replace('info', 'courseware')
+    weeks = get_available_weeks(courseware_url, headers)
     numOfWeeks = len(weeks)
 
     # Choose Week or choose all
