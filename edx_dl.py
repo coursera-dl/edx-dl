@@ -40,13 +40,16 @@ import __builtin__
 import argparse
 import getpass
 import json
+import multiprocessing
 import os
 import os.path
 import re
 import sys
 
-from subprocess import Popen, PIPE
+
 from datetime import timedelta, datetime
+from functools import partial
+from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup
 
@@ -460,7 +463,9 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    all_resources = [extract_page_resources(link, headers) for link in links]
+    mapfunc = partial(extract_page_resources, headers=headers)
+    pool = multiprocessing.Pool(processes=20)
+    all_resources = pool.map(mapfunc, links)
     video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
 
     if len(video_urls) < 1:
