@@ -185,7 +185,7 @@ def get_selected_course(courses):
     return selected_course
 
 
-def get_initial_token():
+def _get_initial_token(url):
     """
     Create initial connection to get authentication token for future
     requests.
@@ -197,7 +197,7 @@ def get_initial_token():
     cj = CookieJar()
     opener = build_opener(HTTPCookieProcessor(cj))
     install_opener(opener)
-    opener.open(EDX_HOMEPAGE)
+    opener.open(url)
 
     for cookie in cj:
         if cookie.name == 'csrftoken':
@@ -343,14 +343,14 @@ def parse_args():
     return args
 
 
-def edx_get_headers():
+def _edx_get_headers():
     headers = {
         'User-Agent': USER_AGENT,
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': get_initial_token(),
+        'X-CSRFToken': _get_initial_token(EDX_HOMEPAGE),
     }
     return headers
 
@@ -424,7 +424,7 @@ def main():
         sys.exit(2)
 
     # Prepare Headers
-    headers = edx_get_headers()
+    headers = _edx_get_headers()
 
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
