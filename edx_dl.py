@@ -355,6 +355,58 @@ def edx_get_headers():
     return headers
 
 
+def extract_page_resources(url, headers):
+    """
+    Parses a web page and extracts its resources e.g. video_url, sub_url, etc.
+    """
+    print("Processing '%s'..." % url)
+    page = get_page_contents(url, headers)
+
+    re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    sections = re_splitter.split(page)[1:]
+    video_list = []
+    for section in sections:
+        video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
+        sub_url = None
+        match_subs = re_subs.search(section)
+        if match_subs:
+            sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
+        video_list.append({
+            'video_youtube_url': 'http://youtube.com/watch?v=' + video_id,
+            'sub_url': sub_url
+        })
+
+    # Try to download some extra videos which is referred by iframe
+    re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
+    extra_ids = re_extra_youtube.findall(page)
+    for extra_id in extra_ids:
+        video_list.append({
+            'video_youtube_url': 'http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH],
+        })
+
+    page_resources = {
+        'url': url,
+        'video_list': video_list,
+    }
+    return page_resources
+
+
+def extract_urls_from_page_resources(page_resources_list):
+    """
+    This function is temporary, it exists only for compatible reasons,
+    it extracts the list of video urls and subtitles from a list of page_resources.
+    """
+    video_urls = []
+    sub_urls = []
+    for page_resource in page_resources_list:
+        video_list = page_resource['video_list']
+        for video_info in video_list:
+            video_urls.append(video_info.get('video_youtube_url'))
+            sub_urls.append(video_info.get('sub_url', None))
+    return video_urls, sub_urls
+
+
 def main():
     args = parse_args()
 
@@ -408,32 +460,12 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    video_ids = []
-    sub_urls = []
-    splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
-    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
+    all_resources = []
     for link in links:
-        print("Processing '%s'..." % link)
-        page = get_page_contents(link, headers)
-        sections = splitter.split(page)[1:]
-        for section in sections:
-            video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
-            sub_url = ''
-            if args.subtitles:
-                match_subs = re_subs.search(section)
-                if match_subs:
-                    sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
-            video_ids += [video_id]
-            sub_urls += [sub_url]
-        # Try to download some extra videos which is referred by iframe
-        extra_ids = extra_youtube.findall(page)
-        video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
-                      extra_ids]
-        sub_urls += ['' for e_id in extra_ids]
+        page_resources = extract_page_resources(link, headers)
+        all_resources.append(page_resources)
 
-    video_urls = ['http://youtube.com/watch?v=' + v_id
-                  for v_id in video_ids]
+    video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
 
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
