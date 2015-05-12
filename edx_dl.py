@@ -460,11 +460,7 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    all_resources = []
-    for link in links:
-        page_resources = extract_page_resources(link, headers)
-        all_resources.append(page_resources)
-
+    all_resources = [extract_page_resources(link, headers) for link in links]
     video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
 
     if len(video_urls) < 1:
