@@ -466,6 +466,8 @@ def main():
     mapfunc = partial(extract_page_resources, headers=headers)
     pool = multiprocessing.Pool(processes=20)
     all_resources = pool.map(mapfunc, links)
+    pool.close()
+    pool.join()
     video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
 
     if len(video_urls) < 1:
