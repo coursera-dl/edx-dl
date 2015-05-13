@@ -111,13 +111,19 @@ def print(*objects, **kwargs):
             enc = sys.getdefaultencoding()
     except AttributeError:
         return builtins.print(*objects, **kwargs)
+
     texts = []
     for object in objects:
         try:
             if type(object) is bytes:
-                original_text = str(object).decode(enc, errors='replace')
+                if sys.version_info < (3, 0):
+                    # in python 2 bytes must be converted to str before decode
+                    object = str(object)
+                original_text = object.decode(enc, errors='replace')
             else:
-                original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
+                if sys.version_info < (3, 0):
+                    object = unicode(object)
+                original_text = object.encode(enc, errors='replace').decode(enc, errors='replace')
         except UnicodeEncodeError:
             original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
         texts.append(original_text)
