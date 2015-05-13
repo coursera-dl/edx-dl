@@ -44,7 +44,6 @@ except:
 import argparse
 import getpass
 import json
-import multiprocessing
 import os
 import os.path
 import re
@@ -53,6 +52,7 @@ import sys
 
 from datetime import timedelta, datetime
 from functools import partial
+from multiprocessing.dummy import Pool as ThreadPool
 from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup
@@ -410,10 +410,20 @@ def extract_urls_from_page_resources(page_resources_list):
     video_urls = []
     sub_urls = []
     for page_resource in page_resources_list:
-        video_list = page_resource['video_list']
+        video_list = page_resource.get('video_list', [])
         for video_info in video_list:
             video_urls.append(video_info.get('video_youtube_url'))
             sub_urls.append(video_info.get('sub_url', None))
+    return video_urls, sub_urls
+
+
+def extract_all_page_resources(urls, headers):
+    mapfunc = partial(extract_page_resources, headers=headers)
+    pool = ThreadPool(20)
+    all_resources = pool.map(mapfunc, urls)
+    pool.close()
+    pool.join()
+    video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
     return video_urls, sub_urls
 
 
@@ -470,13 +480,7 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    mapfunc = partial(extract_page_resources, headers=headers)
-    pool = multiprocessing.Pool(processes=20)
-    all_resources = pool.map(mapfunc, links)
-    pool.close()
-    pool.join()
-    video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
-
+    video_urls, sub_urls = extract_all_page_resources(links, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
