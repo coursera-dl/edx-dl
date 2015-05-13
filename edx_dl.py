@@ -44,7 +44,6 @@ except:
 import argparse
 import getpass
 import json
-import multiprocessing
 import os
 import os.path
 import re
@@ -53,6 +52,7 @@ import sys
 
 from datetime import timedelta, datetime
 from functools import partial
+from multiprocessing.dummy import Pool as ThreadPool
 from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup
@@ -471,7 +471,7 @@ def main():
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     mapfunc = partial(extract_page_resources, headers=headers)
-    pool = multiprocessing.Pool(processes=20)
+    pool = ThreadPool(20)
     all_resources = pool.map(mapfunc, links)
     pool.close()
     pool.join()
