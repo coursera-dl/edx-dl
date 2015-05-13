@@ -6,6 +6,11 @@ from __future__ import print_function
 from __future__ import unicode_literals
 
 try:
+    import builtins
+except ImportError:
+    import __builtin__ as builtins
+
+try:
     from http.cookiejar import CookieJar
 except ImportError:
     from cookielib import CookieJar
@@ -36,7 +41,6 @@ try:
 except:
     pass
 
-import __builtin__
 import argparse
 import getpass
 import json
@@ -109,15 +113,18 @@ def print(*objects, **kwargs):
         if enc is None:
             enc = sys.getdefaultencoding()
     except AttributeError:
-        return __builtin__.print(*objects, **kwargs)
+        return builtins.print(*objects, **kwargs)
     texts = []
     for object in objects:
         try:
-            original_text = str(object).decode(enc, errors='replace')
+            if type(object) is bytes:
+                original_text = str(object).decode(enc, errors='replace')
+            else:
+                original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
         except UnicodeEncodeError:
             original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
         texts.append(original_text)
-    return __builtin__.print(*texts, **kwargs)
+    return builtins.print(*texts, **kwargs)
 
 
 def change_openedx_site(site_name):
