@@ -134,7 +134,7 @@ def change_openedx_site(site_name):
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 
-def display_welcome_page(courses):
+def display_courses(courses):
     """ List the courses that the user has enrolled. """
 
     print('You can access %d courses' % len(courses))
@@ -473,7 +473,7 @@ def main():
         exit(2)
 
     courses = get_courses_info(DASHBOARD, headers)
-    display_welcome_page(courses)
+    display_courses(courses)
     selected_course = get_selected_course(courses)
 
     # Get Available Weeks
