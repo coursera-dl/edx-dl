@@ -83,20 +83,9 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-# If nothing else is chosen, we chose the default user agent
-
-DEFAULT_USER_AGENTS = {
-    "chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
-    "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-    "edx": 'edX-downloader/0.01'
-}
-
-USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 # To replace the print function, the following function must be placed
 # before any other call for print
-
-
 def print(*objects, **kwargs):
     """
     Overload the print function to adapt for the encoding bug in Windows
@@ -149,12 +138,14 @@ def display_welcome_page(courses):
     """ List the courses that the user has enrolled. """
 
     print('You can access %d courses' % len(courses))
-
-    for idx, (course_name, _, status) in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (idx, status, course_name))
+    for i, course_info in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (i, course_info['state'], course_info['name']))
 
 
 def get_courses_info(url, headers):
+    """
+    Extracts the courses information from the dashboard
+    """
     dash = get_page_contents(url, headers)
     soup = BeautifulSoup(dash)
     COURSES = soup.find_all('article', 'course')
@@ -170,7 +161,11 @@ def get_courses_info(url, headers):
                 state = 'Started'
         except KeyError:
             pass
-        courses.append((c_name, c_link, state))
+        courses.append({
+            'name': c_name,
+            'url': c_link,
+            'state': state
+        })
     return courses
 
 
@@ -185,7 +180,7 @@ def get_selected_course(courses):
         if c_number not in range(1, num_of_courses+1):
             print('Enter a valid number between 1 and ', num_of_courses)
             continue
-        elif courses[c_number - 1][2] != 'Started':
+        elif courses[c_number - 1]['state'] != 'Started':
             print('The course has not started!')
             continue
         else:
@@ -220,8 +215,10 @@ def get_available_weeks(url, headers):
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
     WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
-    weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
-             w.ul.find_all('a')]) for w in WEEKS]
+    weeks = [{
+        'name': w.h3.a.string.strip(),
+        'url': BASE_URL + w.ul.find('a')['href']
+        } for w in WEEKS]
     return weeks
 
 
@@ -355,7 +352,7 @@ def parse_args():
 
 def _edx_get_headers():
     headers = {
-        'User-Agent': USER_AGENT,
+        'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
@@ -427,6 +424,29 @@ def extract_all_page_resources(urls, headers):
     return video_urls, sub_urls
 
 
+def display_weeks(course_name, weeks):
+    """ List the weaks for the given course """
+    num_weeks = len(weeks)
+    print('%s has %d weeks so far' % (course_name, num_weeks))
+    for i, week in enumerate(weeks, 1):
+        print('%d - Download %s videos' % (i, week['name']))
+    print('%d - Download them all' % (num_weeks + 1))
+
+
+def get_selected_weeks(weeks):
+    """ retrieve the week that the user selected. """
+    num_weeks = len(weeks)
+    w_number = int(input('Enter Your Choice: '))
+    while w_number > num_weeks + 1:
+        print('Enter a valid Number between 1 and %d' % (num_weeks + 1))
+        w_number = int(input('Enter Your Choice: '))
+
+    if w_number == num_weeks + 1:
+        return [week for week in weeks]
+    else:
+        return [weeks[w_number - 1]]
+
+
 def main():
     args = parse_args()
 
@@ -457,30 +477,18 @@ def main():
     selected_course = get_selected_course(courses)
 
     # Get Available Weeks
-    courseware_url = selected_course[1].replace('info', 'courseware')
+    courseware_url = selected_course['url'].replace('info', 'courseware')
     weeks = get_available_weeks(courseware_url, headers)
-    numOfWeeks = len(weeks)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    for w, week in enumerate(weeks, 1):
-        print('%d - Download %s videos' % (w, week[0].strip()))
-    print('%d - Download them all' % (numOfWeeks + 1))
-
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
-        w_number = int(input('Enter Your Choice: '))
-
-    if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
-    else:
-        links = weeks[w_number - 1][1]
+    display_weeks(selected_course['name'], weeks)
+    selected_weeks = get_selected_weeks(weeks)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    video_urls, sub_urls = extract_all_page_resources(links, headers)
+    weeks_urls = [selected_week['url'] for selected_week in selected_weeks]
+    video_urls, sub_urls = extract_all_page_resources(weeks_urls, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
@@ -496,7 +504,7 @@ def main():
     # Download Videos
     for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
         target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
+                                  directory_name(selected_course['name']))
         filename_prefix = str(i).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
