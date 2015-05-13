@@ -71,6 +71,14 @@ OPENEDX_SITES = {
         'url': 'https://www.france-universite-numerique-mooc.fr',
         'courseware-selector': ('section', {'aria-label': 'Menu du cours'}),
     },
+    'gwu-seas': {
+        'url': 'http://openedx.seas.gwu.edu',
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
+    'gwu-open': {
+        'url': 'http://mooc.online.gwu.edu',
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
