@@ -64,6 +64,8 @@ edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel f
 
 # Authors
 
-The original file was written by @shk3 in/for `python3` then updated
-by @emadshaaban92 for python2, and migrated for versions superior to
-2.6 by @iemejia.
+See the contributors to the project in the [AUTHORS.md][authors] file.  If
+you have contributed to the project, we would like to gladly credit you for
+your work. Just send us a note to be added to that list.
+
+[authors]: https://github.com/shk3/edx-downloader/blob/master/AUTHORS.md
