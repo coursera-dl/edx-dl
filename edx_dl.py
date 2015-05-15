@@ -230,9 +230,10 @@ def get_available_weeks(url, headers):
     soup = BeautifulSoup(courseware)
     WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
     weeks = [{
+        'position': i,
         'name': w.h3.a.string.strip(),
         'url': BASE_URL + w.ul.find('a')['href']
-        } for w in WEEKS]
+        } for i, w in enumerate(WEEKS, 1)]
     return weeks
 
 
