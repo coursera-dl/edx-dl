@@ -517,24 +517,18 @@ def main():
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
+    video_format_option = args.format + '/mp4' if args.format else 'mp4'
+    subtitles_option = '--write-sub' if args.subtitles else ''
     for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course['name']))
+        coursename = directory_name(selected_course['name'])
+        target_dir = os.path.join(args.output_dir, coursename)
         filename_prefix = str(i).zfill(2)
-        cmd = ["youtube-dl",
-               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
-        video_format = 'mp4'
-        if args.format:
-            # defaults to mp4 in case the requested format isn't available
-            video_format = args.format + '/' + video_format
-        cmd.append("-f")
-        cmd.append(video_format)
-        if args.subtitles:
-            cmd.append('--write-sub')
-        cmd.append(str(v))
+        filename = filename_prefix + "-%(title)s.%(ext)s"
+        fullname = os.path.join(target_dir, filename)
+        cmd = ['youtube-dl', '-o', filename, '-f', video_format_option,
+               subtitles_option, v]
 
         popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
-
         youtube_stdout = b''
         while True:  # Save output to youtube_stdout while this being echoed
             tmp = popen_youtube.stdout.read(1)
