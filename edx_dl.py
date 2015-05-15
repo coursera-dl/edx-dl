@@ -49,8 +49,11 @@ import os.path
 import re
 import sys
 
-from subprocess import Popen, PIPE
+
 from datetime import timedelta, datetime
+from functools import partial
+from multiprocessing.dummy import Pool as ThreadPool
+from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup
 
@@ -88,20 +91,9 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-# If nothing else is chosen, we chose the default user agent
-
-DEFAULT_USER_AGENTS = {
-    "chrome": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.31 (KHTML, like Gecko) Chrome/26.0.1410.63 Safari/537.31",
-    "firefox": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.8; rv:24.0) Gecko/20100101 Firefox/24.0",
-    "edx": 'edX-downloader/0.01'
-}
-
-USER_AGENT = DEFAULT_USER_AGENTS["edx"]
 
 # To replace the print function, the following function must be placed
 # before any other call for print
-
-
 def print(*objects, **kwargs):
     """
     Overload the print function to adapt for the encoding bug in Windows
@@ -156,13 +148,39 @@ def change_openedx_site(site_name):
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 
-def display_welcome_page(courses):
+def display_courses(courses):
     """ List the courses that the user has enrolled. """
 
     print('You can access %d courses' % len(courses))
+    for i, course_info in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (i, course_info['state'], course_info['name']))
 
-    for idx, (course_name, _, status) in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (idx, status, course_name))
+
+def get_courses_info(url, headers):
+    """
+    Extracts the courses information from the dashboard
+    """
+    dash = get_page_contents(url, headers)
+    soup = BeautifulSoup(dash)
+    COURSES = soup.find_all('article', 'course')
+    courses = []
+    for COURSE in COURSES:
+        c_name = COURSE.h3.text.strip()
+        c_link = None
+        state = 'Not yet'
+        try:
+            # started courses include the course link in the href attribute
+            c_link = BASE_URL + COURSE.a['href']
+            if c_link.endswith('info') or c_link.endswith('info/'):
+                state = 'Started'
+        except KeyError:
+            pass
+        courses.append({
+            'name': c_name,
+            'url': c_link,
+            'state': state
+        })
+    return courses
 
 
 def get_selected_course(courses):
@@ -176,7 +194,7 @@ def get_selected_course(courses):
         if c_number not in range(1, num_of_courses+1):
             print('Enter a valid number between 1 and ', num_of_courses)
             continue
-        elif courses[c_number - 1][2] != 'Started':
+        elif courses[c_number - 1]['state'] != 'Started':
             print('The course has not started!')
             continue
         else:
@@ -186,7 +204,7 @@ def get_selected_course(courses):
     return selected_course
 
 
-def get_initial_token():
+def _get_initial_token(url):
     """
     Create initial connection to get authentication token for future
     requests.
@@ -198,7 +216,7 @@ def get_initial_token():
     cj = CookieJar()
     opener = build_opener(HTTPCookieProcessor(cj))
     install_opener(opener)
-    opener.open(EDX_HOMEPAGE)
+    opener.open(url)
 
     for cookie in cj:
         if cookie.name == 'csrftoken':
@@ -207,11 +225,14 @@ def get_initial_token():
     return ''
 
 
-def get_available_weeks(courseware):
+def get_available_weeks(url, headers):
+    courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
     WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
-    weeks = [(w.h3.a.string, [BASE_URL + a['href'] for a in
-             w.ul.find_all('a')]) for w in WEEKS]
+    weeks = [{
+        'name': w.h3.a.string.strip(),
+        'url': BASE_URL + w.ul.find('a')['href']
+        } for w in WEEKS]
     return weeks
 
 
@@ -343,16 +364,101 @@ def parse_args():
     return args
 
 
-def edx_get_headers():
+def _edx_get_headers():
     headers = {
-        'User-Agent': USER_AGENT,
+        'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': get_initial_token(),
+        'X-CSRFToken': _get_initial_token(EDX_HOMEPAGE),
     }
     return headers
+
+
+def extract_page_resources(url, headers):
+    """
+    Parses a web page and extracts its resources e.g. video_url, sub_url, etc.
+    """
+    print("Processing '%s'..." % url)
+    page = get_page_contents(url, headers)
+
+    re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
+    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    sections = re_splitter.split(page)[1:]
+    video_list = []
+    for section in sections:
+        video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
+        sub_url = None
+        match_subs = re_subs.search(section)
+        if match_subs:
+            sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
+        video_list.append({
+            'video_youtube_url': 'http://youtube.com/watch?v=' + video_id,
+            'sub_url': sub_url
+        })
+
+    # Try to download some extra videos which is referred by iframe
+    re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
+    extra_ids = re_extra_youtube.findall(page)
+    for extra_id in extra_ids:
+        video_list.append({
+            'video_youtube_url': 'http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH],
+        })
+
+    page_resources = {
+        'url': url,
+        'video_list': video_list,
+    }
+    return page_resources
+
+
+def extract_urls_from_page_resources(page_resources_list):
+    """
+    This function is temporary, it exists only for compatible reasons,
+    it extracts the list of video urls and subtitles from a list of page_resources.
+    """
+    video_urls = []
+    sub_urls = []
+    for page_resource in page_resources_list:
+        video_list = page_resource.get('video_list', [])
+        for video_info in video_list:
+            video_urls.append(video_info.get('video_youtube_url'))
+            sub_urls.append(video_info.get('sub_url', None))
+    return video_urls, sub_urls
+
+
+def extract_all_page_resources(urls, headers):
+    mapfunc = partial(extract_page_resources, headers=headers)
+    pool = ThreadPool(20)
+    all_resources = pool.map(mapfunc, urls)
+    pool.close()
+    pool.join()
+    video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
+    return video_urls, sub_urls
+
+
+def display_weeks(course_name, weeks):
+    """ List the weaks for the given course """
+    num_weeks = len(weeks)
+    print('%s has %d weeks so far' % (course_name, num_weeks))
+    for i, week in enumerate(weeks, 1):
+        print('%d - Download %s videos' % (i, week['name']))
+    print('%d - Download them all' % (num_weeks + 1))
+
+
+def get_selected_weeks(weeks):
+    """ retrieve the week that the user selected. """
+    num_weeks = len(weeks)
+    w_number = int(input('Enter Your Choice: '))
+    while w_number > num_weeks + 1:
+        print('Enter a valid Number between 1 and %d' % (num_weeks + 1))
+        w_number = int(input('Enter Your Choice: '))
+
+    if w_number == num_weeks + 1:
+        return [week for week in weeks]
+    else:
+        return [weeks[w_number - 1]]
 
 
 def main():
@@ -372,7 +478,7 @@ def main():
         sys.exit(2)
 
     # Prepare Headers
-    headers = edx_get_headers()
+    headers = _edx_get_headers()
 
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
@@ -380,80 +486,23 @@ def main():
         print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
-    # Get user info/courses
-    dash = get_page_contents(DASHBOARD, headers)
-    soup = BeautifulSoup(dash)
-    COURSES = soup.find_all('article', 'course')
-    courses = []
-    for COURSE in COURSES:
-        c_name = COURSE.h3.text.strip()
-        c_link = None
-        state = 'Not yet'
-        try:
-            # started courses include the course link in the href attribute
-            c_link = BASE_URL + COURSE.a['href']
-            if c_link.endswith('info') or c_link.endswith('info/'):
-                state = 'Started'
-        except KeyError:
-            pass
-        courses.append((c_name, c_link, state))
-
-    # Display welcome page
-    display_welcome_page(courses)
+    courses = get_courses_info(DASHBOARD, headers)
+    display_courses(courses)
     selected_course = get_selected_course(courses)
 
     # Get Available Weeks
-    COURSEWARE = selected_course[1].replace('info', 'courseware')
-    courseware = get_page_contents(COURSEWARE, headers)
-    weeks = get_available_weeks(courseware)
-    numOfWeeks = len(weeks)
+    courseware_url = selected_course['url'].replace('info', 'courseware')
+    weeks = get_available_weeks(courseware_url, headers)
 
     # Choose Week or choose all
-    print('%s has %d weeks so far' % (selected_course[0], numOfWeeks))
-    for w, week in enumerate(weeks, 1):
-        print('%d - Download %s videos' % (w, week[0].strip()))
-    print('%d - Download them all' % (numOfWeeks + 1))
-
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > numOfWeeks + 1:
-        print('Enter a valid Number between 1 and %d' % (numOfWeeks + 1))
-        w_number = int(input('Enter Your Choice: '))
-
-    if w_number == numOfWeeks + 1:
-        links = [link for week in weeks for link in week[1]]
-    else:
-        links = weeks[w_number - 1][1]
+    display_weeks(selected_course['name'], weeks)
+    selected_weeks = get_selected_weeks(weeks)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    video_ids = []
-    sub_urls = []
-    splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
-    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
-    for link in links:
-        print("Processing '%s'..." % link)
-        page = get_page_contents(link, headers)
-        sections = splitter.split(page)[1:]
-        for section in sections:
-            video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
-            sub_url = ''
-            if args.subtitles:
-                match_subs = re_subs.search(section)
-                if match_subs:
-                    sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
-            video_ids += [video_id]
-            sub_urls += [sub_url]
-        # Try to download some extra videos which is referred by iframe
-        extra_ids = extra_youtube.findall(page)
-        video_ids += [link[:YOUTUBE_VIDEO_ID_LENGTH] for link in
-                      extra_ids]
-        sub_urls += ['' for e_id in extra_ids]
-
-    video_urls = ['http://youtube.com/watch?v=' + v_id
-                  for v_id in video_ids]
-
+    weeks_urls = [selected_week['url'] for selected_week in selected_weeks]
+    video_urls, sub_urls = extract_all_page_resources(weeks_urls, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
@@ -469,7 +518,7 @@ def main():
     # Download Videos
     for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
         target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course[0]))
+                                  directory_name(selected_course['name']))
         filename_prefix = str(i).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
