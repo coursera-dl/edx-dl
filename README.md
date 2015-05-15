@@ -58,6 +58,8 @@ These are the current supported sites:
 - [Stanford](http://lagunita.stanford.edu/)
 - [University of Sydney](http://online.it.usyd.edu.au)
 - [France Université Numérique](https://www.france-universite-numerique-mooc.fr/)
+- [GW Online SEAS](http://openedx.seas.gwu.edu/) - George Washington University
+- [GW Online Open](http://mooc.online.gwu.edu/) - George Washington University
 
 This is the full [list of sites powered by Open
 edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel free to contribute your patches to include them.
