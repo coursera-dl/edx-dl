@@ -522,10 +522,10 @@ def main():
         filename_prefix = str(i).zfill(2)
         cmd = ["youtube-dl",
                "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
-        video_format = '/mp4'
+        video_format = 'mp4'
         if args.format:
             # defaults to mp4 in case the requested format isn't available
-            video_format = args.format + video_format
+            video_format = args.format + '/' + video_format
         cmd.append("-f")
         cmd.append(video_format)
         if args.subtitles:
