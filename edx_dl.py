@@ -466,15 +466,15 @@ def execute_command(cmd):
     """
     creates a process with the given command cmd and writes its output
     """
-    popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    youtube_stdout = b''
+    popen = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    stdout = b''
     while True:  # Save output to youtube_stdout while this being echoed
-        tmp = popen_youtube.stdout.read(1)
-        youtube_stdout += tmp
+        tmp = popen.stdout.read(1)
+        stdout += tmp
         print(tmp, end="")
         sys.stdout.flush()
         # do it until the process finish and there isn't output
-        if tmp == b"" and popen_youtube.poll() is not None:
+        if tmp == b"" and popen.poll() is not None:
             break
 
 
