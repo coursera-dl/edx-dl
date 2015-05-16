@@ -462,6 +462,22 @@ def get_selected_weeks(weeks):
         return [weeks[w_number - 1]]
 
 
+def execute_command(cmd):
+    """
+    creates a process with the given command cmd and writes its output
+    """
+    popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    youtube_stdout = b''
+    while True:  # Save output to youtube_stdout while this being echoed
+        tmp = popen_youtube.stdout.read(1)
+        youtube_stdout += tmp
+        print(tmp, end="")
+        sys.stdout.flush()
+        # do it until the process finish and there isn't output
+        if tmp == b"" and popen_youtube.poll() is not None:
+            break
+
+
 def main():
     args = parse_args()
 
@@ -527,17 +543,8 @@ def main():
         fullname = os.path.join(target_dir, filename)
         cmd = ['youtube-dl', '-o', filename, '-f', video_format_option,
                subtitles_option, v]
-
-        popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
-        youtube_stdout = b''
-        while True:  # Save output to youtube_stdout while this being echoed
-            tmp = popen_youtube.stdout.read(1)
-            youtube_stdout += tmp
-            print(tmp, end="")
-            sys.stdout.flush()
-            # do it until the process finish and there isn't output
-            if tmp == b"" and popen_youtube.poll() is not None:
-                break
+        # we execute the youtube-dl command to download the videos
+        execute_command(cmd)
 
         if args.subtitles:
             filename = get_filename(target_dir, filename_prefix)
