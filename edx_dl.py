@@ -170,20 +170,21 @@ def get_courses_info(url, headers):
     """
     dash = get_page_contents(url, headers)
     soup = BeautifulSoup(dash)
-    COURSES = soup.find_all('article', 'course')
+    courses_soup = soup.find_all('article', 'course')
     courses = []
-    for COURSE in COURSES:
-        c_name = COURSE.h3.text.strip()
-        c_link = None
-        state = 'Not yet'
+    for course_soup in courses_soup:
+        course_name = course_soup.h3.text.strip()
+        course_url = None
+        course_state = 'Not yet'
         try:
             # started courses include the course link in the href attribute
-            c_link = BASE_URL + COURSE.a['href']
-            if c_link.endswith('info') or c_link.endswith('info/'):
-                state = 'Started'
+            course_url = BASE_URL + course_soup.a['href']
+            if course_url.endswith('info') or course_url.endswith('info/'):
+                course_state = 'Started'
         except KeyError:
             pass
-        courses.append(Course(name=c_name, url=c_link, state=state))
+
+        courses.append(Course(name=course_name, url=course_url, state=course_state))
     return courses
 
 
