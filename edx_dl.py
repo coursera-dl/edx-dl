@@ -50,8 +50,8 @@ import re
 import sys
 
 
-from datetime import timedelta, datetime
 from collections import namedtuple
+from datetime import timedelta, datetime
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 from subprocess import Popen, PIPE
