@@ -261,9 +261,8 @@ def directory_name(initial_name):
 
 
 def edx_json2srt(o):
-    i = 1
     output = ''
-    for (s, e, t) in zip(o['start'], o['end'], o['text']):
+    for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text']), 1):
         if t == "":
             continue
         output += str(i) + '\n'
@@ -273,7 +272,6 @@ def edx_json2srt(o):
             (s.hour, s.minute, s.second, s.microsecond/1000,
              e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
         output += t + "\n\n"
-        i += 1
     return output
 
 
@@ -506,7 +504,6 @@ def main():
     courses = get_courses_info(DASHBOARD, headers)
     display_courses(courses)
     selected_course = get_selected_course(courses)
-
     # Get Available Weeks
     courseware_url = selected_course['url'].replace('info', 'courseware')
     weeks = get_available_weeks(courseware_url, headers)
