@@ -93,6 +93,7 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 Course = namedtuple('Course', ['name', 'url', 'state'])
+Section = namedtuple('Section', ['position', 'name', 'url'])
 SubSection = namedtuple('SubSection', ['url', 'units'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
 
@@ -225,16 +226,13 @@ def _get_initial_token(url):
     return ''
 
 
-def get_available_weeks(url, headers):
+def get_available_sections(url, headers):
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
-    WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
-    weeks = [{
-        'position': i,
-        'name': w.h3.a.string.strip(),
-        'url': BASE_URL + w.ul.find('a')['href']
-        } for i, w in enumerate(WEEKS, 1)]
-    return weeks
+    SECTIONS = soup.find_all('div', attrs={'class': 'chapter'})
+    sections = [Section(position=i, name=s.h3.a.string.strip(),
+                        url=BASE_URL + s.ul.find('a')['href']) for i, s in enumerate(SECTIONS, 1)]
+    return sections
 
 
 def get_page_contents(url, headers):
@@ -432,27 +430,27 @@ def extract_all_subsections(urls, headers):
     return video_urls, sub_urls
 
 
-def display_weeks(course_name, weeks):
+def display_sections(course_name, sections):
     """ List the weaks for the given course """
-    num_weeks = len(weeks)
-    print('%s has %d weeks so far' % (course_name, num_weeks))
-    for i, week in enumerate(weeks, 1):
-        print('%d - Download %s videos' % (i, week['name']))
-    print('%d - Download them all' % (num_weeks + 1))
+    num_sections = len(sections)
+    print('%s has %d sections so far' % (course_name, num_sections))
+    for i, section in enumerate(sections, 1):
+        print('%d - Download %s videos' % (i, section.name))
+    print('%d - Download them all' % (num_sections + 1))
 
 
-def get_selected_weeks(weeks):
-    """ retrieve the week that the user selected. """
-    num_weeks = len(weeks)
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > num_weeks + 1:
-        print('Enter a valid Number between 1 and %d' % (num_weeks + 1))
-        w_number = int(input('Enter Your Choice: '))
+def get_selected_sections(sections):
+    """ retrieve the section that the user selected. """
+    num_sections = len(sections)
+    number = int(input('Enter Your Choice: '))
+    while number > num_sections + 1:
+        print('Enter a valid Number between 1 and %d' % (num_sections + 1))
+        number = int(input('Enter Your Choice: '))
 
-    if w_number == num_weeks + 1:
-        return [week for week in weeks]
+    if number == num_sections + 1:
+        return [section for section in sections]
     else:
-        return [weeks[w_number - 1]]
+        return [sections[number - 1]]
 
 
 def execute_command(cmd):
@@ -499,19 +497,20 @@ def main():
     courses = get_courses_info(DASHBOARD, headers)
     display_courses(courses)
     selected_course = get_selected_course(courses)
-    # Get Available Weeks
-    courseware_url = selected_course.url.replace('info', 'courseware')
-    weeks = get_available_weeks(courseware_url, headers)
 
-    # Choose Week or choose all
-    display_weeks(selected_course.name, weeks)
-    selected_weeks = get_selected_weeks(weeks)
+    # Get Available Sections
+    courseware_url = selected_course.url.replace('info', 'courseware')
+    sections = get_available_sections(courseware_url, headers)
+
+    # Choose Section or choose all
+    display_sections(selected_course.name, sections)
+    selected_sections = get_selected_sections(sections)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    weeks_urls = [selected_week['url'] for selected_week in selected_weeks]
-    video_urls, sub_urls = extract_all_subsections(weeks_urls, headers)
+    sections_urls = [selected_section.url for selected_section in selected_sections]
+    video_urls, sub_urls = extract_all_subsections(sections_urls, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
