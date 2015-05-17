@@ -284,9 +284,9 @@ def edx_get_subtitle(url, headers):
     subtitles are available.
     """
     try:
-        jsonString = get_page_contents(url, headers)
-        jsonObject = json.loads(jsonString)
-        return edx_json2srt(jsonObject)
+        json_string = get_page_contents(url, headers)
+        json_object = json.loads(json_string)
+        return edx_json2srt(json_object)
     except URLError as e:
         print('[warning] edX subtitles (error:%s)' % e.reason)
         return None
