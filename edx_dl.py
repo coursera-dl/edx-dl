@@ -51,6 +51,7 @@ import sys
 
 
 from datetime import timedelta, datetime
+from collections import namedtuple
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 from subprocess import Popen, PIPE
@@ -90,6 +91,8 @@ DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
+
+Course = namedtuple('Course', ['name', 'url', 'state'])
 
 
 # To replace the print function, the following function must be placed
@@ -152,8 +155,8 @@ def display_courses(courses):
     """ List the courses that the user has enrolled. """
 
     print('You can access %d courses' % len(courses))
-    for i, course_info in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (i, course_info['state'], course_info['name']))
+    for i, (name, _, state) in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (i, state, name))
 
 
 def get_courses_info(url, headers):
@@ -175,11 +178,7 @@ def get_courses_info(url, headers):
                 state = 'Started'
         except KeyError:
             pass
-        courses.append({
-            'name': c_name,
-            'url': c_link,
-            'state': state
-        })
+        courses.append(Course(name=c_name, url=c_link, state=state))
     return courses
 
 
@@ -194,7 +193,7 @@ def get_selected_course(courses):
         if c_number not in range(1, num_of_courses+1):
             print('Enter a valid number between 1 and ', num_of_courses)
             continue
-        elif courses[c_number - 1]['state'] != 'Started':
+        elif courses[c_number - 1].state != 'Started':
             print('The course has not started!')
             continue
         else:
@@ -505,11 +504,11 @@ def main():
     display_courses(courses)
     selected_course = get_selected_course(courses)
     # Get Available Weeks
-    courseware_url = selected_course['url'].replace('info', 'courseware')
+    courseware_url = selected_course.url.replace('info', 'courseware')
     weeks = get_available_weeks(courseware_url, headers)
 
     # Choose Week or choose all
-    display_weeks(selected_course['name'], weeks)
+    display_weeks(selected_course.name, weeks)
     selected_weeks = get_selected_weeks(weeks)
 
     if is_interactive:
@@ -533,7 +532,7 @@ def main():
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     subtitles_option = '--write-sub' if args.subtitles else ''
     for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
-        coursename = directory_name(selected_course['name'])
+        coursename = directory_name(selected_course.name)
         target_dir = os.path.join(args.output_dir, coursename)
         filename_prefix = str(i).zfill(2)
         filename = filename_prefix + "-%(title)s.%(ext)s"
