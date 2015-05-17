@@ -51,6 +51,7 @@ import sys
 
 
 from datetime import timedelta, datetime
+from collections import namedtuple
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 from subprocess import Popen, PIPE
@@ -90,6 +91,11 @@ DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
+
+Course = namedtuple('Course', ['name', 'url', 'state'])
+Section = namedtuple('Section', ['position', 'name', 'url'])
+SubSection = namedtuple('SubSection', ['url', 'units'])
+Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
 
 
 # To replace the print function, the following function must be placed
@@ -152,8 +158,8 @@ def display_courses(courses):
     """ List the courses that the user has enrolled. """
 
     print('You can access %d courses' % len(courses))
-    for i, course_info in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (i, course_info['state'], course_info['name']))
+    for i, (name, _, state) in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (i, state, name))
 
 
 def get_courses_info(url, headers):
@@ -175,11 +181,7 @@ def get_courses_info(url, headers):
                 state = 'Started'
         except KeyError:
             pass
-        courses.append({
-            'name': c_name,
-            'url': c_link,
-            'state': state
-        })
+        courses.append(Course(name=c_name, url=c_link, state=state))
     return courses
 
 
@@ -194,7 +196,7 @@ def get_selected_course(courses):
         if c_number not in range(1, num_of_courses+1):
             print('Enter a valid number between 1 and ', num_of_courses)
             continue
-        elif courses[c_number - 1]['state'] != 'Started':
+        elif courses[c_number - 1].state != 'Started':
             print('The course has not started!')
             continue
         else:
@@ -225,15 +227,13 @@ def _get_initial_token(url):
     return ''
 
 
-def get_available_weeks(url, headers):
+def get_available_sections(url, headers):
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
-    WEEKS = soup.find_all('div', attrs={'class': 'chapter'})
-    weeks = [{
-        'name': w.h3.a.string.strip(),
-        'url': BASE_URL + w.ul.find('a')['href']
-        } for w in WEEKS]
-    return weeks
+    SECTIONS = soup.find_all('div', attrs={'class': 'chapter'})
+    sections = [Section(position=i, name=s.h3.a.string.strip(),
+                        url=BASE_URL + s.ul.find('a')['href']) for i, s in enumerate(SECTIONS, 1)]
+    return sections
 
 
 def get_page_contents(url, headers):
@@ -260,9 +260,8 @@ def directory_name(initial_name):
 
 
 def edx_json2srt(o):
-    i = 1
     output = ''
-    for (s, e, t) in zip(o['start'], o['end'], o['text']):
+    for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
         if t == "":
             continue
         output += str(i) + '\n'
@@ -272,7 +271,6 @@ def edx_json2srt(o):
             (s.hour, s.minute, s.second, s.microsecond/1000,
              e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
         output += t + "\n\n"
-        i += 1
     return output
 
 
@@ -376,89 +374,99 @@ def _edx_get_headers():
     return headers
 
 
-def extract_page_resources(url, headers):
+def extract_subsection(url, headers):
     """
-    Parses a web page and extracts its resources e.g. video_url, sub_url, etc.
+    Parses a webpag and extracts its resources e.g. video_url, sub_url, etc.
     """
     print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
 
     re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    sections = re_splitter.split(page)[1:]
-    video_list = []
-    for section in sections:
-        video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
+    re_units = re_splitter.split(page)[1:]
+    units = []
+    for unit_html in re_units:
+        video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
         sub_url = None
-        match_subs = re_subs.search(section)
+        match_subs = re_subs.search(unit_html)
         if match_subs:
             sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
-        video_list.append({
-            'video_youtube_url': 'http://youtube.com/watch?v=' + video_id,
-            'sub_url': sub_url
-        })
+        units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + video_id,
+                          sub_url=sub_url))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     extra_ids = re_extra_youtube.findall(page)
     for extra_id in extra_ids:
-        video_list.append({
-            'video_youtube_url': 'http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH],
-        })
+        units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]))
 
-    page_resources = {
-        'url': url,
-        'video_list': video_list,
-    }
-    return page_resources
+    section_info = SubSection(url=url, units=units)
+    return section_info
 
 
-def extract_urls_from_page_resources(page_resources_list):
+def _extract_urls_from_subsections(subsections):
     """
     This function is temporary, it exists only for compatible reasons,
     it extracts the list of video urls and subtitles from a list of page_resources.
     """
     video_urls = []
     sub_urls = []
-    for page_resource in page_resources_list:
-        video_list = page_resource.get('video_list', [])
-        for video_info in video_list:
-            video_urls.append(video_info.get('video_youtube_url'))
-            sub_urls.append(video_info.get('sub_url', None))
+    for subsection in subsections:
+        for unit in subsection.units:
+            video_urls.append(unit.video_youtube_url)
+            sub_urls.append(unit.sub_url)
     return video_urls, sub_urls
 
 
-def extract_all_page_resources(urls, headers):
-    mapfunc = partial(extract_page_resources, headers=headers)
+def extract_all_subsections(urls, headers):
+    # for development purposes you may want to uncomment this line
+    # to test serial execution, and comment all the pool related ones
+    # all_resources = [extract_subsection(url, headers) for url in urls]
+    mapfunc = partial(extract_subsection, headers=headers)
     pool = ThreadPool(20)
     all_resources = pool.map(mapfunc, urls)
     pool.close()
     pool.join()
-    video_urls, sub_urls = extract_urls_from_page_resources(all_resources)
+    video_urls, sub_urls = _extract_urls_from_subsections(all_resources)
     return video_urls, sub_urls
 
 
-def display_weeks(course_name, weeks):
+def display_sections(course_name, sections):
     """ List the weaks for the given course """
-    num_weeks = len(weeks)
-    print('%s has %d weeks so far' % (course_name, num_weeks))
-    for i, week in enumerate(weeks, 1):
-        print('%d - Download %s videos' % (i, week['name']))
-    print('%d - Download them all' % (num_weeks + 1))
+    num_sections = len(sections)
+    print('%s has %d sections so far' % (course_name, num_sections))
+    for i, section in enumerate(sections, 1):
+        print('%d - Download %s videos' % (i, section.name))
+    print('%d - Download them all' % (num_sections + 1))
 
 
-def get_selected_weeks(weeks):
-    """ retrieve the week that the user selected. """
-    num_weeks = len(weeks)
-    w_number = int(input('Enter Your Choice: '))
-    while w_number > num_weeks + 1:
-        print('Enter a valid Number between 1 and %d' % (num_weeks + 1))
-        w_number = int(input('Enter Your Choice: '))
+def get_selected_sections(sections):
+    """ retrieve the section(s) that the user selected. """
+    num_sections = len(sections)
+    number = int(input('Enter Your Choice: '))
+    while number > num_sections + 1:
+        print('Enter a valid Number between 1 and %d' % (num_sections + 1))
+        number = int(input('Enter Your Choice: '))
 
-    if w_number == num_weeks + 1:
-        return [week for week in weeks]
-    else:
-        return [weeks[w_number - 1]]
+    if number == num_sections + 1:
+        return sections
+    return [sections[number - 1]]
+
+
+def execute_command(cmd):
+    """
+    creates a process with the given command cmd and writes its output
+    """
+    popen = Popen(cmd, stdout=PIPE, stderr=PIPE)
+    stdout = b''
+    while True:  # Save output to youtube_stdout while this being echoed
+        tmp = popen.stdout.read(1)
+        stdout += tmp
+        print(tmp, end="")
+        sys.stdout.flush()
+        # do it until the process finish and there isn't output
+        if tmp == b"" and popen.poll() is not None:
+            break
 
 
 def main():
@@ -490,19 +498,19 @@ def main():
     display_courses(courses)
     selected_course = get_selected_course(courses)
 
-    # Get Available Weeks
-    courseware_url = selected_course['url'].replace('info', 'courseware')
-    weeks = get_available_weeks(courseware_url, headers)
+    # Get Available Sections
+    courseware_url = selected_course.url.replace('info', 'courseware')
+    sections = get_available_sections(courseware_url, headers)
 
-    # Choose Week or choose all
-    display_weeks(selected_course['name'], weeks)
-    selected_weeks = get_selected_weeks(weeks)
+    # Choose Section or choose all
+    display_sections(selected_course.name, sections)
+    selected_sections = get_selected_sections(sections)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    weeks_urls = [selected_week['url'] for selected_week in selected_weeks]
-    video_urls, sub_urls = extract_all_page_resources(weeks_urls, headers)
+    sections_urls = [selected_section.url for selected_section in selected_sections]
+    video_urls, sub_urls = extract_all_subsections(sections_urls, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
@@ -516,33 +524,18 @@ def main():
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
+    video_format_option = args.format + '/mp4' if args.format else 'mp4'
+    subtitles_option = '--write-sub' if args.subtitles else ''
     for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
-        target_dir = os.path.join(args.output_dir,
-                                  directory_name(selected_course['name']))
+        coursename = directory_name(selected_course.name)
+        target_dir = os.path.join(args.output_dir, coursename)
         filename_prefix = str(i).zfill(2)
-        cmd = ["youtube-dl",
-               "-o", os.path.join(target_dir, filename_prefix + "-%(title)s.%(ext)s")]
-        video_format = 'mp4'
-        if args.format:
-            # defaults to mp4 in case the requested format isn't available
-            video_format = args.format + '/' + video_format
-        cmd.append("-f")
-        cmd.append(video_format)
-        if args.subtitles:
-            cmd.append('--write-sub')
-        cmd.append(str(v))
-
-        popen_youtube = Popen(cmd, stdout=PIPE, stderr=PIPE)
-
-        youtube_stdout = b''
-        while True:  # Save output to youtube_stdout while this being echoed
-            tmp = popen_youtube.stdout.read(1)
-            youtube_stdout += tmp
-            print(tmp, end="")
-            sys.stdout.flush()
-            # do it until the process finish and there isn't output
-            if tmp == b"" and popen_youtube.poll() is not None:
-                break
+        filename = filename_prefix + "-%(title)s.%(ext)s"
+        fullname = os.path.join(target_dir, filename)
+        cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
+               subtitles_option, v]
+        # we execute the youtube-dl command to download the videos
+        execute_command(cmd)
 
         if args.subtitles:
             filename = get_filename(target_dir, filename_prefix)
