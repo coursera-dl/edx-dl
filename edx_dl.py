@@ -155,7 +155,9 @@ def change_openedx_site(site_name):
 
 
 def display_courses(courses):
-    """ List the courses that the user has enrolled. """
+    """
+    List the courses that the user has enrolled.
+    """
 
     print('You can access %d courses' % len(courses))
     for i, (name, _, state) in enumerate(courses, 1):
@@ -164,7 +166,7 @@ def display_courses(courses):
 
 def get_courses_info(url, headers):
     """
-    Extracts the courses information from the dashboard
+    Extracts the courses information from the dashboard.
     """
     dash = get_page_contents(url, headers)
     soup = BeautifulSoup(dash)
@@ -186,7 +188,9 @@ def get_courses_info(url, headers):
 
 
 def get_selected_course(courses):
-    """ retrieve the course that the user selected. """
+    """
+    Retrieve the course that the user selected.
+    """
     num_of_courses = len(courses)
 
     c_number = None
@@ -406,8 +410,9 @@ def extract_subsection(url, headers):
 
 def _extract_urls_from_subsections(subsections):
     """
-    This function is temporary, it exists only for compatible reasons,
-    it extracts the list of video urls and subtitles from a list of page_resources.
+    This function is temporary, it exists only for compatible reasons, it
+    extracts the list of video urls and subtitles from a list of
+    page_resources.
     """
     video_urls = []
     sub_urls = []
@@ -432,7 +437,9 @@ def extract_all_subsections(urls, headers):
 
 
 def display_sections(course_name, sections):
-    """ List the weaks for the given course """
+    """
+    List the weeks for the given course.
+    """
     num_sections = len(sections)
     print('%s has %d sections so far' % (course_name, num_sections))
     for i, section in enumerate(sections, 1):
@@ -441,7 +448,9 @@ def display_sections(course_name, sections):
 
 
 def get_selected_sections(sections):
-    """ retrieve the section(s) that the user selected. """
+    """
+    Retrieve the section(s) that the user selected.
+    """
     num_sections = len(sections)
     number = int(input('Enter Your Choice: '))
     while number > num_sections + 1:
@@ -455,7 +464,7 @@ def get_selected_sections(sections):
 
 def execute_command(cmd):
     """
-    creates a process with the given command cmd and writes its output
+    Creates a process with the given command cmd and writes its output.
     """
     popen = Popen(cmd, stdout=PIPE, stderr=PIPE)
     stdout = b''
