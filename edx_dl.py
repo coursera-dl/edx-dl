@@ -262,7 +262,7 @@ def directory_name(initial_name):
 
 def edx_json2srt(o):
     output = ''
-    for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text']), 1):
+    for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
         if t == "":
             continue
         output += str(i) + '\n'
@@ -538,7 +538,7 @@ def main():
         filename_prefix = str(i).zfill(2)
         filename = filename_prefix + "-%(title)s.%(ext)s"
         fullname = os.path.join(target_dir, filename)
-        cmd = ['youtube-dl', '-o', filename, '-f', video_format_option,
+        cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
                subtitles_option, v]
         # we execute the youtube-dl command to download the videos
         execute_command(cmd)
