@@ -38,7 +38,7 @@ except ImportError:
 # we alias the raw_input function for python 3 compatibility
 try:
     input = raw_input
-except:
+except NameError:
     pass
 
 import argparse
