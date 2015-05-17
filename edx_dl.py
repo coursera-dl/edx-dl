@@ -97,6 +97,7 @@ Section = namedtuple('Section', ['position', 'name', 'url'])
 SubSection = namedtuple('SubSection', ['url', 'units'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
 
+
 # To replace the print function, the following function must be placed
 # before any other call for print
 def print(*objects, **kwargs):
@@ -440,7 +441,7 @@ def display_sections(course_name, sections):
 
 
 def get_selected_sections(sections):
-    """ retrieve the section that the user selected. """
+    """ retrieve the section(s) that the user selected. """
     num_sections = len(sections)
     number = int(input('Enter Your Choice: '))
     while number > num_sections + 1:
@@ -448,9 +449,8 @@ def get_selected_sections(sections):
         number = int(input('Enter Your Choice: '))
 
     if number == num_sections + 1:
-        return [section for section in sections]
-    else:
-        return [sections[number - 1]]
+        return sections
+    return [sections[number - 1]]
 
 
 def execute_command(cmd):
