@@ -93,7 +93,7 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 Course = namedtuple('Course', ['name', 'url', 'state'])
-Section = namedtuple('Section', ['url', 'units'])
+SubSection = namedtuple('SubSection', ['url', 'units'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
 
 # To replace the print function, the following function must be placed
@@ -375,21 +375,21 @@ def _edx_get_headers():
     return headers
 
 
-def extract_section(url, headers):
+def extract_subsection(url, headers):
     """
-    Parses a web page and extracts its resources e.g. video_url, sub_url, etc.
+    Parses a webpag and extracts its resources e.g. video_url, sub_url, etc.
     """
     print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
 
     re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    sections = re_splitter.split(page)[1:]
+    re_units = re_splitter.split(page)[1:]
     units = []
-    for section in sections:
-        video_id = section[:YOUTUBE_VIDEO_ID_LENGTH]
+    for unit_html in re_units:
+        video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
         sub_url = None
-        match_subs = re_subs.search(section)
+        match_subs = re_subs.search(unit_html)
         if match_subs:
             sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
         units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + video_id,
@@ -401,31 +401,34 @@ def extract_section(url, headers):
     for extra_id in extra_ids:
         units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]))
 
-    section_info = Section(url=url, units=units)
+    section_info = SubSection(url=url, units=units)
     return section_info
 
 
-def extract_urls_from_sections(sections):
+def _extract_urls_from_subsections(subsections):
     """
     This function is temporary, it exists only for compatible reasons,
     it extracts the list of video urls and subtitles from a list of page_resources.
     """
     video_urls = []
     sub_urls = []
-    for section in sections:
-        for unit in section.units:
+    for subsection in subsections:
+        for unit in subsection.units:
             video_urls.append(unit.video_youtube_url)
             sub_urls.append(unit.sub_url)
     return video_urls, sub_urls
 
 
-def extract_all_sections(urls, headers):
-    mapfunc = partial(extract_section, headers=headers)
+def extract_all_subsections(urls, headers):
+    # for development purposes you may want to uncomment this line
+    # to test serial execution, and comment all the pool related ones
+    # all_resources = [extract_subsection(url, headers) for url in urls]
+    mapfunc = partial(extract_subsection, headers=headers)
     pool = ThreadPool(20)
     all_resources = pool.map(mapfunc, urls)
     pool.close()
     pool.join()
-    video_urls, sub_urls = extract_urls_from_sections(all_resources)
+    video_urls, sub_urls = _extract_urls_from_subsections(all_resources)
     return video_urls, sub_urls
 
 
@@ -508,7 +511,7 @@ def main():
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     weeks_urls = [selected_week['url'] for selected_week in selected_weeks]
-    video_urls, sub_urls = extract_all_sections(weeks_urls, headers)
+    video_urls, sub_urls = extract_all_subsections(weeks_urls, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
