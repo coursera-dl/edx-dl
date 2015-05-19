@@ -233,11 +233,22 @@ def _get_initial_token(url):
 
 
 def get_available_sections(url, headers):
+
+    def _make_url(section_soup):  # FIXME: Extract from here and test
+        return BASE_URL + section_soup.ul.find('a')['href']
+
+    def _get_section_name(section_soup):  # FIXME: Extract from here and test
+        return section_soup.h3.a.string.strip()
+
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
-    SECTIONS = soup.find_all('div', attrs={'class': 'chapter'})
-    sections = [Section(position=i, name=s.h3.a.string.strip(),
-                        url=BASE_URL + s.ul.find('a')['href']) for i, s in enumerate(SECTIONS, 1)]
+    sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
+
+    sections = [Section(position=idx,
+                        name=_get_section_name(section_soup),
+                        url=_make_url(section_soup))
+                for idx, section_soup in enumerate(sections_soup, 1)]
+
     return sections
 
 
