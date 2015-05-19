@@ -160,8 +160,8 @@ def display_courses(courses):
     """
 
     print('You can access %d courses' % len(courses))
-    for i, (name, _, state) in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (i, state, name))
+    for i, course in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (i, course.state, course.name))
 
 
 def get_courses_info(url, headers):
