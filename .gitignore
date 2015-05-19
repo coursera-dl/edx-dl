@@ -8,3 +8,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 .ropeproject/
+
+*.egg-info
+/dist
+/build
