@@ -92,7 +92,7 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-Course = namedtuple('Course', ['name', 'url', 'state'])
+Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
@@ -173,6 +173,7 @@ def get_courses_info(url, headers):
     courses_soup = soup.find_all('article', 'course')
     courses = []
     for course_soup in courses_soup:
+        course_id = None
         course_name = course_soup.h3.text.strip()
         course_url = None
         course_state = 'Not yet'
@@ -181,10 +182,12 @@ def get_courses_info(url, headers):
             course_url = BASE_URL + course_soup.a['href']
             if course_url.endswith('info') or course_url.endswith('info/'):
                 course_state = 'Started'
+            # The id of a course in edX is composed by the path
+            # {organization}/{course_number}/{course_run]
+            course_id = course_soup.a['href'][9:-5]
         except KeyError:
             pass
-
-        courses.append(Course(name=course_name, url=course_url, state=course_state))
+        courses.append(Course(id=course_id, name=course_name, url=course_url, state=course_state))
     return courses
 
 
