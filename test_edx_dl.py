@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-import edx_dl
 import unittest
 
+from edx_dl import edx_dl
 
 class TestEdX(unittest.TestCase):
 

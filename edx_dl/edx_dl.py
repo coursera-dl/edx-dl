@@ -387,7 +387,7 @@ def parse_args():
     return args
 
 
-def _edx_get_headers():
+def edx_get_headers():
     headers = {
         'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
