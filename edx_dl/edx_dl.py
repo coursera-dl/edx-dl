@@ -504,7 +504,7 @@ def main():
         sys.exit(2)
 
     # Prepare Headers
-    headers = _edx_get_headers()
+    headers = edx_get_headers()
 
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
