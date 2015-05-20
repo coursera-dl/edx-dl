@@ -93,8 +93,8 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
 Course = namedtuple('Course', ['name', 'url', 'state'])
-Section = namedtuple('Section', ['position', 'name', 'url'])
-SubSection = namedtuple('SubSection', ['url', 'units'])
+Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
+SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
 
 
@@ -240,15 +240,24 @@ def get_available_sections(url, headers):
     def _get_section_name(section_soup):  # FIXME: Extract from here and test
         return section_soup.h3.a.string.strip()
 
+    def _make_subsections(section_soup):
+        subsections_soup = section_soup.ul.find_all("li")
+        # FIXME correct extraction of subsection.name (unicode)
+        subsections = [SubSection(position=i,
+                                  url=BASE_URL + s.a['href'],
+                                  name=s.p.string)
+                       for i, s in enumerate(subsections_soup, 1)]
+        return subsections
+
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
     sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
 
-    sections = [Section(position=idx,
+    sections = [Section(position=i,
                         name=_get_section_name(section_soup),
-                        url=_make_url(section_soup))
-                for idx, section_soup in enumerate(sections_soup, 1)]
-
+                        url=_make_url(section_soup),
+                        subsections=_make_subsections(section_soup))
+                for i, section_soup in enumerate(sections_soup, 1)]
     return sections
 
 
@@ -390,9 +399,9 @@ def _edx_get_headers():
     return headers
 
 
-def extract_subsection(url, headers):
+def extract_units(url, headers):
     """
-    Parses a webpag and extracts its resources e.g. video_url, sub_url, etc.
+    Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
     print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
@@ -416,11 +425,10 @@ def extract_subsection(url, headers):
     for extra_id in extra_ids:
         units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]))
 
-    section_info = SubSection(url=url, units=units)
-    return section_info
+    return units
 
 
-def _extract_urls_from_subsections(subsections):
+def _extract_download_urls(units_dict):
     """
     This function is temporary, it exists only for compatible reasons, it
     extracts the list of video urls and subtitles from a list of
@@ -428,25 +436,29 @@ def _extract_urls_from_subsections(subsections):
     """
     video_urls = []
     sub_urls = []
-    for subsection in subsections:
-        for unit in subsection.units:
+    for units in units_dict.values():
+        for unit in units:
             video_urls.append(unit.video_youtube_url)
             sub_urls.append(unit.sub_url)
     return video_urls, sub_urls
 
 
-def extract_all_subsections(urls, headers):
+def extract_all_units(urls, headers):
+    """
+    Returns a dict of all the units in the selected_sections: {url, units}
+    """
     # for development purposes you may want to uncomment this line
     # to test serial execution, and comment all the pool related ones
-    # all_resources = [extract_subsection(url, headers) for url in urls]
-    mapfunc = partial(extract_subsection, headers=headers)
+    # units = [extract_units(url, headers) for url in urls]
+    mapfunc = partial(extract_units, headers=headers)
     pool = ThreadPool(20)
-    all_resources = pool.map(mapfunc, urls)
+    units = pool.map(mapfunc, urls)
     pool.close()
     pool.join()
-    video_urls, sub_urls = _extract_urls_from_subsections(all_resources)
-    return video_urls, sub_urls
 
+    all_units = dict(zip(urls, units))
+    video_urls, sub_urls = _extract_download_urls(all_units)
+    return video_urls, sub_urls
 
 def display_sections(course_name, sections):
     """
@@ -530,8 +542,8 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    sections_urls = [selected_section.url for selected_section in selected_sections]
-    video_urls, sub_urls = extract_all_subsections(sections_urls, headers)
+    all_urls = [subsection.url for selected_section in selected_sections for subsection in selected_section.subsections]
+    video_urls, sub_urls = extract_all_units(all_urls, headers)
     if len(video_urls) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
