@@ -428,21 +428,6 @@ def extract_units(url, headers):
     return units
 
 
-def _extract_download_urls(units_dict):
-    """
-    This function is temporary, it exists only for compatible reasons, it
-    extracts the list of video urls and subtitles from a list of
-    page_resources.
-    """
-    video_urls = []
-    sub_urls = []
-    for units in units_dict.values():
-        for unit in units:
-            video_urls.append(unit.video_youtube_url)
-            sub_urls.append(unit.sub_url)
-    return video_urls, sub_urls
-
-
 def extract_all_units(urls, headers):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
@@ -457,8 +442,8 @@ def extract_all_units(urls, headers):
     pool.join()
 
     all_units = dict(zip(urls, units))
-    video_urls, sub_urls = _extract_download_urls(all_units)
-    return video_urls, sub_urls
+    return all_units
+
 
 def display_sections(course_name, sections):
     """
@@ -543,45 +528,53 @@ def main():
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     all_urls = [subsection.url for selected_section in selected_sections for subsection in selected_section.subsections]
-    video_urls, sub_urls = extract_all_units(all_urls, headers)
-    if len(video_urls) < 1:
+    all_units = extract_all_units(all_urls, headers)
+
+    flat_units = [unit for units in all_units.values() for unit in units]
+    if len(flat_units) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
 
     if is_interactive:
         # Get Available Video formats
-        os.system('youtube-dl -F %s' % video_urls[-1])
+        os.system('youtube-dl -F %s' % flat_units[-1].video_youtube_url)
         print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
         args.format = input('Choose Format code: ')
 
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
+    # notice that we could iterate over all_units, but we prefer to do it over
+    # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     subtitles_option = '--write-sub' if args.subtitles else ''
-    for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
-        coursename = directory_name(selected_course.name)
-        target_dir = os.path.join(args.output_dir, coursename)
-        filename_prefix = str(i).zfill(2)
-        filename = filename_prefix + "-%(title)s.%(ext)s"
-        fullname = os.path.join(target_dir, filename)
-        cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
-               subtitles_option, v]
-        # we execute the youtube-dl command to download the videos
-        execute_command(cmd)
-
-        if args.subtitles:
-            filename = get_filename(target_dir, filename_prefix)
-            if filename is None:
-                print('[warning] no video downloaded for %s' % filename_prefix)
-                continue
-            subs_filename = os.path.join(target_dir, filename + '.srt')
-            if not os.path.exists(subs_filename):
-                subs_string = edx_get_subtitle(s, headers)
-                if subs_string:
-                    print('[info] Writing edX subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename),
-                         'wb+').write(subs_string.encode('utf-8'))
+    counter = 0
+    for i, selected_section in enumerate(selected_sections, 1):
+        for j, subsection in enumerate(selected_section.subsections, 1):
+            units = all_units.get(subsection.url, [])
+            for unit in units:
+                counter += 1
+                if unit.video_youtube_url is not None:
+                    coursename = directory_name(selected_course.name)
+                    target_dir = os.path.join(args.output_dir, coursename)
+                    filename_prefix = str(counter).zfill(2)
+                    filename = filename_prefix + "-%(title)s.%(ext)s"
+                    fullname = os.path.join(target_dir, filename)
+                    cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
+                           subtitles_option, unit.video_youtube_url]
+                    execute_command(cmd)
+                if args.subtitles and unit.sub_url is not None:
+                    filename = get_filename(target_dir, filename_prefix)
+                    if filename is None:
+                        print('[warning] no video downloaded for %s' % filename_prefix)
+                        continue
+                    subs_filename = os.path.join(target_dir, filename + '.srt')
+                    if not os.path.exists(subs_filename):
+                        subs_string = edx_get_subtitle(unit.sub_url, headers)
+                        if subs_string:
+                            print('[info] Writing edX subtitles: %s' % subs_filename)
+                            open(os.path.join(os.getcwd(), subs_filename),
+                                 'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
