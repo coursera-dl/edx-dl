@@ -92,9 +92,9 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-Course = namedtuple('Course', ['name', 'url', 'state'])
-Section = namedtuple('Section', ['position', 'name', 'url'])
-SubSection = namedtuple('SubSection', ['url', 'units'])
+Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
+Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
+SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
 
 
@@ -160,8 +160,8 @@ def display_courses(courses):
     """
 
     print('You can access %d courses' % len(courses))
-    for i, (name, _, state) in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (i, state, name))
+    for i, course in enumerate(courses, 1):
+        print('%d - [%s] - %s' % (i, course.state, course.name))
 
 
 def get_courses_info(url, headers):
@@ -173,6 +173,7 @@ def get_courses_info(url, headers):
     courses_soup = soup.find_all('article', 'course')
     courses = []
     for course_soup in courses_soup:
+        course_id = None
         course_name = course_soup.h3.text.strip()
         course_url = None
         course_state = 'Not yet'
@@ -181,10 +182,12 @@ def get_courses_info(url, headers):
             course_url = BASE_URL + course_soup.a['href']
             if course_url.endswith('info') or course_url.endswith('info/'):
                 course_state = 'Started'
+            # The id of a course in edX is composed by the path
+            # {organization}/{course_number}/{course_run]
+            course_id = course_soup.a['href'][9:-5]
         except KeyError:
             pass
-
-        courses.append(Course(name=course_name, url=course_url, state=course_state))
+        courses.append(Course(id=course_id, name=course_name, url=course_url, state=course_state))
     return courses
 
 
@@ -240,15 +243,24 @@ def get_available_sections(url, headers):
     def _get_section_name(section_soup):  # FIXME: Extract from here and test
         return section_soup.h3.a.string.strip()
 
+    def _make_subsections(section_soup):
+        subsections_soup = section_soup.ul.find_all("li")
+        # FIXME correct extraction of subsection.name (unicode)
+        subsections = [SubSection(position=i,
+                                  url=BASE_URL + s.a['href'],
+                                  name=s.p.string)
+                       for i, s in enumerate(subsections_soup, 1)]
+        return subsections
+
     courseware = get_page_contents(url, headers)
     soup = BeautifulSoup(courseware)
     sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
 
-    sections = [Section(position=idx,
+    sections = [Section(position=i,
                         name=_get_section_name(section_soup),
-                        url=_make_url(section_soup))
-                for idx, section_soup in enumerate(sections_soup, 1)]
-
+                        url=_make_url(section_soup),
+                        subsections=_make_subsections(section_soup))
+                for i, section_soup in enumerate(sections_soup, 1)]
     return sections
 
 
@@ -390,9 +402,9 @@ def edx_get_headers():
     return headers
 
 
-def extract_subsection(url, headers):
+def extract_units(url, headers):
     """
-    Parses a webpag and extracts its resources e.g. video_url, sub_url, etc.
+    Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
     print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
@@ -416,36 +428,24 @@ def extract_subsection(url, headers):
     for extra_id in extra_ids:
         units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]))
 
-    section_info = SubSection(url=url, units=units)
-    return section_info
+    return units
 
 
-def _extract_urls_from_subsections(subsections):
+def extract_all_units(urls, headers):
     """
-    This function is temporary, it exists only for compatible reasons, it
-    extracts the list of video urls and subtitles from a list of
-    page_resources.
+    Returns a dict of all the units in the selected_sections: {url, units}
     """
-    video_urls = []
-    sub_urls = []
-    for subsection in subsections:
-        for unit in subsection.units:
-            video_urls.append(unit.video_youtube_url)
-            sub_urls.append(unit.sub_url)
-    return video_urls, sub_urls
-
-
-def extract_all_subsections(urls, headers):
     # for development purposes you may want to uncomment this line
     # to test serial execution, and comment all the pool related ones
-    # all_resources = [extract_subsection(url, headers) for url in urls]
-    mapfunc = partial(extract_subsection, headers=headers)
+    # units = [extract_units(url, headers) for url in urls]
+    mapfunc = partial(extract_units, headers=headers)
     pool = ThreadPool(20)
-    all_resources = pool.map(mapfunc, urls)
+    units = pool.map(mapfunc, urls)
     pool.close()
     pool.join()
-    video_urls, sub_urls = _extract_urls_from_subsections(all_resources)
-    return video_urls, sub_urls
+
+    all_units = dict(zip(urls, units))
+    return all_units
 
 
 def display_sections(course_name, sections):
@@ -507,7 +507,7 @@ def main():
         sys.exit(2)
 
     # Prepare Headers
-    headers = _edx_get_headers()
+    headers = edx_get_headers()
 
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
@@ -530,46 +530,54 @@ def main():
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    sections_urls = [selected_section.url for selected_section in selected_sections]
-    video_urls, sub_urls = extract_all_subsections(sections_urls, headers)
-    if len(video_urls) < 1:
+    all_urls = [subsection.url for selected_section in selected_sections for subsection in selected_section.subsections]
+    all_units = extract_all_units(all_urls, headers)
+
+    flat_units = [unit for units in all_units.values() for unit in units]
+    if len(flat_units) < 1:
         print('WARNING: No downloadable video found.')
         sys.exit(0)
 
     if is_interactive:
         # Get Available Video formats
-        os.system('youtube-dl -F %s' % video_urls[-1])
+        os.system('youtube-dl -F %s' % flat_units[-1].video_youtube_url)
         print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
         args.format = input('Choose Format code: ')
 
     print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
+    # notice that we could iterate over all_units, but we prefer to do it over
+    # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     subtitles_option = '--write-sub' if args.subtitles else ''
-    for i, (v, s) in enumerate(zip(video_urls, sub_urls), 1):
-        coursename = directory_name(selected_course.name)
-        target_dir = os.path.join(args.output_dir, coursename)
-        filename_prefix = str(i).zfill(2)
-        filename = filename_prefix + "-%(title)s.%(ext)s"
-        fullname = os.path.join(target_dir, filename)
-        cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
-               subtitles_option, v]
-        # we execute the youtube-dl command to download the videos
-        execute_command(cmd)
-
-        if args.subtitles:
-            filename = get_filename(target_dir, filename_prefix)
-            if filename is None:
-                print('[warning] no video downloaded for %s' % filename_prefix)
-                continue
-            subs_filename = os.path.join(target_dir, filename + '.srt')
-            if not os.path.exists(subs_filename):
-                subs_string = edx_get_subtitle(s, headers)
-                if subs_string:
-                    print('[info] Writing edX subtitles: %s' % subs_filename)
-                    open(os.path.join(os.getcwd(), subs_filename),
-                         'wb+').write(subs_string.encode('utf-8'))
+    counter = 0
+    for i, selected_section in enumerate(selected_sections, 1):
+        for j, subsection in enumerate(selected_section.subsections, 1):
+            units = all_units.get(subsection.url, [])
+            for unit in units:
+                counter += 1
+                if unit.video_youtube_url is not None:
+                    coursename = directory_name(selected_course.name)
+                    target_dir = os.path.join(args.output_dir, coursename)
+                    filename_prefix = str(counter).zfill(2)
+                    filename = filename_prefix + "-%(title)s.%(ext)s"
+                    fullname = os.path.join(target_dir, filename)
+                    cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
+                           subtitles_option, unit.video_youtube_url]
+                    execute_command(cmd)
+                if args.subtitles and unit.sub_url is not None:
+                    filename = get_filename(target_dir, filename_prefix)
+                    if filename is None:
+                        print('[warning] no video downloaded for %s' % filename_prefix)
+                        continue
+                    subs_filename = os.path.join(target_dir, filename + '.srt')
+                    if not os.path.exists(subs_filename):
+                        subs_string = edx_get_subtitle(unit.sub_url, headers)
+                        if subs_string:
+                            print('[info] Writing edX subtitles: %s' % subs_filename)
+                            open(os.path.join(os.getcwd(), subs_filename),
+                                 'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
