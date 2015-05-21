@@ -571,16 +571,17 @@ def main():
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     subtitles_option = '--all-subs' if args.subtitles else ''
-    counter = 0
-    for i, selected_section in enumerate(selected_sections, 1):
-        for j, subsection in enumerate(selected_section.subsections, 1):
+    coursename = directory_name(selected_course.name)
+    for selected_section in selected_sections:
+        section_dirname = str(selected_section.position).zfill(2) + '-' + directory_name(selected_section.name)
+        target_dir = os.path.join(args.output_dir, coursename, section_dirname)
+        counter = 0
+        for subsection in selected_section.subsections:
             units = all_units.get(subsection.url, [])
             for unit in units:
                 counter += 1
+                filename_prefix = str(counter).zfill(2)
                 if unit.video_youtube_url is not None:
-                    coursename = directory_name(selected_course.name)
-                    target_dir = os.path.join(args.output_dir, coursename)
-                    filename_prefix = str(counter).zfill(2)
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
 
