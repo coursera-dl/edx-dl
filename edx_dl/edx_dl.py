@@ -385,6 +385,13 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='list available courses without downloading')
+    parser.add_argument('-sf',
+                        '--section-filter',
+                        dest='section_filter',
+                        action='store',
+                        default=None,
+                        help='filters sections to be downloaded')
+
 
     args = parser.parse_args()
     return args
@@ -448,7 +455,7 @@ def extract_all_units(urls, headers):
     return all_units
 
 
-def display_sections(course_name, sections):
+def _display_sections_menu(course_name, sections):
     """
     List the weeks for the given course.
     """
@@ -459,19 +466,42 @@ def display_sections(course_name, sections):
     print('%d - Download them all' % (num_sections + 1))
 
 
-def get_selected_sections(sections):
+def _choose_sections(sections):
     """
-    Retrieve the section(s) that the user selected.
+    Ask the user to choose section(s)
     """
     num_sections = len(sections)
     number = int(input('Enter Your Choice: '))
     while number > num_sections + 1:
         print('Enter a valid Number between 1 and %d' % (num_sections + 1))
         number = int(input('Enter Your Choice: '))
+    return _get_sections(number, sections)
 
-    if number == num_sections + 1:
-        return sections
-    return [sections[number - 1]]
+
+def _get_sections(index, sections):
+    """
+    Get the sections for the given index, if the index is not valid chooses all
+    """
+    num_sections = len(sections)
+    try:
+        index = int(index)
+    except ValueError:
+        index = num_sections + 1
+
+    if index > 0 and index <= num_sections:
+        return [sections[index - 1]]
+    return sections
+
+
+def _display_sections_and_subsections(sections):
+    """
+    Displays a tree of section(s) and subsections
+    """
+    print('Downloading %s section(s)' % len(sections))
+    for section in sections:
+        print('Section %s: %s' % (section.position, section.name))
+        for subsection in section.subsections:
+            print('  %s' % subsection.name)
 
 
 def execute_command(cmd):
@@ -524,8 +554,12 @@ def main():
     sections = get_available_sections(courseware_url, headers)
 
     # Choose Section or choose all
-    display_sections(selected_course.name, sections)
-    selected_sections = get_selected_sections(sections)
+    if is_interactive:
+        _display_sections_menu(selected_course.name, sections)
+        selected_sections = _choose_sections(sections)
+    else:
+        selected_sections = _get_sections(args.section_filter, sections)
+    _display_sections_and_subsections(selected_sections)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
