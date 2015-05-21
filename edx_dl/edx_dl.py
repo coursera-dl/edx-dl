@@ -302,14 +302,23 @@ def edx_json2srt(o):
     return output
 
 
+def get_page_contents_as_json(url, headers):
+    """
+    Makes a request to the url and immediately parses the result asuming it is
+    formatted as json
+    """
+    json_string = get_page_contents(url, headers)
+    json_object = json.loads(json_string)
+    return json_object
+
+
 def edx_get_subtitle(url, headers):
     """
     Return a string with the subtitles content from the url or None if no
     subtitles are available.
     """
     try:
-        json_string = get_page_contents(url, headers)
-        json_object = json.loads(json_string)
+        json_object = get_page_contents_as_json(url, headers)
         return edx_json2srt(json_object)
     except URLError as e:
         print('[warning] edX subtitles (error:%s)' % e.reason)
@@ -411,6 +420,7 @@ def extract_units(url, headers):
 
     re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    re_available_subs = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     re_units = re_splitter.split(page)[1:]
     units = []
     for unit_html in re_units:
@@ -418,8 +428,13 @@ def extract_units(url, headers):
         sub_urls = {}
         match_subs = re_subs.search(unit_html)
         if match_subs:
-            sub_prefix = 'en'
-            sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
+            match_available_subs = re_available_subs.search(unit_html)
+            if match_available_subs:
+                available_subs_url = BASE_URL + match_available_subs.group(1)
+                available_subs = get_page_contents_as_json(available_subs_url, headers)
+                for sub_prefix in available_subs:
+                    sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
+
         units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + video_id,
                           sub_urls=sub_urls))
 
@@ -551,7 +566,7 @@ def main():
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
-    subtitles_option = '--write-sub' if args.subtitles else ''
+    subtitles_option = '--all-subs' if args.subtitles else ''
     counter = 0
     for i, selected_section in enumerate(selected_sections, 1):
         for j, subsection in enumerate(selected_section.subsections, 1):
