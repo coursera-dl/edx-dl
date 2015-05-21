@@ -7,6 +7,7 @@ import json
 import os
 import os.path
 import re
+import string
 import subprocess
 import sys
 
@@ -215,17 +216,24 @@ def get_page_contents(url, headers):
     return result.read().decode(charset)
 
 
+def strip_non_ascii_chars(str):
+    """
+    Strips the non ascii characters from a str
+    """
+    allowed_chars = string.digits + string.ascii_letters + " _."
+    result = ""
+    for ch in str:
+        if allowed_chars.find(ch) != -1:
+            result += ch
+    return result
+
+
 def directory_name(initial_name):
     """
     Transform the name of a directory into an ascii version
     """
-    import string
-    allowed_chars = string.digits + string.ascii_letters + " _."
-    result_name = ""
-    for ch in initial_name:
-        if allowed_chars.find(ch) != -1:
-            result_name += ch
-    return result_name if result_name != "" else "course_folder"
+    result = strip_non_ascii_chars(initial_name)
+    return result if result != "" else "course_folder"
 
 
 def edx_json2srt(o):
