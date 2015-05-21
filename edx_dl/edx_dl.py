@@ -92,7 +92,15 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
+# This four tuples represent the structure of courses in edX.
+# Notice that we don't represent the full tree structure for both performance
+# and UX reasons:
+# Course ->  [Section] -> [SubSection] -> [Unit]
+# In the script the data structures used are:
+# Course, Section->[SubSection], all_units = {Subsection.url: [Unit]}
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
+# Notice that subsection is a list of SubSection tuples and it is the only
+# part where we explicitly represent the parent-children relation.
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_urls'])
@@ -187,7 +195,10 @@ def get_courses_info(url, headers):
             course_id = course_soup.a['href'][9:-5]
         except KeyError:
             pass
-        courses.append(Course(id=course_id, name=course_name, url=course_url, state=course_state))
+        courses.append(Course(id=course_id,
+                              name=course_name,
+                              url=course_url,
+                              state=course_state))
     return courses
 
 
@@ -236,7 +247,9 @@ def _get_initial_token(url):
 
 
 def get_available_sections(url, headers):
-
+    """
+    Extracts the sections and subsections from a given url
+    """
     def _make_url(section_soup):  # FIXME: Extract from here and test
         return BASE_URL + section_soup.ul.find('a')['href']
 
@@ -278,6 +291,9 @@ def get_page_contents(url, headers):
 
 
 def directory_name(initial_name):
+    """
+    Transform the name of a directory into an ascii version
+    """
     import string
     allowed_chars = string.digits + string.ascii_letters + " _."
     result_name = ""
@@ -288,6 +304,9 @@ def directory_name(initial_name):
 
 
 def edx_json2srt(o):
+    """
+    Transform the dict 'o' into the srt subtitles format
+    """
     output = ''
     for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
         if t == "":
@@ -435,14 +454,16 @@ def extract_units(url, headers):
                 for sub_prefix in available_subs:
                     sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
 
-        units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + video_id,
+        video_youtube_url = 'http://youtube.com/watch?v=' + video_id
+        units.append(Unit(video_youtube_url=video_youtube_url,
                           sub_urls=sub_urls))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     extra_ids = re_extra_youtube.findall(page)
     for extra_id in extra_ids:
-        units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]))
+        video_youtube_url = 'http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
+        units.append(Unit(video_youtube_url=video_youtube_url))
 
     return units
 
@@ -579,7 +600,8 @@ def main():
                     filename_prefix = str(counter).zfill(2)
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
-                    cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
+                    cmd = ['youtube-dl', '-o', fullname,
+                           '-f', video_format_option,
                            subtitles_option, unit.video_youtube_url]
                     execute_command(cmd)
                 if args.subtitles:
@@ -592,9 +614,11 @@ def main():
                         if not os.path.exists(subs_filename):
                             subs_string = edx_get_subtitle(sub_url, headers)
                             if subs_string:
-                                print('[info] Writing edX subtitles: %s' % subs_filename)
+                                print('[info] Writing edX subtitle: %s' % subs_filename)
                                 open(os.path.join(os.getcwd(), subs_filename),
                                      'wb+').write(subs_string.encode('utf-8'))
+                        else:
+                            print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
 def get_filename(target_dir, filename_prefix):
