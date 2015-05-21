@@ -591,8 +591,9 @@ def main():
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
+
                 if args.subtitles:
-                    filename = get_filename(target_dir, filename_prefix)
+                    filename = get_filename_from_prefix(target_dir, filename_prefix)
                     if filename is None:
                         _print('[warning] no video downloaded for %s' % filename_prefix)
                         continue
@@ -608,7 +609,7 @@ def main():
                             _print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
-def get_filename(target_dir, filename_prefix):
+def get_filename_from_prefix(target_dir, filename_prefix):
     """
     Return the basename for the corresponding filename_prefix.
     """
