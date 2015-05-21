@@ -154,7 +154,7 @@ def change_openedx_site(site_name):
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 
-def display_courses(courses):
+def _display_courses(courses):
     """
     List the courses that the user has enrolled.
     """
@@ -379,12 +379,12 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
-    parser.add_argument('-l',
-                        '--list',
-                        dest='list',
+    parser.add_argument('-cl',
+                        '--course-list',
+                        dest='course_list',
                         action='store_true',
                         default=False,
-                        help='list available courses without downloading')
+                        help='list available courses')
     parser.add_argument('-sf',
                         '--section-filter',
                         dest='section_filter',
@@ -396,7 +396,7 @@ def parse_args():
                         dest='section_list',
                         action='store_true',
                         default=False,
-                        help='list available sections for downloading')
+                        help='list available sections')
 
     args = parser.parse_args()
     return args
@@ -488,10 +488,15 @@ def _get_sections(index, sections):
     Get the sections for the given index, if the index is not valid chooses all
     """
     num_sections = len(sections)
-    try:
-        index = int(index)
-    except ValueError:
+
+    # this ensures that in case of invalid indexes it defaults to all
+    if index is None:
         index = num_sections + 1
+    else:
+        try:
+            index = int(index)
+        except ValueError:
+            index = num_sections + 1
 
     if index > 0 and index <= num_sections:
         return [sections[index - 1]]
@@ -551,7 +556,11 @@ def main():
         exit(2)
 
     courses = get_courses_info(DASHBOARD, headers)
-    display_courses(courses)
+    if not is_interactive and args.course_list:
+        _display_courses(courses)
+        exit(0)
+
+    _display_courses(courses)
     selected_course = get_selected_course(courses)
 
     # Get Available Sections
