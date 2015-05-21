@@ -95,7 +95,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'sub_url'])
+Unit = namedtuple('Unit', ['video_youtube_url', 'sub_urls'])
 
 
 # To replace the print function, the following function must be placed
@@ -415,12 +415,13 @@ def extract_units(url, headers):
     units = []
     for unit_html in re_units:
         video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
-        sub_url = None
+        sub_urls = {}
         match_subs = re_subs.search(unit_html)
         if match_subs:
-            sub_url = BASE_URL + match_subs.group(1) + "/en" + "?videoId=" + video_id
+            sub_prefix = 'en'
+            sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
         units.append(Unit(video_youtube_url='http://youtube.com/watch?v=' + video_id,
-                          sub_url=sub_url))
+                          sub_urls=sub_urls))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
@@ -566,18 +567,19 @@ def main():
                     cmd = ['youtube-dl', '-o', fullname, '-f', video_format_option,
                            subtitles_option, unit.video_youtube_url]
                     execute_command(cmd)
-                if args.subtitles and unit.sub_url is not None:
+                if args.subtitles:
                     filename = get_filename(target_dir, filename_prefix)
                     if filename is None:
                         print('[warning] no video downloaded for %s' % filename_prefix)
                         continue
-                    subs_filename = os.path.join(target_dir, filename + '.srt')
-                    if not os.path.exists(subs_filename):
-                        subs_string = edx_get_subtitle(unit.sub_url, headers)
-                        if subs_string:
-                            print('[info] Writing edX subtitles: %s' % subs_filename)
-                            open(os.path.join(os.getcwd(), subs_filename),
-                                 'wb+').write(subs_string.encode('utf-8'))
+                    for sub_lang, sub_url in unit.sub_urls.items():
+                        subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
+                        if not os.path.exists(subs_filename):
+                            subs_string = edx_get_subtitle(sub_url, headers)
+                            if subs_string:
+                                print('[info] Writing edX subtitles: %s' % subs_filename)
+                                open(os.path.join(os.getcwd(), subs_filename),
+                                     'wb+').write(subs_string.encode('utf-8'))
 
 
 def get_filename(target_dir, filename_prefix):
