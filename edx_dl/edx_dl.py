@@ -391,7 +391,12 @@ def parse_args():
                         action='store',
                         default=None,
                         help='filters sections to be downloaded')
-
+    parser.add_argument('-sl',
+                        '--section-list',
+                        dest='section_list',
+                        action='store_true',
+                        default=False,
+                        help='list available sections for downloading')
 
     args = parser.parse_args()
     return args
@@ -553,12 +558,17 @@ def main():
     courseware_url = selected_course.url.replace('info', 'courseware')
     sections = get_available_sections(courseware_url, headers)
 
+    if not is_interactive and args.section_list:
+        _display_sections_menu(selected_course.name, sections)
+        exit(0)
+
     # Choose Section or choose all
     if is_interactive:
         _display_sections_menu(selected_course.name, sections)
         selected_sections = _choose_sections(sections)
     else:
         selected_sections = _get_sections(args.section_filter, sections)
+
     _display_sections_and_subsections(selected_sections)
 
     if is_interactive:
