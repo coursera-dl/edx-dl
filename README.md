@@ -7,6 +7,12 @@ Mac OS X.
 
 # DEPENDENCIES
 
+To install all the dependencies please do:
+
+    pip install -r requirements.txt
+
+You also need to install youtube-dl
+
 ## youtube-dl
 
 We use `youtube-dl` to download video lectures from Youtube, with the main
@@ -15,7 +21,10 @@ idea being that "we don't want to reinvent the wheel".  Make sure you have
 layout frequently, make sure that the version of `youtube-dl` that you have
 installed is the latest. If in doubt, run `youtube-dl --update`.
 
-You can find `youtube-dl` at <http://rg3.github.io/youtube-dl/download.html>.
+You can find `youtube-dl` at <http://rg3.github.io/youtube-dl/download.html>
+or via pip:
+
+    pip install youtube-dl
 
 ## BeautifulSoup
 
@@ -33,9 +42,29 @@ or
 
 For more information, please see <http://www.crummy.com/software/BeautifulSoup/#Download>.
 
+## html5lib
+
+OpenEdX as a platform uses HTML5 to render its pages. The default html parser
+of python used by BeautifulSoup can have issues with the new HTML5 elements so
+it is important to include this dependency to avoid further issues.
+
+You can install it with
+
+    pip install html5lib
+
+For more details, please see <https://github.com/html5lib/html5lib-python>
+
+## six
+
+six deals with compatibility support between python 2/3
+
+    pip install six
+
+More info, see <https://pythonhosted.org/six/>
+
 # Quick Start
 
-To use `edx-dl.py`, simply excute it, as in:
+To use `edx-dl.py`, simply execute it, as in:
 
     python edx-dl.py
 
