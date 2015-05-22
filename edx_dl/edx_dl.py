@@ -56,7 +56,12 @@ from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 from subprocess import Popen, PIPE
 
-from bs4 import BeautifulSoup
+import html5lib
+
+from bs4 import BeautifulSoup as BeautifulSoup_
+# Force use of bs4 with html5lib
+BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
+
 
 OPENEDX_SITES = {
     'edx': {
