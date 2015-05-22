@@ -5,44 +5,6 @@
 from __future__ import print_function
 from __future__ import unicode_literals
 
-try:
-    import builtins
-except ImportError:
-    import __builtin__ as builtins
-
-try:
-    from http.cookiejar import CookieJar
-except ImportError:
-    from cookielib import CookieJar
-
-try:
-    from urllib.parse import urlencode
-except ImportError:
-    from urllib import urlencode
-
-try:
-    from urllib.request import urlopen
-    from urllib.request import build_opener
-    from urllib.request import install_opener
-    from urllib.request import HTTPCookieProcessor
-    from urllib.request import HTTPError
-    from urllib.request import Request
-    from urllib.request import URLError
-except ImportError:
-    from urllib2 import urlopen
-    from urllib2 import build_opener
-    from urllib2 import install_opener
-    from urllib2 import HTTPCookieProcessor
-    from urllib2 import HTTPError
-    from urllib2 import Request
-    from urllib2 import URLError
-
-# we alias the raw_input function for python 3 compatibility
-try:
-    input = raw_input
-except NameError:
-    pass
-
 import argparse
 import getpass
 import json
@@ -51,14 +13,18 @@ import os.path
 import re
 import sys
 
-
 from collections import namedtuple
 from datetime import timedelta, datetime
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
+from six.moves import builtins
+from six.moves.http_cookiejar import CookieJar
+from six.moves import input
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.request import urlopen, build_opener, install_opener
+from six.moves.urllib.request import HTTPCookieProcessor, Request
+from six.moves.urllib.error import HTTPError, URLError
 from subprocess import Popen, PIPE
-
-import html5lib
 
 from bs4 import BeautifulSoup as BeautifulSoup_
 # Force use of bs4 with html5lib
@@ -465,7 +431,7 @@ def extract_units(url, headers):
                 for sub_prefix in available_subs:
                     sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
 
-        video_youtube_url = 'http://youtube.com/watch?v=' + video_id
+        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
         units.append(Unit(video_youtube_url=video_youtube_url,
                           sub_urls=sub_urls))
 
@@ -473,7 +439,7 @@ def extract_units(url, headers):
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
     extra_ids = re_extra_youtube.findall(page)
     for extra_id in extra_ids:
-        video_youtube_url = 'http://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
+        video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
         units.append(Unit(video_youtube_url=video_youtube_url))
 
     return units
