@@ -526,7 +526,6 @@ def main():
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     subtitles_option = '--all-subs' if args.subtitles else ''
-    youtube_extra_options = args.youtube_options.split()
     counter = 0
     for i, selected_section in enumerate(selected_sections, 1):
         for j, subsection in enumerate(selected_section.subsections, 1):
@@ -541,8 +540,7 @@ def main():
                     fullname = os.path.join(target_dir, filename)
                     cmd = ['youtube-dl', '-o', fullname, '-f',
                            video_format_option, subtitles_option]
-                    for youtube_extra_option in youtube_extra_options:
-                        cmd.append(youtube_extra_option)
+                    cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
                 if args.subtitles:
