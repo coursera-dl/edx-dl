@@ -9,8 +9,12 @@ __pycache__/
 *$py.class
 .ropeproject/
 
+# Distribution-related files
 *.egg-info
 /dist
 /build
 
+# Testing and CI files
 /.tox
+/.coverage
+/htmlcov

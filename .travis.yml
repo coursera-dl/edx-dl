@@ -1,0 +1,29 @@
+language: python
+python:
+  - "2.7"
+  - "3.3"
+  - "3.4"
+  - "pypy"
+matrix:
+  allow_failures:
+    - python: "pypy"
+# command to install dependencies
+install:
+  - pip install -r requirements.txt
+  - pip install pytest pytest-cov pytest-xdist
+
+# command to run tests
+script: py.test -v
+
+
+# For when we enable code coverage
+
+# In the install phase:
+#  - pip install coveralls coverage
+
+# In the script phase:
+# script: py.test -v --cov edx_dl --cov-report html
+
+# In the after_success phase:
+# after_success:
+#   coveralls
