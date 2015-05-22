@@ -1,10 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
-# python 2/3 compatibility imports
-from __future__ import print_function
-from __future__ import unicode_literals
-
 import argparse
 import getpass
 import json
@@ -17,19 +13,14 @@ from collections import namedtuple
 from datetime import timedelta, datetime
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
-from six.moves import builtins
-from six.moves.http_cookiejar import CookieJar
-from six.moves import input
-from six.moves.urllib.parse import urlencode
-from six.moves.urllib.request import urlopen, build_opener, install_opener
-from six.moves.urllib.request import HTTPCookieProcessor, Request
-from six.moves.urllib.error import HTTPError, URLError
+
 from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup as BeautifulSoup_
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
+from .compat import *
 
 OPENEDX_SITES = {
     'edx': {
