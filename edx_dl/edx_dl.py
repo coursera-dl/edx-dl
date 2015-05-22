@@ -173,10 +173,15 @@ def _display_courses(courses):
     """
     List the courses that the user has enrolled.
     """
-
     print('You can access %d courses' % len(courses))
     for i, course in enumerate(courses, 1):
-        print('%d - [%s] - %s' % (i, course.state, course.name))
+        print('%d - %s [%s]' % (i, course.name, course.id))
+
+
+def _display_available_courses(courses):
+    print('You are enrolled in %d courses' % len(courses))
+    available_courses = [course for course in courses if course.state == 'Started']
+    return _display_courses(available_courses)
 
 
 def get_courses_info(url, headers):
@@ -605,10 +610,10 @@ def main():
 
     courses = get_courses_info(DASHBOARD, headers)
     if not is_interactive and args.course_list:
-        _display_courses(courses)
+        _display_available_courses(courses)
         exit(0)
 
-    _display_courses(courses)
+    _display_available_courses(courses)
     selected_course = get_selected_course(courses)
 
     # Get Available Sections
