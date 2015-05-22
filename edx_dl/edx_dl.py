@@ -25,6 +25,7 @@ try:
     from urllib.request import build_opener
     from urllib.request import install_opener
     from urllib.request import HTTPCookieProcessor
+    from urllib.request import HTTPError
     from urllib.request import Request
     from urllib.request import URLError
 except ImportError:
@@ -32,6 +33,7 @@ except ImportError:
     from urllib2 import build_opener
     from urllib2 import install_opener
     from urllib2 import HTTPCookieProcessor
+    from urllib2 import HTTPError
     from urllib2 import Request
     from urllib2 import URLError
 
@@ -455,7 +457,11 @@ def extract_units(url, headers):
             match_available_subs = re_available_subs.search(unit_html)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
-                available_subs = get_page_contents_as_json(available_subs_url, headers)
+                try:
+                    available_subs = get_page_contents_as_json(available_subs_url, headers)
+                except HTTPError:
+                    available_subs = ['en']
+
                 for sub_prefix in available_subs:
                     sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
 
