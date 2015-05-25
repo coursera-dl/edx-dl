@@ -506,7 +506,8 @@ def main():
     BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
     if is_interactive:
         # Get Available Video formats
-        os.system('youtube-dl -F %s' % flat_units[-1].video_youtube_url)
+        cmd = BASE_EXTERNAL_CMD + ['-F', flat_units[-1].video_youtube_url]
+        res = execute_command(cmd)
         _print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
         args.format = input('Choose Format code: ')
 
