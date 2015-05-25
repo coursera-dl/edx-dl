@@ -530,8 +530,10 @@ def main():
                     filename_prefix = str(counter).zfill(2)
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
-                    cmd = ['youtube-dl', '-o', fullname, '-f',
-                           video_format_option, subtitles_option]
+
+                    cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
+                                               video_format_option,
+                                               subtitles_option]
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
