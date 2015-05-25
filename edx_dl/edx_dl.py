@@ -7,14 +7,13 @@ import json
 import os
 import os.path
 import re
+import subprocess
 import sys
 
 from collections import namedtuple
 from datetime import timedelta, datetime
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
-
-from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup as BeautifulSoup_
 # Force use of bs4 with html5lib
@@ -451,18 +450,9 @@ def get_selected_sections(sections):
 
 def execute_command(cmd):
     """
-    Creates a process with the given command cmd and writes its output.
+    Creates a process with the given command cmd.
     """
-    popen = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    stdout = b''
-    while True:  # Save output to youtube_stdout while this being echoed
-        tmp = popen.stdout.read(1)
-        stdout += tmp
-        _print(tmp, end="")
-        sys.stdout.flush()
-        # do it until the process finish and there isn't output
-        if tmp == b"" and popen.poll() is not None:
-            break
+    return subprocess.call(cmd)
 
 
 def main():
