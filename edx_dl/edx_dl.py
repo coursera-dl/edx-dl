@@ -600,7 +600,7 @@ def main():
                 if unit.video_youtube_url is not None:
                     coursename = directory_name(selected_course.name)
                     target_dir = os.path.join(args.output_dir, coursename)
-                    filename_prefix = str(counter).zfill(2)
+                    filename_prefix = str(counter).zfill(3)
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
 
