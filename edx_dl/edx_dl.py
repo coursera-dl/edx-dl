@@ -89,14 +89,19 @@ def change_openedx_site(site_name):
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
 
 
-def display_courses(courses):
+def _display_courses(courses):
     """
     List the courses that the user has enrolled.
     """
-
     _print('You can access %d courses' % len(courses))
     for i, course in enumerate(courses, 1):
-        _print('%d - [%s] - %s' % (i, course.state, course.name))
+        _print('%d - %s [%s]' % (i, course.name, course.id))
+
+
+def _display_available_courses(courses):
+    _print('You are enrolled in %d courses' % len(courses))
+    available_courses = [course for course in courses if course.state == 'Started']
+    return _display_courses(available_courses)
 
 
 def get_courses_info(url, headers):
@@ -334,19 +339,30 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
-    parser.add_argument('-l',
-                        '--list',
-                        dest='list',
+    parser.add_argument('-cl',
+                        '--course-list',
+                        dest='course_list',
                         action='store_true',
                         default=False,
-                        help='list available courses without downloading')
+                        help='list available courses')
+    parser.add_argument('-sf',
+                        '--section-filter',
+                        dest='section_filter',
+                        action='store',
+                        default=None,
+                        help='filters sections to be downloaded')
+    parser.add_argument('-sl',
+                        '--section-list',
+                        dest='section_list',
+                        action='store_true',
+                        default=False,
+                        help='list available sections')
     parser.add_argument('-yo',
                     '--youtube-options',
                     dest='youtube_options',
                     action='store',
                     default='',
                     help='list available courses without downloading')
-
 
     args = parser.parse_args()
     return args
@@ -423,7 +439,7 @@ def extract_all_units(urls, headers):
     return all_units
 
 
-def display_sections(course_name, sections):
+def _display_sections_menu(course_name, sections):
     """
     List the weeks for the given course.
     """
@@ -434,19 +450,47 @@ def display_sections(course_name, sections):
     _print('%d - Download them all' % (num_sections + 1))
 
 
-def get_selected_sections(sections):
+def _choose_sections(sections):
     """
-    Retrieve the section(s) that the user selected.
+    Ask the user to choose section(s)
     """
     num_sections = len(sections)
     number = int(input('Enter Your Choice: '))
     while number > num_sections + 1:
         _print('Enter a valid Number between 1 and %d' % (num_sections + 1))
         number = int(input('Enter Your Choice: '))
+    return _get_sections(number, sections)
 
-    if number == num_sections + 1:
-        return sections
-    return [sections[number - 1]]
+
+def _get_sections(index, sections):
+    """
+    Get the sections for the given index, if the index is not valid chooses all
+    """
+    num_sections = len(sections)
+
+    # this ensures that in case of invalid indexes it defaults to all
+    if index is None:
+        index = num_sections + 1
+    else:
+        try:
+            index = int(index)
+        except ValueError:
+            index = num_sections + 1
+
+    if index > 0 and index <= num_sections:
+        return [sections[index - 1]]
+    return sections
+
+
+def _display_sections_and_subsections(sections):
+    """
+    Displays a tree of section(s) and subsections
+    """
+    _print('Downloading %s section(s)' % len(sections))
+    for section in sections:
+        _print('Section %s: %s' % (section.position, section.name))
+        for subsection in section.subsections:
+            _print('  %s' % subsection.name)
 
 
 def execute_command(cmd):
@@ -491,16 +535,29 @@ def main():
         exit(2)
 
     courses = get_courses_info(DASHBOARD, headers)
-    display_courses(courses)
+    if not is_interactive and args.course_list:
+        _display_available_courses(courses)
+        exit(0)
+
+    _display_available_courses(courses)
     selected_course = get_selected_course(courses)
 
     # Get Available Sections
     courseware_url = selected_course.url.replace('info', 'courseware')
     sections = get_available_sections(courseware_url, headers)
 
+    if not is_interactive and args.section_list:
+        _display_sections_menu(selected_course.name, sections)
+        exit(0)
+
     # Choose Section or choose all
-    display_sections(selected_course.name, sections)
-    selected_sections = get_selected_sections(sections)
+    if is_interactive:
+        _display_sections_menu(selected_course.name, sections)
+        selected_sections = _choose_sections(sections)
+    else:
+        selected_sections = _get_sections(args.section_filter, sections)
+
+    _display_sections_and_subsections(selected_sections)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
