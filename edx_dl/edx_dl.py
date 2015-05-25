@@ -7,14 +7,13 @@ import json
 import os
 import os.path
 import re
+import subprocess
 import sys
 
 from collections import namedtuple
 from datetime import timedelta, datetime
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
-
-from subprocess import Popen, PIPE
 
 from bs4 import BeautifulSoup as BeautifulSoup_
 # Force use of bs4 with html5lib
@@ -495,18 +494,9 @@ def _display_sections_and_subsections(sections):
 
 def execute_command(cmd):
     """
-    Creates a process with the given command cmd and writes its output.
+    Creates a process with the given command cmd.
     """
-    popen = Popen(cmd, stdout=PIPE, stderr=PIPE)
-    stdout = b''
-    while True:  # Save output to youtube_stdout while this being echoed
-        tmp = popen.stdout.read(1)
-        stdout += tmp
-        _print(tmp, end="")
-        sys.stdout.flush()
-        # do it until the process finish and there isn't output
-        if tmp == b"" and popen.poll() is not None:
-            break
+    return subprocess.call(cmd)
 
 
 def main():
@@ -570,9 +560,11 @@ def main():
         _print('WARNING: No downloadable video found.')
         sys.exit(0)
 
+    BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
     if is_interactive:
         # Get Available Video formats
-        os.system('youtube-dl -F %s' % flat_units[-1].video_youtube_url)
+        cmd = BASE_EXTERNAL_CMD + ['-F', flat_units[-1].video_youtube_url]
+        res = execute_command(cmd)
         _print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
         args.format = input('Choose Format code: ')
 
@@ -595,8 +587,10 @@ def main():
                     filename_prefix = str(counter).zfill(2)
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
-                    cmd = ['youtube-dl', '-o', fullname, '-f',
-                           video_format_option, subtitles_option]
+
+                    cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
+                                               video_format_option,
+                                               subtitles_option]
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
