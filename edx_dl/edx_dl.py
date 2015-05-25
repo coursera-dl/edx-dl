@@ -97,12 +97,6 @@ def _display_courses(courses):
         _print('%d - %s [%s]' % (i, course.name, course.id))
 
 
-def _display_available_courses(courses):
-    _print('You are enrolled in %d courses' % len(courses))
-    available_courses = [course for course in courses if course.state == 'Started']
-    return _display_courses(available_courses)
-
-
 def get_courses_info(url, headers):
     """
     Extracts the courses information from the dashboard.
@@ -525,12 +519,14 @@ def main():
         exit(2)
 
     courses = get_courses_info(DASHBOARD, headers)
+    available_courses = [course for course in courses if course.state == 'Started']
     if not is_interactive and args.course_list:
-        _display_available_courses(courses)
+        _display_courses(available_courses)
         exit(0)
 
-    _display_available_courses(courses)
-    selected_course = get_selected_course(courses)
+    _display_courses(available_courses)
+    selected_course = get_selected_course(available_courses)
+    _print('Downloading %s [%s]' % (selected_course.name, selected_course.id))
 
     # Get Available Sections
     courseware_url = selected_course.url.replace('info', 'courseware')
