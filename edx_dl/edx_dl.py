@@ -57,15 +57,27 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-# This four tuples represent the structure of courses in edX.
+#
+# The next four named tuples represent the structure of courses in edX.  The
+# structure is:
+#
+# * A Course contains Sections
+# * Each Section contains Subsections
+# * Each Subsection contains Units
+#
 # Notice that we don't represent the full tree structure for both performance
 # and UX reasons:
+#
 # Course ->  [Section] -> [SubSection] -> [Unit]
+#
 # In the script the data structures used are:
+#
 # Course, Section->[SubSection], all_units = {Subsection.url: [Unit]}
-Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
+#
 # Notice that subsection is a list of SubSection tuples and it is the only
 # part where we explicitly represent the parent-children relation.
+#
+Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_urls'])
