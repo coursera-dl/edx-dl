@@ -503,6 +503,7 @@ def main():
         _print('WARNING: No downloadable video found.')
         sys.exit(0)
 
+    BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
     if is_interactive:
         # Get Available Video formats
         os.system('youtube-dl -F %s' % flat_units[-1].video_youtube_url)
