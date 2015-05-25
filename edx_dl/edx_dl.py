@@ -371,11 +371,11 @@ def parse_args():
                         default=False,
                         help='list available sections')
     parser.add_argument('-yo',
-                    '--youtube-options',
-                    dest='youtube_options',
-                    action='store',
-                    default='',
-                    help='list available courses without downloading')
+                        '--youtube-options',
+                        dest='youtube_options',
+                        action='store',
+                        default='',
+                        help='list available courses without downloading')
 
     args = parser.parse_args()
     return args
