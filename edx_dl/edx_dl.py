@@ -16,11 +16,12 @@ from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 
 from bs4 import BeautifulSoup as BeautifulSoup_
-# Force use of bs4 with html5lib
-BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
 from .compat import *
 from .compat import _print
+
+# Force use of bs4 with html5lib
+BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
 OPENEDX_SITES = {
     'edx': {
