@@ -148,29 +148,6 @@ def get_courses_info(url, headers):
     return courses
 
 
-def get_selected_courses(courses):
-    """
-    Retrieve the course that the user selected.
-    """
-    num_of_courses = len(courses)
-
-    c_number = None
-    while True:
-        c_number = int(input('Enter Course Number: '))
-
-        if c_number not in range(1, num_of_courses+1):
-            _print('Enter a valid number between 1 and ', num_of_courses)
-            continue
-        elif courses[c_number - 1].state != 'Started':
-            _print('The course has not started!')
-            continue
-        else:
-            break
-
-    selected_courses = [courses[c_number - 1]]
-    return selected_courses
-
-
 def _get_initial_token(url):
     """
     Create initial connection to get authentication token for future
@@ -479,18 +456,6 @@ def _display_sections_menu(course_name, sections):
     _print('%d - Download them all' % (num_sections + 1))
 
 
-def _choose_sections(sections):
-    """
-    Ask the user to choose section(s)
-    """
-    num_sections = len(sections)
-    number = int(input('Enter Your Choice: '))
-    while number > num_sections + 1:
-        _print('Enter a valid Number between 1 and %d' % (num_sections + 1))
-        number = int(input('Enter Your Choice: '))
-    return _get_sections(number, sections)
-
-
 def _get_sections(index, sections):
     """
     Get the sections for the given index, if the index is not valid chooses all
@@ -532,18 +497,11 @@ def execute_command(cmd):
 def main():
     args = parse_args()
 
-    # if no args means we are calling the interactive version
-    is_interactive = len(sys.argv) == 1
-    if is_interactive:
-        args.platform = input('Platform: ')
-        args.username = input('Username: ')
-        args.password = getpass.getpass()
-
     change_openedx_site(args.platform)
 
     if not args.username or not args.password:
         _print("You must supply username AND password to log-in")
-        sys.exit(2)
+        exit(1)
 
     # Prepare Headers
     headers = edx_get_headers()
@@ -556,21 +514,18 @@ def main():
 
     courses = get_courses_info(DASHBOARD, headers)
     available_courses = [course for course in courses if course.state == 'Started']
-    selected_courses = []
-    if is_interactive:
+    if args.course_list:
         _display_courses(available_courses)
-        selected_courses = get_selected_courses(available_courses)
-    else:
-        if args.course_list:
-            _display_courses(available_courses)
-            exit(0)
-        # FIXME this must be deleted once the full interactive version is
-        # working and the args.course_urls nargs value must be '+'
-        elif len(args.course_urls) == 0:
-            _print('You must pass the URL of at least one course')
-            exit(3)
-        else:
-            selected_courses = [course for course in courses for url in args.course_urls if course.url == url]
+        exit(0)
+
+    if len(args.course_urls) == 0:
+        _print('You must pass the URL of at least one course')
+        exit(3)
+
+    selected_courses = [course for course in courses for url in args.course_urls if course.url == url]
+    if len(selected_courses) == 0:
+        _print('You have not passed a valid course url, check the correct urls with --course-list')
+        exit(4)
 
     # Get Available Sections
     selections = {}
@@ -579,22 +534,13 @@ def main():
         courseware_url = selected_course.url.replace('info', 'courseware')
         sections = get_available_sections(courseware_url, headers)
 
-        if not is_interactive and args.section_list:
+        if args.section_list:
             _display_sections_menu(selected_course.name, sections)
-            exit(0)
+            continue
 
-        # Choose Section or choose all
-        if is_interactive:
-            _display_sections_menu(selected_course.name, sections)
-            selected_sections = _choose_sections(sections)
-        else:
-            selected_sections = _get_sections(args.section_filter, sections)
-
+        selected_sections = _get_sections(args.section_filter, sections)
         selections[selected_course] = selected_sections
         _display_sections_and_subsections(selected_sections)
-
-    if is_interactive:
-        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
     all_urls = [subsection.url for selected_sections in selections.values() for selected_section in selected_sections for subsection in selected_section.subsections]
     all_units = extract_all_units(all_urls, headers)
@@ -602,16 +548,9 @@ def main():
     flat_units = [unit for units in all_units.values() for unit in units]
     if len(flat_units) < 1:
         _print('WARNING: No downloadable video found.')
-        sys.exit(0)
+        exit(6)
 
     BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
-    if is_interactive:
-        # Get Available Video formats
-        cmd = BASE_EXTERNAL_CMD + ['-F', flat_units[-1].video_youtube_url]
-        res = execute_command(cmd)
-        _print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
-        args.format = input('Choose Format code: ')
-
     _print("[info] Output directory: " + args.output_dir)
 
     # Download Videos
