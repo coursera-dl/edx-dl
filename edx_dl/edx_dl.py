@@ -16,11 +16,12 @@ from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 
 from bs4 import BeautifulSoup as BeautifulSoup_
-# Force use of bs4 with html5lib
-BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
 from .compat import *
 from .compat import _print
+
+# Force use of bs4 with html5lib
+BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
 OPENEDX_SITES = {
     'edx': {
@@ -56,15 +57,27 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 YOUTUBE_VIDEO_ID_LENGTH = 11
 
-# This four tuples represent the structure of courses in edX.
+#
+# The next four named tuples represent the structure of courses in edX.  The
+# structure is:
+#
+# * A Course contains Sections
+# * Each Section contains Subsections
+# * Each Subsection contains Units
+#
 # Notice that we don't represent the full tree structure for both performance
 # and UX reasons:
+#
 # Course ->  [Section] -> [SubSection] -> [Unit]
+#
 # In the script the data structures used are:
+#
 # Course, Section->[SubSection], all_units = {Subsection.url: [Unit]}
-Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
+#
 # Notice that subsection is a list of SubSection tuples and it is the only
 # part where we explicitly represent the parent-children relation.
+#
+Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit', ['video_youtube_url', 'sub_urls'])
@@ -232,18 +245,25 @@ def edx_json2srt(o):
     """
     Transform the dict 'o' into the srt subtitles format
     """
-    output = ''
+    BASE_TIME = datetime(1, 1, 1)
+    output = []
+
     for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
-        if t == "":
+        if t == '':
             continue
-        output += str(i) + '\n'
-        s = datetime(1, 1, 1) + timedelta(seconds=s/1000.)
-        e = datetime(1, 1, 1) + timedelta(seconds=e/1000.)
-        output += "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d" % \
-            (s.hour, s.minute, s.second, s.microsecond/1000,
-             e.hour, e.minute, e.second, e.microsecond/1000) + '\n'
-        output += t + "\n\n"
-    return output
+
+        output.append(str(i) + '\n')
+
+        s = BASE_TIME + timedelta(seconds=s/1000.)
+        e = BASE_TIME + timedelta(seconds=e/1000.)
+        time_range = "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n" % \
+                     (s.hour, s.minute, s.second, s.microsecond/1000,
+                      e.hour, e.minute, e.second, e.microsecond/1000)
+
+        output.append(time_range)
+        output.append(t + "\n\n")
+
+    return ''.join(output)
 
 
 def get_page_contents_as_json(url, headers):
@@ -351,11 +371,11 @@ def parse_args():
                         default=False,
                         help='list available sections')
     parser.add_argument('-yo',
-                    '--youtube-options',
-                    dest='youtube_options',
-                    action='store',
-                    default='',
-                    help='list available courses without downloading')
+                        '--youtube-options',
+                        dest='youtube_options',
+                        action='store',
+                        default='',
+                        help='list available courses without downloading')
 
     args = parser.parse_args()
     return args
