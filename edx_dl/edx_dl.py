@@ -325,12 +325,12 @@ def parse_args():
                                      epilog='For further use information,'
                                      'see the file README.md',)
     # positional
-    parser.add_argument('course_id',
+    parser.add_argument('course_urls',
                         nargs='*',
                         action='store',
-                        default=None,
-                        help='target course id '
-                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
+                        default=[],
+                        help='target course urls'
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)'
                         )
 
     # optional
@@ -555,12 +555,21 @@ def main():
 
     courses = get_courses_info(DASHBOARD, headers)
     available_courses = [course for course in courses if course.state == 'Started']
-    if not is_interactive and args.course_list:
+    selected_courses = []
+    if is_interactive:
         _display_courses(available_courses)
-        exit(0)
-
-    _display_courses(available_courses)
-    selected_courses = get_selected_courses(available_courses)
+        selected_courses = get_selected_courses(available_courses)
+    else:
+        if args.course_list:
+            _display_courses(available_courses)
+            exit(0)
+        # FIXME this must be deleted once the full interactive version is
+        # working and the args.course_urls nargs value must be '+'
+        elif len(args.course_urls) == 0:
+            _print('You must pass the URL of at least one course')
+            exit(3)
+        else:
+            selected_courses = [course for course in courses for url in args.course_urls if course.url == url]
 
     # Get Available Sections
     selections = {}
