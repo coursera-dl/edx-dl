@@ -141,7 +141,7 @@ def get_courses_info(url, headers):
     return courses
 
 
-def get_selected_course(courses):
+def get_selected_courses(courses):
     """
     Retrieve the course that the user selected.
     """
@@ -160,8 +160,8 @@ def get_selected_course(courses):
         else:
             break
 
-    selected_course = courses[c_number - 1]
-    return selected_course
+    selected_courses = [courses[c_number - 1]]
+    return selected_courses
 
 
 def _get_initial_token(url):
@@ -554,30 +554,33 @@ def main():
         exit(0)
 
     _display_courses(available_courses)
-    selected_course = get_selected_course(available_courses)
-    _print('Downloading %s [%s]' % (selected_course.name, selected_course.id))
+    selected_courses = get_selected_courses(available_courses)
 
     # Get Available Sections
-    courseware_url = selected_course.url.replace('info', 'courseware')
-    sections = get_available_sections(courseware_url, headers)
+    selections = {}
+    for selected_course in selected_courses:
+        _print('Downloading %s [%s]' % (selected_course.name, selected_course.id))
+        courseware_url = selected_course.url.replace('info', 'courseware')
+        sections = get_available_sections(courseware_url, headers)
 
-    if not is_interactive and args.section_list:
-        _display_sections_menu(selected_course.name, sections)
-        exit(0)
+        if not is_interactive and args.section_list:
+            _display_sections_menu(selected_course.name, sections)
+            exit(0)
 
-    # Choose Section or choose all
-    if is_interactive:
-        _display_sections_menu(selected_course.name, sections)
-        selected_sections = _choose_sections(sections)
-    else:
-        selected_sections = _get_sections(args.section_filter, sections)
+        # Choose Section or choose all
+        if is_interactive:
+            _display_sections_menu(selected_course.name, sections)
+            selected_sections = _choose_sections(sections)
+        else:
+            selected_sections = _get_sections(args.section_filter, sections)
 
-    _display_sections_and_subsections(selected_sections)
+        selections[selected_course] = selected_sections
+        _display_sections_and_subsections(selected_sections)
 
     if is_interactive:
         args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
 
-    all_urls = [subsection.url for selected_section in selected_sections for subsection in selected_section.subsections]
+    all_urls = [subsection.url for selected_sections in selections.values() for selected_section in selected_sections for subsection in selected_section.subsections]
     all_units = extract_all_units(all_urls, headers)
 
     flat_units = [unit for units in all_units.values() for unit in units]
@@ -599,46 +602,47 @@ def main():
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
-    coursename = directory_name(selected_course.name)
-    for selected_section in selected_sections:
-        section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
-        target_dir = os.path.join(args.output_dir, coursename, section_dirname)
-        counter = 0
-        for subsection in selected_section.subsections:
-            units = all_units.get(subsection.url, [])
-            for unit in units:
-                counter += 1
-                filename_prefix = "%02d" % counter
-                if unit.video_youtube_url is not None:
-                    filename = filename_prefix + "-%(title)s.%(ext)s"
-                    fullname = os.path.join(target_dir, filename)
+    for selected_course, selected_sections in selections.items():
+        coursename = directory_name(selected_course.name)
+        for selected_section in selected_sections:
+            section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
+            target_dir = os.path.join(args.output_dir, coursename, section_dirname)
+            counter = 0
+            for subsection in selected_section.subsections:
+                units = all_units.get(subsection.url, [])
+                for unit in units:
+                    counter += 1
+                    filename_prefix = "%02d" % counter
+                    if unit.video_youtube_url is not None:
+                        filename = filename_prefix + "-%(title)s.%(ext)s"
+                        fullname = os.path.join(target_dir, filename)
 
-                    cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
+                        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
                                                video_format_option]
-                    if args.subtitles:
-                        cmd.append('--all-subs')
-                    cmd.extend(args.youtube_options.split())
-                    cmd.append(unit.video_youtube_url)
-                    execute_command(cmd)
+                        if args.subtitles:
+                            cmd.append('--all-subs')
+                        cmd.extend(args.youtube_options.split())
+                        cmd.append(unit.video_youtube_url)
+                        execute_command(cmd)
 
-                if args.subtitles:
-                    filename = get_filename_from_prefix(target_dir, filename_prefix)
-                    if filename is None:
-                        _print('[warning] no video downloaded for %s' % filename_prefix)
-                        continue
-                    if unit.sub_urls is None:
-                        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
-                        continue
-                    for sub_lang, sub_url in unit.sub_urls.items():
-                        subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
-                        if not os.path.exists(subs_filename):
-                            subs_string = edx_get_subtitle(sub_url, headers)
-                            if subs_string:
-                                _print('[info] Writing edX subtitle: %s' % subs_filename)
-                                open(os.path.join(os.getcwd(), subs_filename),
-                                     'wb+').write(subs_string.encode('utf-8'))
-                        else:
-                            _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+                    if args.subtitles:
+                        filename = get_filename_from_prefix(target_dir, filename_prefix)
+                        if filename is None:
+                            _print('[warning] no video downloaded for %s' % filename_prefix)
+                            continue
+                        if unit.sub_urls is None:
+                            _print('[warning] no subtitles downloaded for %s' % filename_prefix)
+                            continue
+                        for sub_lang, sub_url in unit.sub_urls.items():
+                            subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
+                            if not os.path.exists(subs_filename):
+                                subs_string = edx_get_subtitle(sub_url, headers)
+                                if subs_string:
+                                    _print('[info] Writing edX subtitle: %s' % subs_filename)
+                                    open(os.path.join(os.getcwd(), subs_filename),
+                                         'wb+').write(subs_string.encode('utf-8'))
+                            else:
+                                _print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
