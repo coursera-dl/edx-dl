@@ -73,10 +73,16 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 #
 # In the script the data structures used are:
 #
-# Course, Section->[SubSection], all_units = {Subsection.url: [Unit]}
+# 1. The data structures to represent the course information:
+#    Course, Section->[SubSection]
 #
-# Notice that subsection is a list of SubSection tuples and it is the only
-# part where we explicitly represent the parent-children relation.
+# 2. The data structures to represent the chosen courses and sections:
+#    selections = {Course, [Section]}
+#
+# 3. The data structure of all the downloable resources which represent each
+#    subsection via its URL and the of resources who can be extracted from the
+#    Units it contains:
+#    all_units = {Subsection.url: [Unit]}
 #
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
