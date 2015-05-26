@@ -114,7 +114,8 @@ def _display_courses(courses):
     """
     _print('You can access %d courses' % len(courses))
     for i, course in enumerate(courses, 1):
-        _print('%d - %s [%s]' % (i, course.name, course.id))
+        _print('%2d - %s [%s]' % (i, course.name, course.id))
+        _print('     %s' % course.url)
 
 
 def get_courses_info(url, headers):
