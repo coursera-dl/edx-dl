@@ -626,6 +626,9 @@ def main():
                     if filename is None:
                         _print('[warning] no video downloaded for %s' % filename_prefix)
                         continue
+                    if unit.sub_urls is None:
+                        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
+                        continue
                     for sub_lang, sub_url in unit.sub_urls.items():
                         subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
                         if not os.path.exists(subs_filename):
