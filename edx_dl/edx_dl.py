@@ -598,7 +598,6 @@ def main():
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
-    subtitles_option = '--all-subs' if args.subtitles else ''
     coursename = directory_name(selected_course.name)
     for selected_section in selected_sections:
         section_dirname = str(selected_section.position).zfill(2) + '-' + directory_name(selected_section.name)
@@ -614,8 +613,9 @@ def main():
                     fullname = os.path.join(target_dir, filename)
 
                     cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                               video_format_option,
-                                               subtitles_option]
+                                               video_format_option]
+                    if args.subtitle:
+                        cmd.append('--all-subs')
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
