@@ -438,7 +438,8 @@ def extract_units(url, headers):
     extra_ids = re_extra_youtube.findall(page)
     for extra_id in extra_ids:
         video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
-        units.append(Unit(video_youtube_url=video_youtube_url))
+        units.append(Unit(video_youtube_url=video_youtube_url,
+                          sub_urls=None))  # FIXME: verify subtitles
 
     return units
 
@@ -598,24 +599,24 @@ def main():
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
-    subtitles_option = '--all-subs' if args.subtitles else ''
     coursename = directory_name(selected_course.name)
     for selected_section in selected_sections:
-        section_dirname = str(selected_section.position).zfill(2) + '-' + directory_name(selected_section.name)
+        section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
         target_dir = os.path.join(args.output_dir, coursename, section_dirname)
         counter = 0
         for subsection in selected_section.subsections:
             units = all_units.get(subsection.url, [])
             for unit in units:
                 counter += 1
-                filename_prefix = str(counter).zfill(2)
+                filename_prefix = "%02d" % counter
                 if unit.video_youtube_url is not None:
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
 
                     cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                               video_format_option,
-                                               subtitles_option]
+                                               video_format_option]
+                    if args.subtitles:
+                        cmd.append('--all-subs')
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
@@ -624,6 +625,9 @@ def main():
                     filename = get_filename_from_prefix(target_dir, filename_prefix)
                     if filename is None:
                         _print('[warning] no video downloaded for %s' % filename_prefix)
+                        continue
+                    if unit.sub_urls is None:
+                        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
                         continue
                     for sub_lang, sub_url in unit.sub_urls.items():
                         subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
