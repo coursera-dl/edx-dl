@@ -438,7 +438,8 @@ def extract_units(url, headers):
     extra_ids = re_extra_youtube.findall(page)
     for extra_id in extra_ids:
         video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
-        units.append(Unit(video_youtube_url=video_youtube_url))
+        units.append(Unit(video_youtube_url=video_youtube_url,
+                          sub_urls=None))  # FIXME: verify subtitles
 
     return units
 
