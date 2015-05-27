@@ -445,34 +445,28 @@ def extract_all_units(urls, headers):
     return all_units
 
 
-def _display_sections_menu(course_name, sections):
+def _display_sections_menu(course, sections):
     """
     List the weeks for the given course.
     """
     num_sections = len(sections)
-    _print('%s has %d sections so far' % (course_name, num_sections))
+    _print('%s [%s] has %d sections so far' % (course.name, course.id, num_sections))
     for i, section in enumerate(sections, 1):
-        _print('%d - Download %s videos' % (i, section.name))
-    _print('%d - Download them all' % (num_sections + 1))
+        _print('%2d - Download %s videos' % (i, section.name))
 
 
-def _get_sections(index, sections):
+def _filter_sections(index, sections):
     """
     Get the sections for the given index, if the index is not valid chooses all
     """
     num_sections = len(sections)
-
-    # this ensures that in case of invalid indexes it defaults to all
-    if index is None:
-        index = num_sections + 1
-    else:
+    if index is not None:
         try:
             index = int(index)
+            if index > 0 and index <= num_sections:
+                return [sections[index - 1]]
         except ValueError:
-            index = num_sections + 1
-
-    if index > 0 and index <= num_sections:
-        return [sections[index - 1]]
+            pass
     return sections
 
 
@@ -480,9 +474,9 @@ def _display_sections_and_subsections(sections):
     """
     Displays a tree of section(s) and subsections
     """
-    _print('Downloading %s section(s)' % len(sections))
+    _print('Downloading %d section(s)' % len(sections))
     for section in sections:
-        _print('Section %s: %s' % (section.position, section.name))
+        _print('Section %2d: %s' % (section.position, section.name))
         for subsection in section.subsections:
             _print('  %s' % subsection.name)
 
@@ -494,62 +488,68 @@ def execute_command(cmd):
     return subprocess.call(cmd)
 
 
-def main():
-    args = parse_args()
-
-    change_openedx_site(args.platform)
-
-    if not args.username or not args.password:
-        _print("You must supply username AND password to log-in")
-        exit(1)
-
-    # Prepare Headers
-    headers = edx_get_headers()
-
-    # Login
-    resp = edx_login(LOGIN_API, headers, args.username, args.password)
-    if not resp.get('success', False):
-        _print(resp.get('value', "Wrong Email or Password."))
-        exit(2)
-
-    courses = get_courses_info(DASHBOARD, headers)
-    available_courses = [course for course in courses if course.state == 'Started']
+def parse_courses(args, available_courses):
+    """
+    Parses courses options and returns the selected_courses
+    """
     if args.course_list:
         _display_courses(available_courses)
         exit(0)
 
     if len(args.course_urls) == 0:
-        _print('You must pass the URL of at least one course')
+        _print('You must pass the URL of at least one course, check the correct url with --course-list')
         exit(3)
 
-    selected_courses = [course for course in courses for url in args.course_urls if course.url == url]
+    selected_courses = [available_course
+                        for available_course in available_courses
+                        for url in args.course_urls
+                        if available_course.url == url]
     if len(selected_courses) == 0:
-        _print('You have not passed a valid course url, check the correct urls with --course-list')
+        _print('You have not passed a valid course url, check the correct url with --course-list')
         exit(4)
+    return selected_courses
 
-    # Get Available Sections
-    selections = {}
-    for selected_course in selected_courses:
-        _print('Downloading %s [%s]' % (selected_course.name, selected_course.id))
-        courseware_url = selected_course.url.replace('info', 'courseware')
-        sections = get_available_sections(courseware_url, headers)
 
-        if args.section_list:
-            _display_sections_menu(selected_course.name, sections)
-            continue
+def parse_sections(args, selections):
+    """
+    Parses sections options and returns selections filtered by
+    selected_sections
+    """
+    if args.section_list:
+        for selected_course, selected_sections in selections.items():
+            _display_sections_menu(selected_course, selected_sections)
+        exit(0)
 
-        selected_sections = _get_sections(args.section_filter, sections)
-        selections[selected_course] = selected_sections
+    if not args.section_filter:
+        return selections
+
+    filtered_selections = {selected_course:
+                           _filter_sections(args.section_filter, selected_sections)
+                           for selected_course, selected_sections in selections.items()}
+    return filtered_selections
+
+
+def _display_selections(selections):
+    """
+    Displays the course, sections and subsections to be downloaded
+    """
+    for selected_course, selected_sections in selections.items():
+        _print('Downloading %s [%s]' % (selected_course.name,
+                                        selected_course.id))
         _display_sections_and_subsections(selected_sections)
 
-    all_urls = [subsection.url for selected_sections in selections.values() for selected_section in selected_sections for subsection in selected_section.subsections]
-    all_units = extract_all_units(all_urls, headers)
 
+def parse_units(all_units):
+    """
+    Parses units options and corner cases
+    """
     flat_units = [unit for units in all_units.values() for unit in units]
     if len(flat_units) < 1:
         _print('WARNING: No downloadable video found.')
         exit(6)
 
+
+def download(args, selections, all_units):
     BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
     _print("[info] Output directory: " + args.output_dir)
 
@@ -598,6 +598,50 @@ def main():
                                          'wb+').write(subs_string.encode('utf-8'))
                             else:
                                 _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+
+
+def main():
+    args = parse_args()
+
+    change_openedx_site(args.platform)
+
+    if not args.username or not args.password:
+        _print("You must supply username AND password to log-in")
+        exit(1)
+
+    # Prepare Headers
+    headers = edx_get_headers()
+
+    # Login
+    resp = edx_login(LOGIN_API, headers, args.username, args.password)
+    if not resp.get('success', False):
+        _print(resp.get('value', "Wrong Email or Password."))
+        exit(2)
+
+    # Parse and select the available courses
+    courses = get_courses_info(DASHBOARD, headers)
+    available_courses = [course for course in courses if course.state == 'Started']
+    selected_courses = parse_courses(args, available_courses)
+
+    # Parse the sections and build the selections dict filtered by sections
+    all_selections = {selected_course:
+                      get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
+                      for selected_course in selected_courses}
+    selections = parse_sections(args, all_selections)
+    _display_selections(selections)
+
+    # Extract the unit information (downloadable resources)
+    # This parses the HTML of all the subsection.url and extracts
+    # the URLs of the resources as Units.
+    all_urls = [subsection.url
+                for selected_sections in selections.values()
+                for selected_section in selected_sections
+                for subsection in selected_section.subsections]
+    all_units = extract_all_units(all_urls, headers)
+    parse_units(selections)
+
+    # finally we download all the resources
+    download(args, selections, all_units)
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
