@@ -7,6 +7,7 @@ import json
 import os
 import os.path
 import re
+import string
 import subprocess
 import sys
 
@@ -228,17 +229,24 @@ def get_page_contents(url, headers):
     return result.read().decode(charset)
 
 
+def strip_non_ascii_chars(str):
+    """
+    Strips the non ascii characters from a str
+    """
+    allowed_chars = string.digits + string.ascii_letters + " _."
+    result = ""
+    for ch in str:
+        if allowed_chars.find(ch) != -1:
+            result += ch
+    return result
+
+
 def directory_name(initial_name):
     """
     Transform the name of a directory into an ascii version
     """
-    import string
-    allowed_chars = string.digits + string.ascii_letters + " _."
-    result_name = ""
-    for ch in initial_name:
-        if allowed_chars.find(ch) != -1:
-            result_name += ch
-    return result_name if result_name != "" else "course_folder"
+    result = strip_non_ascii_chars(initial_name)
+    return result if result != "" else "course_folder"
 
 
 def edx_json2srt(o):
@@ -591,16 +599,17 @@ def main():
     # sections/subsections to add correct prefixes and shows nicer information
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     subtitles_option = '--all-subs' if args.subtitles else ''
-    counter = 0
-    for i, selected_section in enumerate(selected_sections, 1):
-        for j, subsection in enumerate(selected_section.subsections, 1):
+    coursename = directory_name(selected_course.name)
+    for selected_section in selected_sections:
+        section_dirname = str(selected_section.position).zfill(2) + '-' + directory_name(selected_section.name)
+        target_dir = os.path.join(args.output_dir, coursename, section_dirname)
+        counter = 0
+        for subsection in selected_section.subsections:
             units = all_units.get(subsection.url, [])
             for unit in units:
                 counter += 1
+                filename_prefix = str(counter).zfill(2)
                 if unit.video_youtube_url is not None:
-                    coursename = directory_name(selected_course.name)
-                    target_dir = os.path.join(args.output_dir, coursename)
-                    filename_prefix = str(counter).zfill(2)
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
 
@@ -610,8 +619,9 @@ def main():
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
                     execute_command(cmd)
+
                 if args.subtitles:
-                    filename = get_filename(target_dir, filename_prefix)
+                    filename = get_filename_from_prefix(target_dir, filename_prefix)
                     if filename is None:
                         _print('[warning] no video downloaded for %s' % filename_prefix)
                         continue
@@ -627,7 +637,7 @@ def main():
                             _print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
-def get_filename(target_dir, filename_prefix):
+def get_filename_from_prefix(target_dir, filename_prefix):
     """
     Return the basename for the corresponding filename_prefix.
     """
