@@ -614,7 +614,7 @@ def main():
 
                     cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
                                                video_format_option]
-                    if args.subtitle:
+                    if args.subtitles:
                         cmd.append('--all-subs')
                     cmd.extend(args.youtube_options.split())
                     cmd.append(unit.video_youtube_url)
