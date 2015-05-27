@@ -600,7 +600,7 @@ def main():
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     coursename = directory_name(selected_course.name)
     for selected_section in selected_sections:
-        section_dirname = str(selected_section.position).zfill(2) + '-' + directory_name(selected_section.name)
+        section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
         target_dir = os.path.join(args.output_dir, coursename, section_dirname)
         counter = 0
         for subsection in selected_section.subsections:
