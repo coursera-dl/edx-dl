@@ -314,10 +314,12 @@ def parse_args():
     # optional
     parser.add_argument('-u',
                         '--username',
+                        required=True,
                         action='store',
                         help='your edX username (email)')
     parser.add_argument('-p',
                         '--password',
+                        required=True,
                         action='store',
                         help='your edX password')
     parser.add_argument('-f',
@@ -606,7 +608,7 @@ def main():
     change_openedx_site(args.platform)
 
     if not args.username or not args.password:
-        _print("You must supply username AND password to log-in")
+        _print("You must supply username and password to log-in")
         exit(1)
 
     # Prepare Headers
