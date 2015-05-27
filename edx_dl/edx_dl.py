@@ -607,7 +607,7 @@ def main():
             units = all_units.get(subsection.url, [])
             for unit in units:
                 counter += 1
-                filename_prefix = str(counter).zfill(2)
+                filename_prefix = "%02d" % counter
                 if unit.video_youtube_url is not None:
                     filename = filename_prefix + "-%(title)s.%(ext)s"
                     fullname = os.path.join(target_dir, filename)
