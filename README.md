@@ -1,9 +1,9 @@
 # DESCRIPTION
 
-Simple tool to download video lectures from edx.org.  It requires a
-Python interpreter (> 2.6), youtube-dl, and BeautifulSoup4. It is
-platform independent, and should work fine under Unix, Windows or
-Mac OS X.
+`edx-dl` is a simple tool to download video lectures from Open edX-based
+sites.  It requires a Python interpreter (>= 2.7) and very few other
+dependencies.  It is platform independent, and should work fine under Unix
+(Linux, BSDs etc.), Windows or Mac OS X.
 
 # DEPENDENCIES
 
@@ -11,56 +11,18 @@ To install all the dependencies please do:
 
     pip install -r requirements.txt
 
-You also need to install youtube-dl
-
 ## youtube-dl
 
-We use `youtube-dl` to download video lectures from Youtube, with the main
-idea being that "we don't want to reinvent the wheel".  Make sure you have
-`youtube-dl` installed in your system.  Also, since Youtube changes its
-layout frequently, make sure that the version of `youtube-dl` that you have
-installed is the latest. If in doubt, run `youtube-dl --update`.
+One of the dependencies that `edx-dl` uses is `youtube-dl`. The installation
+step listed above already pulls in the morst recent version of `youtube-dl`
+for you.
 
-You can find `youtube-dl` at <http://rg3.github.io/youtube-dl/download.html>
-or via pip:
+Unfortunately, since many Open edX sites store their videos on Youtube and
+Youtube changes their layout from time to time, it may be necessary to
+upgrade your copy of `youtube-dl`.  There are many ways to proceed here, but
+the simplest is to simply use:
 
-    pip install youtube-dl
-
-## BeautifulSoup
-
-Scrapping the web can be very silly task, but BeautifulSoup makes it
-so easy :), it isn't included in the python standard library.  Make
-sure you have BeautifulSoup installed.
-
-You can install it with
-
-    pip install beautifulsoup4
-
-or
-
-    easy_install beautifulsoup4.
-
-For more information, please see <http://www.crummy.com/software/BeautifulSoup/#Download>.
-
-## html5lib
-
-OpenEdX as a platform uses HTML5 to render its pages. The default html parser
-of python used by BeautifulSoup can have issues with the new HTML5 elements so
-it is important to include this dependency to avoid further issues.
-
-You can install it with
-
-    pip install html5lib
-
-For more details, please see <https://github.com/html5lib/html5lib-python>
-
-## six
-
-six deals with compatibility support between python 2/3
-
-    pip install six
-
-More info, see <https://pythonhosted.org/six/>
+    pip install --upgrade youtube_dl
 
 # Quick Start
 
@@ -68,8 +30,8 @@ To use `edx-dl.py`, simply execute it, as in:
 
     python edx-dl.py -u user@user.com -p password COURSE_URL
 
-The COURSE_URL must correspond to a course you are enregistered, it is the one
-who ends in '/info', e.g.
+The `COURSE_URL` must correspond to a course you are enregistered, it is the
+one that ends in `/info`, e.g.
 https://courses.edx.org/courses/edX/DemoX.1/2014/info
 
 You must pass the URL of at least one course, you can check the correct url
@@ -77,7 +39,7 @@ You must pass the URL of at least one course, you can check the correct url
     python edx-dl.py -u user@user.com -p password --course-list
 
 Your downloaded videos will be placed in a new Directory called
-"Downloaded", but you can also choose another destination with the '-o'
+`Downloaded`, but you can also choose another destination with the `-o`
 argument.
 
 To see all available options:
@@ -86,8 +48,8 @@ To see all available options:
 
 # Reporting issues
 
-Before reporting any issue please verify that you are running the latest version
-of the script and of youtube-dl. Please include in your report the
+Before reporting any issue please verify that you are running the latest
+version of the script and of `youtube-dl`. Please include in your report the
 following information:
 
 OS:
