@@ -574,7 +574,7 @@ def download(args, selections, all_units):
                         fullname = os.path.join(target_dir, filename)
 
                         cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                               video_format_option]
+                                                   video_format_option]
                         if args.subtitles:
                             cmd.append('--all-subs')
                         cmd.extend(args.youtube_options.split())
