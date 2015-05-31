@@ -30,8 +30,8 @@ To use `edx-dl.py`, simply execute it, as in:
 
     python edx-dl.py -u user@user.com -p password COURSE_URL
 
-The COURSE_URL must correspond to a course you are enregistered, it is the one
-who ends in '/info', e.g.
+The `COURSE_URL` must correspond to a course you are enregistered, it is the
+one that ends in `/info`, e.g.
 https://courses.edx.org/courses/edX/DemoX.1/2014/info
 
 You must pass the URL of at least one course, you can check the correct url
@@ -39,7 +39,7 @@ You must pass the URL of at least one course, you can check the correct url
     python edx-dl.py -u user@user.com -p password --course-list
 
 Your downloaded videos will be placed in a new Directory called
-"Downloaded", but you can also choose another destination with the '-o'
+`Downloaded`, but you can also choose another destination with the `-o`
 argument.
 
 To see all available options:
@@ -48,8 +48,8 @@ To see all available options:
 
 # Reporting issues
 
-Before reporting any issue please verify that you are running the latest version
-of the script and of youtube-dl. Please include in your report the
+Before reporting any issue please verify that you are running the latest
+version of the script and of `youtube-dl`. Please include in your report the
 following information:
 
 OS:
