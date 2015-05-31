@@ -1,9 +1,9 @@
 # DESCRIPTION
 
-Simple tool to download video lectures from edx.org.  It requires a
-Python interpreter (> 2.6), youtube-dl, and BeautifulSoup4. It is
-platform independent, and should work fine under Unix, Windows or
-Mac OS X.
+`edx-dl` is a simple tool to download video lectures from Open edX-based
+sites.  It requires a Python interpreter (>= 2.7) and very few other
+dependencies.  It is platform independent, and should work fine under Unix
+(Linux, BSDs etc.), Windows or Mac OS X.
 
 # DEPENDENCIES
 
