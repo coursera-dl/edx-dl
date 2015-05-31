@@ -11,36 +11,18 @@ To install all the dependencies please do:
 
     pip install -r requirements.txt
 
-You also need to install youtube-dl
-
 ## youtube-dl
 
-We use `youtube-dl` to download video lectures from Youtube, with the main
-idea being that "we don't want to reinvent the wheel".  Make sure you have
-`youtube-dl` installed in your system.  Also, since Youtube changes its
-layout frequently, make sure that the version of `youtube-dl` that you have
-installed is the latest. If in doubt, run `youtube-dl --update`.
+One of the dependencies that `edx-dl` uses is `youtube-dl`. The installation
+step listed above already pulls in the morst recent version of `youtube-dl`
+for you.
 
-You can find `youtube-dl` at <http://rg3.github.io/youtube-dl/download.html>
-or via pip:
+Unfortunately, since many Open edX sites store their videos on Youtube and
+Youtube changes their layout from time to time, it may be necessary to
+upgrade your copy of `youtube-dl`.  There are many ways to proceed here, but
+the simplest is to simply use:
 
-    pip install youtube-dl
-
-## BeautifulSoup
-
-Scrapping the web can be very silly task, but BeautifulSoup makes it
-so easy :), it isn't included in the python standard library.  Make
-sure you have BeautifulSoup installed.
-
-You can install it with
-
-    pip install beautifulsoup4
-
-or
-
-    easy_install beautifulsoup4.
-
-For more information, please see <http://www.crummy.com/software/BeautifulSoup/#Download>.
+    pip install --upgrade youtube_dl
 
 ## html5lib
 
