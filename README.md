@@ -24,26 +24,6 @@ the simplest is to simply use:
 
     pip install --upgrade youtube_dl
 
-## html5lib
-
-OpenEdX as a platform uses HTML5 to render its pages. The default html parser
-of python used by BeautifulSoup can have issues with the new HTML5 elements so
-it is important to include this dependency to avoid further issues.
-
-You can install it with
-
-    pip install html5lib
-
-For more details, please see <https://github.com/html5lib/html5lib-python>
-
-## six
-
-six deals with compatibility support between python 2/3
-
-    pip install six
-
-More info, see <https://pythonhosted.org/six/>
-
 # Quick Start
 
 To use `edx-dl.py`, simply execute it, as in:
