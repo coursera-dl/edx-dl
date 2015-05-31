@@ -73,10 +73,16 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 #
 # In the script the data structures used are:
 #
-# Course, Section->[SubSection], all_units = {Subsection.url: [Unit]}
+# 1. The data structures to represent the course information:
+#    Course, Section->[SubSection]
 #
-# Notice that subsection is a list of SubSection tuples and it is the only
-# part where we explicitly represent the parent-children relation.
+# 2. The data structures to represent the chosen courses and sections:
+#    selections = {Course, [Section]}
+#
+# 3. The data structure of all the downloable resources which represent each
+#    subsection via its URL and the of resources who can be extracted from the
+#    Units it contains:
+#    all_units = {Subsection.url: [Unit]}
 #
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
@@ -108,7 +114,8 @@ def _display_courses(courses):
     """
     _print('You can access %d courses' % len(courses))
     for i, course in enumerate(courses, 1):
-        _print('%d - %s [%s]' % (i, course.name, course.id))
+        _print('%2d - %s [%s]' % (i, course.name, course.id))
+        _print('     %s' % course.url)
 
 
 def get_courses_info(url, headers):
@@ -139,29 +146,6 @@ def get_courses_info(url, headers):
                               url=course_url,
                               state=course_state))
     return courses
-
-
-def get_selected_course(courses):
-    """
-    Retrieve the course that the user selected.
-    """
-    num_of_courses = len(courses)
-
-    c_number = None
-    while True:
-        c_number = int(input('Enter Course Number: '))
-
-        if c_number not in range(1, num_of_courses+1):
-            _print('Enter a valid number between 1 and ', num_of_courses)
-            continue
-        elif courses[c_number - 1].state != 'Started':
-            _print('The course has not started!')
-            continue
-        else:
-            break
-
-    selected_course = courses[c_number - 1]
-    return selected_course
 
 
 def _get_initial_token(url):
@@ -319,21 +303,23 @@ def parse_args():
                                      epilog='For further use information,'
                                      'see the file README.md',)
     # positional
-    parser.add_argument('course_id',
+    parser.add_argument('course_urls',
                         nargs='*',
                         action='store',
-                        default=None,
-                        help='target course id '
-                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info/)'
+                        default=[],
+                        help='target course urls'
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)'
                         )
 
     # optional
     parser.add_argument('-u',
                         '--username',
+                        required=True,
                         action='store',
                         help='your edX username (email)')
     parser.add_argument('-p',
                         '--password',
+                        required=True,
                         action='store',
                         help='your edX password')
     parser.add_argument('-f',
@@ -461,46 +447,28 @@ def extract_all_units(urls, headers):
     return all_units
 
 
-def _display_sections_menu(course_name, sections):
+def _display_sections_menu(course, sections):
     """
     List the weeks for the given course.
     """
     num_sections = len(sections)
-    _print('%s has %d sections so far' % (course_name, num_sections))
+    _print('%s [%s] has %d sections so far' % (course.name, course.id, num_sections))
     for i, section in enumerate(sections, 1):
-        _print('%d - Download %s videos' % (i, section.name))
-    _print('%d - Download them all' % (num_sections + 1))
+        _print('%2d - Download %s videos' % (i, section.name))
 
 
-def _choose_sections(sections):
-    """
-    Ask the user to choose section(s)
-    """
-    num_sections = len(sections)
-    number = int(input('Enter Your Choice: '))
-    while number > num_sections + 1:
-        _print('Enter a valid Number between 1 and %d' % (num_sections + 1))
-        number = int(input('Enter Your Choice: '))
-    return _get_sections(number, sections)
-
-
-def _get_sections(index, sections):
+def _filter_sections(index, sections):
     """
     Get the sections for the given index, if the index is not valid chooses all
     """
     num_sections = len(sections)
-
-    # this ensures that in case of invalid indexes it defaults to all
-    if index is None:
-        index = num_sections + 1
-    else:
+    if index is not None:
         try:
             index = int(index)
+            if index > 0 and index <= num_sections:
+                return [sections[index - 1]]
         except ValueError:
-            index = num_sections + 1
-
-    if index > 0 and index <= num_sections:
-        return [sections[index - 1]]
+            pass
     return sections
 
 
@@ -508,9 +476,9 @@ def _display_sections_and_subsections(sections):
     """
     Displays a tree of section(s) and subsections
     """
-    _print('Downloading %s section(s)' % len(sections))
+    _print('Downloading %d section(s)' % len(sections))
     for section in sections:
-        _print('Section %s: %s' % (section.position, section.name))
+        _print('Section %2d: %s' % (section.position, section.name))
         for subsection in section.subsections:
             _print('  %s' % subsection.name)
 
@@ -522,21 +490,126 @@ def execute_command(cmd):
     return subprocess.call(cmd)
 
 
+def parse_courses(args, available_courses):
+    """
+    Parses courses options and returns the selected_courses
+    """
+    if args.course_list:
+        _display_courses(available_courses)
+        exit(0)
+
+    if len(args.course_urls) == 0:
+        _print('You must pass the URL of at least one course, check the correct url with --course-list')
+        exit(3)
+
+    selected_courses = [available_course
+                        for available_course in available_courses
+                        for url in args.course_urls
+                        if available_course.url == url]
+    if len(selected_courses) == 0:
+        _print('You have not passed a valid course url, check the correct url with --course-list')
+        exit(4)
+    return selected_courses
+
+
+def parse_sections(args, selections):
+    """
+    Parses sections options and returns selections filtered by
+    selected_sections
+    """
+    if args.section_list:
+        for selected_course, selected_sections in selections.items():
+            _display_sections_menu(selected_course, selected_sections)
+        exit(0)
+
+    if not args.section_filter:
+        return selections
+
+    filtered_selections = {selected_course:
+                           _filter_sections(args.section_filter, selected_sections)
+                           for selected_course, selected_sections in selections.items()}
+    return filtered_selections
+
+
+def _display_selections(selections):
+    """
+    Displays the course, sections and subsections to be downloaded
+    """
+    for selected_course, selected_sections in selections.items():
+        _print('Downloading %s [%s]' % (selected_course.name,
+                                        selected_course.id))
+        _display_sections_and_subsections(selected_sections)
+
+
+def parse_units(all_units):
+    """
+    Parses units options and corner cases
+    """
+    flat_units = [unit for units in all_units.values() for unit in units]
+    if len(flat_units) < 1:
+        _print('WARNING: No downloadable video found.')
+        exit(6)
+
+
+def download(args, selections, all_units):
+    BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
+    _print("[info] Output directory: " + args.output_dir)
+
+    # Download Videos
+    # notice that we could iterate over all_units, but we prefer to do it over
+    # sections/subsections to add correct prefixes and shows nicer information
+    video_format_option = args.format + '/mp4' if args.format else 'mp4'
+    for selected_course, selected_sections in selections.items():
+        coursename = directory_name(selected_course.name)
+        for selected_section in selected_sections:
+            section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
+            target_dir = os.path.join(args.output_dir, coursename, section_dirname)
+            counter = 0
+            for subsection in selected_section.subsections:
+                units = all_units.get(subsection.url, [])
+                for unit in units:
+                    counter += 1
+                    filename_prefix = "%02d" % counter
+                    if unit.video_youtube_url is not None:
+                        filename = filename_prefix + "-%(title)s.%(ext)s"
+                        fullname = os.path.join(target_dir, filename)
+
+                        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
+                                               video_format_option]
+                        if args.subtitles:
+                            cmd.append('--all-subs')
+                        cmd.extend(args.youtube_options.split())
+                        cmd.append(unit.video_youtube_url)
+                        execute_command(cmd)
+
+                    if args.subtitles:
+                        filename = get_filename_from_prefix(target_dir, filename_prefix)
+                        if filename is None:
+                            _print('[warning] no video downloaded for %s' % filename_prefix)
+                            continue
+                        if unit.sub_urls is None:
+                            _print('[warning] no subtitles downloaded for %s' % filename_prefix)
+                            continue
+                        for sub_lang, sub_url in unit.sub_urls.items():
+                            subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
+                            if not os.path.exists(subs_filename):
+                                subs_string = edx_get_subtitle(sub_url, headers)
+                                if subs_string:
+                                    _print('[info] Writing edX subtitle: %s' % subs_filename)
+                                    open(os.path.join(os.getcwd(), subs_filename),
+                                         'wb+').write(subs_string.encode('utf-8'))
+                            else:
+                                _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+
+
 def main():
     args = parse_args()
-
-    # if no args means we are calling the interactive version
-    is_interactive = len(sys.argv) == 1
-    if is_interactive:
-        args.platform = input('Platform: ')
-        args.username = input('Username: ')
-        args.password = getpass.getpass()
 
     change_openedx_site(args.platform)
 
     if not args.username or not args.password:
-        _print("You must supply username AND password to log-in")
-        sys.exit(2)
+        _print("You must supply username and password to log-in")
+        exit(1)
 
     # Prepare Headers
     headers = edx_get_headers()
@@ -547,98 +620,30 @@ def main():
         _print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
+    # Parse and select the available courses
     courses = get_courses_info(DASHBOARD, headers)
     available_courses = [course for course in courses if course.state == 'Started']
-    if not is_interactive and args.course_list:
-        _display_courses(available_courses)
-        exit(0)
+    selected_courses = parse_courses(args, available_courses)
 
-    _display_courses(available_courses)
-    selected_course = get_selected_course(available_courses)
-    _print('Downloading %s [%s]' % (selected_course.name, selected_course.id))
+    # Parse the sections and build the selections dict filtered by sections
+    all_selections = {selected_course:
+                      get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
+                      for selected_course in selected_courses}
+    selections = parse_sections(args, all_selections)
+    _display_selections(selections)
 
-    # Get Available Sections
-    courseware_url = selected_course.url.replace('info', 'courseware')
-    sections = get_available_sections(courseware_url, headers)
-
-    if not is_interactive and args.section_list:
-        _display_sections_menu(selected_course.name, sections)
-        exit(0)
-
-    # Choose Section or choose all
-    if is_interactive:
-        _display_sections_menu(selected_course.name, sections)
-        selected_sections = _choose_sections(sections)
-    else:
-        selected_sections = _get_sections(args.section_filter, sections)
-
-    _display_sections_and_subsections(selected_sections)
-
-    if is_interactive:
-        args.subtitles = input('Download subtitles (y/n)? ').lower() == 'y'
-
-    all_urls = [subsection.url for selected_section in selected_sections for subsection in selected_section.subsections]
+    # Extract the unit information (downloadable resources)
+    # This parses the HTML of all the subsection.url and extracts
+    # the URLs of the resources as Units.
+    all_urls = [subsection.url
+                for selected_sections in selections.values()
+                for selected_section in selected_sections
+                for subsection in selected_section.subsections]
     all_units = extract_all_units(all_urls, headers)
+    parse_units(selections)
 
-    flat_units = [unit for units in all_units.values() for unit in units]
-    if len(flat_units) < 1:
-        _print('WARNING: No downloadable video found.')
-        sys.exit(0)
-
-    BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
-    if is_interactive:
-        # Get Available Video formats
-        cmd = BASE_EXTERNAL_CMD + ['-F', flat_units[-1].video_youtube_url]
-        res = execute_command(cmd)
-        _print('Choose a valid format or a set of valid format codes e.g. 22/17/...')
-        args.format = input('Choose Format code: ')
-
-    _print("[info] Output directory: " + args.output_dir)
-
-    # Download Videos
-    # notice that we could iterate over all_units, but we prefer to do it over
-    # sections/subsections to add correct prefixes and shows nicer information
-    video_format_option = args.format + '/mp4' if args.format else 'mp4'
-    coursename = directory_name(selected_course.name)
-    for selected_section in selected_sections:
-        section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
-        target_dir = os.path.join(args.output_dir, coursename, section_dirname)
-        counter = 0
-        for subsection in selected_section.subsections:
-            units = all_units.get(subsection.url, [])
-            for unit in units:
-                counter += 1
-                filename_prefix = "%02d" % counter
-                if unit.video_youtube_url is not None:
-                    filename = filename_prefix + "-%(title)s.%(ext)s"
-                    fullname = os.path.join(target_dir, filename)
-
-                    cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                               video_format_option]
-                    if args.subtitles:
-                        cmd.append('--all-subs')
-                    cmd.extend(args.youtube_options.split())
-                    cmd.append(unit.video_youtube_url)
-                    execute_command(cmd)
-
-                if args.subtitles:
-                    filename = get_filename_from_prefix(target_dir, filename_prefix)
-                    if filename is None:
-                        _print('[warning] no video downloaded for %s' % filename_prefix)
-                        continue
-                    if unit.sub_urls is None:
-                        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
-                        continue
-                    for sub_lang, sub_url in unit.sub_urls.items():
-                        subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
-                        if not os.path.exists(subs_filename):
-                            subs_string = edx_get_subtitle(sub_url, headers)
-                            if subs_string:
-                                _print('[info] Writing edX subtitle: %s' % subs_filename)
-                                open(os.path.join(os.getcwd(), subs_filename),
-                                     'wb+').write(subs_string.encode('utf-8'))
-                        else:
-                            _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+    # finally we download all the resources
+    download(args, selections, all_units)
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
