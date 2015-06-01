@@ -62,6 +62,10 @@ OPENEDX_SITES = {
         'url': 'http://mooc.online.gwu.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
+    'mitprox': {
+        'url': 'https://mitprofessionalx.mit.edu',
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
