@@ -357,20 +357,36 @@ def extract_units_from_html(page):
     """
     Extract Units from the html of a subsection webpage
     """
-    re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
-    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_available_subs = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_mp4_urls = re.compile(r'(?:(https?://.*?\.mp4))')
-    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
-    re_units = re_splitter.split(page)[1:]
-    units = []
-    for unit_html in re_units:
-        video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
-        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+    # in this function we avoid using beautifulsoup for performance reasons
 
-        match_subs = re_subs.search(unit_html)
+    # parsing html with regular expressions is really nasty, don't do this if
+    # you don't need to !
+    re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
+    # FIXME: simplify re_video_youtube_url expression
+    re_video_youtube_url = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:.{11}')
+    re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    # mp4 urls may be in two places, in the field data-sources, and as <a> refs
+    # This regex tries to match all the appearances, however we exclude the ';'
+    # character in the urls, since it is used to separate multiple urls in one
+    # string, however ';' is a valid url name character, but it is not really
+    # common.
+    re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
+    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
+
+    units = []
+    for unit_html in re_units.findall(page):
+        video_youtube_url = None
+        match_video_youtube_url = re_video_youtube_url.search(unit_html)
+        if match_video_youtube_url is not None:
+            video_id = match_video_youtube_url.group(0)[-YOUTUBE_VIDEO_ID_LENGTH:]
+            video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
+        available_subs_url = None
+        sub_template_url = None
+        match_subs = re_sub_template_url.search(unit_html)
         if match_subs:
-            match_available_subs = re_available_subs.search(unit_html)
+            match_available_subs = re_available_subs_url.search(unit_html)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
                 sub_template_url = BASE_URL + match_subs.group(1) + "/%s?videoId=" + video_id
@@ -381,11 +397,12 @@ def extract_units_from_html(page):
                     else BASE_URL + url
                     for url in re_pdf_urls.findall(unit_html)]
 
-        units.append(Unit(video_youtube_url=video_youtube_url,
-                          available_subs_url=available_subs_url,
-                          sub_template_url=sub_template_url,
-                          mp4_urls=mp4_urls,
-                          pdf_urls=pdf_urls))
+        if video_youtube_url is not None or len(mp4_urls) > 0 or len(pdf_urls) > 0:
+            units.append(Unit(video_youtube_url=video_youtube_url,
+                              available_subs_url=available_subs_url,
+                              sub_template_url=sub_template_url,
+                              mp4_urls=mp4_urls,
+                              pdf_urls=pdf_urls))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')

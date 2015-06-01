@@ -32,6 +32,21 @@ class TestEdX(unittest.TestCase):
             units = edx_dl.extract_units_from_html(page)
             self.assertEquals(len(units), 3)
 
+    def test_extract_units_from_html_multiple_units_multiple_youtube_ids(self):
+        with open("test/html/courses.edx.org/courses/BerkeleyX/Stat2.1x/2013_Spring/courseware/36bcbc2a9dbd4f4b8546f13c035b2759/85a8eeb47206447ca769f74d93d3db6c", "r") as myfile:
+            page = myfile.read()
+            units = edx_dl.extract_units_from_html(page)
+            self.assertEquals(len(units), 3)
+            self.assertEquals(units[0].video_youtube_url, 'https://youtube.com/watch?v=23kSGHRaLlI')
+
+    def test_extract_units_from_html_multiple_units_multiple_videos_and_pdf(self):
+        with open("test/html/courses.edx.org/courses/BerkeleyX/CS184.1x/2012_Fall/courseware/Unit_0/L1", "r") as myfile:
+            page = myfile.read()
+            units = edx_dl.extract_units_from_html(page)
+            self.assertEquals(len(units), 3)
+            self.assertTrue('https://s3.amazonaws.com/berkeley-cs184x/videos/overview-motivation.mp4' in units[0].mp4_urls)
+            self.assertEquals(units[0].pdf_urls[0], 'https://courses.edx.org/static/content-berkeley-cs184x~2012_Fall/slides/overview.pdf')
+
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout)
