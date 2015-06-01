@@ -404,17 +404,6 @@ def extract_units_from_html(page):
                               mp4_urls=mp4_urls,
                               pdf_urls=pdf_urls))
 
-    # Try to download some extra videos which is referred by iframe
-    re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
-    extra_ids = re_extra_youtube.findall(page)
-    for extra_id in extra_ids:
-        video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
-        units.append(Unit(video_youtube_url=video_youtube_url,
-                          available_subs_url=None,
-                          sub_template_url=None,
-                          mp4_urls=[],
-                          pdf_urls=[]))  # FIXME: verify subtitles
-
     return units
 
 
