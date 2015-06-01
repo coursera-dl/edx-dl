@@ -464,7 +464,6 @@ def parse_courses(args, available_courses):
     """
     if args.course_list:
         _display_courses(available_courses)
-        exit(0)
 
     if len(args.course_urls) == 0:
         compat_print('You must pass the URL of at least one course, check the correct url with --course-list')
