@@ -73,8 +73,6 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
-YOUTUBE_VIDEO_ID_LENGTH = 11
-
 #
 # The next four named tuples represent the structure of courses in edX.  The
 # structure is:
@@ -362,10 +360,10 @@ def extract_units_from_html(page):
     # parsing html with regular expressions is really nasty, don't do this if
     # you don't need to !
     re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
-    # FIXME: simplify re_video_youtube_url expression
-    re_video_youtube_url = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:.{11}')
+    re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
     re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+
     # mp4 urls may be in two places, in the field data-sources, and as <a> refs
     # This regex tries to match all the appearances, however we exclude the ';'
     # character in the urls, since it is used to separate multiple urls in one
@@ -379,7 +377,7 @@ def extract_units_from_html(page):
         video_youtube_url = None
         match_video_youtube_url = re_video_youtube_url.search(unit_html)
         if match_video_youtube_url is not None:
-            video_id = match_video_youtube_url.group(0)[-YOUTUBE_VIDEO_ID_LENGTH:]
+            video_id = match_video_youtube_url.group(1)
             video_youtube_url = 'https://youtube.com/watch?v=' + video_id
 
         available_subs_url = None
@@ -389,7 +387,7 @@ def extract_units_from_html(page):
             match_available_subs = re_available_subs_url.search(unit_html)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
-                sub_template_url = BASE_URL + match_subs.group(1) + "/%s?videoId=" + video_id
+                sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
 
         mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
         pdf_urls = [url
