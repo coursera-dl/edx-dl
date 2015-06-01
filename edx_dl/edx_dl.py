@@ -501,62 +501,83 @@ def parse_units(all_units):
         exit(6)
 
 
-def download(args, selections, all_units, headers):
-    BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
-    _print("[info] Output directory: " + args.output_dir)
+def _download_video_youtube(unit, args, target_dir, filename_prefix):
+    if unit.video_youtube_url is not None:
+        BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
+        filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
+        fullname = os.path.join(target_dir, filename)
+        video_format_option = args.format + '/mp4' if args.format else 'mp4'
 
+        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
+                                   video_format_option]
+        if args.subtitles:
+            cmd.append('--all-subs')
+        cmd.extend(args.youtube_options.split())
+        cmd.append(unit.video_youtube_url)
+        execute_command(cmd)
+
+
+def _download_subtitles(unit, target_dir, filename_prefix, headers):
+    filename = get_filename_from_prefix(target_dir, filename_prefix)
+    if filename is None:
+        _print('[warning] no video downloaded for %s' % filename_prefix)
+        return
+    if unit.sub_template_url is None:
+        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
+        return
+
+    try:
+        available_subs = get_page_contents_as_json(unit.available_subs_url,
+                                                   headers)
+    except HTTPError:
+        available_subs = ['en']
+
+    for sub_lang in available_subs:
+        sub_url = unit.sub_template_url % sub_lang
+        subs_filename = os.path.join(target_dir,
+                                     filename + '.' + sub_lang + '.srt')
+        if not os.path.exists(subs_filename):
+            subs_string = edx_get_subtitle(sub_url, headers)
+            if subs_string:
+                _print('[info] Writing edX subtitle: %s' % subs_filename)
+                open(os.path.join(os.getcwd(), subs_filename),
+                     'wb+').write(subs_string.encode('utf-8'))
+        else:
+            _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+
+
+def download_unit(unit, args, target_dir, filename_prefix, headers):
+    """
+    Downloads unit based on args in the given target_dir with filename_prefix
+    """
+    _download_video_youtube(unit, args, target_dir, filename_prefix)
+    if args.subtitles:
+        _download_subtitles(unit, target_dir, filename_prefix, headers)
+
+
+def download(args, selections, all_units, headers):
+    """
+    Downloads all the resources based on the selections
+    """
+    _print("[info] Output directory: " + args.output_dir)
     # Download Videos
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
-    video_format_option = args.format + '/mp4' if args.format else 'mp4'
     for selected_course, selected_sections in selections.items():
         coursename = directory_name(selected_course.name)
         for selected_section in selected_sections:
-            section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
-            target_dir = os.path.join(args.output_dir, coursename, section_dirname)
+            section_dirname = "%02d-%s" % (selected_section.position,
+                                           selected_section.name)
+            target_dir = os.path.join(args.output_dir, coursename,
+                         section_dirname)
             counter = 0
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
-                    if unit.video_youtube_url is not None:
-                        filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
-                        fullname = os.path.join(target_dir, filename)
-
-                        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                                   video_format_option]
-                        if args.subtitles:
-                            cmd.append('--all-subs')
-                        cmd.extend(args.youtube_options.split())
-                        cmd.append(unit.video_youtube_url)
-                        execute_command(cmd)
-
-                    if args.subtitles:
-                        filename = get_filename_from_prefix(target_dir, filename_prefix)
-                        if filename is None:
-                            _print('[warning] no video downloaded for %s' % filename_prefix)
-                            continue
-                        if unit.sub_template_url is None:
-                            _print('[warning] no subtitles downloaded for %s' % filename_prefix)
-                            continue
-
-                        try:
-                            available_subs = get_page_contents_as_json(unit.available_subs_url, headers)
-                        except HTTPError:
-                            available_subs = ['en']
-
-                        for sub_lang in available_subs:
-                            sub_url = unit.sub_template_url % sub_lang
-                            subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
-                            if not os.path.exists(subs_filename):
-                                subs_string = edx_get_subtitle(sub_url, headers)
-                                if subs_string:
-                                    _print('[info] Writing edX subtitle: %s' % subs_filename)
-                                    open(os.path.join(os.getcwd(), subs_filename),
-                                         'wb+').write(subs_string.encode('utf-8'))
-                            else:
-                                _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+                    download_unit(unit, args, target_dir, filename_prefix,
+                                  headers)
 
 
 def main():
