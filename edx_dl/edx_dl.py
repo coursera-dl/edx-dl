@@ -347,7 +347,14 @@ def extract_units(url, headers):
     """
     _print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
+    units = extract_units_from_html(page)
+    return units
 
+
+def extract_units_from_html(page):
+    """
+    Extract Units from the html of a subsection webpage
+    """
     re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     re_available_subs = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
