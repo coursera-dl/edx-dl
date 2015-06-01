@@ -104,8 +104,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url'])
-
+Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url', 'mp4_urls', 'pdf_urls'])
 
 def change_openedx_site(site_name):
     """
@@ -361,6 +360,8 @@ def extract_units_from_html(page):
     re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     re_available_subs = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    re_mp4_urls = re.compile(r'(?:(https?://.*?\.mp4))')
+    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
     re_units = re_splitter.split(page)[1:]
     units = []
     for unit_html in re_units:
@@ -374,9 +375,17 @@ def extract_units_from_html(page):
                 available_subs_url = BASE_URL + match_available_subs.group(1)
                 sub_template_url = BASE_URL + match_subs.group(1) + "/%s?videoId=" + video_id
 
+        mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
+        pdf_urls = [url
+                    if url.startswith('http') or url.startswith('https')
+                    else BASE_URL + url
+                    for url in re_pdf_urls.findall(unit_html)]
+
         units.append(Unit(video_youtube_url=video_youtube_url,
                           available_subs_url=available_subs_url,
-                          sub_template_url=sub_template_url))
+                          sub_template_url=sub_template_url,
+                          mp4_urls=mp4_urls,
+                          pdf_urls=pdf_urls))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
@@ -385,7 +394,9 @@ def extract_units_from_html(page):
         video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
         units.append(Unit(video_youtube_url=video_youtube_url,
                           available_subs_url=None,
-                          sub_template_url=None))  # FIXME: verify subtitles
+                          sub_template_url=None,
+                          mp4_urls=[],
+                          pdf_urls=[]))  # FIXME: verify subtitles
 
     return units
 

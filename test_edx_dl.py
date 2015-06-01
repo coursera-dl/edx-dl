@@ -23,6 +23,7 @@ class TestEdX(unittest.TestCase):
             page = myfile.read()
             units = edx_dl.extract_units_from_html(page)
             self.assertEquals(units[0].video_youtube_url, 'https://youtube.com/watch?v=b7xgknqkQk8')
+            self.assertEquals(units[0].mp4_urls[0], 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4')
             # self.log.info(units)
 
     def test_extract_units_from_html_multiple_units(self):
