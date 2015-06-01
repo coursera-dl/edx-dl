@@ -84,7 +84,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'sub_urls'])
+Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url'])
 
 
 def change_openedx_site(site_name):
@@ -355,23 +355,18 @@ def extract_units(url, headers):
     units = []
     for unit_html in re_units:
         video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
-        sub_urls = {}
+        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
         match_subs = re_subs.search(unit_html)
         if match_subs:
             match_available_subs = re_available_subs.search(unit_html)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
-                try:
-                    available_subs = get_page_contents_as_json(available_subs_url, headers)
-                except HTTPError:
-                    available_subs = ['en']
+                sub_template_url = BASE_URL + match_subs.group(1) + "/%s?videoId=" + video_id
 
-                for sub_prefix in available_subs:
-                    sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
-
-        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
         units.append(Unit(video_youtube_url=video_youtube_url,
-                          sub_urls=sub_urls))
+                          available_subs_url=available_subs_url,
+                          sub_template_url=sub_template_url))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
@@ -379,7 +374,8 @@ def extract_units(url, headers):
     for extra_id in extra_ids:
         video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
         units.append(Unit(video_youtube_url=video_youtube_url,
-                          sub_urls=None))  # FIXME: verify subtitles
+                          available_subs_url=None,
+                          sub_template_url=None))  # FIXME: verify subtitles
 
     return units
 
@@ -534,10 +530,17 @@ def download(args, selections, all_units, headers):
                         if filename is None:
                             _print('[warning] no video downloaded for %s' % filename_prefix)
                             continue
-                        if unit.sub_urls is None:
+                        if unit.sub_template_url is None:
                             _print('[warning] no subtitles downloaded for %s' % filename_prefix)
                             continue
-                        for sub_lang, sub_url in unit.sub_urls.items():
+
+                        try:
+                            available_subs = get_page_contents_as_json(unit.available_subs_url, headers)
+                        except HTTPError:
+                            available_subs = ['en']
+
+                        for sub_lang in available_subs:
+                            sub_url = unit.sub_template_url % sub_lang
                             subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
                             if not os.path.exists(subs_filename):
                                 subs_string = edx_get_subtitle(sub_url, headers)
