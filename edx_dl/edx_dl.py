@@ -4,10 +4,7 @@
 import argparse
 import json
 import os
-import os.path
 import re
-import string
-import subprocess
 import sys
 
 from collections import namedtuple
@@ -19,6 +16,7 @@ from bs4 import BeautifulSoup as BeautifulSoup_
 
 from .compat import *
 from .compat import _print
+from .utils import *
 
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
@@ -199,39 +197,6 @@ def get_available_sections(url, headers):
     return sections
 
 
-def get_page_contents(url, headers):
-    """
-    Get the contents of the page at the URL given by url. While making the
-    request, we use the headers given in the dictionary in headers.
-    """
-    result = urlopen(Request(url, None, headers))
-    try:
-        charset = result.headers.get_content_charset(failobj="utf-8")  # for python3
-    except:
-        charset = result.info().getparam('charset') or 'utf-8'
-    return result.read().decode(charset)
-
-
-def strip_non_ascii_chars(str):
-    """
-    Strips the non ascii characters from a str
-    """
-    allowed_chars = string.digits + string.ascii_letters + " _.-"
-    result = ""
-    for ch in str:
-        if allowed_chars.find(ch) != -1:
-            result += ch
-    return result
-
-
-def directory_name(initial_name):
-    """
-    Transform the name of a directory into an ascii version
-    """
-    result = strip_non_ascii_chars(initial_name)
-    return result if result != "" else "course_folder"
-
-
 def edx_json2srt(o):
     """
     Transform the dict 'o' into the srt subtitles format
@@ -255,16 +220,6 @@ def edx_json2srt(o):
         output.append(t + "\n\n")
 
     return ''.join(output)
-
-
-def get_page_contents_as_json(url, headers):
-    """
-    Makes a request to the url and immediately parses the result asuming it is
-    formatted as json
-    """
-    json_string = get_page_contents(url, headers)
-    json_object = json.loads(json_string)
-    return json_object
 
 
 def edx_get_subtitle(url, headers):
@@ -482,13 +437,6 @@ def _display_sections_and_subsections(sections):
             _print('  %s' % subsection.name)
 
 
-def execute_command(cmd):
-    """
-    Creates a process with the given command cmd.
-    """
-    return subprocess.call(cmd)
-
-
 def parse_courses(args, available_courses):
     """
     Parses courses options and returns the selected_courses
@@ -550,7 +498,7 @@ def parse_units(all_units):
         exit(6)
 
 
-def download(args, selections, all_units):
+def download(args, selections, all_units, headers):
     BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
     _print("[info] Output directory: " + args.output_dir)
 
@@ -642,23 +590,7 @@ def main():
     parse_units(selections)
 
     # finally we download all the resources
-    download(args, selections, all_units)
-
-
-def get_filename_from_prefix(target_dir, filename_prefix):
-    """
-    Return the basename for the corresponding filename_prefix.
-    """
-    # This whole function is not the nicest thing, but isolating it makes
-    # things clearer. A good refactoring would be to get the info from the
-    # video_url or the current output, to avoid the iteration from the
-    # current dir.
-    filenames = os.listdir(target_dir)
-    for name in filenames:  # Find the filename of the downloaded video
-        if name.startswith(filename_prefix):
-            (basename, ext) = os.path.splitext(name)
-            return basename
-    return None
+    download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
