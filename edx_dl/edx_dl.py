@@ -566,13 +566,30 @@ def _download_subtitles(unit, target_dir, filename_prefix, headers):
             compat_print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
+def _download_urls(urls, target_dir, filename_prefix):
+    for url in urls:
+        original_filename = url.rsplit('/', 1)[1]
+        filename = os.path.join(target_dir, filename_prefix + '-' + original_filename)
+        _print('[download] Destination: %s' % filename)
+        urlretrieve(url, filename)
+
+
 def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
+    mkdir_p(target_dir)
+
     _download_video_youtube(unit, args, target_dir, filename_prefix)
+
     if args.subtitles:
         _download_subtitles(unit, target_dir, filename_prefix, headers)
+
+    if len(unit.mp4_urls) > 0:
+        _download_urls(unit.mp4_urls, target_dir, filename_prefix)
+
+    if len(unit.pdf_urls) > 0:
+        _download_urls(unit.pdf_urls, target_dir, filename_prefix)
 
 
 def download(args, selections, all_units, headers):
