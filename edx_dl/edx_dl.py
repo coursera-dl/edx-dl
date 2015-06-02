@@ -216,7 +216,7 @@ def strip_non_ascii_chars(str):
     """
     Strips the non ascii characters from a str
     """
-    allowed_chars = string.digits + string.ascii_letters + " _."
+    allowed_chars = string.digits + string.ascii_letters + " _.-"
     result = ""
     for ch in str:
         if allowed_chars.find(ch) != -1:
