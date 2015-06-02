@@ -580,6 +580,31 @@ def download(args, selections, all_units, headers):
                                   headers)
 
 
+def remove_repeated_video_urls(all_units):
+    """
+    Removes repeated video_urls from the selections, this avoids repeated
+    video downloads
+    """
+    existing_urls = set()
+    filtered_units = {}
+    for url, units in all_units.items():
+        reduced_units = []
+        for unit in units:
+            if unit.video_youtube_url not in existing_urls:
+                reduced_units.append(unit)
+                existing_urls.add(unit.video_youtube_url)
+        filtered_units[url] = reduced_units
+    return filtered_units
+
+
+def _length_units(all_units):
+    counter = 0
+    for url, units in all_units.items():
+        for unit in units:
+            counter += 1
+    return counter
+
+
 def main():
     args = parse_args()
 
@@ -619,6 +644,16 @@ def main():
                 for subsection in selected_section.subsections]
     all_units = extract_all_units(all_urls, headers)
     parse_units(selections)
+
+    # This removes all repeated video_urls
+    # FIXME: This is not the best way to do it but it is the simplest, a
+    # better approach will be to create symbolic or hard links for the repeated
+    # units to avoid losing information
+    filtered_units = remove_repeated_video_urls(all_units)
+    num_all_units = _length_units(all_units)
+    num_filtered_units = _length_units(filtered_units)
+    _print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
+                                               num_all_units))
 
     # finally we download all the resources
     download(args, selections, all_units, headers)
