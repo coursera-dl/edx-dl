@@ -26,6 +26,19 @@ class TestEdX(unittest.TestCase):
             self.assertEquals(units[0].mp4_urls[0], 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4')
             # self.log.info(units)
 
+    def test_extract_units_from_html_single_unit_multiple_subs(self):
+        with open("test/html/courses.edx.org/courses/edX/DemoX.1/2014/courseware/6156e0e685ee4a2ab017258108c0bccd/194bd1729fab47aba6507f737d9b90ba", "r") as myfile:
+            page = myfile.read()
+            units = edx_dl.extract_units_from_html(page)
+            headers ={}
+            subtitles_download_urls = edx_dl.get_subtitles_download_urls(units[0].available_subs_url,
+                                                                         units[0].sub_template_url,
+                                                                         headers)
+
+            self.assertTrue('https://courses.edx.org/courses/edX/DemoX.1/2014/xblock/i4x:;_;_edX;_DemoX.1;_video;_14459340170c476bb65f73a0a08a076f/handler/transcript/translation/en' in subtitles_download_urls.values())
+            # FIXME once that correct headers are passed test for 'zh' language and this:
+            # self.assertEquals(len(subtitles_download_urls), 2)
+
     def test_extract_units_from_html_multiple_units(self):
         with open("test/html/courses.edx.org/courses/edX/DemoX.1/2014/courseware/0af8db2309474971bfa70cda98668a30/ec3364075f2845baa625bfecd5970410", "r") as myfile:
             page = myfile.read()

@@ -537,6 +537,19 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
         execute_command(cmd)
 
 
+def get_subtitles_download_urls(available_subs_url, sub_template_url, headers):
+    if available_subs_url is not None and sub_template_url is not None:
+        try:
+            available_subs = get_page_contents_as_json(available_subs_url,
+                                                       headers)
+        except HTTPError:
+            available_subs = ['en']
+
+        return {sub_lang: sub_template_url % sub_lang
+                for sub_lang in available_subs}
+    return {}
+
+
 def _download_subtitles(unit, target_dir, filename_prefix, headers):
     """
     Downloads the subtitles using the openedx subtitle api
@@ -549,14 +562,10 @@ def _download_subtitles(unit, target_dir, filename_prefix, headers):
         compat_print('[warning] no subtitles downloaded for %s' % filename_prefix)
         return
 
-    try:
-        available_subs = get_page_contents_as_json(unit.available_subs_url,
-                                                   headers)
-    except HTTPError:
-        available_subs = ['en']
-
-    for sub_lang in available_subs:
-        sub_url = unit.sub_template_url % sub_lang
+    subtitles_download_urls = get_subtitles_download_urls(unit.available_subs_url,
+                                                          unit.sub_template_url,
+                                                          headers)
+    for sub_lang, sub_url in subtitles_download_urls.items():
         subs_filename = os.path.join(target_dir,
                                      filename + '.' + sub_lang + '.srt')
         if not os.path.exists(subs_filename):
