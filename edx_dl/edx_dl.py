@@ -216,7 +216,7 @@ def strip_non_ascii_chars(str):
     """
     Strips the non ascii characters from a str
     """
-    allowed_chars = string.digits + string.ascii_letters + " _."
+    allowed_chars = string.digits + string.ascii_letters + " _.-"
     result = ""
     for ch in str:
         if allowed_chars.find(ch) != -1:
@@ -570,7 +570,7 @@ def download(args, selections, all_units):
                     counter += 1
                     filename_prefix = "%02d" % counter
                     if unit.video_youtube_url is not None:
-                        filename = filename_prefix + "-%(title)s.%(ext)s"
+                        filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
                         fullname = os.path.join(target_dir, filename)
 
                         cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
