@@ -14,8 +14,20 @@ from multiprocessing.dummy import Pool as ThreadPool
 
 from bs4 import BeautifulSoup as BeautifulSoup_
 
-from .compat import *
-from .utils import *
+from six.moves.http_cookiejar import CookieJar
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.request import urlopen, build_opener, install_opener
+from six.moves.urllib.request import HTTPCookieProcessor, Request
+from six.moves.urllib.error import HTTPError, URLError
+
+from .compat import compat_print
+from .utils import (
+    directory_name,
+    execute_command,
+    get_filename_from_prefix,
+    get_page_contents,
+    get_page_contents_as_json,
+)
 
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')

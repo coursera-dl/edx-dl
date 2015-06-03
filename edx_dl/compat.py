@@ -6,12 +6,6 @@ from __future__ import print_function, unicode_literals
 
 import sys
 
-from six.moves.http_cookiejar import CookieJar
-from six.moves.urllib.parse import urlencode
-from six.moves.urllib.request import urlopen, build_opener, install_opener
-from six.moves.urllib.request import HTTPCookieProcessor, Request
-from six.moves.urllib.error import HTTPError, URLError
-
 
 def compat_print(*objects, **kwargs):
     """
