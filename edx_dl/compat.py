@@ -4,7 +4,6 @@
 # python 2/3 compatibility imports
 from __future__ import print_function, unicode_literals
 
-from six.moves import builtins
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.parse import urlencode
 from six.moves.urllib.request import urlopen, build_opener, install_opener
@@ -14,11 +13,9 @@ from six.moves.urllib.error import HTTPError, URLError
 import sys
 
 
-# To replace the print function, the following function must be placed
-# before any other call for print
-def _print(*objects, **kwargs):
+def compat_print(*objects, **kwargs):
     """
-    Overload the print function to adapt for the encoding bug in Windows
+    Workaround the print function to adapt for the encoding bug in Windows
     console.
 
     It will try to convert text to the console encoding before printing to
@@ -32,7 +29,7 @@ def _print(*objects, **kwargs):
         if enc is None:
             enc = sys.getdefaultencoding()
     except AttributeError:
-        return builtins.print(*objects, **kwargs)
+        return print(*objects, **kwargs)
 
     texts = []
     for object in objects:
@@ -49,4 +46,4 @@ def _print(*objects, **kwargs):
         except UnicodeEncodeError:
             original_text = unicode(object).encode(enc, errors='replace').decode(enc, errors='replace')
         texts.append(original_text)
-    return builtins.print(*texts, **kwargs)
+    return print(*texts, **kwargs)
