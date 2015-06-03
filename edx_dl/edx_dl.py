@@ -653,8 +653,7 @@ def _length_units(all_units):
     """
     counter = 0
     for _, units in all_units.items():
-        for _ in units:
-            counter += 1
+        counter += len(units)
     return counter
 
 
