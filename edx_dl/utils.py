@@ -22,7 +22,7 @@ def get_filename_from_prefix(target_dir, filename_prefix):
     filenames = os.listdir(target_dir)
     for name in filenames:  # Find the filename of the downloaded video
         if name.startswith(filename_prefix):
-            (basename, ext) = os.path.splitext(name)
+            basename, _ = os.path.splitext(name)
             return basename
     return None
 
