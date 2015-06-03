@@ -7,9 +7,9 @@ from six.moves.urllib.request import Request
 
 import errno
 import json
+import os
 import string
 import subprocess
-import os
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):

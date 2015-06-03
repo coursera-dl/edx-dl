@@ -8,15 +8,31 @@ import re
 import sys
 
 from collections import namedtuple
-from datetime import timedelta, datetime
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 
 from bs4 import BeautifulSoup as BeautifulSoup_
 
-from .compat import *
-from .compat import _print
-from .utils import *
+from six.moves.http_cookiejar import CookieJar
+from six.moves.urllib.error import HTTPError, URLError
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.request import (
+    urlopen,
+    build_opener,
+    install_opener,
+    HTTPCookieProcessor,
+    Request
+)
+
+from .compat import compat_print
+from .parsing import edx_json2srt
+from .utils import (
+    directory_name,
+    execute_command,
+    get_filename_from_prefix,
+    get_page_contents,
+    get_page_contents_as_json,
+)
 
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
@@ -95,7 +111,7 @@ def change_openedx_site(site_name):
     global COURSEWARE_SEL
 
     if site_name not in OPENEDX_SITES.keys():
-        _print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
+        compat_print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
         sys.exit(2)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
@@ -109,10 +125,10 @@ def _display_courses(courses):
     """
     List the courses that the user has enrolled.
     """
-    _print('You can access %d courses' % len(courses))
+    compat_print('You can access %d courses' % len(courses))
     for i, course in enumerate(courses, 1):
-        _print('%2d - %s [%s]' % (i, course.name, course.id))
-        _print('     %s' % course.url)
+        compat_print('%2d - %s [%s]' % (i, course.name, course.id))
+        compat_print('     %s' % course.url)
 
 
 def get_courses_info(url, headers):
@@ -197,31 +213,6 @@ def get_available_sections(url, headers):
     return sections
 
 
-def edx_json2srt(o):
-    """
-    Transform the dict 'o' into the srt subtitles format
-    """
-    BASE_TIME = datetime(1, 1, 1)
-    output = []
-
-    for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
-        if t == '':
-            continue
-
-        output.append(str(i) + '\n')
-
-        s = BASE_TIME + timedelta(seconds=s/1000.)
-        e = BASE_TIME + timedelta(seconds=e/1000.)
-        time_range = "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n" % \
-                     (s.hour, s.minute, s.second, s.microsecond/1000,
-                      e.hour, e.minute, e.second, e.microsecond/1000)
-
-        output.append(time_range)
-        output.append(t + "\n\n")
-
-    return ''.join(output)
-
-
 def edx_get_subtitle(url, headers):
     """
     Return a string with the subtitles content from the url or None if no
@@ -231,10 +222,10 @@ def edx_get_subtitle(url, headers):
         json_object = get_page_contents_as_json(url, headers)
         return edx_json2srt(json_object)
     except URLError as e:
-        _print('[warning] edX subtitles (error:%s)' % e.reason)
+        compat_print('[warning] edX subtitles (error:%s)' % e.reason)
         return None
     except ValueError as e:
-        _print('[warning] edX subtitles (error:%s)' % e.message)
+        compat_print('[warning] edX subtitles (error:%s)' % e.message)
         return None
 
 
@@ -345,7 +336,7 @@ def extract_units(url, headers):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
-    _print("Processing '%s'..." % url)
+    compat_print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
     units = extract_units_from_html(page)
     return units
@@ -409,9 +400,9 @@ def _display_sections_menu(course, sections):
     List the weeks for the given course.
     """
     num_sections = len(sections)
-    _print('%s [%s] has %d sections so far' % (course.name, course.id, num_sections))
+    compat_print('%s [%s] has %d sections so far' % (course.name, course.id, num_sections))
     for i, section in enumerate(sections, 1):
-        _print('%2d - Download %s videos' % (i, section.name))
+        compat_print('%2d - Download %s videos' % (i, section.name))
 
 
 def _filter_sections(index, sections):
@@ -433,11 +424,11 @@ def _display_sections_and_subsections(sections):
     """
     Displays a tree of section(s) and subsections
     """
-    _print('Downloading %d section(s)' % len(sections))
+    compat_print('Downloading %d section(s)' % len(sections))
     for section in sections:
-        _print('Section %2d: %s' % (section.position, section.name))
+        compat_print('Section %2d: %s' % (section.position, section.name))
         for subsection in section.subsections:
-            _print('  %s' % subsection.name)
+            compat_print('  %s' % subsection.name)
 
 
 def parse_courses(args, available_courses):
@@ -449,7 +440,7 @@ def parse_courses(args, available_courses):
         exit(0)
 
     if len(args.course_urls) == 0:
-        _print('You must pass the URL of at least one course, check the correct url with --course-list')
+        compat_print('You must pass the URL of at least one course, check the correct url with --course-list')
         exit(3)
 
     selected_courses = [available_course
@@ -457,7 +448,7 @@ def parse_courses(args, available_courses):
                         for url in args.course_urls
                         if available_course.url == url]
     if len(selected_courses) == 0:
-        _print('You have not passed a valid course url, check the correct url with --course-list')
+        compat_print('You have not passed a valid course url, check the correct url with --course-list')
         exit(4)
     return selected_courses
 
@@ -486,7 +477,7 @@ def _display_selections(selections):
     Displays the course, sections and subsections to be downloaded
     """
     for selected_course, selected_sections in selections.items():
-        _print('Downloading %s [%s]' % (selected_course.name,
+        compat_print('Downloading %s [%s]' % (selected_course.name,
                                         selected_course.id))
         _display_sections_and_subsections(selected_sections)
 
@@ -497,7 +488,7 @@ def parse_units(all_units):
     """
     flat_units = [unit for units in all_units.values() for unit in units]
     if len(flat_units) < 1:
-        _print('WARNING: No downloadable video found.')
+        compat_print('WARNING: No downloadable video found.')
         exit(6)
 
 
@@ -520,10 +511,10 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
 def _download_subtitles(unit, target_dir, filename_prefix, headers):
     filename = get_filename_from_prefix(target_dir, filename_prefix)
     if filename is None:
-        _print('[warning] no video downloaded for %s' % filename_prefix)
+        compat_print('[warning] no video downloaded for %s' % filename_prefix)
         return
     if unit.sub_template_url is None:
-        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
+        compat_print('[warning] no subtitles downloaded for %s' % filename_prefix)
         return
 
     try:
@@ -539,11 +530,11 @@ def _download_subtitles(unit, target_dir, filename_prefix, headers):
         if not os.path.exists(subs_filename):
             subs_string = edx_get_subtitle(sub_url, headers)
             if subs_string:
-                _print('[info] Writing edX subtitle: %s' % subs_filename)
+                compat_print('[info] Writing edX subtitle: %s' % subs_filename)
                 open(os.path.join(os.getcwd(), subs_filename),
                      'wb+').write(subs_string.encode('utf-8'))
         else:
-            _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+            compat_print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
 def download_unit(unit, args, target_dir, filename_prefix, headers):
@@ -559,7 +550,7 @@ def download(args, selections, all_units, headers):
     """
     Downloads all the resources based on the selections
     """
-    _print("[info] Output directory: " + args.output_dir)
+    compat_print("[info] Output directory: " + args.output_dir)
     # Download Videos
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
@@ -611,7 +602,7 @@ def main():
     change_openedx_site(args.platform)
 
     if not args.username or not args.password:
-        _print("You must supply username and password to log-in")
+        compat_print("You must supply username and password to log-in")
         exit(1)
 
     # Prepare Headers
@@ -620,7 +611,7 @@ def main():
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
     if not resp.get('success', False):
-        _print(resp.get('value', "Wrong Email or Password."))
+        compat_print(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
     # Parse and select the available courses
@@ -652,7 +643,7 @@ def main():
     filtered_units = remove_repeated_video_urls(all_units)
     num_all_units = _length_units(all_units)
     num_filtered_units = _length_units(filtered_units)
-    _print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
+    compat_print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
                                                num_all_units))
 
     # finally we download all the resources
@@ -663,5 +654,5 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        _print("\n\nCTRL-C detected, shutting down....")
+        compat_print("\n\nCTRL-C detected, shutting down....")
         sys.exit(0)
