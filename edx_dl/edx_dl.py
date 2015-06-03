@@ -4,10 +4,7 @@
 import argparse
 import json
 import os
-import os.path
 import re
-import string
-import subprocess
 import sys
 
 from collections import namedtuple
@@ -19,6 +16,7 @@ from bs4 import BeautifulSoup as BeautifulSoup_
 
 from .compat import *
 from .compat import _print
+from .utils import *
 
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
@@ -86,7 +84,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'sub_urls'])
+Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url'])
 
 
 def change_openedx_site(site_name):
@@ -199,39 +197,6 @@ def get_available_sections(url, headers):
     return sections
 
 
-def get_page_contents(url, headers):
-    """
-    Get the contents of the page at the URL given by url. While making the
-    request, we use the headers given in the dictionary in headers.
-    """
-    result = urlopen(Request(url, None, headers))
-    try:
-        charset = result.headers.get_content_charset(failobj="utf-8")  # for python3
-    except:
-        charset = result.info().getparam('charset') or 'utf-8'
-    return result.read().decode(charset)
-
-
-def strip_non_ascii_chars(str):
-    """
-    Strips the non ascii characters from a str
-    """
-    allowed_chars = string.digits + string.ascii_letters + " _.-"
-    result = ""
-    for ch in str:
-        if allowed_chars.find(ch) != -1:
-            result += ch
-    return result
-
-
-def directory_name(initial_name):
-    """
-    Transform the name of a directory into an ascii version
-    """
-    result = strip_non_ascii_chars(initial_name)
-    return result if result != "" else "course_folder"
-
-
 def edx_json2srt(o):
     """
     Transform the dict 'o' into the srt subtitles format
@@ -255,16 +220,6 @@ def edx_json2srt(o):
         output.append(t + "\n\n")
 
     return ''.join(output)
-
-
-def get_page_contents_as_json(url, headers):
-    """
-    Makes a request to the url and immediately parses the result asuming it is
-    formatted as json
-    """
-    json_string = get_page_contents(url, headers)
-    json_object = json.loads(json_string)
-    return json_object
 
 
 def edx_get_subtitle(url, headers):
@@ -392,7 +347,14 @@ def extract_units(url, headers):
     """
     _print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
+    units = extract_units_from_html(page)
+    return units
 
+
+def extract_units_from_html(page):
+    """
+    Extract Units from the html of a subsection webpage
+    """
     re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
     re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
     re_available_subs = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
@@ -400,23 +362,18 @@ def extract_units(url, headers):
     units = []
     for unit_html in re_units:
         video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
-        sub_urls = {}
+        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
         match_subs = re_subs.search(unit_html)
         if match_subs:
             match_available_subs = re_available_subs.search(unit_html)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
-                try:
-                    available_subs = get_page_contents_as_json(available_subs_url, headers)
-                except HTTPError:
-                    available_subs = ['en']
+                sub_template_url = BASE_URL + match_subs.group(1) + "/%s?videoId=" + video_id
 
-                for sub_prefix in available_subs:
-                    sub_urls[sub_prefix] = BASE_URL + match_subs.group(1) + "/" + sub_prefix + "?videoId=" + video_id
-
-        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
         units.append(Unit(video_youtube_url=video_youtube_url,
-                          sub_urls=sub_urls))
+                          available_subs_url=available_subs_url,
+                          sub_template_url=sub_template_url))
 
     # Try to download some extra videos which is referred by iframe
     re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
@@ -424,7 +381,8 @@ def extract_units(url, headers):
     for extra_id in extra_ids:
         video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
         units.append(Unit(video_youtube_url=video_youtube_url,
-                          sub_urls=None))  # FIXME: verify subtitles
+                          available_subs_url=None,
+                          sub_template_url=None))  # FIXME: verify subtitles
 
     return units
 
@@ -480,13 +438,6 @@ def _display_sections_and_subsections(sections):
         _print('Section %2d: %s' % (section.position, section.name))
         for subsection in section.subsections:
             _print('  %s' % subsection.name)
-
-
-def execute_command(cmd):
-    """
-    Creates a process with the given command cmd.
-    """
-    return subprocess.call(cmd)
 
 
 def parse_courses(args, available_courses):
@@ -550,55 +501,108 @@ def parse_units(all_units):
         exit(6)
 
 
-def download(args, selections, all_units):
-    BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
-    _print("[info] Output directory: " + args.output_dir)
+def _download_video_youtube(unit, args, target_dir, filename_prefix):
+    if unit.video_youtube_url is not None:
+        BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
+        filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
+        fullname = os.path.join(target_dir, filename)
+        video_format_option = args.format + '/mp4' if args.format else 'mp4'
 
+        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
+                                   video_format_option]
+        if args.subtitles:
+            cmd.append('--all-subs')
+        cmd.extend(args.youtube_options.split())
+        cmd.append(unit.video_youtube_url)
+        execute_command(cmd)
+
+
+def _download_subtitles(unit, target_dir, filename_prefix, headers):
+    filename = get_filename_from_prefix(target_dir, filename_prefix)
+    if filename is None:
+        _print('[warning] no video downloaded for %s' % filename_prefix)
+        return
+    if unit.sub_template_url is None:
+        _print('[warning] no subtitles downloaded for %s' % filename_prefix)
+        return
+
+    try:
+        available_subs = get_page_contents_as_json(unit.available_subs_url,
+                                                   headers)
+    except HTTPError:
+        available_subs = ['en']
+
+    for sub_lang in available_subs:
+        sub_url = unit.sub_template_url % sub_lang
+        subs_filename = os.path.join(target_dir,
+                                     filename + '.' + sub_lang + '.srt')
+        if not os.path.exists(subs_filename):
+            subs_string = edx_get_subtitle(sub_url, headers)
+            if subs_string:
+                _print('[info] Writing edX subtitle: %s' % subs_filename)
+                open(os.path.join(os.getcwd(), subs_filename),
+                     'wb+').write(subs_string.encode('utf-8'))
+        else:
+            _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+
+
+def download_unit(unit, args, target_dir, filename_prefix, headers):
+    """
+    Downloads unit based on args in the given target_dir with filename_prefix
+    """
+    _download_video_youtube(unit, args, target_dir, filename_prefix)
+    if args.subtitles:
+        _download_subtitles(unit, target_dir, filename_prefix, headers)
+
+
+def download(args, selections, all_units, headers):
+    """
+    Downloads all the resources based on the selections
+    """
+    _print("[info] Output directory: " + args.output_dir)
     # Download Videos
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and shows nicer information
-    video_format_option = args.format + '/mp4' if args.format else 'mp4'
     for selected_course, selected_sections in selections.items():
         coursename = directory_name(selected_course.name)
         for selected_section in selected_sections:
-            section_dirname = "%02d-%s" % (selected_section.position, selected_section.name)
-            target_dir = os.path.join(args.output_dir, coursename, section_dirname)
+            section_dirname = "%02d-%s" % (selected_section.position,
+                                           selected_section.name)
+            target_dir = os.path.join(args.output_dir, coursename,
+                         section_dirname)
             counter = 0
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
-                    if unit.video_youtube_url is not None:
-                        filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
-                        fullname = os.path.join(target_dir, filename)
+                    download_unit(unit, args, target_dir, filename_prefix,
+                                  headers)
 
-                        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                                   video_format_option]
-                        if args.subtitles:
-                            cmd.append('--all-subs')
-                        cmd.extend(args.youtube_options.split())
-                        cmd.append(unit.video_youtube_url)
-                        execute_command(cmd)
 
-                    if args.subtitles:
-                        filename = get_filename_from_prefix(target_dir, filename_prefix)
-                        if filename is None:
-                            _print('[warning] no video downloaded for %s' % filename_prefix)
-                            continue
-                        if unit.sub_urls is None:
-                            _print('[warning] no subtitles downloaded for %s' % filename_prefix)
-                            continue
-                        for sub_lang, sub_url in unit.sub_urls.items():
-                            subs_filename = os.path.join(target_dir, filename + '.' + sub_lang + '.srt')
-                            if not os.path.exists(subs_filename):
-                                subs_string = edx_get_subtitle(sub_url, headers)
-                                if subs_string:
-                                    _print('[info] Writing edX subtitle: %s' % subs_filename)
-                                    open(os.path.join(os.getcwd(), subs_filename),
-                                         'wb+').write(subs_string.encode('utf-8'))
-                            else:
-                                _print('[info] Skipping existing edX subtitle %s' % subs_filename)
+def remove_repeated_video_urls(all_units):
+    """
+    Removes repeated video_urls from the selections, this avoids repeated
+    video downloads
+    """
+    existing_urls = set()
+    filtered_units = {}
+    for url, units in all_units.items():
+        reduced_units = []
+        for unit in units:
+            if unit.video_youtube_url not in existing_urls:
+                reduced_units.append(unit)
+                existing_urls.add(unit.video_youtube_url)
+        filtered_units[url] = reduced_units
+    return filtered_units
+
+
+def _length_units(all_units):
+    counter = 0
+    for url, units in all_units.items():
+        for unit in units:
+            counter += 1
+    return counter
 
 
 def main():
@@ -641,24 +645,18 @@ def main():
     all_units = extract_all_units(all_urls, headers)
     parse_units(selections)
 
+    # This removes all repeated video_urls
+    # FIXME: This is not the best way to do it but it is the simplest, a
+    # better approach will be to create symbolic or hard links for the repeated
+    # units to avoid losing information
+    filtered_units = remove_repeated_video_urls(all_units)
+    num_all_units = _length_units(all_units)
+    num_filtered_units = _length_units(filtered_units)
+    _print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
+                                               num_all_units))
+
     # finally we download all the resources
-    download(args, selections, all_units)
-
-
-def get_filename_from_prefix(target_dir, filename_prefix):
-    """
-    Return the basename for the corresponding filename_prefix.
-    """
-    # This whole function is not the nicest thing, but isolating it makes
-    # things clearer. A good refactoring would be to get the info from the
-    # video_url or the current output, to avoid the iteration from the
-    # current dir.
-    filenames = os.listdir(target_dir)
-    for name in filenames:  # Find the filename of the downloaded video
-        if name.startswith(filename_prefix):
-            (basename, ext) = os.path.splitext(name)
-            return basename
-    return None
+    download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
