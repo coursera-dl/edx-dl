@@ -118,8 +118,8 @@
   analytics.page();
 
     analytics.identify("140316", {
-      email: "iemejia@gmail.com",
-      username: "iemejia"
+      email: "user@gmail.com",
+      username: "user"
     });
 </script>
 <!-- end Segment.io -->
@@ -169,7 +169,7 @@
         <a href="/dashboard" class="user-link">
           <i class="icon fa fa-home" aria-hidden="true"></i>
           <span class="sr">Dashboard for:</span>
-          <div>iemejia</div>
+          <div>user</div>
         </a>
       </li>
       <li class="primary">
@@ -177,7 +177,7 @@
         <ul class="dropdown-menu" aria-label="More Options" role="menu">
           
             <li><a href="/account/settings">Account Settings</a></li>
-            <li><a href="/u/iemejia">My Profile</a></li>
+            <li><a href="/u/user">My Profile</a></li>
           
           <li><a href="/logout" role="menuitem">Sign Out</a></li>
         </ul>
