@@ -599,20 +599,10 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
-    mkdir_p(target_dir)
-
-    # if unit.video_youtube_url is not None and len():
-    # prefer static video downloads to youtube-dl ones if available
-    if len(unit.mp4_urls) > 0:
-        download_urls(unit.mp4_urls, target_dir, filename_prefix)
-    else:
-        _download_video_youtube(unit, args, target_dir, filename_prefix)
+    _download_video_youtube(unit, args, target_dir, filename_prefix)
 
     if args.subtitles:
         _download_subtitles(unit, target_dir, filename_prefix, headers)
-
-    if len(unit.pdf_urls) > 0:
-        download_urls(unit.pdf_urls, target_dir, filename_prefix)
 
 
 def download(args, selections, all_units, headers):
