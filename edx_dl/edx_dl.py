@@ -647,16 +647,6 @@ def remove_repeated_video_urls(all_units):
     return filtered_units
 
 
-def _length_units(all_units):
-    """
-    Counts the number of units in a all_units dict
-    """
-    counter = 0
-    for _, units in all_units.items():
-        counter += len(units)
-    return counter
-
-
 def main():
     """
     Main program function
@@ -705,8 +695,8 @@ def main():
     # better approach will be to create symbolic or hard links for the repeated
     # units to avoid losing information
     filtered_units = remove_repeated_video_urls(all_units)
-    num_all_units = _length_units(all_units)
-    num_filtered_units = _length_units(filtered_units)
+    num_all_units = sum(len(units) for units in all_units.values())
+    num_filtered_units = sum(len(units) for units in filtered_units.values())
     compat_print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
                                                      num_all_units))
 
