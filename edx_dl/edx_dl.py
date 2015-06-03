@@ -15,10 +15,15 @@ from multiprocessing.dummy import Pool as ThreadPool
 from bs4 import BeautifulSoup as BeautifulSoup_
 
 from six.moves.http_cookiejar import CookieJar
-from six.moves.urllib.parse import urlencode
-from six.moves.urllib.request import urlopen, build_opener, install_opener
-from six.moves.urllib.request import HTTPCookieProcessor, Request
 from six.moves.urllib.error import HTTPError, URLError
+from six.moves.urllib.parse import urlencode
+from six.moves.urllib.request import (
+    urlopen,
+    build_opener,
+    install_opener,
+    HTTPCookieProcessor,
+    Request
+)
 
 from .compat import compat_print
 from .utils import (
