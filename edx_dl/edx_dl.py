@@ -104,6 +104,9 @@ Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_templ
 
 
 def change_openedx_site(site_name):
+    """
+    Changes the openedx website for the given one via the key
+    """
     global BASE_URL
     global EDX_HOMEPAGE
     global LOGIN_API
@@ -170,12 +173,12 @@ def _get_initial_token(url):
     X-CSRFToken header or the empty string if we didn't find any token in
     the cookies.
     """
-    cj = CookieJar()
-    opener = build_opener(HTTPCookieProcessor(cj))
+    cookiejar = CookieJar()
+    opener = build_opener(HTTPCookieProcessor(cookiejar))
     install_opener(opener)
     opener.open(url)
 
-    for cookie in cj:
+    for cookie in cookiejar:
         if cookie.name == 'csrftoken':
             return cookie.value
 
@@ -221,15 +224,18 @@ def edx_get_subtitle(url, headers):
     try:
         json_object = get_page_contents_as_json(url, headers)
         return edx_json2srt(json_object)
-    except URLError as e:
-        compat_print('[warning] edX subtitles (error:%s)' % e.reason)
+    except URLError as exception:
+        compat_print('[warning] edX subtitles (error:%s)' % exception.reason)
         return None
-    except ValueError as e:
-        compat_print('[warning] edX subtitles (error:%s)' % e.message)
+    except ValueError as exception:
+        compat_print('[warning] edX subtitles (error:%s)' % exception.message)
         return None
 
 
 def edx_login(url, headers, username, password):
+    """
+    logins user into the openedx website
+    """
     post_data = urlencode({'email': username,
                            'password': password,
                            'remember': False}).encode('utf-8')
@@ -253,8 +259,7 @@ def parse_args():
                         action='store',
                         default=[],
                         help='target course urls'
-                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)'
-                        )
+                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)')
 
     # optional
     parser.add_argument('-u',
@@ -321,6 +326,9 @@ def parse_args():
 
 
 def edx_get_headers():
+    """
+    Builds the openedx headers to create requests
+    """
     headers = {
         'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -420,7 +428,7 @@ def _filter_sections(index, sections):
     return sections
 
 
-def _display_sections_and_subsections(sections):
+def _display_sections(sections):
     """
     Displays a tree of section(s) and subsections
     """
@@ -478,8 +486,8 @@ def _display_selections(selections):
     """
     for selected_course, selected_sections in selections.items():
         compat_print('Downloading %s [%s]' % (selected_course.name,
-                                        selected_course.id))
-        _display_sections_and_subsections(selected_sections)
+                                              selected_course.id))
+        _display_sections(selected_sections)
 
 
 def parse_units(all_units):
@@ -493,6 +501,9 @@ def parse_units(all_units):
 
 
 def _download_video_youtube(unit, args, target_dir, filename_prefix):
+    """
+    Downloads the url in unit.video_youtube_url using youtube-dl
+    """
     if unit.video_youtube_url is not None:
         BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
         filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
@@ -509,6 +520,9 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
 
 
 def _download_subtitles(unit, target_dir, filename_prefix, headers):
+    """
+    Downloads the subtitles using the openedx subtitle api
+    """
     filename = get_filename_from_prefix(target_dir, filename_prefix)
     if filename is None:
         compat_print('[warning] no video downloaded for %s' % filename_prefix)
@@ -560,7 +574,7 @@ def download(args, selections, all_units, headers):
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
             target_dir = os.path.join(args.output_dir, coursename,
-                         section_dirname)
+                                      section_dirname)
             counter = 0
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
@@ -589,14 +603,20 @@ def remove_repeated_video_urls(all_units):
 
 
 def _length_units(all_units):
+    """
+    Counts the number of units in a all_units dict
+    """
     counter = 0
-    for url, units in all_units.items():
-        for unit in units:
+    for _, units in all_units.items():
+        for _ in units:
             counter += 1
     return counter
 
 
 def main():
+    """
+    Main program function
+    """
     args = parse_args()
 
     change_openedx_site(args.platform)
@@ -644,7 +664,7 @@ def main():
     num_all_units = _length_units(all_units)
     num_filtered_units = _length_units(filtered_units)
     compat_print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
-                                               num_all_units))
+                                                     num_all_units))
 
     # finally we download all the resources
     download(args, selections, all_units, headers)
