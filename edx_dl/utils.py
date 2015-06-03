@@ -2,8 +2,7 @@
 # -*- coding: utf-8 -*-
 
 # This module contains generic functions, ideally useful to any other module
-from six.moves.urllib.request import urlopen
-from six.moves.urllib.request import Request
+from six.moves.urllib.request import urlopen, Request
 
 import errno
 import json
@@ -35,15 +34,15 @@ def execute_command(cmd):
     return subprocess.call(cmd)
 
 
-def strip_non_ascii_chars(str):
+def strip_non_ascii_chars(name):
     """
     Strips the non ascii characters from a str
     """
     allowed_chars = string.digits + string.ascii_letters + " _.-"
     result = ""
-    for ch in str:
-        if allowed_chars.find(ch) != -1:
-            result += ch
+    for char in name:
+        if allowed_chars.find(char) != -1:
+            result += char
     return result
 
 

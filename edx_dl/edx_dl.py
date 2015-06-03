@@ -21,7 +21,8 @@ from six.moves.urllib.request import (
     build_opener,
     install_opener,
     HTTPCookieProcessor,
-    Request
+    Request,
+    urlretrieve,
 )
 
 from .compat import compat_print
@@ -32,6 +33,7 @@ from .utils import (
     get_filename_from_prefix,
     get_page_contents,
     get_page_contents_as_json,
+    mkdir_p,
 )
 
 # Force use of bs4 with html5lib
@@ -538,6 +540,9 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
 
 
 def get_subtitles_download_urls(available_subs_url, sub_template_url, headers):
+    """
+    Request the available subs and builds the urls to download subs
+    """
     if available_subs_url is not None and sub_template_url is not None:
         try:
             available_subs = get_page_contents_as_json(available_subs_url,
@@ -578,11 +583,15 @@ def _download_subtitles(unit, target_dir, filename_prefix, headers):
             compat_print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
-def _download_urls(urls, target_dir, filename_prefix):
+def download_urls(urls, target_dir, filename_prefix):
+    """
+    Downloads urls in target_dir and adds the filename_prefix to each filename
+    """
     for url in urls:
         original_filename = url.rsplit('/', 1)[1]
-        filename = os.path.join(target_dir, filename_prefix + '-' + original_filename)
-        _print('[download] Destination: %s' % filename)
+        filename = os.path.join(target_dir,
+                                filename_prefix + '-' + original_filename)
+        compat_print('[download] Destination: %s' % filename)
         urlretrieve(url, filename)
 
 
@@ -595,7 +604,7 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     # if unit.video_youtube_url is not None and len():
     # prefer static video downloads to youtube-dl ones if available
     if len(unit.mp4_urls) > 0:
-        _download_urls(unit.mp4_urls, target_dir, filename_prefix)
+        download_urls(unit.mp4_urls, target_dir, filename_prefix)
     else:
         _download_video_youtube(unit, args, target_dir, filename_prefix)
 
@@ -603,7 +612,7 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
         _download_subtitles(unit, target_dir, filename_prefix, headers)
 
     if len(unit.pdf_urls) > 0:
-        _download_urls(unit.pdf_urls, target_dir, filename_prefix)
+        download_urls(unit.pdf_urls, target_dir, filename_prefix)
 
 
 def download(args, selections, all_units, headers):
