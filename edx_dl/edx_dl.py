@@ -299,26 +299,22 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
-    parser.add_argument('-cl',
-                        '--course-list',
-                        dest='course_list',
+    parser.add_argument('--list-courses',
+                        dest='list_courses',
                         action='store_true',
                         default=False,
                         help='list available courses')
-    parser.add_argument('-sf',
-                        '--section-filter',
-                        dest='section_filter',
+    parser.add_argument('--filter-section',
+                        dest='filter_section',
                         action='store',
                         default=None,
                         help='filters sections to be downloaded')
-    parser.add_argument('-sl',
-                        '--section-list',
-                        dest='section_list',
+    parser.add_argument('--list-sections',
+                        dest='list_sections',
                         action='store_true',
                         default=False,
                         help='list available sections')
-    parser.add_argument('-yo',
-                        '--youtube-options',
+    parser.add_argument('--youtube-options',
                         dest='youtube_options',
                         action='store',
                         default='',
@@ -464,11 +460,12 @@ def parse_courses(args, available_courses):
     """
     Parses courses options and returns the selected_courses
     """
-    if args.course_list:
+    if args.list_courses:
         _display_courses(available_courses)
+        exit(0)
 
     if len(args.course_urls) == 0:
-        compat_print('You must pass the URL of at least one course, check the correct url with --course-list')
+        compat_print('You must pass the URL of at least one course, check the correct url with --list-courses')
         exit(3)
 
     selected_courses = [available_course
@@ -476,7 +473,7 @@ def parse_courses(args, available_courses):
                         for url in args.course_urls
                         if available_course.url == url]
     if len(selected_courses) == 0:
-        compat_print('You have not passed a valid course url, check the correct url with --course-list')
+        compat_print('You have not passed a valid course url, check the correct url with --list-courses')
         exit(4)
     return selected_courses
 
@@ -486,16 +483,16 @@ def parse_sections(args, selections):
     Parses sections options and returns selections filtered by
     selected_sections
     """
-    if args.section_list:
+    if args.list_sections:
         for selected_course, selected_sections in selections.items():
             _display_sections_menu(selected_course, selected_sections)
         exit(0)
 
-    if not args.section_filter:
+    if not args.filter_section:
         return selections
 
     filtered_selections = {selected_course:
-                           _filter_sections(args.section_filter, selected_sections)
+                           _filter_sections(args.filter_section, selected_sections)
                            for selected_course, selected_sections in selections.items()}
     return filtered_selections
 
