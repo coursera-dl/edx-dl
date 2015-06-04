@@ -105,7 +105,7 @@ COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url', 'mp4_urls', 'pdf_urls'])
+Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url', 'mp4_urls', 'resources_urls'])
 
 def change_openedx_site(site_name):
     """
@@ -552,7 +552,7 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     if args.prefer_cdn_videos:
         download_urls(unit.mp4_urls, target_dir, filename_prefix)
         # FIXME: get out of the conditions once the proper downloader is ready
-        download_urls(unit.pdf_urls, target_dir, filename_prefix)
+        download_urls(unit.resources_urls, target_dir, filename_prefix)
     else:
         _download_video_youtube(unit, args, target_dir, filename_prefix)
 

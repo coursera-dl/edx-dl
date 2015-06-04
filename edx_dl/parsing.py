@@ -49,7 +49,7 @@ def extract_units_from_html(page, BASE_URL):
     # string, however ';' is a valid url name character, but it is not really
     # common.
     re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
-    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
+    re_resources_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
 
     units = []
     for unit_html in re_units.findall(page):
@@ -69,13 +69,13 @@ def extract_units_from_html(page, BASE_URL):
                 sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
 
         mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
-        pdf_urls = [url
-                    if url.startswith('http') or url.startswith('https')
-                    else BASE_URL + url
-                    for url in re_pdf_urls.findall(unit_html)]
+        resources_urls = [url
+                          if url.startswith('http') or url.startswith('https')
+                          else BASE_URL + url
+                          for url in re_resources_urls.findall(unit_html)]
 
-        if video_youtube_url is not None or len(mp4_urls) > 0 or len(pdf_urls) > 0:
+        if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
             units.append((video_youtube_url, available_subs_url,
-                          sub_template_url, mp4_urls, pdf_urls))
+                          sub_template_url, mp4_urls, resources_urls))
 
     return units

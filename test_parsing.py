@@ -57,7 +57,7 @@ class TestParsing(unittest.TestCase):
     def test_extract_units_from_html_single_unit_multiple_subs(self):
         with open("test/html/single_unit_multiple_subs.html", "r") as f:
             units = extract_units_from_html(f.read(), 'https://courses.edx.org')
-            video_youtube_url, available_subs_url, sub_template_url, mp4_urls, pdf_urls = units[0]
+            video_youtube_url, available_subs_url, sub_template_url, mp4_urls, resources_urls = units[0]
             self.assertEquals(video_youtube_url, 'https://youtube.com/watch?v=b7xgknqkQk8')
             self.assertEquals(mp4_urls[0], 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4')
             self.assertEquals(sub_template_url, 'https://courses.edx.org/courses/edX/DemoX.1/2014/xblock/i4x:;_;_edX;_DemoX.1;_video;_14459340170c476bb65f73a0a08a076f/handler/transcript/translation/%s')
@@ -72,13 +72,13 @@ class TestParsing(unittest.TestCase):
             mp4_urls = units[0][3]
             self.assertTrue(mp4_urls > 0)
             self.assertTrue('https://s3.amazonaws.com/berkeley-cs184x/videos/overview-motivation.mp4' in mp4_urls)
-            pdf_urls = units[0][4]
-            self.assertEquals(pdf_urls[0], 'https://courses.edx.org/static/content-berkeley-cs184x~2012_Fall/slides/overview.pdf')
+            resources_urls = units[0][4]
+            self.assertEquals(resources_urls[0], 'https://courses.edx.org/static/content-berkeley-cs184x~2012_Fall/slides/overview.pdf')
 
     def test_extract_multiple_units_no_youtube_ids(self):
         with open("test/html/multiple_units_no_youtube_ids.html", "r") as f:
             units = extract_units_from_html(f.read(), 'https://courses.edx.org')
-            video_youtube_url, available_subs_url, sub_template_url, mp4_urls, pdf_urls = units[0]
+            video_youtube_url, available_subs_url, sub_template_url, mp4_urls, resources_urls = units[0]
             self.assertEquals(video_youtube_url, None)
             self.assertTrue(len(mp4_urls) > 0)
 
