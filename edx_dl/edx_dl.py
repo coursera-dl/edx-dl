@@ -320,6 +320,11 @@ def parse_args():
                         action='store',
                         default='',
                         help='list available courses without downloading')
+    parser.add_argument('--prefer-cdn-videos',
+                        dest='prefer_cdn_videos',
+                        action='store_true',
+                        default=False,
+                        help='prefer CDN video downloads over youtube (BETA)')
 
     args = parser.parse_args()
     return args
@@ -544,7 +549,12 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
-    _download_video_youtube(unit, args, target_dir, filename_prefix)
+    if args.prefer_cdn_videos:
+        download_urls(unit.mp4_urls, target_dir, filename_prefix)
+        # FIXME: get out of the conditions once the proper downloader is ready
+        download_urls(unit.pdf_urls, target_dir, filename_prefix)
+    else:
+        _download_video_youtube(unit, args, target_dir, filename_prefix)
 
     if args.subtitles:
         _download_subtitles(unit, target_dir, filename_prefix, headers)
