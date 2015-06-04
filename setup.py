@@ -24,14 +24,13 @@ setup(
     url='https://github.com/shk3/edx-downloader',
 
     install_requires=open('requirements.txt').readlines(),
-    # FIXME: For later
-    # extras_require=dict(
-    #     dev=open('requirements-dev.txt').readlines()
-    # ),
+    extras_require=dict(
+        dev=open('requirements-dev.txt').readlines()
+    ),
 
     description='A simple tool to download video lectures from edx.org.',
     long_description=open('README.rst', 'r').read(),
-    keywords=['edX', 'download', 'education', 'MOOCs', 'video'], # FIXME
+    keywords=['edX', 'download', 'education', 'MOOCs', 'video'],  # FIXME
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
@@ -39,7 +38,6 @@ setup(
         'License :: OSI Approved :: GNU Lesser General Public License v3 or later (LGPLv3+)',
         'Operating System :: OS Independent',
         'Programming Language :: Python :: 2',
-        'Programming Language :: Python :: 2.6',  # FIXME: confirm
         'Programming Language :: Python :: 2.7',
         'Programming Language :: Python :: 3',
         'Programming Language :: Python :: 3.3',
