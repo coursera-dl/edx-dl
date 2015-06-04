@@ -12,6 +12,8 @@ import unittest
 from edx_dl.parsing import (
     edx_json2srt,
     extract_units_from_html,
+    extract_sections_from_html,
+    extract_courses_from_html,
 )
 
 
@@ -79,6 +81,20 @@ class TestParsing(unittest.TestCase):
             self.assertEquals(video_youtube_url, None)
             self.assertTrue(len(mp4_urls) > 0)
 
+    def test_extract_sections(self):
+        with open("test/html/single_unit_multiple_subs.html", "r") as f:
+            sections = extract_sections_from_html(f.read(), 'https://courses.edx.org')
+            self.assertEquals(len(sections), 6)
+            num_subsections = sum(len(section.subsections) for section in sections)
+            self.assertEquals(num_subsections, 11)
+
+    def test_extract_courses_from_html(self):
+        with open("test/html/dashboard.html", "r") as f:
+            courses = extract_courses_from_html(f.read(), 'https://courses.edx.org')
+            # self.log.info(len(courses))
+            self.assertEquals(len(courses), 18)
+            available_courses = [course for course in courses if course.state == 'Started']
+            self.assertEquals(len(available_courses), 14)
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout)

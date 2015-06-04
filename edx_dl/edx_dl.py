@@ -11,11 +11,8 @@ import json
 import os
 import sys
 
-
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
-
-from bs4 import BeautifulSoup as BeautifulSoup_
 
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.error import HTTPError, URLError
@@ -29,9 +26,14 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
-from .common import Course, Section, SubSection
+from .common import YOUTUBE_DL_CMD
 from .compat import compat_print
-from .parsing import edx_json2srt, extract_units_from_html
+from .parsing import (
+    edx_json2srt,
+    extract_courses_from_html,
+    extract_sections_from_html,
+    extract_units_from_html,
+)
 from .utils import (
     clean_filename,
     directory_name,
@@ -42,8 +44,6 @@ from .utils import (
     mkdir_p,
 )
 
-# Force use of bs4 with html5lib
-BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
 OPENEDX_SITES = {
     'edx': {
@@ -117,29 +117,8 @@ def get_courses_info(url, headers):
     """
     Extracts the courses information from the dashboard.
     """
-    dash = get_page_contents(url, headers)
-    soup = BeautifulSoup(dash)
-    courses_soup = soup.find_all('article', 'course')
-    courses = []
-    for course_soup in courses_soup:
-        course_id = None
-        course_name = course_soup.h3.text.strip()
-        course_url = None
-        course_state = 'Not yet'
-        try:
-            # started courses include the course link in the href attribute
-            course_url = BASE_URL + course_soup.a['href']
-            if course_url.endswith('info') or course_url.endswith('info/'):
-                course_state = 'Started'
-            # The id of a course in edX is composed by the path
-            # {organization}/{course_number}/{course_run]
-            course_id = course_soup.a['href'][9:-5]
-        except KeyError:
-            pass
-        courses.append(Course(id=course_id,
-                              name=course_name,
-                              url=course_url,
-                              state=course_state))
+    page = get_page_contents(url, headers)
+    courses = extract_courses_from_html(page, BASE_URL)
     return courses
 
 
@@ -168,30 +147,8 @@ def get_available_sections(url, headers):
     """
     Extracts the sections and subsections from a given url
     """
-    def _make_url(section_soup):  # FIXME: Extract from here and test
-        return BASE_URL + section_soup.ul.find('a')['href']
-
-    def _get_section_name(section_soup):  # FIXME: Extract from here and test
-        return section_soup.h3.a.string.strip()
-
-    def _make_subsections(section_soup):
-        subsections_soup = section_soup.ul.find_all("li")
-        # FIXME correct extraction of subsection.name (unicode)
-        subsections = [SubSection(position=i,
-                                  url=BASE_URL + s.a['href'],
-                                  name=s.p.string)
-                       for i, s in enumerate(subsections_soup, 1)]
-        return subsections
-
-    courseware = get_page_contents(url, headers)
-    soup = BeautifulSoup(courseware)
-    sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
-
-    sections = [Section(position=i,
-                        name=_get_section_name(section_soup),
-                        url=_make_url(section_soup),
-                        subsections=_make_subsections(section_soup))
-                for i, section_soup in enumerate(sections_soup, 1)]
+    page = get_page_contents(url, headers)
+    sections = extract_sections_from_html(page, BASE_URL)
     return sections
 
 
@@ -449,13 +406,12 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
     Downloads the url in unit.video_youtube_url using youtube-dl
     """
     if unit.video_youtube_url is not None:
-        BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
         filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
         fullname = os.path.join(target_dir, filename)
         video_format_option = args.format + '/mp4' if args.format else 'mp4'
 
-        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                   video_format_option]
+        cmd = YOUTUBE_DL_CMD + ['-o', fullname, '-f',
+                                video_format_option]
         if args.subtitles:
             cmd.append('--all-subs')
         cmd.extend(args.youtube_options.split())

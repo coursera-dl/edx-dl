@@ -37,3 +37,5 @@ SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit',
                   ['video_youtube_url', 'available_subs_url',
                    'sub_template_url', 'mp4_urls', 'resources_urls'])
+
+YOUTUBE_DL_CMD = ['youtube-dl', '--ignore-config']
