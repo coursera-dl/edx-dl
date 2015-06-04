@@ -30,7 +30,7 @@ setup(
 
     description='A simple tool to download video lectures from edx.org.',
     long_description=open('README.rst', 'r').read(),
-    keywords=['edX', 'download', 'education', 'MOOCs', 'video'], # FIXME
+    keywords=['edX', 'download', 'education', 'MOOCs', 'video'],  # FIXME
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
