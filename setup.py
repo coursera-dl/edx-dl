@@ -24,10 +24,9 @@ setup(
     url='https://github.com/shk3/edx-downloader',
 
     install_requires=open('requirements.txt').readlines(),
-    # FIXME: For later
-    # extras_require=dict(
-    #     dev=open('requirements-dev.txt').readlines()
-    # ),
+    extras_require=dict(
+        dev=open('requirements-dev.txt').readlines()
+    ),
 
     description='A simple tool to download video lectures from edx.org.',
     long_description=open('README.rst', 'r').read(),
