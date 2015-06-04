@@ -1,9 +1,12 @@
 # -*- coding: utf-8 -*-
 
+"""
+Parsing and extraction functions
+"""
 import re
 
 from datetime import timedelta, datetime
-
+from .common import Unit
 
 def edx_json2srt(o):
     """
@@ -75,7 +78,10 @@ def extract_units_from_html(page, BASE_URL):
                           for url in re_resources_urls.findall(unit_html)]
 
         if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
-            units.append((video_youtube_url, available_subs_url,
-                          sub_template_url, mp4_urls, resources_urls))
+            units.append(Unit(video_youtube_url=video_youtube_url,
+                              available_subs_url=available_subs_url,
+                              sub_template_url=sub_template_url,
+                              mp4_urls=mp4_urls,
+                              resources_urls=resources_urls))
 
     return units

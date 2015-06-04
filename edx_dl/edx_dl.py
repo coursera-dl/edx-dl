@@ -1,13 +1,17 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Main module for the edx-dl downloader.
+It corresponds to the cli interface
+"""
+
 import argparse
 import json
 import os
-import re
 import sys
 
-from collections import namedtuple
+
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 
@@ -25,6 +29,7 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
+from .common import Course, Section, SubSection
 from .compat import compat_print
 from .parsing import edx_json2srt, extract_units_from_html
 from .utils import (
@@ -76,36 +81,6 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
-#
-# The next four named tuples represent the structure of courses in edX.  The
-# structure is:
-#
-# * A Course contains Sections
-# * Each Section contains Subsections
-# * Each Subsection contains Units
-#
-# Notice that we don't represent the full tree structure for both performance
-# and UX reasons:
-#
-# Course ->  [Section] -> [SubSection] -> [Unit]
-#
-# In the script the data structures used are:
-#
-# 1. The data structures to represent the course information:
-#    Course, Section->[SubSection]
-#
-# 2. The data structures to represent the chosen courses and sections:
-#    selections = {Course, [Section]}
-#
-# 3. The data structure of all the downloable resources which represent each
-#    subsection via its URL and the of resources who can be extracted from the
-#    Units it contains:
-#    all_units = {Subsection.url: [Unit]}
-#
-Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
-Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
-SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url', 'mp4_urls', 'resources_urls'])
 
 def change_openedx_site(site_name):
     """
@@ -351,8 +326,7 @@ def extract_units(url, headers):
     """
     compat_print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
-    list_units = extract_units_from_html(page, BASE_URL)
-    units = [Unit(*unit) for unit in list_units]
+    units = extract_units_from_html(page, BASE_URL)
     return units
 
 
