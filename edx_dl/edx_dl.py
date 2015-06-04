@@ -21,7 +21,8 @@ from six.moves.urllib.request import (
     build_opener,
     install_opener,
     HTTPCookieProcessor,
-    Request
+    Request,
+    urlretrieve,
 )
 
 from .compat import compat_print
@@ -32,6 +33,7 @@ from .utils import (
     get_filename_from_prefix,
     get_page_contents,
     get_page_contents_as_json,
+    mkdir_p,
 )
 
 # Force use of bs4 with html5lib
@@ -62,14 +64,16 @@ OPENEDX_SITES = {
         'url': 'http://mooc.online.gwu.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
+    'mitprox': {
+        'url': 'https://mitprofessionalx.mit.edu',
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
-
-YOUTUBE_VIDEO_ID_LENGTH = 11
 
 #
 # The next four named tuples represent the structure of courses in edX.  The
@@ -100,8 +104,7 @@ YOUTUBE_VIDEO_ID_LENGTH = 11
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url'])
-
+Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url', 'mp4_urls', 'pdf_urls'])
 
 def change_openedx_site(site_name):
     """
@@ -354,34 +357,52 @@ def extract_units_from_html(page):
     """
     Extract Units from the html of a subsection webpage
     """
-    re_splitter = re.compile(r'data-streams=(?:&#34;|").*1.0[0]*:')
-    re_subs = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_available_subs = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_units = re_splitter.split(page)[1:]
-    units = []
-    for unit_html in re_units:
-        video_id = unit_html[:YOUTUBE_VIDEO_ID_LENGTH]
-        video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+    # in this function we avoid using beautifulsoup for performance reasons
 
-        match_subs = re_subs.search(unit_html)
+    # parsing html with regular expressions is really nasty, don't do this if
+    # you don't need to !
+    re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
+    re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
+    re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+
+    # mp4 urls may be in two places, in the field data-sources, and as <a> refs
+    # This regex tries to match all the appearances, however we exclude the ';'
+    # character in the urls, since it is used to separate multiple urls in one
+    # string, however ';' is a valid url name character, but it is not really
+    # common.
+    re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
+    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
+
+    units = []
+    for unit_html in re_units.findall(page):
+        video_youtube_url = None
+        match_video_youtube_url = re_video_youtube_url.search(unit_html)
+        if match_video_youtube_url is not None:
+            video_id = match_video_youtube_url.group(1)
+            video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
+        available_subs_url = None
+        sub_template_url = None
+        match_subs = re_sub_template_url.search(unit_html)
         if match_subs:
-            match_available_subs = re_available_subs.search(unit_html)
+            match_available_subs = re_available_subs_url.search(unit_html)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
-                sub_template_url = BASE_URL + match_subs.group(1) + "/%s?videoId=" + video_id
+                sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
 
-        units.append(Unit(video_youtube_url=video_youtube_url,
-                          available_subs_url=available_subs_url,
-                          sub_template_url=sub_template_url))
+        mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
+        pdf_urls = [url
+                    if url.startswith('http') or url.startswith('https')
+                    else BASE_URL + url
+                    for url in re_pdf_urls.findall(unit_html)]
 
-    # Try to download some extra videos which is referred by iframe
-    re_extra_youtube = re.compile(r'//w{0,3}\.youtube.com/embed/([^ \?&]*)[\?& ]')
-    extra_ids = re_extra_youtube.findall(page)
-    for extra_id in extra_ids:
-        video_youtube_url = 'https://youtube.com/watch?v=' + extra_id[:YOUTUBE_VIDEO_ID_LENGTH]
-        units.append(Unit(video_youtube_url=video_youtube_url,
-                          available_subs_url=None,
-                          sub_template_url=None))  # FIXME: verify subtitles
+        if video_youtube_url is not None or len(mp4_urls) > 0 or len(pdf_urls) > 0:
+            units.append(Unit(video_youtube_url=video_youtube_url,
+                              available_subs_url=available_subs_url,
+                              sub_template_url=sub_template_url,
+                              mp4_urls=mp4_urls,
+                              pdf_urls=pdf_urls))
 
     return units
 
@@ -445,7 +466,6 @@ def parse_courses(args, available_courses):
     """
     if args.course_list:
         _display_courses(available_courses)
-        exit(0)
 
     if len(args.course_urls) == 0:
         compat_print('You must pass the URL of at least one course, check the correct url with --course-list')
@@ -519,6 +539,22 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
         execute_command(cmd)
 
 
+def get_subtitles_download_urls(available_subs_url, sub_template_url, headers):
+    """
+    Request the available subs and builds the urls to download subs
+    """
+    if available_subs_url is not None and sub_template_url is not None:
+        try:
+            available_subs = get_page_contents_as_json(available_subs_url,
+                                                       headers)
+        except HTTPError:
+            available_subs = ['en']
+
+        return {sub_lang: sub_template_url % sub_lang
+                for sub_lang in available_subs}
+    return {}
+
+
 def _download_subtitles(unit, target_dir, filename_prefix, headers):
     """
     Downloads the subtitles using the openedx subtitle api
@@ -531,14 +567,10 @@ def _download_subtitles(unit, target_dir, filename_prefix, headers):
         compat_print('[warning] no subtitles downloaded for %s' % filename_prefix)
         return
 
-    try:
-        available_subs = get_page_contents_as_json(unit.available_subs_url,
-                                                   headers)
-    except HTTPError:
-        available_subs = ['en']
-
-    for sub_lang in available_subs:
-        sub_url = unit.sub_template_url % sub_lang
+    subtitles_download_urls = get_subtitles_download_urls(unit.available_subs_url,
+                                                          unit.sub_template_url,
+                                                          headers)
+    for sub_lang, sub_url in subtitles_download_urls.items():
         subs_filename = os.path.join(target_dir,
                                      filename + '.' + sub_lang + '.srt')
         if not os.path.exists(subs_filename):
@@ -551,11 +583,24 @@ def _download_subtitles(unit, target_dir, filename_prefix, headers):
             compat_print('[info] Skipping existing edX subtitle %s' % subs_filename)
 
 
+def download_urls(urls, target_dir, filename_prefix):
+    """
+    Downloads urls in target_dir and adds the filename_prefix to each filename
+    """
+    for url in urls:
+        original_filename = url.rsplit('/', 1)[1]
+        filename = os.path.join(target_dir,
+                                filename_prefix + '-' + original_filename)
+        compat_print('[download] Destination: %s' % filename)
+        urlretrieve(url, filename)
+
+
 def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
     _download_video_youtube(unit, args, target_dir, filename_prefix)
+
     if args.subtitles:
         _download_subtitles(unit, target_dir, filename_prefix, headers)
 
@@ -600,17 +645,6 @@ def remove_repeated_video_urls(all_units):
                 existing_urls.add(unit.video_youtube_url)
         filtered_units[url] = reduced_units
     return filtered_units
-
-
-def _length_units(all_units):
-    """
-    Counts the number of units in a all_units dict
-    """
-    counter = 0
-    for _, units in all_units.items():
-        for _ in units:
-            counter += 1
-    return counter
 
 
 def main():
@@ -661,8 +695,8 @@ def main():
     # better approach will be to create symbolic or hard links for the repeated
     # units to avoid losing information
     filtered_units = remove_repeated_video_urls(all_units)
-    num_all_units = _length_units(all_units)
-    num_filtered_units = _length_units(filtered_units)
+    num_all_units = sum(len(units) for units in all_units.values())
+    num_filtered_units = sum(len(units) for units in filtered_units.values())
     compat_print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
                                                      num_all_units))
 
