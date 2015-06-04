@@ -26,7 +26,7 @@ from six.moves.urllib.request import (
 )
 
 from .compat import compat_print
-from .parsing import edx_json2srt
+from .parsing import edx_json2srt, extract_units_from_html
 from .utils import (
     clean_filename,
     directory_name,
@@ -346,61 +346,8 @@ def extract_units(url, headers):
     """
     compat_print("Processing '%s'..." % url)
     page = get_page_contents(url, headers)
-    units = extract_units_from_html(page)
-    return units
-
-
-def extract_units_from_html(page):
-    """
-    Extract Units from the html of a subsection webpage
-    """
-    # in this function we avoid using beautifulsoup for performance reasons
-
-    # parsing html with regular expressions is really nasty, don't do this if
-    # you don't need to !
-    re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
-    re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
-    re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-
-    # mp4 urls may be in two places, in the field data-sources, and as <a> refs
-    # This regex tries to match all the appearances, however we exclude the ';'
-    # character in the urls, since it is used to separate multiple urls in one
-    # string, however ';' is a valid url name character, but it is not really
-    # common.
-    re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
-    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
-
-    units = []
-    for unit_html in re_units.findall(page):
-        video_youtube_url = None
-        match_video_youtube_url = re_video_youtube_url.search(unit_html)
-        if match_video_youtube_url is not None:
-            video_id = match_video_youtube_url.group(1)
-            video_youtube_url = 'https://youtube.com/watch?v=' + video_id
-
-        available_subs_url = None
-        sub_template_url = None
-        match_subs = re_sub_template_url.search(unit_html)
-        if match_subs:
-            match_available_subs = re_available_subs_url.search(unit_html)
-            if match_available_subs:
-                available_subs_url = BASE_URL + match_available_subs.group(1)
-                sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
-
-        mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
-        pdf_urls = [url
-                    if url.startswith('http') or url.startswith('https')
-                    else BASE_URL + url
-                    for url in re_pdf_urls.findall(unit_html)]
-
-        if video_youtube_url is not None or len(mp4_urls) > 0 or len(pdf_urls) > 0:
-            units.append(Unit(video_youtube_url=video_youtube_url,
-                              available_subs_url=available_subs_url,
-                              sub_template_url=sub_template_url,
-                              mp4_urls=mp4_urls,
-                              pdf_urls=pdf_urls))
-
+    list_units = extract_units_from_html(page, BASE_URL)
+    units = [Unit(*unit) for unit in list_units]
     return units
 
 
@@ -597,7 +544,6 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
-    mkdir_p(target_dir)
     _download_video_youtube(unit, args, target_dir, filename_prefix)
 
     if args.subtitles:
@@ -619,6 +565,7 @@ def download(args, selections, all_units, headers):
                                            selected_section.name)
             target_dir = os.path.join(args.output_dir, coursename,
                                       clean_filename(section_dirname))
+            mkdir_p(target_dir)
             counter = 0
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
