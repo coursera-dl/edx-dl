@@ -28,6 +28,7 @@ from six.moves.urllib.request import (
 from .compat import compat_print
 from .parsing import edx_json2srt
 from .utils import (
+    clean_filename,
     directory_name,
     execute_command,
     get_filename_from_prefix,
@@ -596,6 +597,7 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
+    mkdir_p(target_dir)
     _download_video_youtube(unit, args, target_dir, filename_prefix)
 
     if args.subtitles:
@@ -616,7 +618,7 @@ def download(args, selections, all_units, headers):
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
             target_dir = os.path.join(args.output_dir, coursename,
-                                      section_dirname)
+                                      clean_filename(section_dirname))
             counter = 0
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
