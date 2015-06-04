@@ -26,7 +26,7 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
-from .common import YOUTUBE_DL_CMD
+from .common import YOUTUBE_DL_CMD, Unit
 from .compat import compat_print
 from .parsing import (
     edx_json2srt,
@@ -281,7 +281,7 @@ def extract_units(url, headers):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
-    compat_print("Processing '%s'..." % url)
+    compat_print("Processing '%s'" % url)
     page = get_page_contents(url, headers)
     units = extract_units_from_html(page, BASE_URL)
     return units
@@ -516,21 +516,53 @@ def download(args, selections, all_units, headers):
                                   headers)
 
 
-def remove_repeated_video_urls(all_units):
+def remove_repeated_urls(all_units):
     """
-    Removes repeated video_urls from the selections, this avoids repeated
-    video downloads
+    Removes repeated urls from the units, it does not consider subtitles.
+    This is done to avoid repeated downloads
     """
     existing_urls = set()
     filtered_units = {}
     for url, units in all_units.items():
         reduced_units = []
         for unit in units:
+            # we don't analyze the subtitles for repetition since
+            # their size is negligible for the goal of this function
+            video_youtube_url = None
             if unit.video_youtube_url not in existing_urls:
-                reduced_units.append(unit)
+                video_youtube_url = unit.video_youtube_url
                 existing_urls.add(unit.video_youtube_url)
+            mp4_urls = []
+            for mp4_url in unit.mp4_urls:
+                if mp4_url not in existing_urls:
+                    mp4_urls.append(mp4_url)
+                    existing_urls.add(mp4_url)
+            resources_urls = []
+            for resource_url in unit.resources_urls:
+                if resource_url not in existing_urls:
+                    resources_urls.append(resource_url)
+                    existing_urls.add(resource_url)
+
+            if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
+                reduced_units.append(Unit(video_youtube_url=video_youtube_url,
+                                          available_subs_url=unit.available_subs_url,
+                                          sub_template_url=unit.sub_template_url,
+                                          mp4_urls=mp4_urls,
+                                          resources_urls=resources_urls))
         filtered_units[url] = reduced_units
     return filtered_units
+
+
+def num_urls_in_units_dict(units_dict):
+    """
+    Counts the number of urls in a all_units dict, it ignores subtitles from its
+    counting
+    """
+    return sum((1 if unit.video_youtube_url is not None else 0) +
+               (1 if unit.available_subs_url is not None else 0) +
+               (1 if unit.sub_template_url is not None else 0) +
+               len(unit.mp4_urls) + len(unit.resources_urls)
+               for units in units_dict.values() for unit in units )
 
 
 def main():
@@ -576,15 +608,15 @@ def main():
     all_units = extract_all_units(all_urls, headers)
     parse_units(selections)
 
-    # This removes all repeated video_urls
+    # This removes all repeated important urls
     # FIXME: This is not the best way to do it but it is the simplest, a
     # better approach will be to create symbolic or hard links for the repeated
     # units to avoid losing information
-    filtered_units = remove_repeated_video_urls(all_units)
-    num_all_units = sum(len(units) for units in all_units.values())
-    num_filtered_units = sum(len(units) for units in filtered_units.values())
-    compat_print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
-                                                     num_all_units))
+    filtered_units = remove_repeated_urls(all_units)
+    num_all_urls = num_urls_in_units_dict(all_units)
+    num_filtered_urls = num_urls_in_units_dict(filtered_units)
+    compat_print('Removed %d duplicated urls from %d in total' %
+                 ((num_all_urls - num_filtered_urls), num_all_urls))
 
     # finally we download all the resources
     download(args, selections, all_units, headers)
