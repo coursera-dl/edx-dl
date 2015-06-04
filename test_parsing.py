@@ -67,12 +67,21 @@ class TestParsing(unittest.TestCase):
         with open("test/html/multiple_units.html", "r") as f:
             units = extract_units_from_html(f.read(), 'https://courses.edx.org')
             self.assertEquals(len(units), 3)
+            # this one has multiple speeds in the data-streams field
             self.assertTrue('https://youtube.com/watch?v=CJ482b9r_0g' in [unit[0] for unit in units])
             mp4_urls = units[0][3]
             self.assertTrue(mp4_urls > 0)
             self.assertTrue('https://s3.amazonaws.com/berkeley-cs184x/videos/overview-motivation.mp4' in mp4_urls)
             pdf_urls = units[0][4]
             self.assertEquals(pdf_urls[0], 'https://courses.edx.org/static/content-berkeley-cs184x~2012_Fall/slides/overview.pdf')
+
+    def test_extract_multiple_units_no_youtube_ids(self):
+        with open("test/html/multiple_units_no_youtube_ids.html", "r") as f:
+            units = extract_units_from_html(f.read(), 'https://courses.edx.org')
+            video_youtube_url, available_subs_url, sub_template_url, mp4_urls, pdf_urls = units[0]
+            self.assertEquals(video_youtube_url, None)
+            self.assertTrue(len(mp4_urls) > 0)
+
 
 
 if __name__ == '__main__':
