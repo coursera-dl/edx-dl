@@ -53,6 +53,13 @@ class TestUtils(unittest.TestCase):
             actual_res = utils.clean_filename(k, minimal_change=True)
             self.assertEquals(actual_res, v, actual_res)
 
+    def test_execute_command(self):
+        actual_res = utils.execute_command(['ls', '--help'])
+        self.assertEquals(actual_res, 0, actual_res)
+
+        actual_res = utils.execute_command(['ls', '--help-does-not-exist'])
+        self.assertEquals(actual_res, 2, actual_res)
+
 
 if __name__ == '__main__':
     logging.basicConfig(stream=sys.stdout)
