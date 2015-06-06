@@ -3,6 +3,7 @@
 
 # This module contains generic functions, ideally useful to any other module
 from six.moves.urllib.request import urlopen, Request
+from six.moves import html_parser
 
 import errno
 import json
@@ -34,23 +35,11 @@ def execute_command(cmd):
     return subprocess.call(cmd)
 
 
-def strip_non_ascii_chars(name):
-    """
-    Strips the non ascii characters from a str
-    """
-    allowed_chars = string.digits + string.ascii_letters + " _.-"
-    result = ""
-    for char in name:
-        if allowed_chars.find(char) != -1:
-            result += char
-    return result
-
-
 def directory_name(initial_name):
     """
     Transform the name of a directory into an ascii version
     """
-    result = strip_non_ascii_chars(initial_name)
+    result = clean_filename(initial_name)
     return result if result != "" else "course_folder"
 
 
@@ -78,7 +67,7 @@ def get_page_contents_as_json(url, headers):
     return json_object
 
 
-# this one comes from coursera-dl/coursera
+# The next functions come from coursera-dl/coursera
 def mkdir_p(path, mode=0o777):
     """
     Create subdirectory hierarchy given in the paths argument.
@@ -90,3 +79,34 @@ def mkdir_p(path, mode=0o777):
             pass
         else:
             raise
+
+
+def clean_filename(s, minimal_change=False):
+    """
+    Sanitize a string to be used as a filename.
+    If minimal_change is set to true, then we only strip the bare minimum of
+    characters that are problematic for filesystems (namely, ':', '/' and
+    '\x00', '\n').
+    """
+
+    # First, deal with URL encoded strings
+    h = html_parser.HTMLParser()
+    s = h.unescape(s)
+
+    # strip paren portions which contain trailing time length (...)
+    s = (
+        s.replace(':', '-')
+        .replace('/', '-')
+        .replace('\x00', '-')
+        .replace('\n', '')
+    )
+
+    if minimal_change:
+        return s
+
+    s = s.replace('(', '').replace(')', '')
+    s = s.rstrip('.')  # Remove excess of trailing dots
+
+    s = s.strip().replace(' ', '_')
+    valid_chars = '-_.()%s%s' % (string.ascii_letters, string.digits)
+    return ''.join(c for c in s if c in valid_chars)

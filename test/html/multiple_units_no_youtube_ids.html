@@ -1,0 +1,4461 @@
+
+
+	<!DOCTYPE html>
+	<!--[if lte IE 9]><html class="ie ie9 lte9" lang="en"><![endif]-->
+	<!--[if !IE]><!--><html lang="en"><!--<![endif]-->
+	<head dir="ltr">
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge"><script
+type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"XA4GVl5ACwAEV1JQAA=="};window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function
+r(n){if(!e[n]){var
+o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var
+o=t[n][1][e];return r(o?o:e)},o,o.exports)}return
+e[n].exports}if("function"==typeof __nr_require)return
+__nr_require;for(var o=0;o<n.length;o++)r(n[o]);return
+r}({QJf3ax:[function(t,e){function n(t){function
+e(e,n,a){t&&t(e,n,a),a||(a={});for(var
+c=s(e),f=c.length,u=i(a,o,r),d=0;f>d;d++)c[d].apply(u,n);return
+u}function a(t,e){f[t]=s(t).concat(e)}function s(t){return
+f[t]||[]}function c(){return n(e)}var
+f={};return{on:a,emit:e,create:c,listeners:s,_events:f}}function
+r(){return{}}var
+o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],3:[function(t){function
+e(t){try{i.console&&console.log(t)}catch(e){}}var
+n,r=t("ee"),o=t(1),i={};try{n=localStorage.getItem("__nr_flags").split(","),console&&"function"==typeof
+console.log&&(i.console=!0,-1!==n.indexOf("dev")&&(i.dev=!0),-1!==n.indexOf("nr_dev")&&(i.nrDev=!0))}catch(a){}i.nrDev&&r.on("internal-error",function(t){e(t.stack)}),i.dev&&r.on("fn-err",function(t,n,r){e(r.stack)}),i.dev&&(e("NR
+AGENT IN DEVELOPMENT MODE"),e("flags: "+o(i,function(t){return
+t}).join(", ")))},{1:23,ee:"QJf3ax"}],4:[function(t){function
+e(t,e,n,i,s){try{c?c-=1:r("err",[s||new
+UncaughtException(t,e,n)])}catch(f){try{r("ierr",[f,(new
+Date).getTime(),!0])}catch(u){}}return"function"==typeof
+a?a.apply(this,o(arguments)):!1}function
+UncaughtException(t,e,n){this.message=t||"Uncaught error with no
+additional information",this.sourceURL=e,this.line=n}function
+n(t){r("err",[t,(new Date).getTime()])}var
+r=t("handle"),o=t(6),i=t("ee"),a=window.onerror,s=!1,c=0;t("loader").features.err=!0,t(5),window.onerror=e;try{throw
+new Error}catch(f){"stack"in f&&(t(1),t(2),"addEventListener"in
+window&&t(3),window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)&&t(4),s=!0)}i.on("fn-start",function(){s&&(c+=1)}),i.on("fn-err",function(t,e,r){s&&(this.thrown=!0,n(r))}),i.on("fn-end",function(){s&&!this.thrown&&c>0&&(c-=1)}),i.on("internal-error",function(t){r("ierr",[t,(new
+Date).getTime(),!0])})},{1:10,2:9,3:7,4:11,5:3,6:24,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],5:[function(t){t("loader").features.ins=!0},{loader:"G9z0Bl"}],6:[function(t){function
+e(){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var
+n=t("ee"),r=t("handle"),o=t(1),i=t(2);t("loader").features.stn=!0,t(3),n.on("fn-start",function(t){var
+e=t[0];e instanceof
+Event&&(this.bstStart=Date.now())}),n.on("fn-end",function(t,e){var
+n=t[0];n instanceof
+Event&&r("bst",[n,e,this.bstStart,Date.now()])}),o.on("fn-start",function(t,e,n){this.bstStart=Date.now(),this.bstType=n}),o.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),this.bstType])}),i.on("fn-start",function(){this.bstStart=Date.now()}),i.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),"requestAnimationFrame"])}),n.on("pushState-start",function(){this.time=Date.now(),this.startPath=location.pathname+location.hash}),n.on("pushState-end",function(){r("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),"addEventListener"in
+window.performance&&(window.performance.addEventListener("webkitresourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.webkitClearResourceTimings()},!1),window.performance.addEventListener("resourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.clearResourceTimings()},!1)),document.addEventListener("scroll",e,!1),document.addEventListener("keypress",e,!1),document.addEventListener("click",e,!1)}},{1:10,2:9,3:8,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],7:[function(t,e){function
+n(t){i.inPlace(t,["addEventListener","removeEventListener"],"-",r)}function
+r(t){return t[1]}var
+o=(t(1),t("ee").create()),i=t(2)(o),a=t("gos");if(e.exports=o,n(window),"getPrototypeOf"in
+Object){for(var
+s=document;s&&!s.hasOwnProperty("addEventListener");)s=Object.getPrototypeOf(s);s&&n(s);for(var
+c=XMLHttpRequest.prototype;c&&!c.hasOwnProperty("addEventListener");)c=Object.getPrototypeOf(c);c&&n(c)}else
+XMLHttpRequest.prototype.hasOwnProperty("addEventListener")&&n(XMLHttpRequest.prototype);o.on("addEventListener-start",function(t){if(t[1]){var
+e=t[1];"function"==typeof
+e?this.wrapped=t[1]=a(e,"nr@wrapped",function(){return
+i(e,"fn-",null,e.name <http://e.name>||"anonymous")}):"function"==typeof
+e.handleEvent&&i.inPlace(e,["handleEvent"],"fn-")}}),o.on("removeEventListener-start",function(t){var
+e=this.wrapped;e&&(t[1]=e)})},{1:24,2:25,ee:"QJf3ax",gos:"7eSDFh"}],8:[function(t,e){var
+n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window.history,["pushState"],"-")},{1:25,2:24,ee:"QJf3ax"}],9:[function(t,e){var
+n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window,["requestAnimationFrame","mozRequestAnimationFrame","webkitRequestAnimationFrame","msRequestAnimationFrame"],"raf-"),n.on("raf-start",function(t){t[0]=r(t[0],"fn-")})},{1:25,2:24,ee:"QJf3ax"}],10:[function(t,e){function
+n(t,e,n){t[0]=o(t[0],"fn-",null,n)}var
+r=(t(2),t("ee").create()),o=t(1)(r);e.exports=r,o.inPlace(window,["setTimeout","setInterval","setImmediate"],"setTimer-"),r.on("setTimer-start",n)},{1:25,2:24,ee:"QJf3ax"}],11:[function(t,e){function
+n(){f.inPlace(this,p,"fn-")}function
+r(t,e){f.inPlace(e,["onreadystatechange"],"fn-")}function o(t,e){return
+e}function i(t,e){for(var n in t)e[n]=t[n];return e}var
+a=t("ee").create(),s=t(1),c=t(2),f=c(a),u=c(s),d=window.XMLHttpRequest,p=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"];e.exports=a,window.XMLHttpRequest=function(t){var
+e=new
+d(t);try{a.emit("new-xhr",[],e),u.inPlace(e,["addEventListener","removeEventListener"],"-",o),e.addEventListener("readystatechange",n,!1)}catch(r){try{a.emit("internal-error",[r])}catch(i){}}return
+e},i(d,XMLHttpRequest),XMLHttpRequest.prototype=d.prototype,f.inPlace(XMLHttpRequest.prototype,["open","send"],"-xhr-",o),a.on("send-xhr-start",r),a.on("open-xhr-start",r)},{1:7,2:25,ee:"QJf3ax"}],12:[function(t){function
+e(t){var
+e=this.params,r=this.metrics;if(!this.ended){this.ended=!0;for(var
+i=0;c>i;i++)t.removeEventListener(s[i],this.listener,!1);if(!e.aborted){if(r.duration=(new
+Date).getTime()-this.startTime,4===t.readyState){e.status=t.status;var
+a=t.responseType,f="arraybuffer"===a||"blob"===a||"json"===a?t.response:t.responseText,u=n(f);if(u&&(r.rxSize=u),this.sameOrigin){var
+d=t.getResponseHeader("X-NewRelic-App-Data");d&&(e.cat
+<http://e.cat>=d.split(", ").pop())}}else
+e.status=0;r.cbTime=this.cbTime,o("xhr",[e,r,this.startTime])}}}function
+n(t){if("string"==typeof t&&t.length)return t.length;if("object"!=typeof
+t)return void 0;if("undefined"!=typeof ArrayBuffer&&t instanceof
+ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof
+Blob&&t instanceof Blob&&t.size)return t.size;if("undefined"!=typeof
+FormData&&t instanceof FormData)return void 0;try{return
+JSON.stringify(t).length}catch(e){return void 0}}function r(t,e){var
+n=i(e),r=t.params;r.host=n.hostname+":"+n.port,r.pathname=n.pathname,t.sameOrigin=n.sameOrigin}if(window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)){t("loader").features.xhr=!0;var
+o=t("handle"),i=t(2),a=t("ee"),s=["load","error","abort","timeout"],c=s.length,f=t(1);t(4),t(3),a.on("new-xhr",function(){this.totalCbs=0,this.called=0,this.cbTime=0,this.end=e,this.ended=!1,this.xhrGuids={}}),a.on("open-xhr-start",function(t){this.params={method:t[0]},r(this,t[1]),this.metrics={}}),a.on("open-xhr-end",function(t,e){"loader_config"in
+NREUM&&"xpid"in
+NREUM.loader_config&&this.sameOrigin&&e.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid)}),a.on("send-xhr-start",function(t,e){var
+r=this.metrics,o=t[0],i=this;if(r&&o){var
+f=n(o);f&&(r.txSize=f)}this.startTime=(new
+Date).getTime(),this.listener=function(t){try{"abort"===t.type&&(i.params.aborted=!0),("load"!==t.type||i.called===i.totalCbs&&(i.onloadCalled||"function"!=typeof
+e.onload))&&i.end(e)}catch(n){try{a.emit("internal-error",[n])}catch(r){}}};for(var
+u=0;c>u;u++)e.addEventListener(s[u],this.listener,!1)}),a.on("xhr-cb-time",function(t,e,n){this.cbTime+=t,e?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof
+n.onload||this.end(n)}),a.on("xhr-load-added",function(t,e){var
+n=""+f(t)+!!e;this.xhrGuids&&!this.xhrGuids[n]&&(this.xhrGuids[n]=!0,this.totalCbs+=1)}),a.on("xhr-load-removed",function(t,e){var
+n=""+f(t)+!!e;this.xhrGuids&&this.xhrGuids[n]&&(delete
+this.xhrGuids[n],this.totalCbs-=1)}),a.on("addEventListener-end",function(t,e){e
+instanceof
+XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-added",[t[1],t[2]],e)}),a.on("removeEventListener-end",function(t,e){e
+instanceof
+XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-removed",[t[1],t[2]],e)}),a.on("fn-start",function(t,e,n){e
+instanceof
+XMLHttpRequest&&("onload"===n&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=(new
+Date).getTime()))}),a.on("fn-end",function(t,e){this.xhrCbStart&&a.emit("xhr-cb-time",[(new
+Date).getTime()-this.xhrCbStart,this.onload,e],e)})}},{1:"XL7HBI",2:13,3:11,4:7,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],13:[function(t,e){e.exports=function(t){var
+e=document.createElement("a"),n=window.location,r={};e.href=t,r.port=e.port;var
+o=e.href.split("://");return!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=e.hostname||n.hostname,r.pathname=e.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname),r.sameOrigin=!e.hostname||e.hostname===document.domain&&e.port===n.port&&e.protocol===n.protocol,r}},{}],14:[function(t,e){function
+n(t){return function(){r(t,[(new
+Date).getTime()].concat(i(arguments)))}}var
+r=t("handle"),o=t(1),i=t(2);"undefined"==typeof
+window.newrelic&&(newrelic=window.NREUM);var
+a=["setPageViewName","addPageAction","setCustomAttribute","finished","addToTrace","inlineHit","noticeError"];o(a,function(t,e){window.NREUM[e]=n("api-"+e)}),e.exports=window.NREUM},{1:23,2:24,handle:"D5DuLP"}],"7eSDFh":[function(t,e){function
+n(t,e,n){if(r.call(t,e))return t[e];var
+o=n();if(Object.defineProperty&&Object.keys)try{return
+Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return
+t[e]=o,o}var
+r=Object.prototype.hasOwnProperty;e.exports=n},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],D5DuLP:[function(t,e){function
+n(t,e,n){return
+r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void
+o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee
+<http://n.ee>=r,r.q=o},{ee:"QJf3ax"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],XL7HBI:[function(t,e){function
+n(t){var e=typeof
+t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return
+r++})}var
+r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],G9z0Bl:[function(t,e){function
+n(){var t=p.info
+<http://p.info>=NREUM.info,e=f.getElementsByTagName("script")[0];if(t&&t.licenseKey&&t.applicationID&&e){s(d,function(e,n){e
+in t||(t[e]=n)});var
+n="https"===u.split(":")[0]||t.sslForHttp;p.proto=n?"https://":"http://",a("mark",["onload",i()]);var
+r=f.createElement("script");r.src=p.proto+t.agent,e.parentNode.insertBefore(r,e)}}function
+r(){"complete"===f.readyState&&o()}function
+o(){a("mark",["domContent",i()])}function i(){return(new
+Date).getTime()}var
+a=t("handle"),s=t(1),c=(t(2),window),f=c.document,u=(""+location).split("?")[0],d={beacon:"bam.nr-data.net
+<http://bam.nr-data.net>",errorBeacon:"bam.nr-data.net
+<http://bam.nr-data.net>",agent:"js-agent.newrelic.com/nr-632.min.js
+<http://js-agent.newrelic.com/nr-632.min.js>"},p=e.exports={offset:i(),origin:u,features:{}};f.addEventListener?(f.addEventListener("DOMContentLoaded",o,!1),c.addEventListener("load",n,!1)):(f.attachEvent("onreadystatechange",r),c.attachEvent("onload",n)),a("mark",["firstbyte",i()])},{1:23,2:14,handle:"D5DuLP"}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],23:[function(t,e){function
+n(t,e){var n=[],o="",i=0;for(o in
+t)r.call(t,o)&&(n[i]=e(o,t[o]),i+=1);return n}var
+r=Object.prototype.hasOwnProperty;e.exports=n},{}],24:[function(t,e){function
+n(t,e,n){e||(e=0),"undefined"==typeof n&&(n=t?t.length:0);for(var
+r=-1,o=n-e||0,i=Array(0>o?0:o);++r<o;)i[r]=t[e+r];return
+i}e.exports=n},{}],25:[function(t,e){function
+n(t){return!(t&&"function"==typeof t&&t.apply&&!t[i])}var
+r=t("ee"),o=t(1),i="nr@wrapper",a=Object.prototype.hasOwnProperty;e.exports=function(t){function
+e(t,e,r,a){function nrWrapper(){var
+n,i,s,f;try{i=this,n=o(arguments),s=r&&r(n,i)||{}}catch(d){u([d,"",[n,i,a],s])}c(e+"start",[n,i,a],s);try{return
+f=t.apply(i,n)}catch(p){throw
+c(e+"err",[n,i,p],s),p}finally{c(e+"end",[n,i,f],s)}}return
+n(t)?t:(e||(e=""),nrWrapper[i]=!0,f(t,nrWrapper),nrWrapper)}function
+s(t,r,o,i){o||(o="");var
+a,s,c,f="-"===o.charAt(0);for(c=0;c<r.length;c++)s=r[c],a=t[s],n(a)||(t[s]=e(a,f?s+o:o,i,s))}function
+c(e,n,r){try{t.emit(e,n,r)}catch(o){u([o,e,n,r])}}function
+f(t,e){if(Object.defineProperty&&Object.keys)try{var
+n=Object.keys(t);return
+n.forEach(function(n){Object.defineProperty(e,n,{get:function(){return
+t[n]},set:function(e){return t[n]=e,e}})}),e}catch(r){u([r])}for(var o
+in t)a.call(t,o)&&(e[o]=t[o]);return e}function
+u(e){try{t.emit("internal-error",e)}catch(n){}}return
+t||(t=r),e.inPlace=s,e.flag=i,e}},{1:24,ee:"QJf3ax"}]},{},["G9z0Bl",4,12,6,5]);</script><script
+type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net
+<http://bam.nr-data.net>","queueTime":0,"licenseKey":"1beac94c95","agent":"js-agent.newrelic.com/nr-632.min.js
+<http://js-agent.newrelic.com/nr-632.min.js>","transactionName":"NQQGYUZWDUNSVUMPWQxOIkBaVBdZXFgYBVkXExdQQ1YRVR1AXgNBEVsNW1BSGw==","applicationID":"3343327","errorBeacon":"bam.nr-data.net
+<http://bam.nr-data.net>","applicationTime":711}</script>
+
+
+
+
+
+
+
+	<title>
+
+	3.1 Modern Databases | 6.BDx Courseware | MIT Professional Education
+Digital Programs
+	</title>
+
+	<script type="text/javascript">
+	/* immediately break out of an iframe if coming from the marketing
+website */
+	(function(window) {
+	if (window.location !== window.top.location) {
+	window.top.location = window.location;
+	}
+	})(this);
+	</script>
+
+	<script type="text/javascript" src="/jsi18n/
+<https://mitprofessionalx.mit.edu/jsi18n/>"></script>
+
+	<link rel="icon" type="image/x-icon"
+href="https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/favicon.9744f0ea7f78.ico
+<https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/favicon.9744f0ea7f78.ico>"
+/>
+
+
+
+
+	<link
+href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-vendor.c29dfc26527f.css
+<https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-vendor.c29dfc26527f.css>"
+rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+	<link
+href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-main.8af4cfc623e2.css
+<https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-main.8af4cfc623e2.css>"
+rel="stylesheet" type="text/css" />
+
+
+
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-main_vendor.c1170b9488ac.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-main_vendor.c1170b9488ac.js>"
+charset="utf-8"></script>
+
+
+
+	<script>
+	window.baseUrl = "https://d37djvu3ytnwxt.cloudfront.net/static/
+<https://d37djvu3ytnwxt.cloudfront.net/static/>";
+	(function (require) {
+	var urlArgs = "v=0aba587";
+	require.config({
+	baseUrl: baseUrl,
+	urlArgs: urlArgs
+	});
+	}).call(this, require || RequireJS.require);
+	</script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/require-config-lms.3946088f006f.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/require-config-lms.3946088f006f.js>"></script>
+
+
+
+
+
+	<link
+href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-course-vendor.d65f103108eb.css
+<https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-course-vendor.d65f103108eb.css>"
+rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+	<link
+href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-course.af33a41992c0.css
+<https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-course.af33a41992c0.css>"
+rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/split.1e256a271150.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/split.1e256a271150.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.truncate.b81308a54759.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.truncate.b81308a54759.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/jquery.ajaxfileupload.27e7569a4c1e.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/jquery.ajaxfileupload.27e7569a4c1e.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Converter.33f02cbe2eb8.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Converter.33f02cbe2eb8.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Sanitizer.253c591d1f95.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Sanitizer.253c591d1f95.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Editor.dfc3093a1101.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Editor.dfc3093a1101.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/jquery.autocomplete.3bd10d7510d2.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/jquery.autocomplete.3bd10d7510d2.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.timeago.9605aaf0437d.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.timeago.9605aaf0437d.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/src/jquery.timeago.locale.b54a9c010cd6.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/src/jquery.timeago.locale.b54a9c010cd6.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/mustache.2aa68bb79181.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/mustache.2aa68bb79181.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/URI.min.03b89112e46e.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/URI.min.03b89112e46e.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/backbone-min.752b6162850f.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/backbone-min.752b6162850f.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/src/tooltip_manager.c80266d685f1.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/src/tooltip_manager.c80266d685f1.js>"></script>
+
+	<link
+href="https://d37djvu3ytnwxt.cloudfront.net/static/css/vendor/jquery.autocomplete.09a0b34739a2.css
+<https://d37djvu3ytnwxt.cloudfront.net/static/css/vendor/jquery.autocomplete.09a0b34739a2.css>"
+rel="stylesheet" type="text/css">
+
+
+
+
+
+
+
+
+
+
+	<script src=//cdn.optimizely.com/js/1743970571.js
+<https://cdn.optimizely.com/js/1743970571.js>></script>
+
+	<!-- begin Segment.io -->
+	<script type="text/javascript">
+	// Asynchronously load Segment.io's analytics.js library
+	window.analytics||(window.analytics=[]),window.analytics.methods=["identify","track","trackLink","trackForm","trackClick","trackSubmit","page","pageview","ab","alias","ready","group","on","once","off"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var method=window.analytics.methods[i];window.analytics[method]=window.analytics.factory(method)}window.analytics.load=function(t){var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/ <http://d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/>"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)},window.analytics.SNIPPET_VERSION="2.0.8",
+	analytics.load("8fncv13bt5");
+	analytics.page();
+
+	analytics.identify("", {
+	email: "me@me.com <mailto:me@me.com>",
+	username: "me"
+	});
+	</script>
+	<!-- end Segment.io -->
+
+
+	<meta name="path_prefix" content="">
+	<meta name="google-site-verification"
+content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
+
+
+
+	<!-- Google Analytics -->
+
+	<script type="text/javascript">
+	var _gaq = _gaq || [];
+	_gaq.push(['_setAccount', 'UA-329159-1']);
+	_gaq.push(['_setDomainName', 'mitprofessionalx.mit.edu
+<http://mitprofessionalx.mit.edu>']);
+	_gaq.push(['_setAllowLinker', true]);
+	_gaq.push(['_trackPageview']);
+
+	(function() {
+	var ga = document.createElement('script'); ga.type = 'text/javascript';
+ga.async = true;
+	ga.src = ('https:' == document.location.protocol ? 'https://' :
+'http://') + 'stats.g.doubleclick.net/dc.js
+<http://stats.g.doubleclick.net/dc.js>';
+	var s = document.getElementsByTagName('script')[0];
+s.parentNode.insertBefore(ga, s);
+	})();
+
+	</script>
+
+	<!-- Google Analytics END -->
+
+	<!-- Facebook advertising code -->
+	<script>
+
+	(function() {
+
+	var _fbq = window._fbq || (window._fbq = []);
+
+	if (!_fbq.loaded) {
+
+	var fbds = document.createElement('script');
+
+	fbds.async = true;
+
+	fbds.src = '//connect.facebook.net/en_US/fbds.js
+<http://connect.facebook.net/en_US/fbds.js>';
+
+	var s = document.getElementsByTagName('script')[0];
+
+	s.parentNode.insertBefore(fbds, s);
+
+	_fbq.loaded = true;
+
+	}
+
+	_fbq.push(['addPixelId', '696826080426075']);
+
+	})();
+
+	window._fbq = window._fbq || [];
+
+	window._fbq.push(['track', 'PixelInitialized', {}]);
+
+	</script>
+
+	<noscript>
+	<img height="1" width="1" alt="" style="display:none"
+src="https://www.facebook.com/tr?id=696826080426075&amp;ev=PixelInitialized
+<https://www.facebook.com/tr?id=696826080426075&amp;ev=PixelInitialized>" />
+	</noscript>
+
+	<!-- Facebook advertising code end -->
+
+
+	<link rel="stylesheet" type="text/css"
+href="https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/css/mit-prof-ed.b3ac2ef80310.css
+<https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/css/mit-prof-ed.b3ac2ef80310.css>"
+/>
+
+	</head>
+
+	<body class="ltr courseware lang_en">
+	<div class="window-wrap" dir="ltr">
+	<a class="nav-skip" href="#seq_content
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#seq_content>">Skip
+to main content</a>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<header id="global-navigation" class="global slim" >
+	<nav aria-label="Global">
+	<h1 class="logo">
+	<a href="/ <https://mitprofessionalx.mit.edu/>">
+
+	<img
+src="https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/MITPE-Digital-Programs-Logo.png
+<https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/MITPE-Digital-Programs-Logo.png>"
+alt="MIT Professional Education Digital Programs"/>
+
+	</a>
+	</h1>
+
+	<h2><span class="provider">MITProfessionalX:</span>
+	6.BDx
+
+	Tackling the Challenges of Big Data (February 3, 2015 - March 17,
+2015)</h2>
+
+	<ol class="left nav-global authenticated">
+
+	<li class="nav-global-01">
+	<a href="/courses <https://mitprofessionalx.mit.edu/courses>">Find
+Courses</a>
+	</li>
+
+	</ol>
+	<ol class="user">
+	<li class="primary">
+	<a href="/dashboard <https://mitprofessionalx.mit.edu/dashboard>"
+class="user-link">
+	<i class="icon fa fa-home" aria-hidden="true"></i>
+	<span class="sr">Dashboard for:</span>
+	<div>
+	me
+	</div>
+	</a>
+	</li>
+	<li class="primary">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>"
+class="dropdown" aria-haspopup="true" aria-expanded="false"><span
+class="sr">More options dropdown</span><i class="fa fa-sort-desc"
+aria-hidden="true"></i></a>
+	<ul class="dropdown-menu" aria-label="More Options" role="menu">
+
+	<li><a href="/account/settings
+<https://mitprofessionalx.mit.edu/account/settings>">Account
+Settings</a></li>
+	<li><a href="/u/me <https://mitprofessionalx.mit.edu/u/me>">My
+Profile</a></li>
+
+	<li><a href="/logout <https://mitprofessionalx.mit.edu/logout>"
+role="menuitem">Sign Out</a></li>
+	</ul>
+	</li>
+	</ol>
+	</nav>
+	</header>
+	<!--[if lte IE 9]>
+	<div class="ie-banner" aria-hidden="true"><strong>Warning:</strong>
+Your browser is not fully supported. We strongly recommend using <a
+href="https://www.google.com/chrome <https://www.google.com/chrome>"
+target="_blank">Chrome</a> or <a href="http://www.mozilla.org/firefox
+<http://www.mozilla.org/firefox>" target="_blank">Firefox</a>.</div>
+	<![endif]-->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<div class="help-tab">
+	<a href="#help-modal
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#help-modal>"
+rel="leanModal" role="button">Help</a>
+	</div>
+
+	<section id="help-modal" class="modal" aria-hidden="true" role="dialog"
+aria-label="edX Help">
+	<div class="inner-wrapper" id="help_wrapper">
+	<button class="close-modal "tabindex="0">
+	<i class="icon fa fa-remove"></i>
+	<span class="sr">
+	Close
+	</span>
+	</button>
+
+	<header>
+	<h2>
+	<span class="edx">edX</span> Help
+	</h2>
+	<hr>
+	</header>
+
+
+
+	<p>For <strong>questions on course lectures, homework, tools, or
+materials for this course</strong>, post in the <a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/discussion/forum
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/discussion/forum>"
+target="_blank">course discussion forum</a>.
+	</p>
+
+	<p>Have <strong>general questions about edX</strong>? You can find lots
+of helpful information in the edX <a href="/faq
+<https://mitprofessionalx.mit.edu/faq>" target="_blank">FAQ</a>.
+	</p>
+
+	<p>Have a <strong>question about something specific</strong>? You can
+contact the edX general support team directly:</p>
+	<hr>
+
+	<div class="help-buttons">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>"
+id="feedback_link_problem">Report a problem</a>
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>"
+id="feedback_link_suggestion">Make a suggestion</a>
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>"
+id="feedback_link_question">Ask a question</a>
+	</div>
+
+	<p class="note">Please note: The edX support team is English speaking.
+While we will do our best to address your inquiry in any language, our
+responses will be in English.</p>
+
+	</div>
+
+	<div class="inner-wrapper" id="feedback_form_wrapper">
+	<button class="close-modal">
+	<i class="icon fa fa-remove"></i>
+	<span class="sr">
+	Close
+	</span>
+	</button>
+
+	<header></header>
+
+	<form id="feedback_form" class="feedback_form" method="post"
+data-remote="true" action="/submit_feedback">
+	<div id="feedback_error" class="modal-form-error" tabindex="-1"></div>
+	<label data-field="subject" for="feedback_form_subject">Briefly
+describe your issue*</label>
+	<input name="subject" type="text" id="feedback_form_subject"
+aria-required="true">
+	<label data-field="details" for="feedback_form_details">Tell us the
+details*
+	<span class="tip">Include error messages, steps which lead to the
+issue, etc</span></label>
+	<textarea name="details" id="feedback_form_details"
+aria-required="true"></textarea>
+	<input name="issue_type" type="hidden">
+	<input name="course_id" type="hidden"
+value="MITProfessionalX/6.BD_2X/3T2015">
+	<div class="submit">
+	<input name="submit" type="submit" value="Submit" id="feedback_submit">
+	</div>
+	</form>
+	</div>
+
+	<div class="inner-wrapper" id="feedback_success_wrapper" tabindex="0">
+	<button class="close-modal" tabindex="0">
+	<i class="icon fa fa-remove"></i>
+	<span class="sr">
+	Close
+	</span>
+	</button>
+
+	<header>
+	<h2>Thank You!</h2>
+	<hr>
+	</header>
+
+
+	<p>
+	Thank you for your inquiry or feedback. We typically respond to a
+request within one business day (Monday to Friday, 13:00 UTC to 21:00
+UTC.) In the meantime, please review our <a href="/faq
+<https://mitprofessionalx.mit.edu/faq>" target="_blank"
+id="feedback-faq-link" tabindex="0">detailed FAQs</a> where most
+questions have already been answered.
+	</p>
+	</div>
+	</section>
+
+	<script type="text/javascript">
+	(function() {
+	var onModalClose = function() {
+	$("#help-modal .close-modal").off("click");
+	$("#lean_overlay").off("click");
+	$("#help-modal").attr("aria-hidden", "true");
+	$('area,input,select,textarea,button').removeAttr('tabindex');
+	$(".help-tab a").focus();
+	},
+	cycle_modal_tab = function(from_element_name, to_element_name) {
+	$(from_element_name).on('keydown', function(e) {
+	var keyCode = e.keyCode || e.which;
+	if (keyCode === 9) {
+	e.preventDefault();
+	$(to_element_name).focus();
+	}
+	});
+	};
+
+	$(".help-tab").click(function() {
+	$(".field-error").removeClass("field-error");
+	$("#feedback_form")[0].reset();
+	$("#feedback_form input[type='submit']").removeAttr("disabled");
+	$("#feedback_form_wrapper").css("display", "none");
+	$("#feedback_error").css("display", "none");
+	$("#feedback_success_wrapper").css("display", "none");
+	$("#help_wrapper").css("display", "block");
+	$("#help-modal").attr("aria-hidden", "false");
+	$("#help-modal .close-modal").click(onModalClose);
+	$("#lean_overlay").click(onModalClose);
+	$("#help_wrapper .close-modal").focus();
+	});
+	showFeedback = function(event, issue_type, title, subject_label,
+details_label) {
+	$("#help_wrapper").css("display", "none");
+	$("#feedback_form input[name='issue_type']").val(issue_type);
+	$("#feedback_form_wrapper").css("display", "block");
+	$("#feedback_form_wrapper header").html("<h2>" + title + "</h2><hr>");
+	$("#feedback_form_wrapper
+label[data-field='subject']").html(subject_label);
+	$("#feedback_form_wrapper
+label[data-field='details']").html(details_label);
+	$("#feedback_form_wrapper .close-modal").focus();
+	event.preventDefault();
+	};
+	cycle_modal_tab("#feedback_link_question", "#help_wrapper .close-modal");
+	cycle_modal_tab("#feedback_submit", "#feedback_form_wrapper .close-modal");
+	cycle_modal_tab("#feedback-faq-link", "#feedback_success_wrapper
+.close-modal");
+	$("#help-modal").on("keydown", function(e) {
+	var keyCode = e.keyCode || e.which;
+	if (keyCode === 27) {
+	e.preventDefault();
+	$("#help_wrapper .close-modal").click();
+	}
+	});
+	$("#feedback_link_problem").click(function(event) {
+	showFeedback(
+	event,
+	"problem",
+	"Report a Problem",
+	"Brief description of the problem" + "*",
+	"Details of the problem you are encountering" + "*" + "<span
+class='tip'>" +
+	"Include error messages, steps which lead to the issue, etc." + "</span>"
+	);
+	});
+	$("#feedback_link_suggestion").click(function(event) {
+	showFeedback(
+	event,
+	"suggestion",
+	"Make a Suggestion",
+	"Brief description of your suggestion" + "*",
+	"Details" + "*"
+	);
+	});
+	$("#feedback_link_question").click(function(event) {
+	showFeedback(
+	event,
+	"question",
+	"Ask a Question",
+	"Brief summary of your question" + "*",
+	"Details" + "*"
+	);
+	});
+	$("#feedback_form").submit(function() {
+	$("input[type='submit']", this).attr("disabled", "disabled");
+	$('area,input,select,textarea,button').attr('tabindex', -1);
+	$("#feedback_form_wrapper .close-modal").focus();
+	});
+	$("#feedback_form").on("ajax:complete", function() {
+	$("input[type='submit']", this).removeAttr("disabled");
+	});
+	$("#feedback_form").on("ajax:success", function(event, data, status, xhr) {
+	$("#feedback_form_wrapper").css("display", "none");
+	$("#feedback_success_wrapper").css("display", "block");
+	$("#feedback_success_wrapper").focus();
+	});
+	$("#feedback_form").on("ajax:error", function(event, xhr, status, error) {
+	$(".field-error").removeClass("field-error").removeAttr("aria-invalid");
+	var responseData;
+	try {
+	responseData = jQuery.parseJSON(xhr.responseText);
+	} catch(err) {
+	}
+	if (responseData) {
+	$("[data-field='"+responseData.field+"']").addClass("field-error").attr("aria-invalid", "true");
+	$("#feedback_error").html(responseData.error).stop().css("display",
+"block");
+	} else {
+	// If no data (or malformed data) is returned, a server error occurred
+	htmlStr = "An error has occurred.";
+	htmlStr += " " + _.template(
+	"Please {link_start}send us e-mail{link_end}.",
+	{link_start: '<a href="#" id="feedback_email">', link_end: '</a>'},
+	{interpolate: /\{(.+?)\}/g})
+	$("#feedback_error").html(htmlStr).stop().css("display", "block");
+	$("#feedback_email").click(function(e) {
+	mailto = "mailto:" + "bugs@edx.org <mailto:bugs@edx.org>" +
+	"?subject=" + $("#feedback_form input[name='subject']").val() +
+	"&body=" + $("#feedback_form textarea[name='details']").val();
+	window.open(mailto);
+	e.preventDefault();
+	});
+	}
+	// Make change explicit to assistive technology
+	$("#feedback_error").focus();
+	});
+	})(this)
+	</script>
+
+
+
+
+	<div class="content-wrapper" id="content">
+
+
+
+
+
+
+
+
+
+
+
+
+	<script type="text/template" id="image-modal-tpl">
+	<div class="wrapper-modal wrapper-modal-image">
+	<section class="image-link">
+	<%= smallHTML%>
+	<a href="#" class="modal-ui-icon action-fullscreen" role="button">
+	<span class="label">
+	<i class="icon fa fa-arrows-alt fa-large"></i> <%= gettext("Fullscreen") %>
+	</span>
+	</a>
+	</section>
+
+	<section class="image-modal">
+	<section class="image-content">
+	<div class="image-wrapper">
+	<img alt="<%= largeALT %>, <%= gettext('Large') %>" src="<%= largeSRC
+%>" />
+	</div>
+
+	<a href="#" class="modal-ui-icon action-close" role="button">
+	<span class="label">
+	<i class="icon fa fa-remove fa-large"></i> <%= gettext("Close") %>
+	</span>
+	</a>
+
+	<ul class="image-controls">
+	<li class="image-control">
+	<a href="#" class="modal-ui-icon action-zoom-in" role="button">
+	<span class="label">
+	<i class="icon fa fa fa-search-plus fa-large"></i> <%= gettext("Zoom
+In") %>
+	</span>
+	</a>
+	</li>
+
+	<li class="image-control">
+	<a href="#" class="modal-ui-icon action-zoom-out is-disabled"
+aria-disabled="true" role="button">
+	<span class="label">
+	<i class="icon fa fa fa-search-minus fa-large"></i> <%= gettext("Zoom
+Out") %>
+	</span>
+	</a>
+	</li>
+	</ul>
+	</section>
+	</section>
+	</div>
+
+	</script>
+
+	<script type="text/template" id="course_search_item-tpl">
+	<div class="result-excerpt"><%= excerpt %></div>
+	<a class="result-link" href="<%- url %>"><%= gettext("View") %> <i
+class="icon fa fa-arrow-right"></i></a>
+	<span class="result-location"><%- location.join(' ▸ ') %></span>
+	<span class="result-type"><%- content_type %></span>
+
+	</script>
+	<script type="text/template" id="course_search_results-tpl">
+	<div class="search-info">
+	<%= gettext("Search Results") %>
+	<div class="search-count"><%= totalCountMsg %></div>
+	</div>
+
+	<% if (totalCount > 0 ) { %>
+
+	<ol class='search-result-list'></ol>
+
+	<% if (hasMoreResults) { %>
+	<a class="search-load-next" href="#">
+	<%= interpolate(
+	ngettext("Load next %(num_items)s result", "Load next %(num_items)s
+results", pageSize),
+	{ num_items: pageSize },
+	true
+	) %>
+	<i class="icon fa fa-spinner fa-spin"></i>
+	</a>
+	<% } %>
+
+	<% } else { %>
+
+	<p><%= gettext("Sorry, no results were found.") %></p>
+
+	<% } %>
+
+	</script>
+	<script type="text/template" id="search_loading-tpl">
+	<i class="icon fa fa-spinner fa-spin"></i> <%= gettext("Loading") %>
+
+
+	</script>
+	<script type="text/template" id="search_error-tpl">
+	<%= gettext("There was an error, try searching again.") %>
+
+	</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+	<nav class="courseware wrapper-course-material" aria-label="Course
+Material">
+	<div class="course-material">
+	<ol class="course-tabs">
+
+	<li>
+	<a href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware>"
+class="active">
+	Courseware
+	<span class="sr">, current location</span>
+	</a>
+	</li>
+
+	<li>
+	<a href="/courses/MITProfessionalX/6.BD_2X/3T2015/info
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/info>"
+class="">
+	Course Info
+	</a>
+	</li>
+
+	<li>
+	<a href="/courses/MITProfessionalX/6.BD_2X/3T2015/discussion/forum
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/discussion/forum>"
+class="">
+	Discussion
+	</a>
+	</li>
+
+	<li>
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/0f0bfc605b694fc89addea90bd3c4a30/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/0f0bfc605b694fc89addea90bd3c4a30/>"
+class="">
+	Syllabus
+	</a>
+	</li>
+
+	<li>
+	<a href="/courses/MITProfessionalX/6.BD_2X/3T2015/course_wiki
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/course_wiki>"
+class="">
+	Wiki
+	</a>
+	</li>
+
+	<li>
+	<a href="/courses/MITProfessionalX/6.BD_2X/3T2015/progress
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/progress>"
+class="">
+	Progress
+	</a>
+	</li>
+
+	</ol>
+	</div>
+	</nav>
+
+
+
+	<div class="container">
+	<div class="course-wrapper">
+
+	<div class="course-index" role="navigation">
+	<header id="open_close_accordion">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">close</a>
+	</header>
+
+
+	<div id="accordion" style="display: none">
+	<nav aria-label="Course Navigation">
+
+
+
+
+
+	<div class="chapter">
+
+	<h3 aria-label="Welcome to the Course">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">
+	Welcome to the Course
+	</a>
+	</h3>
+
+	<ul>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/c30b3c1fc733487aba62d50bd51227b2/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/c30b3c1fc733487aba62d50bd51227b2/>">
+	<p>How to Participate in the Course </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/16c80ecda8184aa1b8d90915eb7320ef/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/16c80ecda8184aa1b8d90915eb7320ef/>">
+	<p>Technical Assistance and Contacts </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/813ef6a87f744d70a188abf9acbd97de/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/813ef6a87f744d70a188abf9acbd97de/>">
+	<p>Introduction: Big Data Challenges </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="graded">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/c8353451e60c41879375487f634fb893/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/7b84f82bc4ea48eaaf987af62cbe368b/c8353451e60c41879375487f634fb893/>">
+	<p>Assessment 1 </p>
+
+	<p class="subtitle">Assessment due Mar 16, 2015 at 23:30 UTC</p>
+
+	<img src="/static/images/graded.png
+<https://mitprofessionalx.mit.edu/static/images/graded.png>" alt="Graded
+Section">
+	</a>
+	</li>
+	</ul>
+	</div>
+
+
+	<div class="chapter">
+
+	<h3 aria-label="Introduction and Use Cases">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">
+	Introduction and Use Cases
+	</a>
+	</h3>
+
+	<ul>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/8193a6c0e225411585b4dd3c0b4db956/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/8193a6c0e225411585b4dd3c0b4db956/>">
+	<p>1.0 Introduction: Use Cases </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/02cdb9691c3244ffa5fbf623c8ec712b/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/02cdb9691c3244ffa5fbf623c8ec712b/>">
+	<p>1.1 Case Study: Transportation </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/bce0271f28ef460d9a56b53844e5ce6a/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/bce0271f28ef460d9a56b53844e5ce6a/>">
+	<p>1.2 Case Study: Visualizing Twitter </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="graded">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/6ef7384725c14876a64c357fbb292352/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/6ef7384725c14876a64c357fbb292352/>">
+	<p>Assessment 2 </p>
+
+	<p class="subtitle">Assessment due Mar 16, 2015 at 23:30 UTC</p>
+
+	<img src="/static/images/graded.png
+<https://mitprofessionalx.mit.edu/static/images/graded.png>" alt="Graded
+Section">
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/65b0acbcb15843979c417f77aca8aec5/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/4fc6ab65a9ea4f9e8271eae6412c24ce/65b0acbcb15843979c417f77aca8aec5/>">
+	<p>Discussion 1 </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	</ul>
+	</div>
+
+
+	<div class="chapter">
+
+	<h3 aria-label="Big Data Collection">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">
+	Big Data Collection
+	</a>
+	</h3>
+
+	<ul>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/75aa593a36e542e7ad97e0a00159b761/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/75aa593a36e542e7ad97e0a00159b761/>">
+	<p>2.0 Introduction: Big Data Collection </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/f57cf5f073fe4a49ac1171bc2368a3e1/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/f57cf5f073fe4a49ac1171bc2368a3e1/>">
+	<p>2.1 Data Cleaning and Integration </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/0e68ff7f18e44edabf6f13a0f4a6ef3c/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/0e68ff7f18e44edabf6f13a0f4a6ef3c/>">
+	<p>2.2 Hosted Data Platforms and the Cloud </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="graded">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/1b964937c00e48eb8e484deed81a29b3/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/1b964937c00e48eb8e484deed81a29b3/>">
+	<p>Assessment 3 </p>
+
+	<p class="subtitle">Assessment due Mar 16, 2015 at 23:30 UTC</p>
+
+	<img src="/static/images/graded.png
+<https://mitprofessionalx.mit.edu/static/images/graded.png>" alt="Graded
+Section">
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/c6b0659511da4d2a9a73572c6b7e8b5d/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/6595099271994691af8eead6a5ca0144/c6b0659511da4d2a9a73572c6b7e8b5d/>">
+	<p>Discussion 2 </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	</ul>
+	</div>
+
+
+	<div class="chapter">
+
+	<h3 class="active" aria-label="Big Data Storage, current chapter">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">
+	Big Data Storage
+	</a>
+	</h3>
+
+	<ul>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/13c6930644b743d2a53a2ae69a064924/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/13c6930644b743d2a53a2ae69a064924/>">
+	<p>3.0 Introduction Big Data Storage </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="active ">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/
+<http://./view-source_https___mitprofessionalx.mit.edu_courses_MITProfessionalX_6.BD_2X_3T2015_courseware_78ae59bfd7bf41069bdfdf7aa099db3d_57085f76dfae4e2dab671fce20dd311f__files/view-source_https___mitprofessionalx.mit.edu_courses_MITProfessionalX_6.BD_2X_3T2015_courseware_78ae59bfd7bf41069bdfdf7aa099db3d_57085f76dfae4e2dab671fce20dd311f_.html>">
+	<p>3.1 Modern Databases <span class="sr">, current section</span></p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/9c33baae9cf14bce95abb7f8d5cc7ee1/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/9c33baae9cf14bce95abb7f8d5cc7ee1/>">
+	<p>3.2 Distributed Computing Platforms </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/b3b1880ea89e46b5bde592e472c3da50/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/b3b1880ea89e46b5bde592e472c3da50/>">
+	<p>3.3 NoSQL, NewSQL </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="graded">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/beab26c075804634abbb159aeaa1cffa/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/beab26c075804634abbb159aeaa1cffa/>">
+	<p>Assessment 4 </p>
+
+	<p class="subtitle">Assessment due Mar 16, 2015 at 23:30 UTC</p>
+
+	<img src="/static/images/graded.png
+<https://mitprofessionalx.mit.edu/static/images/graded.png>" alt="Graded
+Section">
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/ed021647362c4de582ae6b4c73714c6d/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/ed021647362c4de582ae6b4c73714c6d/>">
+	<p>Discussion 3 </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	</ul>
+	</div>
+
+
+	<div class="chapter">
+
+	<h3 aria-label="Big Data Systems">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">
+	Big Data Systems
+	</a>
+	</h3>
+
+	<ul>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/69904578eaf149ffb841574f96f80fd7/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/69904578eaf149ffb841574f96f80fd7/>">
+	<p>4.0 Introduction Big Data Systems </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/4653fd747f6742daa324f3c08c5f709c/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/4653fd747f6742daa324f3c08c5f709c/>">
+	<p>4.1 Security </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/e2447e9f37e0465f8e934586545fa7fb/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/e2447e9f37e0465f8e934586545fa7fb/>">
+	<p>4.2 Multicore Scalability </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/2fc79f6c8bbc4abe9be0f7ff6a7e56ff/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/2fc79f6c8bbc4abe9be0f7ff6a7e56ff/>">
+	<p>4.3 Visualization and User Interfaces </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="graded">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/f664e8677910440a939244271f22cb9a/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/f664e8677910440a939244271f22cb9a/>">
+	<p>Assessment 5 </p>
+
+	<p class="subtitle">Assessment due Mar 16, 2015 at 23:30 UTC</p>
+
+	<img src="/static/images/graded.png
+<https://mitprofessionalx.mit.edu/static/images/graded.png>" alt="Graded
+Section">
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/c75e43acd2b94e0f8ed1054362ea4214/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/cd0b6c509122492a862696b37762a31d/c75e43acd2b94e0f8ed1054362ea4214/>">
+	<p>Discussion 4 </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	</ul>
+	</div>
+
+
+	<div class="chapter">
+
+	<h3 aria-label="Big Data Analytics">
+	<a href="#
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#>">
+	Big Data Analytics
+	</a>
+	</h3>
+
+	<ul>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/3efbb82de3f64db08041353ebe758233/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/3efbb82de3f64db08041353ebe758233/>">
+	<p>5.0 Introduction Big Data Analytics </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/557e96a1dcfc4424be77e0e3e3e8b0cb/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/557e96a1dcfc4424be77e0e3e3e8b0cb/>">
+	<p>5.1 Fast Algorithms I </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/b711386e96374ff8850a3d2202bc35c7/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/b711386e96374ff8850a3d2202bc35c7/>">
+	<p>5.2 Fast Algorithms II </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/fa198c8f8c1143c684db5c610eb3138e/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/fa198c8f8c1143c684db5c610eb3138e/>">
+	<p>5.3 Data Compression </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/4df4692bd31c4374ad8ff8c6b4c6d55a/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/4df4692bd31c4374ad8ff8c6b4c6d55a/>">
+	<p>5.4 Machine Learning Tools </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/b076ba9df7334636b3154c540b1d3209/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/b076ba9df7334636b3154c540b1d3209/>">
+	<p>5.5 Case Study: Information Summarization </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/b6b32de820dd4465824f0294f0d06140/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/b6b32de820dd4465824f0294f0d06140/>">
+	<p>5.6 Applications: Medicine </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/1075be24101b40a0b99d906892e71292/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/1075be24101b40a0b99d906892e71292/>">
+	<p>5.7 Applications: Finance </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	<li class="graded">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/1a72cd3a4d684bedaacd43e9e35ef034/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/1a72cd3a4d684bedaacd43e9e35ef034/>">
+	<p>Assessment 6 </p>
+
+	<p class="subtitle">Assessment due Mar 16, 2015 at 23:30 UTC</p>
+
+	<img src="/static/images/graded.png
+<https://mitprofessionalx.mit.edu/static/images/graded.png>" alt="Graded
+Section">
+	</a>
+	</li>
+	<li class="">
+	<a
+href="/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/8787282fb24f4ea88965c7d407d12cd6/
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/e7f613740df44cfcb53a1f475f624294/8787282fb24f4ea88965c7d407d12cd6/>">
+	<p>Discussion 5 </p>
+
+	<p class="subtitle"> </p>
+
+	</a>
+	</li>
+	</ul>
+	</div>
+
+
+	</nav>
+	</div>
+
+	</div>
+	<section class="course-content" id="course-content" role="main"
+aria-label=“Content”>
+
+	<div class="xblock xblock-student_view xblock-student_view-sequential
+xmodule_display xmodule_SequenceModule" data-runtime-class="LmsRuntime"
+data-init="XBlockToXModuleShim" data-block-type="sequential"
+data-request-token="efe0229006df11e584381286d0864b53"
+data-runtime-version="1"
+data-usage-id="i4x:;_;_MITProfessionalX;_6.BD_2X;_sequential;_57085f76dfae4e2dab671fce20dd311f"
+data-type="Sequence" data-course-id="MITProfessionalX/6.BD_2X/3T2015">
+	<script type="json/xblock-args" class="xblock-json-init-args">
+	{"xmodule-type": "Sequence"}
+	</script>
+
+
+	<div
+id="sequence_i4x-MITProfessionalX-6_BD_2X-sequential-57085f76dfae4e2dab671fce20dd311f"
+class="sequence"
+data-id="i4x://MITProfessionalX/6.BD_2X/sequential/57085f76dfae4e2dab671fce20dd311f"
+data-position="11"
+data-ajax-url="/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_sequential;_57085f76dfae4e2dab671fce20dd311f/handler/xmodule_handler"
+>
+	<div class="sequence-nav">
+	<button class="sequence-nav-button button-previous"><span class="icon
+fa fa-chevron-left" aria-hidden="true"></span><span
+class="sr">Previous</span></button>
+	<nav class="sequence-list-wrapper" aria-label="Unit">
+	<ol id="sequence-list">
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/b966642d5bc44aee816fd8f3de4bb8d1"
+	data-element="1"
+	href="javascript:void(0);"
+	title="MIT Professional Education Online X Programs
+	Video 3.1.1"
+	data-page-title="MIT Professional Education Online X Programs"
+	aria-controls="seq_contents_0"
+	id="tab_0"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education Online X
+Programs
+	Video 3.1.1</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/4871fafab4a24ce194a684ed5b405fc3"
+	data-element="2"
+	href="javascript:void(0);"
+	title="MIT Professional Education Online X Programs
+	Video 3.1.2"
+	data-page-title="MIT Professional Education Online X Programs"
+	aria-controls="seq_contents_1"
+	id="tab_1"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education Online X
+Programs
+	Video 3.1.2</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/40ae0f141a524447bb2db49ff91f9169"
+	data-element="3"
+	href="javascript:void(0);"
+	title="MIT Professional Education Online X Programs
+	Video 3.1.3"
+	data-page-title="MIT Professional Education Online X Programs"
+	aria-controls="seq_contents_2"
+	id="tab_2"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education Online X
+Programs
+	Video 3.1.3</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/814f5ea904644455ab599f6d6ab2ef08"
+	data-element="4"
+	href="javascript:void(0);"
+	title="MIT Professional Education Online X Programs
+	Video 3.1.4"
+	data-page-title="MIT Professional Education Online X Programs"
+	aria-controls="seq_contents_3"
+	id="tab_3"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education Online X
+Programs
+	Video 3.1.4</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/62269d89eacf4561aafbfc4319db7164"
+	data-element="5"
+	href="javascript:void(0);"
+	title="MIT Professional Education Online X Programs
+	Video 3.1.5"
+	data-page-title="MIT Professional Education Online X Programs"
+	aria-controls="seq_contents_4"
+	id="tab_4"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education Online X
+Programs
+	Video 3.1.5</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/cd18f90aafbd44068af5fe6416379210"
+	data-element="6"
+	href="javascript:void(0);"
+	title="Online X Programs
+	Video 3.1.6"
+	data-page-title="Online X Programs"
+	aria-controls="seq_contents_5"
+	id="tab_5"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> Online X Programs
+	Video 3.1.6</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/e31b374c44ae48a3b2bfd31d6d3bfa8d"
+	data-element="7"
+	href="javascript:void(0);"
+	title="Online X Programs
+	Video 3.1.7"
+	data-page-title="Online X Programs"
+	aria-controls="seq_contents_6"
+	id="tab_6"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> Online X Programs
+	Video 3.1.7</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/8fd28b6b37bb4147bfe2185724f2224f"
+	data-element="8"
+	href="javascript:void(0);"
+	title="Online X Programs
+	Video 3.1.8"
+	data-page-title="Online X Programs"
+	aria-controls="seq_contents_7"
+	id="tab_7"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> Online X Programs
+	Video 3.1.8</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/266eb242730d40258ddf96bfba3ec33c"
+	data-element="9"
+	href="javascript:void(0);"
+	title="Online X Programs
+	Video 3.1.9"
+	data-page-title="Online X Programs"
+	aria-controls="seq_contents_8"
+	id="tab_8"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> Online X Programs
+	Video 3.1.9</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/4bc2ec0f1ba149458c30629f0edc318d"
+	data-element="10"
+	href="javascript:void(0);"
+	title="MIT Professional Education - Online X Programs
+	Video 3.1.10"
+	data-page-title="MIT Professional Education - Online X Programs"
+	aria-controls="seq_contents_9"
+	id="tab_9"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education - Online X
+Programs
+	Video 3.1.10</p>
+	</a>
+	</li>
+	<li>
+	<a class="seq_video inactive progress-0"
+	data-id="i4x://MITProfessionalX/6.BD_2X/vertical/cca233dd1955482cabc06831c6a86137"
+	data-element="11"
+	href="javascript:void(0);"
+	title="MIT Professional Education - Online X Programs
+	Video 3.1.11"
+	data-page-title="MIT Professional Education - Online X Programs"
+	aria-controls="seq_contents_10"
+	id="tab_10"
+	tabindex="0">
+	<i class="icon fa seq_video" aria-hidden="true"></i>
+	<p><span class="sr">video</span> MIT Professional Education - Online X
+Programs
+	Video 3.1.11</p>
+	</a>
+	</li>
+	</ol>
+	</nav>
+	<button class="sequence-nav-button button-next"><span class="icon fa
+fa-chevron-right" aria-hidden="true"></span><span
+class="sr">Next</span></button>
+	</div>
+
+	<div class="sr-is-focusable" tabindex="-1"></div>
+
+	<div id="seq_contents_0"
+	aria-labelledby="tab_0"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_b966642d5bc44aee816fd8f3de4bb8d1&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/70424ea28bee45e3bb770fe45598dbb5&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_70424ea28bee45e3bb770fe45598dbb5&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/0a86a41f783e4879b21552dde0b086ef&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_0a86a41f783e4879b21552dde0b086ef&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.1&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0301R2_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0301R2_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0301R2_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0301R2_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0301R2_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_0a86a41f783e4879b21552dde0b086ef/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;387.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_0a86a41f783e4879b21552dde0b086ef/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_0a86a41f783e4879b21552dde0b086ef/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-0a86a41f783e4879b21552dde0b086ef&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_0a86a41f783e4879b21552dde0b086ef/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_1"
+	aria-labelledby="tab_1"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_4871fafab4a24ce194a684ed5b405fc3&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/6d8e80c503b44dbbabdbcb0a22ea5a3c&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_6d8e80c503b44dbbabdbcb0a22ea5a3c&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/2805e15c93384a29b17f965e5d183e78&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_2805e15c93384a29b17f965e5d183e78&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.2&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0302R1_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0302R1_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0302R1_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0302R1_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0302R1_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_2805e15c93384a29b17f965e5d183e78/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;787.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_2805e15c93384a29b17f965e5d183e78/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_2805e15c93384a29b17f965e5d183e78/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-2805e15c93384a29b17f965e5d183e78&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_2805e15c93384a29b17f965e5d183e78/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_2"
+	aria-labelledby="tab_2"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_40ae0f141a524447bb2db49ff91f9169&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/4193c986005b4f8ab9823ada6ea95d27&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_4193c986005b4f8ab9823ada6ea95d27&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/e4787fdd82fa494896a47935e5032a05&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_e4787fdd82fa494896a47935e5032a05&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.3&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0303A1_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303A1_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303A1_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303A1_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303A1_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_e4787fdd82fa494896a47935e5032a05/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;0.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_e4787fdd82fa494896a47935e5032a05/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_e4787fdd82fa494896a47935e5032a05/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-e4787fdd82fa494896a47935e5032a05&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_e4787fdd82fa494896a47935e5032a05/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_3"
+	aria-labelledby="tab_3"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_814f5ea904644455ab599f6d6ab2ef08&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/5a76c2db82bb45fc96bb7e21ec8d16e4&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_5a76c2db82bb45fc96bb7e21ec8d16e4&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/66bc6e2c96e34682aaec9c8a33be4424&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_66bc6e2c96e34682aaec9c8a33be4424&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.4&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0303B0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303B0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303B0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303B0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0303B0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_66bc6e2c96e34682aaec9c8a33be4424/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;301.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_66bc6e2c96e34682aaec9c8a33be4424/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_66bc6e2c96e34682aaec9c8a33be4424/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-66bc6e2c96e34682aaec9c8a33be4424&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_66bc6e2c96e34682aaec9c8a33be4424/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_4"
+	aria-labelledby="tab_4"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_62269d89eacf4561aafbfc4319db7164&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/ab4eb70eba8d4e4cb8ada2097f71cf63&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_ab4eb70eba8d4e4cb8ada2097f71cf63&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/80c536584521435097895144c2fa1452&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_80c536584521435097895144c2fa1452&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.5&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0304A2_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304A2_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304A2_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304A2_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304A2_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_80c536584521435097895144c2fa1452/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;575.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_80c536584521435097895144c2fa1452/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_80c536584521435097895144c2fa1452/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-80c536584521435097895144c2fa1452&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_80c536584521435097895144c2fa1452/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_5"
+	aria-labelledby="tab_5"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_cd18f90aafbd44068af5fe6416379210&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/27109bfc80444b74844c5f97e6384c0e&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_27109bfc80444b74844c5f97e6384c0e&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/34c6e13e9ebb46468b629f75ad7a9b8d&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_34c6e13e9ebb46468b629f75ad7a9b8d&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.6&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0304B0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304B0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304B0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304B0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304B0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_34c6e13e9ebb46468b629f75ad7a9b8d/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;353.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_34c6e13e9ebb46468b629f75ad7a9b8d/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_34c6e13e9ebb46468b629f75ad7a9b8d/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-34c6e13e9ebb46468b629f75ad7a9b8d&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_34c6e13e9ebb46468b629f75ad7a9b8d/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_6"
+	aria-labelledby="tab_6"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_e31b374c44ae48a3b2bfd31d6d3bfa8d&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/f7d21b0e0e4b442e81ae09ac195f6946&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_f7d21b0e0e4b442e81ae09ac195f6946&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/51ec827cfe254e9fa5ab30346812e916&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_51ec827cfe254e9fa5ab30346812e916&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.7&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0304C0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304C0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304C0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304C0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0304C0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_51ec827cfe254e9fa5ab30346812e916/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;189.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_51ec827cfe254e9fa5ab30346812e916/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_51ec827cfe254e9fa5ab30346812e916/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-51ec827cfe254e9fa5ab30346812e916&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_51ec827cfe254e9fa5ab30346812e916/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_7"
+	aria-labelledby="tab_7"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_8fd28b6b37bb4147bfe2185724f2224f&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/1e0f7b7ffa2244519366628608700141&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_1e0f7b7ffa2244519366628608700141&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/1ceb3bf1a2a64b2bbf4d024d4d414419&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_1ceb3bf1a2a64b2bbf4d024d4d414419&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.8&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0305A0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305A0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305A0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305A0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305A0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_1ceb3bf1a2a64b2bbf4d024d4d414419/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;377.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_1ceb3bf1a2a64b2bbf4d024d4d414419/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_1ceb3bf1a2a64b2bbf4d024d4d414419/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-1ceb3bf1a2a64b2bbf4d024d4d414419&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_1ceb3bf1a2a64b2bbf4d024d4d414419/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_8"
+	aria-labelledby="tab_8"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_266eb242730d40258ddf96bfba3ec33c&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/83a31d8441ef47abafc13b10e0c5ff3f&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_83a31d8441ef47abafc13b10e0c5ff3f&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/930814d34f394069a01473c04502d590&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_930814d34f394069a01473c04502d590&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.9&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0305B0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305B0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305B0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305B0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0305B0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_930814d34f394069a01473c04502d590/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;248.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_930814d34f394069a01473c04502d590/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_930814d34f394069a01473c04502d590/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-930814d34f394069a01473c04502d590&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_930814d34f394069a01473c04502d590/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_9"
+	aria-labelledby="tab_9"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_4bc2ec0f1ba149458c30629f0edc318d&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/82db10611a3f49ad81e7ace4e9e02c42&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_82db10611a3f49ad81e7ace4e9e02c42&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/8c7d1d72264046d096e3ce0e45ca0ca3&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_8c7d1d72264046d096e3ce0e45ca0ca3&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.10&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0306A0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306A0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306A0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306A0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306A0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_8c7d1d72264046d096e3ce0e45ca0ca3/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;252.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_8c7d1d72264046d096e3ce0e45ca0ca3/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_8c7d1d72264046d096e3ce0e45ca0ca3/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-8c7d1d72264046d096e3ce0e45ca0ca3&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_8c7d1d72264046d096e3ce0e45ca0ca3/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_contents_10"
+	aria-labelledby="tab_10"
+	aria-hidden="true"
+	class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+	&lt;div class=&#34;xblock xblock-student_view
+xblock-student_view-vertical&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_vertical;_cca233dd1955482cabc06831c6a86137&#34;
+data-block-type=&#34;vertical&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;div class=&#34;vert-mod&#34;&gt;
+	&lt;div class=&#34;vert vert-0&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/html/f593a537a77b49f780e970981a144ff3&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-html
+xmodule_display xmodule_HtmlModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_html;_f593a537a77b49f780e970981a144ff3&#34;
+data-type=&#34;HTMLModule&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+	&lt;/script&gt;
+	&lt;p&gt;&lt;img alt=&#34;MIT Professional Education Online X
+Program&#34;
+src=&#34;/c4x/MITProfessionalX/6.BD_2X/asset/MITPE-OnlineX-Programs-Logo.jpg&#34;
+/&gt;&lt;/p&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;div class=&#34;vert vert-1&#34;
+data-id=&#34;i4x://MITProfessionalX/6.BD_2X/video/4bcf399652884418a6ed758aafb06367&#34;&gt;
+	&lt;div class=&#34;xblock xblock-student_view xblock-student_view-video
+xmodule_display xmodule_VideoModule&#34;
+data-runtime-class=&#34;LmsRuntime&#34;
+data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34;
+data-request-token=&#34;efe0229006df11e584381286d0864b53&#34;
+data-runtime-version=&#34;1&#34;
+data-usage-id=&#34;i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_4bcf399652884418a6ed758aafb06367&#34;
+data-type=&#34;Video&#34;
+data-course-id=&#34;MITProfessionalX/6.BD_2X/3T2015&#34;&gt;
+	&lt;script type=&#34;json/xblock-args&#34;
+class=&#34;xblock-json-init-args&#34;&gt;
+	{&#34;xmodule-type&#34;: &#34;Video&#34;}
+	&lt;/script&gt;
+
+
+	&lt;h2&gt;Video 3.1.11&lt;/h2&gt;
+
+	&lt;div
+	id=&#34;video_i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;
+	class=&#34;video closed&#34;
+
+	data-streams=&#34;&#34;
+
+	data-sub=&#34;MITBIGDAT313-G0306B0_100&#34;
+
+	data-sources=&#39;[&#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306B0_100.mp4&#34 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306B0_100.mp4&#34>;, &#34;https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306B0_100.webm&#34;]&#39 <https://d2f1egay8yehza.cloudfront.net/mit-bigdata/MITBIGDAT313-G0306B0_100.webm&#34;]&%2339>;
+	data-save-state-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_4bcf399652884418a6ed758aafb06367/handler/xmodule_handler/save_user_state&#34;
+	data-caption-data-dir=&#34;None&#34;
+	data-show-captions=&#34;true&#34;
+	data-general-speed=&#34;1.0&#34;
+	data-speed=&#34;null&#34;
+	data-saved-video-position=&#34;361.0&#34;
+	data-start=&#34;0.0&#34;
+	data-end=&#34;0.0&#34;
+	data-transcript-language=&#34;en&#34;
+	data-transcript-languages=&#39;{&#34;en&#34;: &#34;English&#34;}&#39;
+	data-autoplay=&#34;False&#34;
+	data-yt-test-timeout=&#34;1500&#34;
+	data-yt-api-url=&#34;www.youtube.com/iframe_api&#34
+<http://www.youtube.com/iframe_api&#34>;
+	data-yt-test-url=&#34;gdata.youtube.com/feeds/api/videos/&#34
+<http://gdata.youtube.com/feeds/api/videos/&#34>;
+	data-transcript-translation-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_4bcf399652884418a6ed758aafb06367/handler/transcript/translation&#34;
+	data-transcript-available-translations-url=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_4bcf399652884418a6ed758aafb06367/handler/transcript/available_translations&#34;
+
+	data-autohide-html5=&#34;False&#34;
+
+	tabindex=&#34;-1&#34;
+	&gt;
+	&lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+	&lt;div class=&#34;tc-wrapper&#34;&gt;
+	&lt;a
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;
+class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this
+video&#39;s transcript.&lt;/a&gt;
+
+	&lt;article class=&#34;video-wrapper&#34;&gt;
+	&lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34;
+aria-hidden=&#34;false&#34; aria-label=&#34;Loading video
+player&#34;&gt;&lt;/span&gt;
+	&lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34;
+aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+	&lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-player&#34;&gt;
+	&lt;div
+id=&#34;i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;&gt;&lt;/div&gt;
+	&lt;h3 class=&#34;hidden&#34;&gt;No playable video sources
+found.&lt;/h3&gt;
+	&lt;/section&gt;
+	&lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+	&lt;section class=&#34;video-controls is-hidden&#34;&gt;
+	&lt;div class=&#34;slider&#34; title=&#34;Video
+position&#34;&gt;&lt;/div&gt;
+	&lt;div&gt;
+	&lt;ul class=&#34;vcr&#34;&gt;
+	&lt;li&gt;&lt;a class=&#34;video_control&#34; href=&#34;#&#34;
+title=&#34;Play&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;&lt;/a&gt;&lt;/li&gt;
+	&lt;li&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 /
+0:00&lt;/div&gt;&lt;/li&gt;
+	&lt;/ul&gt;
+	&lt;div class=&#34;secondary-controls&#34;&gt;
+	&lt;div class=&#34;speeds menu-container&#34;&gt;
+	&lt;a class=&#34;speed-button&#34; href=&#34;#&#34;
+title=&#34;Speeds&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;
+	&lt;span class=&#34;label&#34;&gt;Speed&lt;/span&gt;
+	&lt;span class=&#34;value&#34;&gt;&lt;/span&gt;
+	&lt;/a&gt;
+	&lt;ol class=&#34;video-speeds menu&#34; role=&#34;menu&#34;&gt;&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;div class=&#34;volume&#34;&gt;
+	&lt;a href=&#34;#&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34; title=&#34;Volume&#34;
+aria-label=&#34;Click on this button to mute or unmute this video or
+press UP or DOWN buttons to increase or decrease volume
+level.&#34;&gt;&lt;/a&gt;
+	&lt;div role=&#34;presentation&#34;
+class=&#34;volume-slider-container&#34;&gt;
+	&lt;div class=&#34;volume-slider&#34;&gt;&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;a href=&#34;#&#34; class=&#34;add-fullscreen&#34; title=&#34;Fill
+browser&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;Fill
+browser&lt;/a&gt;
+	&lt;a href=&#34;#&#34; class=&#34;quality-control is-hidden&#34;
+title=&#34;HD off&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;HD off&lt;/a&gt;
+
+	&lt;div class=&#34;lang menu-container&#34;&gt;
+	&lt;a href=&#34;#&#34; class=&#34;hide-subtitles&#34; title=&#34;Turn
+off captions&#34; role=&#34;button&#34;
+aria-disabled=&#34;false&#34;&gt;Turn off captions&lt;/a&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/div&gt;
+	&lt;/section&gt;
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;before-transcript_i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;
+href=&#34;#after-transcript_i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;&gt;Skip
+to end of transcript.&lt;/a&gt;
+	&lt;/article&gt;
+
+	&lt;ol id=&#34;transcript-captions&#34; class=&#34;subtitles&#34;
+tabindex=&#34;0&#34; role=&#34;group&#34; aria-label=&#34;Activating an
+item in this group will spool the video to the corresponding time point.
+To skip transcript, go to previous item.&#34;&gt;
+	&lt;li&gt;&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+
+	&lt;a class=&#34;nav-skip sr&#34;
+id=&#34;after-transcript_i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;
+href=&#34;#before-transcript_i4x-MITProfessionalX-6_BD_2X-video-4bcf399652884418a6ed758aafb06367&#34;&gt;Go
+back to start of transcript.&lt;/a&gt;
+
+	&lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+	&lt;ul class=&#34;wrapper-downloads&#34;&gt;
+	&lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+	&lt;a
+href=&#34;/courses/MITProfessionalX/6.BD_2X/3T2015/xblock/i4x:;_;_MITProfessionalX;_6.BD_2X;_video;_4bcf399652884418a6ed758aafb06367/handler/transcript/download&#34;&gt;Download
+transcript&lt;/a&gt;
+	&lt;div class=&#34;a11y-menu-container&#34;&gt;
+	&lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34;
+title=&#34;.srt&#34;&gt;.srt&lt;/a&gt;
+	&lt;ol class=&#34;a11y-menu-list&#34;&gt;
+	&lt;li class=&#34;a11y-menu-item active&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34;
+title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34;&gt;
+	SubRip (.srt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;li class=&#34;a11y-menu-item&#34;&gt;
+
+	&lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34;
+title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34;&gt;
+	Text (.txt) file
+	&lt;/a&gt;
+	&lt;/li&gt;
+	&lt;/ol&gt;
+	&lt;/div&gt;
+	&lt;/li&gt;
+
+	&lt;/ul&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+	&lt;/div&gt;
+
+	&lt;/div&gt;
+
+	</div>
+	<div id="seq_content"></div>
+
+	<nav class="sequence-bottom" aria-label="Section">
+	<button class="sequence-nav-button button-previous"><span class="icon
+fa fa-chevron-left" aria-hidden="true"></span><span
+class="sr">Previous</span></button>
+	<button class="sequence-nav-button button-next"><span class="icon fa
+fa-chevron-right" aria-hidden="true"></span><span
+class="sr">Next</span></button>
+	</nav>
+	</div>
+
+
+
+	<script type="text/javascript">
+	var sequenceNav;
+	$(document).ready(function() {
+	sequenceNav = new SequenceNav($('.sequence-nav'));
+	});
+	</script>
+
+	</div>
+
+	</section>
+	</div>
+	</div>
+	<div class="container-footer">
+	<div class="course-license">
+
+
+
+	© <span class="license-text">All Rights Reserved</span>
+
+	</div>
+	</div>
+
+	<nav class="nav-utilities " aria-label="Course Utilities">
+
+
+	</nav>
+
+
+	<div id="accessibile-confirm-modal" class="modal" aria-hidden="true">
+	<div class="inner-wrapper" role="dialog"
+aria-labelledby="accessibile-confirm-title">
+	<button class="close-modal">
+	<i class="icon fa fa-remove"></i>
+	<span class="sr">
+	Close
+	</span>
+	</button>
+
+	<header>
+	<h2 id="accessibile-confirm-title">
+	Confirm
+	<span class="sr">,
+	modal open
+	</span>
+	</h2>
+	</header>
+	<div role="alertdialog" class="status message" tabindex="-1">
+	<p class="message-title"></p>
+	</div>
+	<hr aria-hidden="true" />
+	<div class="actions">
+	<button class="dismiss ok-button">OK</button>
+	<button class="dismiss cancel-button"
+data-dismiss="leanModal">Cancel</button>
+	</div>
+	</div>
+	<a href="#accessibile-confirm-modal
+<https://mitprofessionalx.mit.edu/courses/MITProfessionalX/6.BD_2X/3T2015/courseware/78ae59bfd7bf41069bdfdf7aa099db3d/57085f76dfae4e2dab671fce20dd311f/#accessibile-confirm-modal>"
+rel="leanModal" id="confirm_open_button" style="display:none">open</a>
+	</div>
+
+	<script type="text/javascript">
+	var accessible_confirm = function(message, callback) {
+	$("#accessibile-confirm-modal .cancel-button").click(function(){
+	$("#accessibile-confirm-modal .close-modal").click();
+	});
+	$("#accessibile-confirm-modal .ok-button").click(function(){
+	$("#accessibile-confirm-modal .close-modal").click();
+	callback();
+	});
+
+	accessible_modal("#accessibile-confirm-modal #confirm_open_button",
+"#accessibile-confirm-modal .close-modal", "#accessibile-confirm-modal",
+".content-wrapper");
+	$("#accessibile-confirm-modal #confirm_open_button").click();
+	$("#accessibile-confirm-modal .message-title").html(message);
+	};
+	</script>
+
+
+
+	</div>
+
+
+
+
+
+
+
+
+
+
+
+	<div class="wrapper wrapper-footer">
+	<footer>
+	<div class="colophon">
+	<nav class="nav-colophon">
+	<ol>
+	<li class="nav-colophon-01">
+	<a id="about" href="/about <https://mitprofessionalx.mit.edu/about>">
+	About Us
+	</a>
+	</li>
+	<li class="nav-colophon-04">
+	<a id="faq" href="/press <https://mitprofessionalx.mit.edu/press>">
+	Press
+	</a>
+	</li>
+	<li class="nav-colophon-04">
+	<a id="faq" href="/faq <https://mitprofessionalx.mit.edu/faq>">
+	FAQ
+	</a>
+	</li>
+	<li class="nav-colophon-05">
+	<a id="contact" href="/contact <https://mitprofessionalx.mit.edu/contact>">
+	Contact
+	</a>
+	</li>
+	</ol>
+	</nav>
+	<div class="colophon-about">
+	<img class='mit-prof-ed-footer-logo'
+src="https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/MITPE-Digital-Programs-Logo.aace51933fe0.png
+<https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/MITPE-Digital-Programs-Logo.aace51933fe0.png>"
+/>
+
+	<p>
+	MIT Professional Education aims to deliver timely, relevant programs to
+a global audience of scientists, engineers, technicians, managers,
+consultants, and others from industry, government, the military,
+non-profit, and academia. For more information visit <a
+href='http://web.mit.edu/professional
+<http://web.mit.edu/professional>'>http://web.mit.edu/professional
+<http://web.mit.edu/professional></a>.
+	</p>
+	</div>
+	</div>
+
+	<div class="references">
+
+	<nav class="nav-social">
+	<ul>
+	<li class="nav-social-02">
+	<a href="https://www.facebook.com/MITProfessionalEducation
+<https://www.facebook.com/MITProfessionalEducation>" rel="external">
+	<img
+src="https://d37djvu3ytnwxt.cloudfront.net/static/images/social/ico-social-facebook.6757cc212a18.png
+<https://d37djvu3ytnwxt.cloudfront.net/static/images/social/ico-social-facebook.6757cc212a18.png>"
+alt="MIT Professional Education Digital Programs on Facebook" />
+	</a>
+	</li>
+	<li class="nav-social-03">
+	<a href="https://twitter.com/mitprofessional
+<https://twitter.com/mitprofessional>" target="_blank" rel="external">
+	<img
+src="https://d37djvu3ytnwxt.cloudfront.net/static/images/social/ico-social-twitter.59116eaa21b7.png
+<https://d37djvu3ytnwxt.cloudfront.net/static/images/social/ico-social-twitter.59116eaa21b7.png>"
+alt="MIT Professional Education Digital Programs on Twitter" />
+	</a>
+	</li>
+	<li class="nav-social-04">
+	<a
+href="http://www.linkedin.com/groups/MIT-Professional-Education-73833/about
+<http://www.linkedin.com/groups/MIT-Professional-Education-73833/about>"
+rel="external">
+	<img
+src="https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/social-linkedin.5c1fd37d4f96.png
+<https://d37djvu3ytnwxt.cloudfront.net/static/mit-prof-ed/images/social-linkedin.5c1fd37d4f96.png>"
+alt="MIT Professional Education Digital Programs on Linkedin" />
+	</a>
+	</li>
+	<li class="nav-social-05">
+	<a href="https://www.youtube.com/user/MITProfessionalEd
+<https://www.youtube.com/user/MITProfessionalEd>" target="_blank"
+rel="external">
+	<img
+src="https://d37djvu3ytnwxt.cloudfront.net/static/images/social/ico-social-youtube.909f05910c79.png
+<https://d37djvu3ytnwxt.cloudfront.net/static/images/social/ico-social-youtube.909f05910c79.png>"
+alt="MIT Professional Education Digital Programs on YouTube" />
+	</a>
+	</li>
+	</ul>
+	</nav>
+	<p class='copyright'>
+	&copy;2015 edX, some rights reserved
+	</p>
+
+	<nav class="nav-legal">
+
+	<div class='powered-by-edx'>
+	<p class='powered-by-edx-text'>
+	Powered by <a href='http://www.edx.org <http://www.edx.org/>'>edX</a>
+	</p>
+	</div>
+	<ul>
+	<li class="nav-legal-01">
+	<a href="/tos <https://mitprofessionalx.mit.edu/tos>"
+target="_blank">TOS</a>
+	</li>
+	<li class="nav-legal-01">
+	<a href="/honor <https://mitprofessionalx.mit.edu/honor>"
+target="_blank">Honor Code</a>
+	</li>
+	<li class="nav-legal-03">
+	<a href="/privacy <https://mitprofessionalx.mit.edu/privacy>"
+target="_blank">Privacy Policy</a>
+	</li>
+	</ul>
+	</nav>
+	</div>
+	</footer>
+	</div>
+
+
+
+
+	</div>
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-application.8e75986788d9.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-application.8e75986788d9.js>"
+charset="utf-8"></script>
+
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-modules.a8528e38b16f.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-modules.a8528e38b16f.js>"
+charset="utf-8"></script>
+
+
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.scrollTo-1.4.2-min.4aa3e2dfa312.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.scrollTo-1.4.2-min.4aa3e2dfa312.js>"></script>
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/flot/jquery.flot.d3d45ff0c6a8.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/flot/jquery.flot.d3d45ff0c6a8.js>"></script>
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/codemirror-compressed.dd4b74f7c5fe.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/codemirror-compressed.dd4b74f7c5fe.js>"></script>
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-courseware.494336f1b837.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-courseware.494336f1b837.js>"
+charset="utf-8"></script>
+
+
+
+	<script type="text/javascript"
+src="https://d37djvu3ytnwxt.cloudfront.net/static/js/discussion.9c9805d78967.js
+<https://d37djvu3ytnwxt.cloudfront.net/static/js/discussion.9c9805d78967.js>"
+charset="utf-8"></script>
+
+
+
+
+
+
+
+	<script type="text/x-mathjax-config">
+	MathJax.Hub.Config({
+	tex2jax: {
+	inlineMath: [
+	["\\(","\\)"],
+	['[mathjaxinline]','[/mathjaxinline]']
+	],
+	displayMath: [
+	["\\[","\\]"],
+	['[mathjax]','[/mathjax]']
+	]
+	}
+	});
+	</script>
+	<script type="text/x-mathjax-config">
+	window.HUB = MathJax.Hub;
+	MathJax.Hub.signal.Interest(function(message) {
+	if(message[0] === "End Math") {
+	set_mathjax_display_div_settings();
+	}
+	});
+	function set_mathjax_display_div_settings() {
+	$('.MathJax_Display').each(function( index ) {
+	this.setAttribute('tabindex', '0');
+	this.setAttribute('aria-live', 'off');
+	this.removeAttribute('role');
+	this.removeAttribute('aria-readonly');
+	});
+	}
+	</script>
+
+
+	<!-- This must appear after all mathjax-config blocks, so it is after
+the imports from the other templates.
+	It can't be run through static.url because MathJax uses crazy url
+introspection to do lazy loading of
+	MathJax extension libraries -->
+	<script type="text/javascript"
+src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full
+<https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full>"></script>
+
+	<script type='text/template' id='_inline_discussion'>
+
+	<section class="discussion" data-discussion-id="{{discussionId}}">
+	<article class="new-post-article"></article>
+
+	<section class="threads">
+	{{#threads}}
+	<article class="discussion-thread" id="thread_{{id}}">
+	</article>
+	{{/threads}}
+	</section>
+
+	<section class="pagination">
+	</section>
+	</section>
+	</script>
+	<script type='text/template' id='_profile_thread'>
+
+	<article class="discussion-article" data-id="{{id}}">
+	<div class="discussion-post">
+	<header>
+	<h3>{{title}}</h3>
+	<p class="posted-details">
+	{{#user}}
+	<a href="{{user_url}}" class="username">{{username}}</a>
+	{{/user}}
+	{{^user}}
+	anonymous
+	{{/user}}
+
+	<span class="timeago" title="{{created_at}}">{{created_at}}</span>
+	<span class="post-status-closed top-post-status" style="display: none">
+	&bull; This thread is closed.
+	</span>
+	</p>
+	</header>
+	<div class="post-body">{{{abbreviatedBody}}}</div>
+	</div>
+	<div class="post-tools">
+	<a href="{{permalink}}">View discussion</a>
+	</div>
+
+	</article>
+	</script>
+	<script type='text/template' id='_pagination'>
+
+	<nav class="discussion-{{discussiontype}}-paginator discussion-paginator">
+	<ol>
+	{{#previous}}
+	<li><a class="discussion-pagination" href="{{url}}"
+data-page-number="{{number}}">&lt; Previous</a></li>
+	{{/previous}}
+	{{#first}}
+	<li><a class="discussion-pagination" href="{{url}}"
+data-page-number="1">1</a></li>
+	{{/first}}
+	{{#leftdots}}
+	<li>…</li>
+	{{/leftdots}}
+
+	{{#lowPages}}
+	<li><a class="discussion-pagination" href="{{url}}"
+data-page-number="{{number}}">{{number}}</a></li>
+	{{/lowPages}}
+	<li class="current-page"><span>{{page}}</span></li>
+	{{#highPages}}
+	<li><a class="discussion-pagination" href="{{url}}"
+data-page-number="{{number}}">{{number}}</a></li>
+	{{/highPages}}
+
+	{{#rightdots}}
+	<li>…</li>
+	{{/rightdots}}
+	{{#last}}
+	<li><a class="discussion-pagination" href="{{url}}"
+data-page-number="{{number}}">{{number}}</a></li>
+	{{/last}}
+	{{#next}}
+	<li><a class="discussion-pagination" href="{{url}}"
+data-page-number="{{number}}">Next &gt;</a></li>
+	{{/next}}
+	</ol>
+	</nav>
+
+	</script>
+	<script type='text/template' id='_user_profile'>
+
+	<h2>Active Threads</h2>
+	<section class="discussion">
+	{{#threads}}
+	<article class="discussion-thread" id="thread_{{id}}"/>
+	{{/threads}}
+	</section>
+	<section class="pagination"/>
+	</script>
+
+
+	<script type="text/javascript">
+	var $$course_id = "MITProfessionalX/6.BD_2X/3T2015";
+
+	$(function(){
+	$(".ui-accordion-header a, .ui-accordion-content
+.subtitle").each(function() {
+	var elemText = $(this).text().replace(/^\s+|\s+$/g,''); // Strip
+leading and trailing whitespace
+	var wordArray = elemText.split(" ");
+	var finalTitle = "";
+	if (wordArray.length > 0) {
+	for (i=0;i<=wordArray.length-1;i++) {
+	finalTitle += wordArray[i];
+	if (i == (wordArray.length-2)) {
+	finalTitle += "&nbsp;";
+	} else if (i == (wordArray.length-1)) {
+	// Do nothing
+	} else {
+	finalTitle += " ";
+	}
+	}
+	}
+	$(this).html(finalTitle);
+	});
+	});
+	</script>
+
+
+
+
+
+	</body>
+	</html>
+
+
+
+	<!-- Performance beacon for onload times -->
+	<script>
+	(function () {
+	var sample_rate = 0.05;
+	var roll = Math.floor(Math.random() * 100)/100;
+	var onloadBeaconSent = false;
+
+	if(roll < sample_rate){
+	$(window).load(function() {
+	setTimeout(function(){
+	var t = window.performance.timing;
+
+	var data = {
+	event: "onload",
+	value: t.loadEventEnd - t.navigationStart,
+	page: window.location.href,
+	};
+
+	if (!onloadBeaconSent) {
+	$.ajax({method: "POST", url: "/performance", data: data});
+	}
+	onloadBeaconSent = true;
+	}, 0);
+	});
+	}
+	}());
+	</script>

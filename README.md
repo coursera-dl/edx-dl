@@ -36,7 +36,7 @@ https://courses.edx.org/courses/edX/DemoX.1/2014/info
 
 You must pass the URL of at least one course, you can check the correct url
 
-    python edx-dl.py -u user@user.com -p password --course-list
+    python edx-dl.py -u user@user.com -p password --list-courses
 
 Your downloaded videos will be placed in a new Directory called
 `Downloaded`, but you can also choose another destination with the `-o`

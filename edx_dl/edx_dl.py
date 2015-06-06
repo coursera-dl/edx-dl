@@ -1,17 +1,18 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+"""
+Main module for the edx-dl downloader.
+It corresponds to the cli interface
+"""
+
 import argparse
 import json
 import os
-import re
 import sys
 
-from collections import namedtuple
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
-
-from bs4 import BeautifulSoup as BeautifulSoup_
 
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.error import HTTPError, URLError
@@ -25,9 +26,16 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
+from .common import YOUTUBE_DL_CMD, Unit
 from .compat import compat_print
-from .parsing import edx_json2srt
+from .parsing import (
+    edx_json2srt,
+    extract_courses_from_html,
+    extract_sections_from_html,
+    extract_units_from_html,
+)
 from .utils import (
+    clean_filename,
     directory_name,
     execute_command,
     get_filename_from_prefix,
@@ -36,8 +44,6 @@ from .utils import (
     mkdir_p,
 )
 
-# Force use of bs4 with html5lib
-BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
 OPENEDX_SITES = {
     'edx': {
@@ -75,36 +81,6 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
-#
-# The next four named tuples represent the structure of courses in edX.  The
-# structure is:
-#
-# * A Course contains Sections
-# * Each Section contains Subsections
-# * Each Subsection contains Units
-#
-# Notice that we don't represent the full tree structure for both performance
-# and UX reasons:
-#
-# Course ->  [Section] -> [SubSection] -> [Unit]
-#
-# In the script the data structures used are:
-#
-# 1. The data structures to represent the course information:
-#    Course, Section->[SubSection]
-#
-# 2. The data structures to represent the chosen courses and sections:
-#    selections = {Course, [Section]}
-#
-# 3. The data structure of all the downloable resources which represent each
-#    subsection via its URL and the of resources who can be extracted from the
-#    Units it contains:
-#    all_units = {Subsection.url: [Unit]}
-#
-Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
-Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
-SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit', ['video_youtube_url', 'available_subs_url', 'sub_template_url', 'mp4_urls', 'pdf_urls'])
 
 def change_openedx_site(site_name):
     """
@@ -141,29 +117,8 @@ def get_courses_info(url, headers):
     """
     Extracts the courses information from the dashboard.
     """
-    dash = get_page_contents(url, headers)
-    soup = BeautifulSoup(dash)
-    courses_soup = soup.find_all('article', 'course')
-    courses = []
-    for course_soup in courses_soup:
-        course_id = None
-        course_name = course_soup.h3.text.strip()
-        course_url = None
-        course_state = 'Not yet'
-        try:
-            # started courses include the course link in the href attribute
-            course_url = BASE_URL + course_soup.a['href']
-            if course_url.endswith('info') or course_url.endswith('info/'):
-                course_state = 'Started'
-            # The id of a course in edX is composed by the path
-            # {organization}/{course_number}/{course_run]
-            course_id = course_soup.a['href'][9:-5]
-        except KeyError:
-            pass
-        courses.append(Course(id=course_id,
-                              name=course_name,
-                              url=course_url,
-                              state=course_state))
+    page = get_page_contents(url, headers)
+    courses = extract_courses_from_html(page, BASE_URL)
     return courses
 
 
@@ -192,30 +147,8 @@ def get_available_sections(url, headers):
     """
     Extracts the sections and subsections from a given url
     """
-    def _make_url(section_soup):  # FIXME: Extract from here and test
-        return BASE_URL + section_soup.ul.find('a')['href']
-
-    def _get_section_name(section_soup):  # FIXME: Extract from here and test
-        return section_soup.h3.a.string.strip()
-
-    def _make_subsections(section_soup):
-        subsections_soup = section_soup.ul.find_all("li")
-        # FIXME correct extraction of subsection.name (unicode)
-        subsections = [SubSection(position=i,
-                                  url=BASE_URL + s.a['href'],
-                                  name=s.p.string)
-                       for i, s in enumerate(subsections_soup, 1)]
-        return subsections
-
-    courseware = get_page_contents(url, headers)
-    soup = BeautifulSoup(courseware)
-    sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
-
-    sections = [Section(position=i,
-                        name=_get_section_name(section_soup),
-                        url=_make_url(section_soup),
-                        subsections=_make_subsections(section_soup))
-                for i, section_soup in enumerate(sections_soup, 1)]
+    page = get_page_contents(url, headers)
+    sections = extract_sections_from_html(page, BASE_URL)
     return sections
 
 
@@ -299,30 +232,31 @@ def parse_args():
                         dest='platform',
                         help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
                         default='edx')
-    parser.add_argument('-cl',
-                        '--course-list',
-                        dest='course_list',
+    parser.add_argument('--list-courses',
+                        dest='list_courses',
                         action='store_true',
                         default=False,
                         help='list available courses')
-    parser.add_argument('-sf',
-                        '--section-filter',
-                        dest='section_filter',
+    parser.add_argument('--filter-section',
+                        dest='filter_section',
                         action='store',
                         default=None,
                         help='filters sections to be downloaded')
-    parser.add_argument('-sl',
-                        '--section-list',
-                        dest='section_list',
+    parser.add_argument('--list-sections',
+                        dest='list_sections',
                         action='store_true',
                         default=False,
                         help='list available sections')
-    parser.add_argument('-yo',
-                        '--youtube-options',
+    parser.add_argument('--youtube-options',
                         dest='youtube_options',
                         action='store',
                         default='',
                         help='list available courses without downloading')
+    parser.add_argument('--prefer-cdn-videos',
+                        dest='prefer_cdn_videos',
+                        action='store_true',
+                        default=False,
+                        help='prefer CDN video downloads over youtube (BETA)')
 
     args = parser.parse_args()
     return args
@@ -347,63 +281,9 @@ def extract_units(url, headers):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
-    compat_print("Processing '%s'..." % url)
+    compat_print("Processing '%s'" % url)
     page = get_page_contents(url, headers)
-    units = extract_units_from_html(page)
-    return units
-
-
-def extract_units_from_html(page):
-    """
-    Extract Units from the html of a subsection webpage
-    """
-    # in this function we avoid using beautifulsoup for performance reasons
-
-    # parsing html with regular expressions is really nasty, don't do this if
-    # you don't need to !
-    re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
-    re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
-    re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-
-    # mp4 urls may be in two places, in the field data-sources, and as <a> refs
-    # This regex tries to match all the appearances, however we exclude the ';'
-    # character in the urls, since it is used to separate multiple urls in one
-    # string, however ';' is a valid url name character, but it is not really
-    # common.
-    re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
-    re_pdf_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
-
-    units = []
-    for unit_html in re_units.findall(page):
-        video_youtube_url = None
-        match_video_youtube_url = re_video_youtube_url.search(unit_html)
-        if match_video_youtube_url is not None:
-            video_id = match_video_youtube_url.group(1)
-            video_youtube_url = 'https://youtube.com/watch?v=' + video_id
-
-        available_subs_url = None
-        sub_template_url = None
-        match_subs = re_sub_template_url.search(unit_html)
-        if match_subs:
-            match_available_subs = re_available_subs_url.search(unit_html)
-            if match_available_subs:
-                available_subs_url = BASE_URL + match_available_subs.group(1)
-                sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
-
-        mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
-        pdf_urls = [url
-                    if url.startswith('http') or url.startswith('https')
-                    else BASE_URL + url
-                    for url in re_pdf_urls.findall(unit_html)]
-
-        if video_youtube_url is not None or len(mp4_urls) > 0 or len(pdf_urls) > 0:
-            units.append(Unit(video_youtube_url=video_youtube_url,
-                              available_subs_url=available_subs_url,
-                              sub_template_url=sub_template_url,
-                              mp4_urls=mp4_urls,
-                              pdf_urls=pdf_urls))
-
+    units = extract_units_from_html(page, BASE_URL)
     return units
 
 
@@ -464,11 +344,12 @@ def parse_courses(args, available_courses):
     """
     Parses courses options and returns the selected_courses
     """
-    if args.course_list:
+    if args.list_courses:
         _display_courses(available_courses)
+        exit(0)
 
     if len(args.course_urls) == 0:
-        compat_print('You must pass the URL of at least one course, check the correct url with --course-list')
+        compat_print('You must pass the URL of at least one course, check the correct url with --list-courses')
         exit(3)
 
     selected_courses = [available_course
@@ -476,7 +357,7 @@ def parse_courses(args, available_courses):
                         for url in args.course_urls
                         if available_course.url == url]
     if len(selected_courses) == 0:
-        compat_print('You have not passed a valid course url, check the correct url with --course-list')
+        compat_print('You have not passed a valid course url, check the correct url with --list-courses')
         exit(4)
     return selected_courses
 
@@ -486,16 +367,16 @@ def parse_sections(args, selections):
     Parses sections options and returns selections filtered by
     selected_sections
     """
-    if args.section_list:
+    if args.list_sections:
         for selected_course, selected_sections in selections.items():
             _display_sections_menu(selected_course, selected_sections)
         exit(0)
 
-    if not args.section_filter:
+    if not args.filter_section:
         return selections
 
     filtered_selections = {selected_course:
-                           _filter_sections(args.section_filter, selected_sections)
+                           _filter_sections(args.filter_section, selected_sections)
                            for selected_course, selected_sections in selections.items()}
     return filtered_selections
 
@@ -525,13 +406,12 @@ def _download_video_youtube(unit, args, target_dir, filename_prefix):
     Downloads the url in unit.video_youtube_url using youtube-dl
     """
     if unit.video_youtube_url is not None:
-        BASE_EXTERNAL_CMD = ['youtube-dl', '--ignore-config']
         filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
         fullname = os.path.join(target_dir, filename)
         video_format_option = args.format + '/mp4' if args.format else 'mp4'
 
-        cmd = BASE_EXTERNAL_CMD + ['-o', fullname, '-f',
-                                   video_format_option]
+        cmd = YOUTUBE_DL_CMD + ['-o', fullname, '-f',
+                                video_format_option]
         if args.subtitles:
             cmd.append('--all-subs')
         cmd.extend(args.youtube_options.split())
@@ -599,7 +479,12 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads unit based on args in the given target_dir with filename_prefix
     """
-    _download_video_youtube(unit, args, target_dir, filename_prefix)
+    if args.prefer_cdn_videos:
+        download_urls(unit.mp4_urls, target_dir, filename_prefix)
+        # FIXME: get out of the conditions once the proper downloader is ready
+        download_urls(unit.resources_urls, target_dir, filename_prefix)
+    else:
+        _download_video_youtube(unit, args, target_dir, filename_prefix)
 
     if args.subtitles:
         _download_subtitles(unit, target_dir, filename_prefix, headers)
@@ -619,7 +504,8 @@ def download(args, selections, all_units, headers):
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
             target_dir = os.path.join(args.output_dir, coursename,
-                                      section_dirname)
+                                      clean_filename(section_dirname))
+            mkdir_p(target_dir)
             counter = 0
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
@@ -630,21 +516,53 @@ def download(args, selections, all_units, headers):
                                   headers)
 
 
-def remove_repeated_video_urls(all_units):
+def remove_repeated_urls(all_units):
     """
-    Removes repeated video_urls from the selections, this avoids repeated
-    video downloads
+    Removes repeated urls from the units, it does not consider subtitles.
+    This is done to avoid repeated downloads
     """
     existing_urls = set()
     filtered_units = {}
     for url, units in all_units.items():
         reduced_units = []
         for unit in units:
+            # we don't analyze the subtitles for repetition since
+            # their size is negligible for the goal of this function
+            video_youtube_url = None
             if unit.video_youtube_url not in existing_urls:
-                reduced_units.append(unit)
+                video_youtube_url = unit.video_youtube_url
                 existing_urls.add(unit.video_youtube_url)
+            mp4_urls = []
+            for mp4_url in unit.mp4_urls:
+                if mp4_url not in existing_urls:
+                    mp4_urls.append(mp4_url)
+                    existing_urls.add(mp4_url)
+            resources_urls = []
+            for resource_url in unit.resources_urls:
+                if resource_url not in existing_urls:
+                    resources_urls.append(resource_url)
+                    existing_urls.add(resource_url)
+
+            if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
+                reduced_units.append(Unit(video_youtube_url=video_youtube_url,
+                                          available_subs_url=unit.available_subs_url,
+                                          sub_template_url=unit.sub_template_url,
+                                          mp4_urls=mp4_urls,
+                                          resources_urls=resources_urls))
         filtered_units[url] = reduced_units
     return filtered_units
+
+
+def num_urls_in_units_dict(units_dict):
+    """
+    Counts the number of urls in a all_units dict, it ignores subtitles from its
+    counting
+    """
+    return sum((1 if unit.video_youtube_url is not None else 0) +
+               (1 if unit.available_subs_url is not None else 0) +
+               (1 if unit.sub_template_url is not None else 0) +
+               len(unit.mp4_urls) + len(unit.resources_urls)
+               for units in units_dict.values() for unit in units )
 
 
 def main():
@@ -690,15 +608,15 @@ def main():
     all_units = extract_all_units(all_urls, headers)
     parse_units(selections)
 
-    # This removes all repeated video_urls
+    # This removes all repeated important urls
     # FIXME: This is not the best way to do it but it is the simplest, a
     # better approach will be to create symbolic or hard links for the repeated
     # units to avoid losing information
-    filtered_units = remove_repeated_video_urls(all_units)
-    num_all_units = sum(len(units) for units in all_units.values())
-    num_filtered_units = sum(len(units) for units in filtered_units.values())
-    compat_print('Removed %d units from total %d' % (num_all_units - num_filtered_units,
-                                                     num_all_units))
+    filtered_units = remove_repeated_urls(all_units)
+    num_all_urls = num_urls_in_units_dict(all_units)
+    num_filtered_urls = num_urls_in_units_dict(filtered_units)
+    compat_print('Removed %d duplicated urls from %d in total' %
+                 ((num_all_urls - num_filtered_urls), num_all_urls))
 
     # finally we download all the resources
     download(args, selections, all_units, headers)
