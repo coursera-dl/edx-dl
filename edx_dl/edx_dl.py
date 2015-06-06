@@ -9,6 +9,7 @@ It corresponds to the cli interface
 import argparse
 import json
 import os
+import pickle
 import sys
 
 from functools import partial
@@ -26,7 +27,7 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
-from .common import YOUTUBE_DL_CMD, Unit
+from .common import YOUTUBE_DL_CMD, DEFAULT_CACHE_FILENAME, Unit
 from .compat import compat_print
 from .parsing import (
     edx_json2srt,
@@ -257,6 +258,11 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='prefer CDN video downloads over youtube (BETA)')
+    parser.add_argument('--cache',
+                        dest='cache',
+                        action='store_true',
+                        default=False,
+                        help='uses cache to avoid reparsing already extracted items')
 
     args = parser.parse_args()
     return args
@@ -562,7 +568,37 @@ def num_urls_in_units_dict(units_dict):
                (1 if unit.available_subs_url is not None else 0) +
                (1 if unit.sub_template_url is not None else 0) +
                len(unit.mp4_urls) + len(unit.resources_urls)
-               for units in units_dict.values() for unit in units )
+               for units in units_dict.values() for unit in units)
+
+
+def extract_all_units_with_cache(filename, all_urls, headers):
+    """
+    Extracts the units who are not in the cache (filename) and returns
+    The full list of units (cached+new)
+    """
+    cached_units = {}
+    if os.path.exists(filename):
+        with open(filename, 'rb') as f:
+            cached_units = pickle.load(f)
+
+    # we filter the cached urls
+    new_urls = [url for url in all_urls if url not in cached_units]
+    compat_print('loading %d urls from cache [%s]' % (len(cached_units.keys()),
+                                                      filename))
+    new_units = extract_all_units(new_urls, headers)
+    all_units = cached_units.copy()
+    all_units.update(new_units)
+    return all_units
+
+
+def write_units_to_cache(filename, units):
+    """
+    writes units to cache
+    """
+    compat_print('writing %d urls to cache [%s]' % (len(units.keys()),
+                                                    filename))
+    with open(filename, 'wb') as f:
+        pickle.dump(units, f)
 
 
 def main():
@@ -605,8 +641,17 @@ def main():
                 for selected_sections in selections.values()
                 for selected_section in selected_sections
                 for subsection in selected_section.subsections]
-    all_units = extract_all_units(all_urls, headers)
+
+    if args.cache:
+        all_units = extract_all_units_with_cache(DEFAULT_CACHE_FILENAME,
+                                                 all_urls, headers)
+    else:
+        all_units = extract_all_units(all_urls, headers)
+
     parse_units(selections)
+
+    if args.cache:
+        write_units_to_cache(DEFAULT_CACHE_FILENAME, all_units)
 
     # This removes all repeated important urls
     # FIXME: This is not the best way to do it but it is the simplest, a
