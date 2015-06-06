@@ -263,7 +263,11 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='uses cache to avoid reparsing already extracted items')
-
+    parser.add_argument('--dry-run',
+                        dest='dry_run',
+                        action='store_true',
+                        default=False,
+                        help='makes a dry run, only lists the resources')
     args = parser.parse_args()
     return args
 
@@ -664,7 +668,8 @@ def main():
                  ((num_all_urls - num_filtered_urls), num_all_urls))
 
     # finally we download all the resources
-    download(args, selections, all_units, headers)
+    if not args.dry_run:
+        download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
