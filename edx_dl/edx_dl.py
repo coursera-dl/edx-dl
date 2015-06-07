@@ -411,25 +411,19 @@ def parse_units(all_units):
         exit(6)
 
 
-def _download_video_youtube(unit, args, target_dir, filename_prefix):
+def _build_youtube_downloads(unit, target_dir, filename_prefix):
     """
-    Downloads the url in unit.video_youtube_url using youtube-dl
+    Builds a dict {url: filename} for the youtube videos
     """
+    downloads = {}
     if unit.video_youtube_url is not None:
         filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
         fullname = os.path.join(target_dir, filename)
-        video_format_option = args.format + '/mp4' if args.format else 'mp4'
-
-        cmd = YOUTUBE_DL_CMD + ['-o', fullname, '-f',
-                                video_format_option]
-        if args.subtitles:
-            cmd.append('--all-subs')
-        cmd.extend(args.youtube_options.split())
-        cmd.append(unit.video_youtube_url)
-        execute_command(cmd)
+        downloads[unit.video_youtube_url] = fullname
+    return downloads
 
 
-def get_subtitles_download_urls(available_subs_url, sub_template_url, headers):
+def get_subtitles_urls(available_subs_url, sub_template_url, headers):
     """
     Request the available subs and builds the urls to download subs
     """
@@ -445,59 +439,118 @@ def get_subtitles_download_urls(available_subs_url, sub_template_url, headers):
     return {}
 
 
-def _download_subtitles(unit, target_dir, filename_prefix, headers):
+def _build_subtitles_downloads(unit, target_dir, filename_prefix, headers):
     """
-    Downloads the subtitles using the openedx subtitle api
+    Builds a dict {url: filename} for the subtitles, based on the
+    filename_prefix of the video
     """
+    downloads = {}
     filename = get_filename_from_prefix(target_dir, filename_prefix)
     if filename is None:
         compat_print('[warning] no video downloaded for %s' % filename_prefix)
-        return
+        return downloads
     if unit.sub_template_url is None:
         compat_print('[warning] no subtitles downloaded for %s' % filename_prefix)
-        return
+        return downloads
 
-    subtitles_download_urls = get_subtitles_download_urls(unit.available_subs_url,
-                                                          unit.sub_template_url,
-                                                          headers)
+    # This is a fix for the case of retrials because the extension would be
+    # .lang.srt (e.g. .en.srt), so the matching does not detect correctly the
+    # subtitles
+    if filename.endswith('.srt'):
+        filename = filename.split('.')[0]
+        print(filename)
+
+    subtitles_download_urls = get_subtitles_urls(unit.available_subs_url,
+                                                 unit.sub_template_url, headers)
     for sub_lang, sub_url in subtitles_download_urls.items():
         subs_filename = os.path.join(target_dir,
                                      filename + '.' + sub_lang + '.srt')
-        if not os.path.exists(subs_filename):
-            subs_string = edx_get_subtitle(sub_url, headers)
-            if subs_string:
-                compat_print('[info] Writing edX subtitle: %s' % subs_filename)
-                open(os.path.join(os.getcwd(), subs_filename),
-                     'wb+').write(subs_string.encode('utf-8'))
-        else:
-            compat_print('[info] Skipping existing edX subtitle %s' % subs_filename)
+        downloads[sub_url] = subs_filename
+    return downloads
 
 
-def download_urls(urls, target_dir, filename_prefix):
+def _build_url_downloads(urls, target_dir, filename_prefix):
     """
-    Downloads urls in target_dir and adds the filename_prefix to each filename
+    Builds a dict {url: filename} for the given urls
     """
+    downloads = {}
     for url in urls:
         original_filename = url.rsplit('/', 1)[1]
         filename = os.path.join(target_dir,
                                 filename_prefix + '-' + original_filename)
-        compat_print('[download] Destination: %s' % filename)
-        urlretrieve(url, filename)
+        downloads[url] = filename
+    return downloads
+
+
+def download_url(url, filename, headers, args):
+    """
+    Downloads the given url in filename
+    """
+    urlretrieve(url, filename)
+
+
+def download_youtube_url(url, filename, headers, args):
+    """
+    Downloads a youtube URL and applies the filters from args
+    """
+    video_format_option = args.format + '/mp4' if args.format else 'mp4'
+    cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
+    if args.subtitles:
+        cmd.append('--all-subs')
+    cmd.extend(args.youtube_options.split())
+    cmd.append(url)
+    execute_command(cmd)
+
+
+def download_subtitle(url, filename, headers, args):
+    """
+    Downloads the subtitle from the url and transforms it to the srt format
+    """
+    subs_string = edx_get_subtitle(url, headers)
+    if subs_string:
+        open(os.path.join(os.getcwd(), filename),
+             'wb+').write(subs_string.encode('utf-8'))
+
+
+def skip_or_download(downloads, headers, args, f):
+    """
+    downloads url into filename using download function f,
+    if filename exists it skips
+    """
+    for url, filename in downloads.items():
+        if os.path.exists(filename):
+            compat_print('[skipping] %s => %s' % (url, filename))
+            continue
+        else:
+            compat_print('[download] %s => %s' % (url, filename))
+        if args.dry_run:
+            continue
+        f(url, filename, headers, args)
 
 
 def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
-    Downloads unit based on args in the given target_dir with filename_prefix
+    Downloads the urls in unit based on args in the given target_dir
+    with filename_prefix
     """
     if args.prefer_cdn_videos:
-        download_urls(unit.mp4_urls, target_dir, filename_prefix)
-        # FIXME: get out of the conditions once the proper downloader is ready
-        download_urls(unit.resources_urls, target_dir, filename_prefix)
-    else:
-        _download_video_youtube(unit, args, target_dir, filename_prefix)
+        mp4_downloads = _build_url_downloads(unit.mp4_urls, target_dir, filename_prefix)
+        skip_or_download(mp4_downloads, headers, args, download_url)
 
+        # FIXME: get out of the conditions once the proper downloader is ready
+        res_downloads = _build_url_downloads(unit.resources_urls, target_dir, filename_prefix)
+        skip_or_download(res_downloads, headers, args, download_url)
+    else:
+        youtube_downloads = _build_youtube_downloads(unit, target_dir, filename_prefix)
+        skip_or_download(youtube_downloads, headers, args, download_youtube_url)
+
+    # the behavior with subtitles is different, since the subtitles don't know
+    # the destination name until the video is downloaded with youtube-dl
+    # also, subtitles must be transformed from the raw data to the srt format
     if args.subtitles:
-        _download_subtitles(unit, target_dir, filename_prefix, headers)
+        sub_downloads = _build_subtitles_downloads(unit, target_dir,
+                                                   filename_prefix, headers)
+        skip_or_download(sub_downloads, headers, args, download_subtitle)
 
 
 def download(args, selections, all_units, headers):
@@ -668,8 +721,7 @@ def main():
                  ((num_all_urls - num_filtered_urls), num_all_urls))
 
     # finally we download all the resources
-    if not args.dry_run:
-        download(args, selections, all_units, headers)
+    download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
