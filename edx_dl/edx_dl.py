@@ -305,7 +305,7 @@ def extract_all_units(urls, headers):
     # to test serial execution, and comment all the pool related ones
     # units = [extract_units(url, headers) for url in urls]
     mapfunc = partial(extract_units, headers=headers)
-    pool = ThreadPool(20)
+    pool = ThreadPool(16)
     units = pool.map(mapfunc, urls)
     pool.close()
     pool.join()
