@@ -39,3 +39,4 @@ Unit = namedtuple('Unit',
                    'sub_template_url', 'mp4_urls', 'resources_urls'])
 
 YOUTUBE_DL_CMD = ['youtube-dl', '--ignore-config']
+DEFAULT_CACHE_FILENAME = 'edx-dl.cache'
