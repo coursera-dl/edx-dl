@@ -458,7 +458,6 @@ def _build_subtitles_downloads(unit, target_dir, filename_prefix, headers):
     # subtitles
     if filename.endswith('.srt'):
         filename = filename.split('.')[0]
-        print(filename)
 
     subtitles_download_urls = get_subtitles_urls(unit.available_subs_url,
                                                  unit.sub_template_url, headers)
@@ -628,9 +627,10 @@ def num_urls_in_units_dict(units_dict):
                for units in units_dict.values() for unit in units)
 
 
-def extract_all_units_with_cache(filename, all_urls, headers):
+def extract_all_units_with_cache(all_urls, headers,
+                                 filename=DEFAULT_CACHE_FILENAME):
     """
-    Extracts the units who are not in the cache (filename) and returns
+    Extracts the units which are not in the cache (filename) and returns
     The full list of units (cached+new)
     """
     cached_units = {}
@@ -648,7 +648,7 @@ def extract_all_units_with_cache(filename, all_urls, headers):
     return all_units
 
 
-def write_units_to_cache(filename, units):
+def write_units_to_cache(units, filename=DEFAULT_CACHE_FILENAME):
     """
     writes units to cache
     """
@@ -700,15 +700,14 @@ def main():
                 for subsection in selected_section.subsections]
 
     if args.cache:
-        all_units = extract_all_units_with_cache(DEFAULT_CACHE_FILENAME,
-                                                 all_urls, headers)
+        all_units = extract_all_units_with_cache(all_urls, headers)
     else:
         all_units = extract_all_units(all_urls, headers)
 
     parse_units(selections)
 
     if args.cache:
-        write_units_to_cache(DEFAULT_CACHE_FILENAME, all_units)
+        write_units_to_cache(all_units)
 
     # This removes all repeated important urls
     # FIXME: This is not the best way to do it but it is the simplest, a
