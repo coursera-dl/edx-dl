@@ -52,14 +52,18 @@ Before reporting any issue please verify that you are running the latest
 version of the script and of `youtube-dl`. Please include in your report the
 following information:
 
-    OS:
-    Python version:
+    os:
+    python version:
     youtube-dl version:
-    Course URL:
+    course URL:
 
 If it helps it is better if you refer to a concrete subsection or unit:
 
-    Subsection URL:
+    sub-section URL:
+
+If the script fails and throws some exception, please copy the output of the
+command or the stacktrace. If you cannot copy it, please attach a screen
+capture.
 
 # Supported sites
 
