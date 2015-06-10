@@ -262,7 +262,7 @@ def parse_args():
                         dest='cache',
                         action='store_true',
                         default=False,
-                        help='uses cache to avoid reparsing already extracted items')
+                        help='create and use a cache of extracted resources')
     parser.add_argument('--dry-run',
                         dest='dry_run',
                         action='store_true',
@@ -630,8 +630,13 @@ def num_urls_in_units_dict(units_dict):
 def extract_all_units_with_cache(all_urls, headers,
                                  filename=DEFAULT_CACHE_FILENAME):
     """
-    Extracts the units which are not in the cache (filename) and returns
-    The full list of units (cached+new)
+    Extracts the units which are not in the cache and extract their resources
+    returns the full list of units (cached+new)
+
+    The cache is used to improve speed because it avoids requesting already
+    known (and extracted) objects from URLs. This is useful to follow courses
+    week by week since we won't parse the already known subsections/units,
+    additionally it speeds development of code unrelated to extraction.
     """
     cached_units = {}
     if os.path.exists(filename):
