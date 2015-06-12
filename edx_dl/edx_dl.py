@@ -33,7 +33,7 @@ from .parsing import (
     edx_json2srt,
     extract_courses_from_html,
     extract_sections_from_html,
-    extract_units_from_html,
+    get_page_extractor,
 )
 from .utils import (
     clean_filename,
@@ -268,6 +268,12 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='makes a dry run, only lists the resources')
+    parser.add_argument('--sequence',
+                    dest='sequence',
+                    action='store_true',
+                    default=False,
+                    help='extracts the resources from the pages sequentially')
+
     args = parser.parse_args()
     return args
 
@@ -293,23 +299,31 @@ def extract_units(url, headers):
     """
     compat_print("Processing '%s'" % url)
     page = get_page_contents(url, headers)
-    units = extract_units_from_html(page, BASE_URL)
+    page_extractor = get_page_extractor(url)
+    units = page_extractor.extract_units_from_html(page, BASE_URL)
     return units
 
 
-def extract_all_units(urls, headers):
+def extract_all_units_in_sequence(urls, headers):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
+    sequentially, this is clearer for debug purposes
     """
-    # for development purposes you may want to uncomment this line
-    # to test serial execution, and comment all the pool related ones
-    # units = [extract_units(url, headers) for url in urls]
+    units = [extract_units(url, headers) for url in urls]
+    all_units = dict(zip(urls, units))
+    return all_units
+
+
+def extract_all_units_in_parallel(urls, headers):
+    """
+    Returns a dict of all the units in the selected_sections: {url, units}
+    in parallel
+    """
     mapfunc = partial(extract_units, headers=headers)
     pool = ThreadPool(16)
     units = pool.map(mapfunc, urls)
     pool.close()
     pool.join()
-
     all_units = dict(zip(urls, units))
     return all_units
 
@@ -628,7 +642,8 @@ def num_urls_in_units_dict(units_dict):
 
 
 def extract_all_units_with_cache(all_urls, headers,
-                                 filename=DEFAULT_CACHE_FILENAME):
+                                 filename=DEFAULT_CACHE_FILENAME,
+                                 extractor=extract_all_units_in_parallel):
     """
     Extracts the units which are not in the cache and extract their resources
     returns the full list of units (cached+new)
@@ -647,7 +662,7 @@ def extract_all_units_with_cache(all_urls, headers,
     new_urls = [url for url in all_urls if url not in cached_units]
     compat_print('loading %d urls from cache [%s]' % (len(cached_units.keys()),
                                                       filename))
-    new_units = extract_all_units(new_urls, headers)
+    new_units = extractor(new_urls, headers)
     all_units = cached_units.copy()
     all_units.update(new_units)
     return all_units
@@ -704,10 +719,14 @@ def main():
                 for selected_section in selected_sections
                 for subsection in selected_section.subsections]
 
+    extractor = extract_all_units_in_parallel
+    if args.sequence:
+        extractor = extract_all_units_in_sequence
+
     if args.cache:
-        all_units = extract_all_units_with_cache(all_urls, headers)
+        all_units = extract_all_units_with_cache(all_urls, headers, extractor=extractor)
     else:
-        all_units = extract_all_units(all_urls, headers)
+        all_units = extractor(all_urls, headers)
 
     parse_units(selections)
 

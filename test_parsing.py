@@ -11,7 +11,8 @@ import unittest
 
 from edx_dl.parsing import (
     edx_json2srt,
-    extract_units_from_html,
+    ClassicEdXPageExtractor,
+    NewEdXPageExtractor,
     extract_sections_from_html,
     extract_courses_from_html,
 )
@@ -58,7 +59,7 @@ class TestParsing(unittest.TestCase):
 
     def test_extract_units_from_html_single_unit_multiple_subs(self):
         with open("test/html/single_unit_multiple_subs.html", "r") as f:
-            units = extract_units_from_html(f.read(), 'https://courses.edx.org')
+            units = NewEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
             self.assertEquals(units[0].video_youtube_url, 'https://youtube.com/watch?v=b7xgknqkQk8')
             self.assertEquals(units[0].mp4_urls[0], 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4')
             self.assertEquals(units[0].sub_template_url, 'https://courses.edx.org/courses/edX/DemoX.1/2014/xblock/i4x:;_;_edX;_DemoX.1;_video;_14459340170c476bb65f73a0a08a076f/handler/transcript/translation/%s')
@@ -66,7 +67,7 @@ class TestParsing(unittest.TestCase):
 
     def test_extract_multiple_units_multiple_resources(self):
         with open("test/html/multiple_units.html", "r") as f:
-            units = extract_units_from_html(f.read(), 'https://courses.edx.org')
+            units = NewEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
             self.assertEquals(len(units), 3)
             # this one has multiple speeds in the data-streams field
             self.assertTrue('https://youtube.com/watch?v=CJ482b9r_0g' in [unit[0] for unit in units])
@@ -76,7 +77,7 @@ class TestParsing(unittest.TestCase):
 
     def test_extract_multiple_units_no_youtube_ids(self):
         with open("test/html/multiple_units_no_youtube_ids.html", "r") as f:
-            units = extract_units_from_html(f.read(), 'https://courses.edx.org')
+            units = ClassicEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
             video_youtube_url, available_subs_url, sub_template_url, mp4_urls, resources_urls = units[0]
             self.assertEquals(video_youtube_url, None)
             self.assertTrue(len(mp4_urls) > 0)
