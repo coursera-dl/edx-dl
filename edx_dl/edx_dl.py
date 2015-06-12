@@ -33,7 +33,7 @@ from .parsing import (
     edx_json2srt,
     extract_courses_from_html,
     extract_sections_from_html,
-    ClassicEdXPageExtractor,
+    get_page_extractor,
 )
 from .utils import (
     clean_filename,
@@ -299,7 +299,8 @@ def extract_units(url, headers):
     """
     compat_print("Processing '%s'" % url)
     page = get_page_contents(url, headers)
-    units = ClassicEdXPageExtractor().extract_units_from_html(page, BASE_URL)
+    page_extractor = get_page_extractor(url)
+    units = page_extractor.extract_units_from_html(page, BASE_URL)
     return units
 
 

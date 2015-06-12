@@ -113,6 +113,18 @@ class ClassicEdXPageExtractor(PageExtractor):
         return units
 
 
+class NewEdXPageExtractor(ClassicEdXPageExtractor):
+    """
+    A new page extractor for the recent changes in layout of edx
+    """
+
+
+def get_page_extractor(url):
+    if url.startswith('https://courses.edx.org'):
+        return NewEdXPageExtractor()
+    return ClassicEdXPageExtractor()
+
+
 def extract_courses_from_html(page, BASE_URL):
     """
     Extracts courses (Course) from the html page
