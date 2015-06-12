@@ -69,19 +69,25 @@ class ClassicEdXPageExtractor(PageExtractor):
         re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
         units = []
         for unit_html in re_units.findall(page):
-            video_youtube_url = self.extract_video_youtube_url(unit_html)
-            available_subs_url, sub_template_url = self.extract_subtitle_urls(unit_html, BASE_URL)
-            mp4_urls = self.extract_mp4_urls(unit_html)
-            resources_urls = self.extract_resources_urls(unit_html, BASE_URL)
-
-            if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
-                units.append(Unit(video_youtube_url=video_youtube_url,
-                                  available_subs_url=available_subs_url,
-                                  sub_template_url=sub_template_url,
-                                  mp4_urls=mp4_urls,
-                                  resources_urls=resources_urls))
-
+            unit = self.extract_unit(unit_html, BASE_URL)
+            if unit.video_youtube_url is not None or len(unit.mp4_urls) > 0 or len(unit.resources_urls) > 0:
+                units.append(unit)
         return units
+
+    def extract_unit(self, text, BASE_URL):
+        """
+        parses the html of each unit <div> and extracts the urls of its resources
+        """
+        video_youtube_url = self.extract_video_youtube_url(text)
+        available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
+        mp4_urls = self.extract_mp4_urls(text)
+        resources_urls = self.extract_resources_urls(text, BASE_URL)
+        unit = Unit(video_youtube_url=video_youtube_url,
+                    available_subs_url=available_subs_url,
+                    sub_template_url=sub_template_url,
+                    mp4_urls=mp4_urls,
+                    resources_urls=resources_urls)
+        return unit
 
     def extract_video_youtube_url(self, text):
         re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
