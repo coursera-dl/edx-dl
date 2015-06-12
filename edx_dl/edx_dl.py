@@ -724,7 +724,7 @@ def main():
         extractor = extract_all_units_in_sequence
 
     if args.cache:
-        all_units = extract_all_units_with_cache(all_urls, headers, extractor)
+        all_units = extract_all_units_with_cache(all_urls, headers, extractor=extractor)
     else:
         all_units = extractor(all_urls, headers)
 
