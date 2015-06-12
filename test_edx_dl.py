@@ -21,7 +21,7 @@ class TestEdX(unittest.TestCase):
         url = "test/html/multiple_units.html"
         with open(url, "r") as f:
             all_units = {url:
-                         parsing.extract_units_from_html(f.read(),
+                         parsing.ClassicEdXPageExtractor().extract_units_from_html(f.read(),
                                                          'https://courses.edx.org')}
             filtered_units = edx_dl.remove_repeated_urls(all_units)
             num_all_urls = edx_dl.num_urls_in_units_dict(all_units)

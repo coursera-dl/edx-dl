@@ -38,58 +38,79 @@ def edx_json2srt(o):
     return ''.join(output)
 
 
-def extract_units_from_html(page, BASE_URL):
+class PageExtractor(object):
     """
-    Extract Units from the html of a subsection webpage as a list of resources
+    Base class for PageExtractor
+    Every subclass should implement the extract_units_from_html method.
+
+    Usage:
+
+      >>> import parsing
+      >>> d = downloaders.SubclassFromPageExtractor()
+      >>> d.extract_units_from_html(page, BASE_URL)
     """
-    # in this function we avoid using beautifulsoup for performance reasons
 
-    # parsing html with regular expressions is really nasty, don't do this if
-    # you don't need to !
-    re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
-    re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
-    re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
-    re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+    def extract_units_from_html(self, page, BASE_URL):
+        """
+        Method to extract the resources (units) from the given page
+        """
+        raise NotImplementedError("Subclasses should implement this")
 
-    # mp4 urls may be in two places, in the field data-sources, and as <a> refs
-    # This regex tries to match all the appearances, however we exclude the ';'
-    # character in the urls, since it is used to separate multiple urls in one
-    # string, however ';' is a valid url name character, but it is not really
-    # common.
-    re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
-    re_resources_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
 
-    units = []
-    for unit_html in re_units.findall(page):
-        video_youtube_url = None
-        match_video_youtube_url = re_video_youtube_url.search(unit_html)
-        if match_video_youtube_url is not None:
-            video_id = match_video_youtube_url.group(1)
-            video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+class ClassicEdXPageExtractor(PageExtractor):
 
-        available_subs_url = None
-        sub_template_url = None
-        match_subs = re_sub_template_url.search(unit_html)
-        if match_subs:
-            match_available_subs = re_available_subs_url.search(unit_html)
-            if match_available_subs:
-                available_subs_url = BASE_URL + match_available_subs.group(1)
-                sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
+    def extract_units_from_html(self, page, BASE_URL):
+        """
+        Extract Units from the html of a subsection webpage as a list of resources
+        """
+        # in this function we avoid using beautifulsoup for performance reasons
 
-        mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
-        resources_urls = [url
-                          if url.startswith('http') or url.startswith('https')
-                          else BASE_URL + url
-                          for url in re_resources_urls.findall(unit_html)]
+        # parsing html with regular expressions is really nasty, don't do this if
+        # you don't need to !
+        re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
+        re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
+        re_sub_template_url = re.compile(r'data-transcript-translation-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
+        re_available_subs_url = re.compile(r'data-transcript-available-translations-url=(?:&#34;|")([^"&]*)(?:&#34;|")')
 
-        if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
-            units.append(Unit(video_youtube_url=video_youtube_url,
-                              available_subs_url=available_subs_url,
-                              sub_template_url=sub_template_url,
-                              mp4_urls=mp4_urls,
-                              resources_urls=resources_urls))
+        # mp4 urls may be in two places, in the field data-sources, and as <a> refs
+        # This regex tries to match all the appearances, however we exclude the ';'
+        # character in the urls, since it is used to separate multiple urls in one
+        # string, however ';' is a valid url name character, but it is not really
+        # common.
+        re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
+        re_resources_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
 
-    return units
+        units = []
+        for unit_html in re_units.findall(page):
+            video_youtube_url = None
+            match_video_youtube_url = re_video_youtube_url.search(unit_html)
+            if match_video_youtube_url is not None:
+                video_id = match_video_youtube_url.group(1)
+                video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
+            available_subs_url = None
+            sub_template_url = None
+            match_subs = re_sub_template_url.search(unit_html)
+            if match_subs:
+                match_available_subs = re_available_subs_url.search(unit_html)
+                if match_available_subs:
+                    available_subs_url = BASE_URL + match_available_subs.group(1)
+                    sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
+
+            mp4_urls = list(set(re_mp4_urls.findall(unit_html)))
+            resources_urls = [url
+                              if url.startswith('http') or url.startswith('https')
+                              else BASE_URL + url
+                              for url in re_resources_urls.findall(unit_html)]
+
+            if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
+                units.append(Unit(video_youtube_url=video_youtube_url,
+                                  available_subs_url=available_subs_url,
+                                  sub_template_url=sub_template_url,
+                                  mp4_urls=mp4_urls,
+                                  resources_urls=resources_urls))
+
+        return units
 
 
 def extract_courses_from_html(page, BASE_URL):
