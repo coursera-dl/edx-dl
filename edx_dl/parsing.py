@@ -46,8 +46,8 @@ class PageExtractor(object):
     Usage:
 
       >>> import parsing
-      >>> d = downloaders.SubclassFromPageExtractor()
-      >>> d.extract_units_from_html(page, BASE_URL)
+      >>> d = parsing.SubclassFromPageExtractor()
+      >>> units = d.extract_units_from_html(page, BASE_URL)
     """
 
     def extract_units_from_html(self, page, BASE_URL):
@@ -70,13 +70,13 @@ class ClassicEdXPageExtractor(PageExtractor):
         units = []
         for unit_html in re_units.findall(page):
             unit = self.extract_unit(unit_html, BASE_URL)
-            if unit.video_youtube_url is not None or len(unit.mp4_urls) > 0 or len(unit.resources_urls) > 0:
+            if unit is not None and (unit.video_youtube_url is not None or len(unit.mp4_urls) > 0 or len(unit.resources_urls) > 0):
                 units.append(unit)
         return units
 
     def extract_unit(self, text, BASE_URL):
         """
-        parses the html of each unit <div> and extracts the urls of its resources
+        Parses the <div> of each unit and extracts the urls of its resources
         """
         video_youtube_url = self.extract_video_youtube_url(text)
         available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
@@ -130,13 +130,53 @@ class ClassicEdXPageExtractor(PageExtractor):
         return resources_urls
 
 
+import json
+from six.moves import html_parser
+
 class NewEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
+    def extract_unit(self, text, BASE_URL):
+        re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
+        match_metadata = re_metadata.findall(text)
+        if match_metadata:
+            metadata = json.loads(html_parser.HTMLParser().unescape(match_metadata[0]))
+
+            video_youtube_url = None
+            re_video_speed = re.compile(r'1.0\d+\:(?:.*?)(.{11})')
+            match_video_youtube_url = re_video_speed.search(metadata['streams'])
+            if match_video_youtube_url is not None:
+                video_id = match_video_youtube_url.group(1)
+                video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
+            # notice that the concrete languages come now in
+            # so we can eventually build the full urls here
+            # subtitles_download_urls = {sub_lang:
+            #                            BASE_URL + metadata['transcriptTranslationUrl'].replace('__lang__', sub_lang)
+            #                            for sub_lang in metadata['transcriptLanguages'].keys()}
+            available_subs_url = BASE_URL + metadata['transcriptAvailableTranslationsUrl']
+            sub_template_url = BASE_URL + metadata['transcriptTranslationUrl'].replace('__lang__', '%s')
+
+            # notice that the urls for video downloads come also here, but we
+            # prefer to extract them with the old method to match the case of
+            # videos who are referenced as links
+            # mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
+            mp4_urls = self.extract_mp4_urls(text)
+            resources_urls = self.extract_resources_urls(text, BASE_URL)
+            unit = Unit(video_youtube_url=video_youtube_url,
+                        available_subs_url=available_subs_url,
+                        sub_template_url=sub_template_url,
+                        mp4_urls=mp4_urls,
+                        resources_urls=resources_urls)
+            return unit
+        return None
 
 
 def get_page_extractor(url):
+    """
+    factory method for page extractors
+    """
     if url.startswith('https://courses.edx.org'):
         return NewEdXPageExtractor()
     return ClassicEdXPageExtractor()
