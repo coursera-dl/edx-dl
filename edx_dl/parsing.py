@@ -72,12 +72,14 @@ class ClassicEdXPageExtractor(PageExtractor):
 
     def extract_units_from_html(self, page, BASE_URL):
         """
-        Extract Units from the html of a subsection webpage as a list of resources
+        Extract Units from the html of a subsection webpage as a list of
+        resources
         """
         # in this function we avoid using beautifulsoup for performance reasons
         # parsing html with regular expressions is really nasty, don't do this if
         # you don't need to !
-        re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
+        re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)',
+                              re.DOTALL)
         units = []
 
         for unit_html in re_units.findall(page):
@@ -131,11 +133,14 @@ class ClassicEdXPageExtractor(PageExtractor):
         return available_subs_url, sub_template_url
 
     def extract_mp4_urls(self, text):
-        # mp4 urls may be in two places, in the field data-sources, and as <a> refs
-        # This regex tries to match all the appearances, however we exclude the ';'
-        # character in the urls, since it is used to separate multiple urls in one
-        # string, however ';' is a valid url name character, but it is not really
-        # common.
+        """
+        Looks for available links to the mp4 version of the videos
+        """
+        # mp4 urls may be in two places, in the field data-sources, and as <a>
+        # refs This regex tries to match all the appearances, however we
+        # exclude the ';' # character in the urls, since it is used to separate
+        # multiple urls in one string, however ';' is a valid url name
+        # character, but it is not really common.
         re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
         mp4_urls = list(set(re_mp4_urls.findall(text)))
 
@@ -186,7 +191,7 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
 
             # notice that the urls for video downloads come also here, but we
             # prefer to extract them with the old method to match the case of
-            # videos who are referenced as links
+            # videos that are referenced as links
             # mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
             mp4_urls = self.extract_mp4_urls(text)
             resources_urls = self.extract_resources_urls(text, BASE_URL)
