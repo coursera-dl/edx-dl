@@ -13,6 +13,7 @@ from edx_dl.parsing import (
     NewEdXPageExtractor,
     extract_sections_from_html,
     extract_courses_from_html,
+    is_youtube_url,
 )
 
 
@@ -101,4 +102,16 @@ def test_extract_courses_from_html():
         assert len(courses) == 18
         available_courses = [course for course in courses if course.state == 'Started']
         assert len(available_courses) == 14
+
+
+def test_is_youtube_url():
+    invalid_urls = ['http://www.google.com/', 'TODO',
+                    'https://d2f1egay8yehza.cloudfront.net/mit-24118/MIT24118T314-V015000_DTH.mp4',
+                    'https://courses.edx.org/courses/course-v1:MITx+24.118x+2T2015/xblock/block-v1:MITx+24.118x+2T2015+type@video+block@b1588e7cccff4d448f4f9676c81184d9/handler/transcript/available_translations']
+    valid_urls = ['http://youtube.com/watch?v=rjOpZ3i6pRo',
+                  'https://youtube.com/watch?v=rjOpZ3i6pRo']
+    for url in invalid_urls:
+        assert not is_youtube_url(url)
+    for url in valid_urls:
+        assert is_youtube_url(url)
 

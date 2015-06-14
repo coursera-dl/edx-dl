@@ -284,3 +284,8 @@ def extract_sections_from_html(page, BASE_URL):
                 for i, section_soup in enumerate(sections_soup, 1)]
 
     return sections
+
+
+def is_youtube_url(url):
+    re_youtube_url = re.compile(r'(https?\:\/\/(?:www\.)?(?:youtube\.com|youtu\.?be)\/.*?)')
+    return re_youtube_url.match(url)
