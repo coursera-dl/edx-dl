@@ -34,6 +34,7 @@ from .parsing import (
     extract_courses_from_html,
     extract_sections_from_html,
     get_page_extractor,
+    is_youtube_url,
 )
 from .utils import (
     clean_filename,
@@ -425,18 +426,6 @@ def parse_units(all_units):
         exit(6)
 
 
-def _build_youtube_downloads(unit, target_dir, filename_prefix):
-    """
-    Builds a dict {url: filename} for the youtube videos
-    """
-    downloads = {}
-    if unit.video_youtube_url is not None:
-        filename = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
-        fullname = os.path.join(target_dir, filename)
-        downloads[unit.video_youtube_url] = fullname
-    return downloads
-
-
 def get_subtitles_urls(available_subs_url, sub_template_url, headers):
     """
     Request the available subs and builds the urls to download subs
@@ -485,13 +474,20 @@ def _build_subtitles_downloads(unit, target_dir, filename_prefix, headers):
 def _build_url_downloads(urls, target_dir, filename_prefix):
     """
     Builds a dict {url: filename} for the given urls
+    If it is a youtube url it uses the valid template for youtube-dl
+    otherwise just takes the name of the file from the url
     """
     downloads = {}
     for url in urls:
-        original_filename = url.rsplit('/', 1)[1]
-        filename = os.path.join(target_dir,
-                                filename_prefix + '-' + original_filename)
-        downloads[url] = filename
+        if is_youtube_url(url):
+            filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
+            filename = os.path.join(target_dir, filename_template)
+            downloads[url] = filename
+        else:
+            original_filename = url.rsplit('/', 1)[1]
+            filename = os.path.join(target_dir,
+                                    filename_prefix + '-' + original_filename)
+            downloads[url] = filename
     return downloads
 
 
@@ -499,7 +495,10 @@ def download_url(url, filename, headers, args):
     """
     Downloads the given url in filename
     """
-    urlretrieve(url, filename)
+    if is_youtube_url(url):
+        download_youtube_url(url, filename, headers, args)
+    else:
+        urlretrieve(url, filename)
 
 
 def download_youtube_url(url, filename, headers, args):
@@ -525,7 +524,7 @@ def download_subtitle(url, filename, headers, args):
              'wb+').write(subs_string.encode('utf-8'))
 
 
-def skip_or_download(downloads, headers, args, f):
+def skip_or_download(downloads, headers, args, f=download_url):
     """
     downloads url into filename using download function f,
     if filename exists it skips
@@ -548,14 +547,11 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     if args.prefer_cdn_videos:
         mp4_downloads = _build_url_downloads(unit.mp4_urls, target_dir, filename_prefix)
-        skip_or_download(mp4_downloads, headers, args, download_url)
-
-        # FIXME: get out of the conditions once the proper downloader is ready
-        res_downloads = _build_url_downloads(unit.resources_urls, target_dir, filename_prefix)
-        skip_or_download(res_downloads, headers, args, download_url)
+        skip_or_download(mp4_downloads, headers, args)
     else:
-        youtube_downloads = _build_youtube_downloads(unit, target_dir, filename_prefix)
-        skip_or_download(youtube_downloads, headers, args, download_youtube_url)
+        if unit.video_youtube_url is not None:
+            youtube_downloads = _build_url_downloads([unit.video_youtube_url], target_dir, filename_prefix)
+            skip_or_download(youtube_downloads, headers, args)
 
     # the behavior with subtitles is different, since the subtitles don't know
     # the destination name until the video is downloaded with youtube-dl
@@ -564,6 +560,9 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
         sub_downloads = _build_subtitles_downloads(unit, target_dir,
                                                    filename_prefix, headers)
         skip_or_download(sub_downloads, headers, args, download_subtitle)
+
+    res_downloads = _build_url_downloads(unit.resources_urls, target_dir, filename_prefix)
+    skip_or_download(res_downloads, headers, args)
 
 
 def download(args, selections, all_units, headers):
