@@ -32,14 +32,14 @@ Make sure that you have all dependencies installed, like via:
 
 Run the test suite with
 
-    py.test coursera/test -v --cov coursera --cov-report html
+    py.test -v --cov edx_dl --cov-report html
 
 If some test fails, please don't send your changes yet. Fix what broke
 before sending your pull request.
 
 If you need to change the test suite, explain in the commit message why it
 needs to be changed (e.g., the page layout or the authentication methods
-from coursera changed, or they implemented a new kind of course).
+from edX changed, or they implemented a new kind of course).
 
 # Check for potential bugs
 
