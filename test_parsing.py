@@ -64,16 +64,19 @@ def test_empty_text_subtitle():
 
 # Test extraction of video/other assets from HTML
 def test_extract_units_from_html_single_unit_multiple_subs():
+    site = 'https://courses.edx.org'
     with open("test/html/single_unit_multiple_subs.html", "r") as f:
-        units = NewEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
+        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+
         assert units[0].video_youtube_url == 'https://youtube.com/watch?v=b7xgknqkQk8'
         assert units[0].mp4_urls[0] == 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4'
         assert units[0].sub_template_url == 'https://courses.edx.org/courses/edX/DemoX.1/2014/xblock/i4x:;_;_edX;_DemoX.1;_video;_14459340170c476bb65f73a0a08a076f/handler/transcript/translation/%s'
 
 
 def test_extract_multiple_units_multiple_resources():
+    site = 'https://courses.edx.org'
     with open("test/html/multiple_units.html", "r") as f:
-        units = NewEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
+        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
         assert len(units) == 3
         # this one has multiple speeds in the data-streams field
         assert 'https://youtube.com/watch?v=CJ482b9r_0g' in [unit[0] for unit in units]
@@ -83,24 +86,27 @@ def test_extract_multiple_units_multiple_resources():
 
 
 def test_extract_multiple_units_no_youtube_ids():
+    site = 'https://courses.edx.org'
     with open("test/html/multiple_units_no_youtube_ids.html", "r") as f:
-        units = ClassicEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
+        units = ClassicEdXPageExtractor().extract_units_from_html(f.read(), site)
         video_youtube_url, available_subs_url, sub_template_url, mp4_urls, resources_urls = units[0]
         assert video_youtube_url is None
         assert len(mp4_urls) > 0
 
 
 def test_extract_sections():
+    site = 'https://courses.edx.org'
     with open("test/html/single_unit_multiple_subs.html", "r") as f:
-        sections = extract_sections_from_html(f.read(), 'https://courses.edx.org')
+        sections = extract_sections_from_html(f.read(), site)
         assert len(sections) == 6
         num_subsections = sum(len(section.subsections) for section in sections)
         assert num_subsections == 11
 
 
 def test_extract_courses_from_html():
+    site = 'https://courses.edx.org'
     with open("test/html/dashboard.html", "r") as f:
-        courses = extract_courses_from_html(f.read(), 'https://courses.edx.org')
+        courses = extract_courses_from_html(f.read(), site)
         assert len(courses) == 18
         available_courses = [course for course in courses if course.state == 'Started']
         assert len(available_courses) == 14
