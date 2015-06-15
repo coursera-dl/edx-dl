@@ -24,41 +24,25 @@ def test_empty_json_subtitle():
         json_contents = json.loads(json_string)
 
 
-def test_minimal_json_subtitle():
-    with open('test/json/minimal.json') as f:
+@pytest.mark.parametrize(
+    'file,expected', [
+        ('test/json/empty-text.json', ''),
+        ('test/json/minimal.json', ''),
+        ('test/json/abridged-01.json', ('0\n'
+                                        '00:00:18,104 --> 00:00:20,428\n'
+                                        'I am very glad to see everyone here，\n\n')),
+        ('test/json/abridged-02.json', ('0\n'
+                                        '00:00:18,104 --> 00:00:20,428\n'
+                                        'I am very glad to see everyone here，\n\n'
+                                        '1\n'
+                                        '00:00:20,569 --> 00:00:24,721\n'
+                                        'so let\'s enjoy the beauty of combinatorics together.\n\n'))
+    ]
+)
+def test_subtitles_from_json(file, expected):
+    with open(file) as f:
         json_contents = json.loads(f.read())
     res = edx_json2srt(json_contents)
-    assert res == ''
-
-
-def test_abridged01_json_subtitle():
-    with open('test/json/abridged-01.json') as f:
-        json_contents = json.loads(f.read())
-    res = edx_json2srt(json_contents)
-    expected = ('0\n'
-                '00:00:18,104 --> 00:00:20,428\n'
-                'I am very glad to see everyone here，\n\n')
-    assert res == expected
-
-
-def test_abridged02_json_subtitle():
-    with open('test/json/abridged-02.json') as f:
-        json_contents = json.loads(f.read())
-    res = edx_json2srt(json_contents)
-    expected = ('0\n'
-                '00:00:18,104 --> 00:00:20,428\n'
-                'I am very glad to see everyone here，\n\n'
-                '1\n'
-                '00:00:20,569 --> 00:00:24,721\n'
-                'so let\'s enjoy the beauty of combinatorics together.\n\n')
-    assert res == expected
-
-
-def test_empty_text_subtitle():
-    with open('test/json/empty-text.json') as f:
-        json_contents = json.loads(f.read())
-    res = edx_json2srt(json_contents)
-    expected = ''
     assert res == expected
 
 
