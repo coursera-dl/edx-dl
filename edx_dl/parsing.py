@@ -4,14 +4,18 @@
 Parsing and extraction functions
 """
 import re
-
-from bs4 import BeautifulSoup as BeautifulSoup_
+import json
 
 from datetime import timedelta, datetime
+
+from six.moves import html_parser
+from bs4 import BeautifulSoup as BeautifulSoup_
+
 from .common import Course, Section, SubSection, Unit
 
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
+
 
 def edx_json2srt(o):
     """
@@ -132,9 +136,6 @@ class ClassicEdXPageExtractor(PageExtractor):
                           for url in re_resources_urls.findall(text)]
         return resources_urls
 
-
-import json
-from six.moves import html_parser
 
 class NewEdXPageExtractor(ClassicEdXPageExtractor):
     """
