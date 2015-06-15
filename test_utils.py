@@ -3,10 +3,7 @@
 
 from __future__ import unicode_literals
 
-import sys
-
 import six
-import pytest
 
 from edx_dl import utils
 
