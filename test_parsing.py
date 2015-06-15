@@ -53,9 +53,9 @@ def test_extract_units_from_html_single_unit_multiple_subs():
     with open("test/html/single_unit_multiple_subs.html", "r") as f:
         units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
 
-        assert units[0].video_youtube_url == 'https://youtube.com/watch?v=b7xgknqkQk8'
-        assert units[0].mp4_urls[0] == 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4'
-        assert units[0].sub_template_url == 'https://courses.edx.org/courses/edX/DemoX.1/2014/xblock/i4x:;_;_edX;_DemoX.1;_video;_14459340170c476bb65f73a0a08a076f/handler/transcript/translation/%s'
+        assert units[0].videos[0].video_youtube_url == 'https://youtube.com/watch?v=b7xgknqkQk8'
+        assert units[0].videos[0].mp4_urls[0] == 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4'
+        assert units[0].videos[0].sub_template_url == 'https://courses.edx.org/courses/edX/DemoX.1/2014/xblock/i4x:;_;_edX;_DemoX.1;_video;_14459340170c476bb65f73a0a08a076f/handler/transcript/translation/%s'
 
 
 def test_extract_multiple_units_multiple_resources():
@@ -64,19 +64,18 @@ def test_extract_multiple_units_multiple_resources():
         units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
         assert len(units) == 3
         # this one has multiple speeds in the data-streams field
-        assert 'https://youtube.com/watch?v=CJ482b9r_0g' in [unit[0] for unit in units]
-        assert len(units[0].mp4_urls) > 0
-        assert 'https://s3.amazonaws.com/berkeley-cs184x/videos/overview-motivation.mp4' in units[0].mp4_urls
-        assert units[0].resources_urls[0] == 'https://courses.edx.org/static/content-berkeley-cs184x~2012_Fall/slides/overview.pdf'
+        assert 'https://youtube.com/watch?v=CJ482b9r_0g' in [video.video_youtube_url for video in units[0].videos]
+        assert len(units[0].videos[0].mp4_urls) > 0
+        assert 'https://s3.amazonaws.com/berkeley-cs184x/videos/overview-motivation.mp4' in units[0].videos[0].mp4_urls
+        assert 'https://courses.edx.org/static/content-berkeley-cs184x~2012_Fall/slides/overview.pdf' in units[0].resources_urls
 
 
 def test_extract_multiple_units_no_youtube_ids():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units_no_youtube_ids.html", "r") as f:
         units = ClassicEdXPageExtractor().extract_units_from_html(f.read(), site)
-        video_youtube_url, available_subs_url, sub_template_url, mp4_urls, resources_urls = units[0]
-        assert video_youtube_url is None
-        assert len(mp4_urls) > 0
+        assert units[0].videos[0].video_youtube_url is None
+        assert len(units[0].videos[0].mp4_urls) > 0
 
 
 def test_extract_multiple_units_youtube_link():
@@ -84,6 +83,14 @@ def test_extract_multiple_units_youtube_link():
     with open("test/html/multiple_units_youtube_link.html", "r") as f:
         units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
         assert 'https://www.youtube.com/watch?v=5OXQypOAbdI' in units[0].resources_urls
+
+
+def test_extract_multiple_units_multiple_youtube_videos():
+    site = 'https://courses.edx.org'
+    with open("test/html/multiple_units_multiple_youtube_videos.html", "r") as f:
+        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+        assert len(units[0].videos) == 3
+        assert 'https://youtube.com/watch?v=3atHHNa2UwI' in [video.video_youtube_url for video in units[0].videos]
 
 
 def test_extract_sections():

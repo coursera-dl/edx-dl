@@ -1,0 +1,2543 @@
+
+
+<!DOCTYPE html>
+<!--[if lte IE 9]><html class="ie ie9 lte9" lang="en"><![endif]-->
+<!--[if !IE]><!--><html lang="en"><!--<![endif]-->
+<head dir="ltr">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"XA4GVl5ACwAEV1JQAA=="};window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function r(n){if(!e[n]){var o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var o=t[n][1][e];return r(o?o:e)},o,o.exports)}return e[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({QJf3ax:[function(t,e){function n(t){function e(e,n,a){t&&t(e,n,a),a||(a={});for(var c=s(e),f=c.length,u=i(a,o,r),d=0;f>d;d++)c[d].apply(u,n);return u}function a(t,e){f[t]=s(t).concat(e)}function s(t){return f[t]||[]}function c(){return n(e)}var f={};return{on:a,emit:e,create:c,listeners:s,_events:f}}function r(){return{}}var o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],3:[function(t){function e(t){try{i.console&&console.log(t)}catch(e){}}var n,r=t("ee"),o=t(1),i={};try{n=localStorage.getItem("__nr_flags").split(","),console&&"function"==typeof console.log&&(i.console=!0,-1!==n.indexOf("dev")&&(i.dev=!0),-1!==n.indexOf("nr_dev")&&(i.nrDev=!0))}catch(a){}i.nrDev&&r.on("internal-error",function(t){e(t.stack)}),i.dev&&r.on("fn-err",function(t,n,r){e(r.stack)}),i.dev&&(e("NR AGENT IN DEVELOPMENT MODE"),e("flags: "+o(i,function(t){return t}).join(", ")))},{1:23,ee:"QJf3ax"}],4:[function(t){function e(t,e,n,i,s){try{c?c-=1:r("err",[s||new UncaughtException(t,e,n)])}catch(f){try{r("ierr",[f,(new Date).getTime(),!0])}catch(u){}}return"function"==typeof a?a.apply(this,o(arguments)):!1}function UncaughtException(t,e,n){this.message=t||"Uncaught error with no additional information",this.sourceURL=e,this.line=n}function n(t){r("err",[t,(new Date).getTime()])}var r=t("handle"),o=t(6),i=t("ee"),a=window.onerror,s=!1,c=0;t("loader").features.err=!0,t(5),window.onerror=e;try{throw new Error}catch(f){"stack"in f&&(t(1),t(2),"addEventListener"in window&&t(3),window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)&&t(4),s=!0)}i.on("fn-start",function(){s&&(c+=1)}),i.on("fn-err",function(t,e,r){s&&(this.thrown=!0,n(r))}),i.on("fn-end",function(){s&&!this.thrown&&c>0&&(c-=1)}),i.on("internal-error",function(t){r("ierr",[t,(new Date).getTime(),!0])})},{1:10,2:9,3:7,4:11,5:3,6:24,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],5:[function(t){t("loader").features.ins=!0},{loader:"G9z0Bl"}],6:[function(t){function e(){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var n=t("ee"),r=t("handle"),o=t(1),i=t(2);t("loader").features.stn=!0,t(3),n.on("fn-start",function(t){var e=t[0];e instanceof Event&&(this.bstStart=Date.now())}),n.on("fn-end",function(t,e){var n=t[0];n instanceof Event&&r("bst",[n,e,this.bstStart,Date.now()])}),o.on("fn-start",function(t,e,n){this.bstStart=Date.now(),this.bstType=n}),o.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),this.bstType])}),i.on("fn-start",function(){this.bstStart=Date.now()}),i.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),"requestAnimationFrame"])}),n.on("pushState-start",function(){this.time=Date.now(),this.startPath=location.pathname+location.hash}),n.on("pushState-end",function(){r("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),"addEventListener"in window.performance&&(window.performance.addEventListener("webkitresourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.webkitClearResourceTimings()},!1),window.performance.addEventListener("resourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.clearResourceTimings()},!1)),document.addEventListener("scroll",e,!1),document.addEventListener("keypress",e,!1),document.addEventListener("click",e,!1)}},{1:10,2:9,3:8,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],7:[function(t,e){function n(t){i.inPlace(t,["addEventListener","removeEventListener"],"-",r)}function r(t){return t[1]}var o=(t(1),t("ee").create()),i=t(2)(o),a=t("gos");if(e.exports=o,n(window),"getPrototypeOf"in Object){for(var s=document;s&&!s.hasOwnProperty("addEventListener");)s=Object.getPrototypeOf(s);s&&n(s);for(var c=XMLHttpRequest.prototype;c&&!c.hasOwnProperty("addEventListener");)c=Object.getPrototypeOf(c);c&&n(c)}else XMLHttpRequest.prototype.hasOwnProperty("addEventListener")&&n(XMLHttpRequest.prototype);o.on("addEventListener-start",function(t){if(t[1]){var e=t[1];"function"==typeof e?this.wrapped=t[1]=a(e,"nr@wrapped",function(){return i(e,"fn-",null,e.name||"anonymous")}):"function"==typeof e.handleEvent&&i.inPlace(e,["handleEvent"],"fn-")}}),o.on("removeEventListener-start",function(t){var e=this.wrapped;e&&(t[1]=e)})},{1:24,2:25,ee:"QJf3ax",gos:"7eSDFh"}],8:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window.history,["pushState"],"-")},{1:25,2:24,ee:"QJf3ax"}],9:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window,["requestAnimationFrame","mozRequestAnimationFrame","webkitRequestAnimationFrame","msRequestAnimationFrame"],"raf-"),n.on("raf-start",function(t){t[0]=r(t[0],"fn-")})},{1:25,2:24,ee:"QJf3ax"}],10:[function(t,e){function n(t,e,n){t[0]=o(t[0],"fn-",null,n)}var r=(t(2),t("ee").create()),o=t(1)(r);e.exports=r,o.inPlace(window,["setTimeout","setInterval","setImmediate"],"setTimer-"),r.on("setTimer-start",n)},{1:25,2:24,ee:"QJf3ax"}],11:[function(t,e){function n(){f.inPlace(this,p,"fn-")}function r(t,e){f.inPlace(e,["onreadystatechange"],"fn-")}function o(t,e){return e}function i(t,e){for(var n in t)e[n]=t[n];return e}var a=t("ee").create(),s=t(1),c=t(2),f=c(a),u=c(s),d=window.XMLHttpRequest,p=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"];e.exports=a,window.XMLHttpRequest=function(t){var e=new d(t);try{a.emit("new-xhr",[],e),u.inPlace(e,["addEventListener","removeEventListener"],"-",o),e.addEventListener("readystatechange",n,!1)}catch(r){try{a.emit("internal-error",[r])}catch(i){}}return e},i(d,XMLHttpRequest),XMLHttpRequest.prototype=d.prototype,f.inPlace(XMLHttpRequest.prototype,["open","send"],"-xhr-",o),a.on("send-xhr-start",r),a.on("open-xhr-start",r)},{1:7,2:25,ee:"QJf3ax"}],12:[function(t){function e(t){var e=this.params,r=this.metrics;if(!this.ended){this.ended=!0;for(var i=0;c>i;i++)t.removeEventListener(s[i],this.listener,!1);if(!e.aborted){if(r.duration=(new Date).getTime()-this.startTime,4===t.readyState){e.status=t.status;var a=t.responseType,f="arraybuffer"===a||"blob"===a||"json"===a?t.response:t.responseText,u=n(f);if(u&&(r.rxSize=u),this.sameOrigin){var d=t.getResponseHeader("X-NewRelic-App-Data");d&&(e.cat=d.split(", ").pop())}}else e.status=0;r.cbTime=this.cbTime,o("xhr",[e,r,this.startTime])}}}function n(t){if("string"==typeof t&&t.length)return t.length;if("object"!=typeof t)return void 0;if("undefined"!=typeof ArrayBuffer&&t instanceof ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof Blob&&t instanceof Blob&&t.size)return t.size;if("undefined"!=typeof FormData&&t instanceof FormData)return void 0;try{return JSON.stringify(t).length}catch(e){return void 0}}function r(t,e){var n=i(e),r=t.params;r.host=n.hostname+":"+n.port,r.pathname=n.pathname,t.sameOrigin=n.sameOrigin}if(window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)){t("loader").features.xhr=!0;var o=t("handle"),i=t(2),a=t("ee"),s=["load","error","abort","timeout"],c=s.length,f=t(1);t(4),t(3),a.on("new-xhr",function(){this.totalCbs=0,this.called=0,this.cbTime=0,this.end=e,this.ended=!1,this.xhrGuids={}}),a.on("open-xhr-start",function(t){this.params={method:t[0]},r(this,t[1]),this.metrics={}}),a.on("open-xhr-end",function(t,e){"loader_config"in NREUM&&"xpid"in NREUM.loader_config&&this.sameOrigin&&e.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid)}),a.on("send-xhr-start",function(t,e){var r=this.metrics,o=t[0],i=this;if(r&&o){var f=n(o);f&&(r.txSize=f)}this.startTime=(new Date).getTime(),this.listener=function(t){try{"abort"===t.type&&(i.params.aborted=!0),("load"!==t.type||i.called===i.totalCbs&&(i.onloadCalled||"function"!=typeof e.onload))&&i.end(e)}catch(n){try{a.emit("internal-error",[n])}catch(r){}}};for(var u=0;c>u;u++)e.addEventListener(s[u],this.listener,!1)}),a.on("xhr-cb-time",function(t,e,n){this.cbTime+=t,e?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof n.onload||this.end(n)}),a.on("xhr-load-added",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&!this.xhrGuids[n]&&(this.xhrGuids[n]=!0,this.totalCbs+=1)}),a.on("xhr-load-removed",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&this.xhrGuids[n]&&(delete this.xhrGuids[n],this.totalCbs-=1)}),a.on("addEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-added",[t[1],t[2]],e)}),a.on("removeEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-removed",[t[1],t[2]],e)}),a.on("fn-start",function(t,e,n){e instanceof XMLHttpRequest&&("onload"===n&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=(new Date).getTime()))}),a.on("fn-end",function(t,e){this.xhrCbStart&&a.emit("xhr-cb-time",[(new Date).getTime()-this.xhrCbStart,this.onload,e],e)})}},{1:"XL7HBI",2:13,3:11,4:7,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],13:[function(t,e){e.exports=function(t){var e=document.createElement("a"),n=window.location,r={};e.href=t,r.port=e.port;var o=e.href.split("://");return!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=e.hostname||n.hostname,r.pathname=e.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname),r.sameOrigin=!e.hostname||e.hostname===document.domain&&e.port===n.port&&e.protocol===n.protocol,r}},{}],14:[function(t,e){function n(t){return function(){r(t,[(new Date).getTime()].concat(i(arguments)))}}var r=t("handle"),o=t(1),i=t(2);"undefined"==typeof window.newrelic&&(newrelic=window.NREUM);var a=["setPageViewName","addPageAction","setCustomAttribute","finished","addToTrace","inlineHit","noticeError"];o(a,function(t,e){window.NREUM[e]=n("api-"+e)}),e.exports=window.NREUM},{1:23,2:24,handle:"D5DuLP"}],"7eSDFh":[function(t,e){function n(t,e,n){if(r.call(t,e))return t[e];var o=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return t[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],D5DuLP:[function(t,e){function n(t,e,n){return r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee=r,r.q=o},{ee:"QJf3ax"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],XL7HBI:[function(t,e){function n(t){var e=typeof t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return r++})}var r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],G9z0Bl:[function(t,e){function n(){var t=p.info=NREUM.info,e=f.getElementsByTagName("script")[0];if(t&&t.licenseKey&&t.applicationID&&e){s(d,function(e,n){e in t||(t[e]=n)});var n="https"===u.split(":")[0]||t.sslForHttp;p.proto=n?"https://":"http://",a("mark",["onload",i()]);var r=f.createElement("script");r.src=p.proto+t.agent,e.parentNode.insertBefore(r,e)}}function r(){"complete"===f.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),s=t(1),c=(t(2),window),f=c.document,u=(""+location).split("?")[0],d={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-632.min.js"},p=e.exports={offset:i(),origin:u,features:{}};f.addEventListener?(f.addEventListener("DOMContentLoaded",o,!1),c.addEventListener("load",n,!1)):(f.attachEvent("onreadystatechange",r),c.attachEvent("onload",n)),a("mark",["firstbyte",i()])},{1:23,2:14,handle:"D5DuLP"}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],23:[function(t,e){function n(t,e){var n=[],o="",i=0;for(o in t)r.call(t,o)&&(n[i]=e(o,t[o]),i+=1);return n}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],24:[function(t,e){function n(t,e,n){e||(e=0),"undefined"==typeof n&&(n=t?t.length:0);for(var r=-1,o=n-e||0,i=Array(0>o?0:o);++r<o;)i[r]=t[e+r];return i}e.exports=n},{}],25:[function(t,e){function n(t){return!(t&&"function"==typeof t&&t.apply&&!t[i])}var r=t("ee"),o=t(1),i="nr@wrapper",a=Object.prototype.hasOwnProperty;e.exports=function(t){function e(t,e,r,a){function nrWrapper(){var n,i,s,f;try{i=this,n=o(arguments),s=r&&r(n,i)||{}}catch(d){u([d,"",[n,i,a],s])}c(e+"start",[n,i,a],s);try{return f=t.apply(i,n)}catch(p){throw c(e+"err",[n,i,p],s),p}finally{c(e+"end",[n,i,f],s)}}return n(t)?t:(e||(e=""),nrWrapper[i]=!0,f(t,nrWrapper),nrWrapper)}function s(t,r,o,i){o||(o="");var a,s,c,f="-"===o.charAt(0);for(c=0;c<r.length;c++)s=r[c],a=t[s],n(a)||(t[s]=e(a,f?s+o:o,i,s))}function c(e,n,r){try{t.emit(e,n,r)}catch(o){u([o,e,n,r])}}function f(t,e){if(Object.defineProperty&&Object.keys)try{var n=Object.keys(t);return n.forEach(function(n){Object.defineProperty(e,n,{get:function(){return t[n]},set:function(e){return t[n]=e,e}})}),e}catch(r){u([r])}for(var o in t)a.call(t,o)&&(e[o]=t[o]);return e}function u(e){try{t.emit("internal-error",e)}catch(n){}}return t||(t=r),e.inPlace=s,e.flag=i,e}},{1:24,ee:"QJf3ax"}]},{},["G9z0Bl",4,12,6,5]);</script><script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","queueTime":0,"licenseKey":"1beac94c95","agent":"js-agent.newrelic.com/nr-632.min.js","transactionName":"NQQGYUZWDUNSVUMPWQxOIkBaVBdZXFgYBVkXExdQQ1YRVR1AXgNBEVsNW1BSGw==","applicationID":"3343327","errorBeacon":"bam.nr-data.net","applicationTime":1083}</script>
+
+
+
+
+
+
+
+  <title>
+
+ Setting up the Course Software Environment  (Due June 6, 2015 at 00:00 UTC) | CS100.1x Courseware | edX
+</title>
+
+      <script type="text/javascript">
+        /* immediately break out of an iframe if coming from the marketing website */
+        (function(window) {
+          if (window.location !== window.top.location) {
+            window.top.location = window.location;
+          }
+        })(this);
+      </script>
+
+  <script type="text/javascript" src="/jsi18n/"></script>
+
+  <link rel="icon" type="image/x-icon" href="https://d37djvu3ytnwxt.cloudfront.net/static/images/favicon.c074c912999f.ico" />
+
+  
+  
+
+    <link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-vendor.c29dfc26527f.css" rel="stylesheet" type="text/css" />
+
+
+
+  
+  
+
+    <link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-main.e72cf625bf44.css" rel="stylesheet" type="text/css" />
+
+
+
+
+    
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-main_vendor.c1170b9488ac.js" charset="utf-8"></script>
+
+
+
+  <script>
+    window.baseUrl = "https://d37djvu3ytnwxt.cloudfront.net/static/";
+    (function (require) {
+        var urlArgs = "v=41c5916";
+      require.config({
+          baseUrl: baseUrl,
+          urlArgs: urlArgs
+      });
+    }).call(this, require || RequireJS.require);
+  </script>
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/require-config-lms.14492589b204.js"></script>
+
+  
+
+  
+
+    <link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-course-vendor.d65f103108eb.css" rel="stylesheet" type="text/css" />
+
+
+
+
+  
+
+    <link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-course.f32cbfb66604.css" rel="stylesheet" type="text/css" />
+
+
+
+
+
+
+
+
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/split.1e256a271150.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.truncate.b81308a54759.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/jquery.ajaxfileupload.27e7569a4c1e.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Converter.33f02cbe2eb8.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Sanitizer.253c591d1f95.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/Markdown.Editor.dfc3093a1101.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/jquery.autocomplete.3bd10d7510d2.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.timeago.9605aaf0437d.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/src/jquery.timeago.locale.b54a9c010cd6.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/mustache.2aa68bb79181.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/URI.min.03b89112e46e.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/backbone-min.752b6162850f.js"></script>
+<script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/src/tooltip_manager.c80266d685f1.js"></script>
+
+<link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/vendor/jquery.autocomplete.09a0b34739a2.css" rel="stylesheet" type="text/css">
+
+
+  
+
+
+
+  
+  
+
+
+  <script src=//cdn.optimizely.com/js/1743970571.js></script>
+
+  <!-- begin Segment.io -->
+<script type="text/javascript">
+  // Asynchronously load Segment.io's analytics.js library
+  window.analytics||(window.analytics=[]),window.analytics.methods=["identify","track","trackLink","trackForm","trackClick","trackSubmit","page","pageview","ab","alias","ready","group","on","once","off"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var method=window.analytics.methods[i];window.analytics[method]=window.analytics.factory(method)}window.analytics.load=function(t){var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)},window.analytics.SNIPPET_VERSION="2.0.8",
+  analytics.load("8fncv13bt5");
+  analytics.page();
+
+    analytics.identify("000000", {
+      email: "user@gmail.com",
+      username: "user"
+    });
+</script>
+<!-- end Segment.io -->
+
+
+  <meta name="path_prefix" content="">
+  <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
+
+  
+
+
+</head>
+
+<body class="ltr courseware  lang_en">
+  <div class="window-wrap" dir="ltr">
+    <a class="nav-skip" href="#seq_content">Skip to main content</a>
+
+        
+
+
+
+
+
+
+
+
+
+<header class="global slim" aria-label="Main" role="banner">
+  <div class="wrapper-header nav-container">
+    <h1 class="logo" itemscope="" itemtype="http://schema.org/Organization">
+      <a href="https://www.edx.org" title="Home page" itemprop="url">
+        
+            <img src="https://d37djvu3ytnwxt.cloudfront.net/static/images/edx-theme/edx-logo-77x36.png" alt="edX" title="edX" itemprop="url" />
+            <span class="sr">Home Page</span>
+        
+      </a>
+    </h1>
+
+    <h2><span class="provider">BerkeleyX:</span> CS100.1x Introduction to Big Data with Apache Spark</h2>
+
+
+    <ul class="user">
+      <li class="primary">
+        <a href="/dashboard" class="user-link">
+          <i class="icon fa fa-home" aria-hidden="true"></i>
+          <span class="sr">Dashboard for:</span>
+          <div>user</div>
+        </a>
+      </li>
+      <li class="primary">
+        <a href="#" class="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr">More options dropdown</span> &#9662;</a>
+        <ul class="dropdown-menu" aria-label="More Options" role="menu">
+          
+            <li><a href="/account/settings">Account Settings</a></li>
+            <li><a href="/u/user">My Profile</a></li>
+          
+          <li><a href="/logout" role="menuitem">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+
+
+  </div>
+</header>
+<!--[if lte IE 9]>
+<div class="ie-banner" aria-hidden="true"><strong>Warning:</strong> Your browser is not fully supported. We strongly recommend using <a href="https://www.google.com/chrome" target="_blank">Chrome</a> or <a href="http://www.mozilla.org/firefox" target="_blank">Firefox</a>.</div>
+<![endif]-->
+
+
+
+
+
+
+
+<div class="help-tab">
+  <a href="#help-modal" rel="leanModal" role="button">Help</a>
+</div>
+
+<section id="help-modal" class="modal" aria-hidden="true" role="dialog" aria-label="edX Help">
+  <div class="inner-wrapper" id="help_wrapper">
+    <button class="close-modal "tabindex="0">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2>
+	<span class="edx">edX</span> Help
+      </h2>
+      <hr>
+    </header>
+
+
+
+    <p>For <strong>questions on course lectures, homework, tools, or materials for this course</strong>, post in the <a href="/courses/BerkeleyX/CS100.1x/1T2015/discussion/forum" target="_blank">course discussion forum</a>.
+    </p>
+
+    <p>Have <strong>general questions about edX</strong>? You can find lots of helpful information in the edX <a href="https://www.edx.org/student-faq" target="_blank">FAQ</a>.
+      </p>
+
+    <p>Have a <strong>question about something specific</strong>? You can contact the edX general support team directly:</p>
+    <hr>
+
+    <div class="help-buttons">
+      <a href="#" id="feedback_link_problem">Report a problem</a>
+      <a href="#" id="feedback_link_suggestion">Make a suggestion</a>
+      <a href="#" id="feedback_link_question">Ask a question</a>
+    </div>
+
+    <p class="note">Please note: The edX support team is English speaking. While we will do our best to address your inquiry in any language, our responses will be in English.</p>
+
+  </div>
+
+  <div class="inner-wrapper" id="feedback_form_wrapper">
+    <button class="close-modal">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header></header>
+
+    <form id="feedback_form" class="feedback_form" method="post" data-remote="true" action="/submit_feedback">
+      <div id="feedback_error" class="modal-form-error" tabindex="-1"></div>
+      <label data-field="subject" for="feedback_form_subject">Briefly describe your issue*</label>
+      <input name="subject" type="text" id="feedback_form_subject" aria-required="true">
+      <label data-field="details" for="feedback_form_details">Tell us the details*
+<span class="tip">Include error messages, steps which lead to the issue, etc</span></label>
+      <textarea name="details" id="feedback_form_details" aria-required="true"></textarea>
+      <input name="issue_type" type="hidden">
+      <input name="course_id" type="hidden" value="BerkeleyX/CS100.1x/1T2015">
+      <div class="submit">
+        <input name="submit" type="submit" value="Submit" id="feedback_submit">
+      </div>
+    </form>
+  </div>
+
+  <div class="inner-wrapper" id="feedback_success_wrapper" tabindex="0">
+    <button class="close-modal" tabindex="0">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2>Thank You!</h2>
+      <hr>
+    </header>
+
+    
+    <p>
+    Thank you for your inquiry or feedback.  We typically respond to a request within one business day (Monday to Friday, 13:00 UTC to 21:00 UTC.) In the meantime, please review our <a href="https://www.edx.org/student-faq" target="_blank" id="feedback-faq-link" tabindex="0">detailed FAQs</a> where most questions have already been answered.
+    </p>
+  </div>
+</section>
+
+<script type="text/javascript">
+(function() {
+    var onModalClose = function() {
+            $("#help-modal .close-modal").off("click");
+            $("#lean_overlay").off("click");
+            $("#help-modal").attr("aria-hidden", "true");
+            $('area,input,select,textarea,button').removeAttr('tabindex');
+            $(".help-tab a").focus();
+        },
+        cycle_modal_tab = function(from_element_name, to_element_name) {
+            $(from_element_name).on('keydown', function(e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode === 9) {
+                    e.preventDefault();
+                    $(to_element_name).focus();
+                }
+            });
+        };
+
+    $(".help-tab").click(function() {
+        $(".field-error").removeClass("field-error");
+        $("#feedback_form")[0].reset();
+        $("#feedback_form input[type='submit']").removeAttr("disabled");
+        $("#feedback_form_wrapper").css("display", "none");
+        $("#feedback_error").css("display", "none");
+        $("#feedback_success_wrapper").css("display", "none");
+        $("#help_wrapper").css("display", "block");
+        $("#help-modal").attr("aria-hidden", "false");
+        $("#help-modal .close-modal").click(onModalClose);
+        $("#lean_overlay").click(onModalClose);
+        $("#help_wrapper .close-modal").focus();
+    });
+    showFeedback = function(event, issue_type, title, subject_label, details_label) {
+        $("#help_wrapper").css("display", "none");
+        $("#feedback_form input[name='issue_type']").val(issue_type);
+        $("#feedback_form_wrapper").css("display", "block");
+        $("#feedback_form_wrapper header").html("<h2>" + title + "</h2><hr>");
+        $("#feedback_form_wrapper label[data-field='subject']").html(subject_label);
+        $("#feedback_form_wrapper label[data-field='details']").html(details_label);
+        $("#feedback_form_wrapper .close-modal").focus();
+        event.preventDefault();
+    };
+    cycle_modal_tab("#feedback_link_question", "#help_wrapper .close-modal");
+    cycle_modal_tab("#feedback_submit", "#feedback_form_wrapper .close-modal");
+    cycle_modal_tab("#feedback-faq-link", "#feedback_success_wrapper .close-modal");
+    $("#help-modal").on("keydown", function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 27) {
+            e.preventDefault();
+            $("#help_wrapper .close-modal").click();
+        }
+    });
+    $("#feedback_link_problem").click(function(event) {
+        showFeedback(
+            event,
+            "problem",
+            "Report a Problem",
+            "Brief description of the problem" + "*",
+            "Details of the problem you are encountering" + "*" + "<span class='tip'>" +
+              "Include error messages, steps which lead to the issue, etc." + "</span>"
+        );
+    });
+    $("#feedback_link_suggestion").click(function(event) {
+        showFeedback(
+            event,
+            "suggestion",
+            "Make a Suggestion",
+            "Brief description of your suggestion" + "*",
+            "Details" + "*"
+        );
+    });
+    $("#feedback_link_question").click(function(event) {
+        showFeedback(
+            event,
+            "question",
+            "Ask a Question",
+            "Brief summary of your question" + "*",
+            "Details" + "*"
+        );
+    });
+    $("#feedback_form").submit(function() {
+        $("input[type='submit']", this).attr("disabled", "disabled");
+        $('area,input,select,textarea,button').attr('tabindex', -1);
+        $("#feedback_form_wrapper .close-modal").focus();
+    });
+    $("#feedback_form").on("ajax:complete", function() {
+        $("input[type='submit']", this).removeAttr("disabled");
+    });
+    $("#feedback_form").on("ajax:success", function(event, data, status, xhr) {
+        $("#feedback_form_wrapper").css("display", "none");
+        $("#feedback_success_wrapper").css("display", "block");
+        $("#feedback_success_wrapper").focus();
+    });
+    $("#feedback_form").on("ajax:error", function(event, xhr, status, error) {
+        $(".field-error").removeClass("field-error").removeAttr("aria-invalid");
+        var responseData;
+        try {
+            responseData = jQuery.parseJSON(xhr.responseText);
+        } catch(err) {
+        }
+        if (responseData) {
+            $("[data-field='"+responseData.field+"']").addClass("field-error").attr("aria-invalid", "true");
+            $("#feedback_error").html(responseData.error).stop().css("display", "block");
+        } else {
+            // If no data (or malformed data) is returned, a server error occurred
+            htmlStr = "An error has occurred.";
+            htmlStr += " " + _.template(
+              "Please {link_start}send us e-mail{link_end}.",
+              {link_start: '<a href="#" id="feedback_email">', link_end: '</a>'},
+              {interpolate: /\{(.+?)\}/g})
+            $("#feedback_error").html(htmlStr).stop().css("display", "block");
+            $("#feedback_email").click(function(e) {
+                mailto = "mailto:" + "bugs@edx.org" +
+                    "?subject=" + $("#feedback_form input[name='subject']").val() +
+                    "&body=" + $("#feedback_form textarea[name='details']").val();
+                window.open(mailto);
+                e.preventDefault();
+            });
+        }
+        // Make change explicit to assistive technology
+        $("#feedback_error").focus();
+    });
+})(this)
+</script>
+
+
+
+
+    <div class="content-wrapper" id="content">
+      
+
+
+
+
+
+
+
+
+<script type="text/template" id="image-modal-tpl">
+    <div class="wrapper-modal wrapper-modal-image">
+  <section class="image-link">
+    <%= smallHTML%>
+    <a href="#" class="modal-ui-icon action-fullscreen" role="button">
+      <span class="label">
+        <i class="icon fa fa-arrows-alt fa-large"></i> <%= gettext("Fullscreen") %>
+      </span>
+    </a>
+  </section>
+
+  <section class="image-modal">
+    <section class="image-content">
+      <div class="image-wrapper">
+        <img alt="<%= largeALT %>, <%= gettext('Large') %>" src="<%= largeSRC %>" />
+      </div>
+
+      <a href="#" class="modal-ui-icon action-close" role="button">
+        <span class="label">
+          <i class="icon fa fa-remove fa-large"></i> <%= gettext("Close") %>
+        </span>
+      </a>
+
+      <ul class="image-controls">
+        <li class="image-control">
+          <a href="#" class="modal-ui-icon action-zoom-in" role="button">
+            <span class="label">
+              <i class="icon fa fa fa-search-plus fa-large"></i> <%= gettext("Zoom In") %>
+            </span>
+          </a>
+        </li>
+
+        <li class="image-control">
+          <a href="#" class="modal-ui-icon action-zoom-out is-disabled" aria-disabled="true" role="button">
+            <span class="label">
+              <i class="icon fa fa fa-search-minus fa-large"></i> <%= gettext("Zoom Out") %>
+            </span>
+          </a>
+        </li>
+      </ul>
+    </section>
+  </section>
+</div>
+
+</script>
+
+<script type="text/template" id="course_search_item-tpl">
+    <div class="result-excerpt"><%= excerpt %></div>
+<a class="result-link" href="<%- url %>"><%= gettext("View") %> <i class="icon fa fa-arrow-right"></i></a>
+<span class="result-location"><%- location.join(' ▸ ') %></span>
+<span class="result-type"><%- content_type %></span>
+
+</script>
+<script type="text/template" id="course_search_results-tpl">
+    <div class="search-info">
+    <%= gettext("Search Results") %>
+    <div class="search-count"><%= totalCountMsg %></div>
+</div>
+
+<% if (totalCount > 0 ) { %>
+
+    <ol class='search-result-list'></ol>
+
+    <% if (hasMoreResults) { %>
+        <a class="search-load-next" href="#">
+            <%= interpolate(
+                ngettext("Load next %(num_items)s result", "Load next %(num_items)s results", pageSize),
+                { num_items: pageSize },
+                true
+            ) %>
+            <i class="icon fa fa-spinner fa-spin"></i>
+        </a>
+    <% } %>
+
+<% } else { %>
+
+    <p><%= gettext("Sorry, no results were found.") %></p>
+
+<% } %>
+
+</script>
+<script type="text/template" id="search_loading-tpl">
+    <i class="icon fa fa-spinner fa-spin"></i> <%= gettext("Loading") %>
+
+
+</script>
+<script type="text/template" id="search_error-tpl">
+    <%= gettext("There was an error, try searching again.") %>
+
+</script>
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+<nav class="courseware wrapper-course-material" aria-label="Course Material">
+  <div class="course-material">
+    <ol class="course-tabs">
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware" class="active">
+                 Courseware
+                   <span class="sr">, current location</span>
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/info" class="">
+                 Course Info
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/576601d4282341f99ac7956718cc2301/" class="">
+                 Course Staff
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/fbe63aa3c95948e3912fa128aedec27d/" class="">
+                 Syllabus
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/f206cd7798de4ef98aabba76d321b014/" class="">
+                 Piazza Discussion Group
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/course_wiki" class="">
+                 Wiki
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/progress" class="">
+                 Progress
+             </a>
+          </li>
+        
+          <li>
+             <a href="/courses/BerkeleyX/CS100.1x/1T2015/discussion/forum" class="">
+                 Discussion
+             </a>
+          </li>
+      
+    </ol>
+  </div>
+</nav>
+
+
+
+<div class="container">
+  <div class="course-wrapper">
+
+    <div class="course-index" role="navigation">
+      <header id="open_close_accordion">
+        <a href="#">close</a>
+      </header>
+
+
+      <div id="accordion" style="display: none">
+        <nav aria-label="Course Navigation">
+            
+
+
+
+    
+  <div class="chapter">
+      
+      <h3  class="active" aria-label="Week 1 - Data Science Background and Course Software Setup, current chapter">
+        <a href="#">
+          Week 1 - Data Science Background and Course Software Setup
+        </a>
+      </h3>
+
+    <ul>
+          <li class=" ">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/d1f293d0cb53466dbb5c0cd81f55b45b/a8482182209e4148811ac58f68a6182f/">
+              <p>Welcome to CS100.1x </p>
+              
+              <p class="subtitle"> </p>
+
+            </a>
+          </li>
+          <li class="active graded">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/d1f293d0cb53466dbb5c0cd81f55b45b/920d3370060540c8b21d56f05c64bdda/">
+              <p>Setting up the Course Software Environment  (Due June 6, 2015 at 00:00 UTC) <span class="sr">, current section</span></p>
+              
+              <p class="subtitle">Setup </p>
+
+                  <img src="/static/images/graded.png" alt="Graded Section">
+            </a>
+          </li>
+          <li class=" ">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/d1f293d0cb53466dbb5c0cd81f55b45b/ba9013727f6841e5915503f0e7dad68d/">
+              <p>(Optional) Survey about your machine and setup experience </p>
+              
+              <p class="subtitle"> </p>
+
+            </a>
+          </li>
+          <li class=" graded">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/d1f293d0cb53466dbb5c0cd81f55b45b/fe9a95cc542d4c30b855e632663c4797/">
+              <p>Lecture 1: Introduction to Big Data and Data Science </p>
+              
+              <p class="subtitle">Quizzes </p>
+
+                  <img src="/static/images/graded.png" alt="Graded Section">
+            </a>
+          </li>
+          <li class=" graded">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/d1f293d0cb53466dbb5c0cd81f55b45b/3cf61a8718fe4ad5afcd8fb35ceabb6e/">
+              <p>Lecture 2: Performing Data Science and Preparing Data </p>
+              
+              <p class="subtitle">Quizzes </p>
+
+                  <img src="/static/images/graded.png" alt="Graded Section">
+            </a>
+          </li>
+    </ul>
+  </div>
+
+    
+  <div class="chapter">
+      
+      <h3  aria-label="Week 2 - Introduction to Apache Spark">
+        <a href="#">
+          Week 2 - Introduction to Apache Spark
+        </a>
+      </h3>
+
+    <ul>
+          <li class=" graded">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/9d251397874d4f0b947b606c81ccf83c/e0fcf807affe44a084d61146c059d709/">
+              <p>Lecture 3: Big Data, Hardware Trends, and Apache Spark </p>
+              
+              <p class="subtitle">Quizzes </p>
+
+                  <img src="/static/images/graded.png" alt="Graded Section">
+            </a>
+          </li>
+          <li class=" graded">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/9d251397874d4f0b947b606c81ccf83c/736a2f5af227429d9abbff9527f9a3e3/">
+              <p>Lecture 4: Spark Essentials </p>
+              
+              <p class="subtitle">Quizzes </p>
+
+                  <img src="/static/images/graded.png" alt="Graded Section">
+            </a>
+          </li>
+          <li class=" graded">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/courseware/9d251397874d4f0b947b606c81ccf83c/035f696c1172403f9253736f5dc2dccb/">
+              <p>Lab 1 - Learning Apache Spark (Due June 12, 2015 at 00:00 UTC) </p>
+              
+              <p class="subtitle">Lab </p>
+
+                  <img src="/static/images/graded.png" alt="Graded Section">
+            </a>
+          </li>
+    </ul>
+  </div>
+
+
+        </nav>
+      </div>
+
+    </div>
+    <section class="course-content" id="course-content" role="main" aria-label=“Content”>
+
+      <div class="xblock xblock-student_view xblock-student_view-sequential xmodule_display xmodule_SequenceModule" data-runtime-class="LmsRuntime" data-init="XBlockToXModuleShim" data-block-type="sequential" data-request-token="641175b011c111e5a9130a8d6245fa4f" data-runtime-version="1" data-usage-id="i4x:;_;_BerkeleyX;_CS100.1x;_sequential;_920d3370060540c8b21d56f05c64bdda" data-type="Sequence" data-course-id="BerkeleyX/CS100.1x/1T2015">
+  <script type="json/xblock-args" class="xblock-json-init-args">
+    {"xmodule-type": "Sequence"}
+  </script>
+  
+
+<div id="sequence_i4x-BerkeleyX-CS100_1x-sequential-920d3370060540c8b21d56f05c64bdda" class="sequence" data-id="i4x://BerkeleyX/CS100.1x/sequential/920d3370060540c8b21d56f05c64bdda" data-position="1" data-ajax-url="/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_sequential;_920d3370060540c8b21d56f05c64bdda/handler/xmodule_handler" >
+  <div class="sequence-nav">
+    <button class="sequence-nav-button button-previous"><span class="icon fa fa-chevron-left" aria-hidden="true"></span><span class="sr">Previous</span></button>
+    <nav class="sequence-list-wrapper" aria-label="Unit">
+      <ol id="sequence-list">
+        <li>
+        <a class="seq_other inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/47e86c96e64346b78f657fb599739857"
+           data-element="1"
+           href="javascript:void(0);"
+           title="Prerequisites"
+           data-page-title="Prerequisites"
+           aria-controls="seq_contents_0"
+           id="tab_0"
+           tabindex="0">
+            <i class="icon fa seq_other" aria-hidden="true"></i>
+            <p><span class="sr">other</span> Prerequisites</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_other inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/0e63cd3c8d314b1d817b9dfe019fecf1"
+           data-element="2"
+           href="javascript:void(0);"
+           title="Installing the Required Software Packages"
+           data-page-title="Installing the Required Software Packages"
+           aria-controls="seq_contents_1"
+           id="tab_1"
+           tabindex="0">
+            <i class="icon fa seq_other" aria-hidden="true"></i>
+            <p><span class="sr">other</span> Installing the Required Software Packages</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_video inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/0aba1754164d431e86e39de0293d8ef1"
+           data-element="3"
+           href="javascript:void(0);"
+           title="Downloading and Installing VirtualBox
+VirtualBox for Windows
+VirtualBox for Mac OS X
+VirtualBox for Linux
+FAQs for Windows"
+           data-page-title="Downloading and Installing VirtualBox"
+           aria-controls="seq_contents_2"
+           id="tab_2"
+           tabindex="0">
+            <i class="icon fa seq_video" aria-hidden="true"></i>
+            <p><span class="sr">video</span> Downloading and Installing VirtualBox
+VirtualBox for Windows
+VirtualBox for Mac OS X
+VirtualBox for Linux
+FAQs for Windows</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_video inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/daa8a13846474b4f9c73540fa7d9fdc3"
+           data-element="4"
+           href="javascript:void(0);"
+           title="Downloading and Installing Vagrant
+Vagrant for Windows
+(Windows) “Installation Directory must be on a local hard drive” Error
+Vagrant for Mac OS X
+Vagrant for Linux"
+           data-page-title="Downloading and Installing Vagrant"
+           aria-controls="seq_contents_3"
+           id="tab_3"
+           tabindex="0">
+            <i class="icon fa seq_video" aria-hidden="true"></i>
+            <p><span class="sr">video</span> Downloading and Installing Vagrant
+Vagrant for Windows
+(Windows) “Installation Directory must be on a local hard drive” Error
+Vagrant for Mac OS X
+Vagrant for Linux</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_video inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/521c1b7183a74232a0385cb38f192e71"
+           data-element="5"
+           href="javascript:void(0);"
+           title="Downloading and installing the virtual machine
+VM Image for Windows
+VM Image for Mac OS X
+VM Image for Linux
+(All Platforms) &#34;Unrecognized archive format&#34; Error
+(Windows) &#34;Code E_NOINTERFACE&#34; Error
+(Linux) Vagrant Up Fails"
+           data-page-title="Downloading and installing the virtual machine"
+           aria-controls="seq_contents_4"
+           id="tab_4"
+           tabindex="0">
+            <i class="icon fa seq_video" aria-hidden="true"></i>
+            <p><span class="sr">video</span> Downloading and installing the virtual machine
+VM Image for Windows
+VM Image for Mac OS X
+VM Image for Linux
+(All Platforms) "Unrecognized archive format" Error
+(Windows) "Code E_NOINTERFACE" Error
+(Linux) Vagrant Up Fails</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_video inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/db0dc6b7fada406a8e4023802a009696"
+           data-element="6"
+           href="javascript:void(0);"
+           title="Basic VM Usage
+Basic Instructions for Using the VM on Windows
+Basic Instructions for Using the VM on Mac OS X
+Basic Instructions for Using the VM on Linux"
+           data-page-title="Basic VM Usage"
+           aria-controls="seq_contents_5"
+           id="tab_5"
+           tabindex="0">
+            <i class="icon fa seq_video" aria-hidden="true"></i>
+            <p><span class="sr">video</span> Basic VM Usage
+Basic Instructions for Using the VM on Windows
+Basic Instructions for Using the VM on Mac OS X
+Basic Instructions for Using the VM on Linux</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_video inactive progress-0"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/41c3737c2a82464aaef6310f99c45ae6"
+           data-element="7"
+           href="javascript:void(0);"
+           title="Running Your First Notebook
+Running Your First Notebook
+Error in Shakespeare Test"
+           data-page-title="Running Your First Notebook"
+           aria-controls="seq_contents_6"
+           id="tab_6"
+           tabindex="0">
+            <i class="icon fa seq_video" aria-hidden="true"></i>
+            <p><span class="sr">video</span> Running Your First Notebook
+Running Your First Notebook
+Error in Shakespeare Test</p>
+          </a>
+        </li>
+        <li>
+        <a class="seq_problem inactive progress-none"
+           data-id="i4x://BerkeleyX/CS100.1x/vertical/becab56ac25a4916ab6ac1926ae93ea2"
+           data-element="8"
+           href="javascript:void(0);"
+           title="The Course Autograder
+Submitting the Test Notebook to the Autograder"
+           data-page-title="The Course Autograder"
+           aria-controls="seq_contents_7"
+           id="tab_7"
+           tabindex="0">
+            <i class="icon fa seq_problem" aria-hidden="true"></i>
+            <p><span class="sr">problem</span> The Course Autograder
+Submitting the Test Notebook to the Autograder</p>
+          </a>
+        </li>
+      </ol>
+    </nav>
+    <button class="sequence-nav-button button-next"><span class="icon fa fa-chevron-right" aria-hidden="true"></span><span class="sr">Next</span></button>
+  </div>
+
+  <div class="sr-is-focusable" tabindex="-1"></div>
+
+  <div id="seq_contents_0"
+    aria-labelledby="tab_0"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_47e86c96e64346b78f657fb599739857&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/c1bd649f536e469eb1abd3f05371fa6b&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_c1bd649f536e469eb1abd3f05371fa6b&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Introduction&lt;/h1&gt;
+&lt;p&gt;In this course, you will learn how to write and debug Python Spark (pySpark) programs in four weekly lab exercises. We expect everyone to use the same software development environment. Our software development environment uses a Virtual Machine (VM) to simplify the installation process and provide all students with the same development environment. You will need to first install two free software packages (VirtualBox and Vagrant), and then download and install our VM image. In this segment, we will walk you through the process of downloading and installing the required software and VM image, and of running a test&amp;nbsp;pySpark IPython notebook.&lt;/p&gt;
+&lt;p&gt;&lt;em&gt;Note: The total size of all the files you will need to download is less than&amp;nbsp;1 GB.&lt;/em&gt;&lt;/p&gt;
+&lt;h1&gt;Hardware and Software Prerequisites&lt;/h1&gt;
+&lt;p&gt;You will need a machine that meets certain minimum hardware requirements and is running a supported operating system. &lt;em&gt;Note:&amp;nbsp;Other configurations may work fine, but we will not be able to provide official support for them.&lt;/em&gt;&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;Minimum Hardware REquirements&lt;/h2&gt;
+&lt;p&gt;You should use a machine with the following minimum hardware requirements:&lt;/p&gt;
+&lt;ul&gt;
+&lt;ul&gt;
+&lt;li&gt;Free disk space: 3.5 GB&amp;nbsp;&lt;/li&gt;
+&lt;li&gt;RAM memory: 2.5 GB (4+ GB preferred)&lt;/li&gt;
+&lt;li&gt;Processor: &amp;nbsp;Any recent Intel or AMD multicore processor should be sufficient.&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;h2&gt;&lt;/h2&gt;
+&lt;h2&gt;&lt;span style=&#34;line-height: 1.6;&#34;&gt;Supported Operating Systems&lt;/span&gt;&lt;/h2&gt;
+&lt;p&gt;&lt;span style=&#34;line-height: 1.6;&#34;&gt;We support the following Operating Systems:&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;
+&lt;ul&gt;
+&lt;ul&gt;
+&lt;li&gt;64-bit (preferred) Windows 7 or later&lt;/li&gt;
+&lt;li&gt;64-bit (preferred) Mac OS X 10.9.5 or later&lt;/li&gt;
+&lt;li&gt;64-bit (preferred) Linux (CentOS 6 or later, or&amp;nbsp;Ubuntu 14.04 or&amp;nbsp;later)&lt;/li&gt;
+&lt;li&gt;32-bit Windows 7 or later&lt;/li&gt;
+&lt;li&gt;32-bit&amp;nbsp;Linux&amp;nbsp;(CentOS 6 or later, or&amp;nbsp;Ubuntu 14.04 or&amp;nbsp;later)&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;p&gt;&lt;span style=&#34;line-height: 25px;&#34;&gt;&lt;i&gt;NOTE for Linux users: Based on our testing, please make sure you are using Vagrant 1.7 or newer with Linux. The default Vagrant version packaged with most Linux distributions does not seem to work properly with our&amp;nbsp;course software.&amp;nbsp;&lt;/i&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=&#34;line-height: 1.6;&#34;&gt;(Optional) For the best performance with VirtualBox, we recommend using a machine that supports hardware virtualization features: Intel VT-X or AMD AMD-V. &lt;/span&gt;&lt;em style=&#34;line-height: 1.6;&#34;&gt;Note that on many systems, the hardware virtualization features first need to be enabled in the BIOS before VirtualBox can use them.&lt;/em&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_1"
+    aria-labelledby="tab_1"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_0e63cd3c8d314b1d817b9dfe019fecf1&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/c28a781726254a26a68140b24aa97331&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_c28a781726254a26a68140b24aa97331&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Installing the Required&amp;nbsp;Software Packages&lt;/h1&gt;
+&lt;h2&gt;REQUIRED SOFTWARE PACKAGES&lt;/h2&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;There are two required free software packages:&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;Oracle&#39;s&amp;nbsp;&lt;a href=&#34;https://www.virtualbox.org&#34; target=&#34;_blank&#34;&gt;Virtual Box&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://www.vagrantup.com&#34; target=&#34;_blank&#34;&gt;Vagrant&lt;/a&gt;&amp;nbsp;automatic VM configuration&lt;/li&gt;
+&lt;/ul&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;&lt;em&gt;Note: If you already have either software package installed, makes sure that the versions are&amp;nbsp;VirtualBox 4.3.28 (or later) and&amp;nbsp;Vagrant 1.7.2 (or later).&lt;/em&gt;&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;The following&amp;nbsp;video segments walk you through the steps to download and install the required software packages&amp;nbsp;on your machine, and to run your first Apache Spark notebook.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_2"
+    aria-labelledby="tab_2"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_0aba1754164d431e86e39de0293d8ef1&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/7dd654c4180f4c1bb2f88c5627f2db93&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_7dd654c4180f4c1bb2f88c5627f2db93&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Downloading and Installing VirtualBox&lt;/h1&gt;
+&lt;p&gt;Go to the &lt;a href=&#34;https://www.virtualbox.org/wiki/Downloads&#34; target=&#34;_blank&#34;&gt;Downloads&lt;/a&gt;&amp;nbsp;page for VirtualBox and download the appropriate version for your operating system.&amp;nbsp;&lt;/p&gt;
+&lt;p&gt;While you wait for your&amp;nbsp;download to complete, watch the appropriate video (below) for your system to see the VirtualBox download and installation process.&amp;nbsp;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-1&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/d34dee586d424ccd981621ba9ead9631&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_d34dee586d424ccd981621ba9ead9631&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;VirtualBox for Windows&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;0fPt7zrAW1k&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d34dee586d424ccd981621ba9ead9631/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V002400_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:0fPt7zrAW1k&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d34dee586d424ccd981621ba9ead9631/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d34dee586d424ccd981621ba9ead9631/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-d34dee586d424ccd981621ba9ead9631&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V002400_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d34dee586d424ccd981621ba9ead9631/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-2&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/30f36fd010ae4d75a36fd394f638c23a&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_30f36fd010ae4d75a36fd394f638c23a&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;VirtualBox for Mac OS X&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;3atHHNa2UwI&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_30f36fd010ae4d75a36fd394f638c23a/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013700_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:3atHHNa2UwI&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_30f36fd010ae4d75a36fd394f638c23a/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_30f36fd010ae4d75a36fd394f638c23a/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-30f36fd010ae4d75a36fd394f638c23a&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013700_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_30f36fd010ae4d75a36fd394f638c23a/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-3&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/03d35412087c4eaa853e75dd23a2f242&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_03d35412087c4eaa853e75dd23a2f242&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;VirtualBox for Linux&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;1_4USzcKx6g&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_03d35412087c4eaa853e75dd23a2f242/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V012100_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:1_4USzcKx6g&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_03d35412087c4eaa853e75dd23a2f242/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_03d35412087c4eaa853e75dd23a2f242/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-03d35412087c4eaa853e75dd23a2f242&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V012100_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_03d35412087c4eaa853e75dd23a2f242/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-4&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/56e4b0df2e734932995ac9a0b413b587&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_56e4b0df2e734932995ac9a0b413b587&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h2&gt;FAQS FOR WINDOWS&lt;/h2&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;When attempting to start VirtualBox, you may encounter the following error:&lt;/p&gt;
+&lt;dl class=&#34;codebox&#34; style=&#34;margin: 0px; padding: 0px; border: 1px solid #c9d2d8; font-size: 13px; color: #333333; font-family: &#39;Lucida Grande&#39;, &#39;Trebuchet MS&#39;, Verdana, Helvetica, Arial, sans-serif; line-height: 18.200000762939453px;&#34;&gt;&lt;dd style=&#34;margin: 0px; padding: 0px;&#34;&gt;&lt;code style=&#34;margin: 2px 0px; padding-top: 5px; overflow: auto; display: block; height: auto; font-size: 0.9em; font-family: Monaco, &#39;Andale Mono&#39;, &#39;Courier New&#39;, Courier, mono; line-height: 1.3em; color: #2e8b57; max-height: 200px;&#34;&gt;VirtualBox - Critical Error&lt;br style=&#34;margin: 0px; padding: 0px;&#34; /&gt;Failed to create the VirtualBox COM object.&lt;br style=&#34;margin: 0px; padding: 0px;&#34; /&gt;The application will now terminate.&lt;br style=&#34;margin: 0px; padding: 0px;&#34; /&gt;Callee RC: E_NOINTERFACE (0x80004002)&lt;/code&gt;&lt;/dd&gt;&lt;/dl&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;If you encounter this error, you may not have installed VirtualBox as Administrator. You should perform the following steps:&lt;/p&gt;
+&lt;ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;Uninstall VirtualBox&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;Reboot your machine&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;Reinstall VirtualBox by right-clicking on the installation file and selecting &#34;Run as Administrator&#34;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;Once the installation completes, select &#34;Start Menu-&amp;gt;Oracle VM VirtualBox&#34;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;Right click on &#34;Oracle VM VirtualBox&#34; and select &#34;Properties&#34; &lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;Navigate to the &#34;Compatibility&#34; tab&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;In the Compatibility mode box, click the checkbox for &amp;nbsp;&#34;Run this program in compatibility mode for:&#34; and select &#34;Windows XP (Service Pack 3)&#34;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 1.6em;&#34;&gt;In the Priviledge Level box, click on the check box for&amp;nbsp;&lt;/span&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;&#34;Run this program as an administrator&#34;&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;Click on &#34;Change settings for all users&#34; and make sure that both the checkboxes for&amp;nbsp;&lt;/span&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;&#34;Run this program in compatibility mode for:&#34; and&amp;nbsp;&lt;/span&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;&#34;Run this program as an administrator&#34; are set.&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/ul&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_3"
+    aria-labelledby="tab_3"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_daa8a13846474b4f9c73540fa7d9fdc3&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/50eff4b1961f445aa5e06c8371610ac5&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_50eff4b1961f445aa5e06c8371610ac5&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Downloading and Installing Vagrant&lt;/h1&gt;
+&lt;p style=&#34;text-rendering: optimizelegibility; margin-top: 0px; margin-right: 0px; margin-left: 0px; padding: 0px; border: 0px; outline: 0px; font-family: &#39;Open Sans&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 16px; vertical-align: baseline; color: #4c4c4c;&#34;&gt;Go to the &lt;a href=&#34;https://www.vagrantup.com/downloads.html&#34; target=&#34;_blank&#34;&gt;Downloads&lt;/a&gt;&amp;nbsp;page for Vagrant&amp;nbsp;and download the appropriate version for your operating system.&amp;nbsp;&lt;/p&gt;
+&lt;p style=&#34;text-rendering: optimizelegibility; margin-right: 0px; margin-left: 0px; padding: 0px; border: 0px; outline: 0px; font-family: &#39;Open Sans&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; font-size: 16px; vertical-align: baseline; color: #4c4c4c;&#34;&gt;While you wait for your&amp;nbsp;download to complete, watch the appropriate video (below) for your system to see the Vagrant&amp;nbsp;download and installation process.&amp;nbsp;&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;&lt;span style=&#34;line-height: 25px;&#34;&gt;&lt;i&gt;NOTE for Linux users: Based on our testing, please make sure you are using Vagrant 1.7 or newer with Linux. The default Vagrant version packaged with most Linux distributions does not seem to work properly with&amp;nbsp;our&amp;nbsp;course software.&amp;nbsp;&lt;/i&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-1&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/d9db9736e0f7439498a625943e931d9f&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_d9db9736e0f7439498a625943e931d9f&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Vagrant for Windows&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;phsPValZUOE&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d9db9736e0f7439498a625943e931d9f/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V002300_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:phsPValZUOE&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d9db9736e0f7439498a625943e931d9f/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d9db9736e0f7439498a625943e931d9f/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-d9db9736e0f7439498a625943e931d9f&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V002300_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_d9db9736e0f7439498a625943e931d9f/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-2&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/337ae07d49a3432a9cb5e43873dabb23&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_337ae07d49a3432a9cb5e43873dabb23&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;p&gt;&lt;span style=&#34;font-family: &#39;Open Sans&#39;, Verdana, Arial, Helvetica, sans-serif;&#34;&gt;If you encounter the Windows error:&amp;nbsp;&lt;/span&gt;&amp;ldquo;Installation Directory must be on a local hard drive&amp;rdquo;, this is a permissions error and you need to force the installer to run with administrator privileges.&lt;/p&gt;
+&lt;p&gt;&lt;span style=&#34;font-family: &#39;Open Sans&#39;, Verdana, Arial, Helvetica, sans-serif;&#34;&gt;To do so:&lt;/span&gt;&lt;/p&gt;
+&lt;ol&gt;&lt;ol&gt;
+&lt;li&gt;&lt;span style=&#34;font-size: 1em; line-height: 1.6em;&#34;&gt;Locate the Vagrant MSI&amp;nbsp;installer file that you downloaded.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;While holding down the Shift key on the keyboard, right-click on the Vagrant&amp;nbsp;MSI, then choose&amp;nbsp;&lt;strong&gt;Copy As Path&lt;/strong&gt;.&lt;/li&gt;
+&lt;li&gt;Go to Start &amp;gt; All Programs &amp;gt; Accessories.&lt;/li&gt;
+&lt;li&gt;Right-click on&amp;nbsp;&lt;strong&gt;Command Prompt&lt;/strong&gt;&amp;nbsp;and choose&amp;nbsp;&lt;strong&gt;Run As Administrator&lt;/strong&gt;. This should open a command prompt window, labeled &#34;Administrator:&#34;.&lt;/li&gt;
+&lt;li&gt;In the Command Prompt window, type&amp;nbsp;&lt;strong&gt;msiexec /i&amp;nbsp;&lt;/strong&gt;(you need to enter a single space after &#34;/i&#34;).&lt;/li&gt;
+&lt;li&gt;Right-click in the Command Prompt window, then choose&amp;nbsp;&lt;strong&gt;Paste&lt;/strong&gt;. This should paste the path to the MSI file that you copied in Step 2 above.&lt;/li&gt;
+&lt;li&gt;Press Enter to run the command.&lt;/li&gt;
+&lt;/ol&gt;&lt;/ol&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-3&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/f5f7eadf19df4a15bf90c52f3c02ad17&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_f5f7eadf19df4a15bf90c52f3c02ad17&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Vagrant for Mac OS X&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;hPmawNk2XQw&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_f5f7eadf19df4a15bf90c52f3c02ad17/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013900_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:hPmawNk2XQw&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_f5f7eadf19df4a15bf90c52f3c02ad17/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_f5f7eadf19df4a15bf90c52f3c02ad17/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-f5f7eadf19df4a15bf90c52f3c02ad17&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013900_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_f5f7eadf19df4a15bf90c52f3c02ad17/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-4&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/37f0e9055bec4a05b11eef7795e8887a&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_37f0e9055bec4a05b11eef7795e8887a&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Vagrant for Linux&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;f2cufy6wRfA&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_37f0e9055bec4a05b11eef7795e8887a/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V012300_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:f2cufy6wRfA&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_37f0e9055bec4a05b11eef7795e8887a/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_37f0e9055bec4a05b11eef7795e8887a/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-37f0e9055bec4a05b11eef7795e8887a&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V012300_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_37f0e9055bec4a05b11eef7795e8887a/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_4"
+    aria-labelledby="tab_4"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_521c1b7183a74232a0385cb38f192e71&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/d7c20472645849d7b744570242036df9&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_d7c20472645849d7b744570242036df9&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Downloading and installing the virtual machine&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;span style=&#34;font-size: 1em; line-height: 1.6em;&#34;&gt;Create a custom directory (e.g., for windows users &lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;c:\users\marco\myvagrant&lt;/span&gt; or for Mac/Linux users &lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;/home/marco/myvagrant&lt;/span&gt;)&lt;br /&gt;(Please note:&amp;nbsp;&lt;a href=&#34;http://docs.vagrantup.com/v2/other/environmental-variables.html&#34; target=&#34;_blank&#34;&gt;VAGRANT_HOME&lt;/a&gt;&lt;/span&gt;&amp;nbsp;can be set to change the directory where Vagrant stores global state. By default, this is set to &#39;.vagrant.d&#39; under your user profile. This is where boxes (base VMs) are stored, so it can actually be&amp;nbsp;quite large on disk - please make sure you have enough space)&lt;/li&gt;
+&lt;li&gt;Download this &lt;a href=&#34;https://github.com/spark-mooc/mooc-setup/archive/master.zip&#34; target=&#34;[object Object]&#34;&gt;file&lt;/a&gt;&amp;nbsp;(https://github.com/spark-mooc/mooc-setup/archive/master.zip) to the custom directory and unzip it.&lt;/li&gt;
+&lt;li&gt;From the unzipped file, copy &lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;Vagrantfile&lt;/span&gt; to the custom directory you created in step #1 (&lt;em&gt;NOTE: It must be named exactly &#34;&lt;/em&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;Vagrantfile&lt;/span&gt;&lt;em&gt;&#34; with no extension&lt;/em&gt;)&lt;/li&gt;
+&lt;li&gt;Open a DOS prompt (Windows) or Terminal (Mac/Linux), change to the custom directory, and issue the command &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up --provider=virtualbox&lt;/span&gt;&#34;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;NOTE: On Microsoft Windows you may get a Windows Firewall exception popup regarding &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vboxheadless&lt;/span&gt;&#34;.&amp;nbsp; Adding an exception is optional and does not seem to impact the Virtual Machine&amp;nbsp;once it is installed.&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-1&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/266672cdfc3948b4ac9474a2c3525d79&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_266672cdfc3948b4ac9474a2c3525d79&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;VM Image for Windows&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_266672cdfc3948b4ac9474a2c3525d79/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V011700_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:W_J7PESoujY&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_266672cdfc3948b4ac9474a2c3525d79/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_266672cdfc3948b4ac9474a2c3525d79/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-266672cdfc3948b4ac9474a2c3525d79&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V011700_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-2&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/10e80dc29c914be9b7bddda7937ad8a2&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_10e80dc29c914be9b7bddda7937ad8a2&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;VM Image for Mac OS X&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_10e80dc29c914be9b7bddda7937ad8a2/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013800_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:C5iV_g7sLjc&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_10e80dc29c914be9b7bddda7937ad8a2/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_10e80dc29c914be9b7bddda7937ad8a2/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-10e80dc29c914be9b7bddda7937ad8a2&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013800_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-3&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/1c6cf4dddbb9489d969645a15cace5ef&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_1c6cf4dddbb9489d969645a15cace5ef&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;VM Image for Linux&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;W4pv-3H2LNU&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_1c6cf4dddbb9489d969645a15cace5ef/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V012200_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:W4pv-3H2LNU&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_1c6cf4dddbb9489d969645a15cace5ef/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_1c6cf4dddbb9489d969645a15cace5ef/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-1c6cf4dddbb9489d969645a15cace5ef&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V012200_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_1c6cf4dddbb9489d969645a15cace5ef/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-4&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/6d78d0314ab34426988e07736b07858f&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_6d78d0314ab34426988e07736b07858f&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;p style=&#34;font-size: 16px;&#34;&gt;When&amp;nbsp;running &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34; again, you may&amp;nbsp;receive the following error:&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;bsdtar: Error opening archive: Unrecognized archive format&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;The solution is to first use the command:&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant box remove sparkmooc/base&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;Then, you can use the &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34; command again.&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-5&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/249f911b2ff24d66b8588cf271291221&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_249f911b2ff24d66b8588cf271291221&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h2&gt;FAQs for Windows&lt;/h2&gt;
+&lt;p&gt;When you type &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34;, if you encounter the following error:&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;Bringing machine &#39;sparkvm&#39; up with &#39;virtualbox&#39; provider...&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;There was an error while executing &#39;VBoxManage&#39;, a CLI used by Vagrant&amp;nbsp;for controlling VirtualBox. The command and stderr is shown below.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;Command: [&#34;list&#34;, &#34;hostonlyifs&#34;]&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;Stderr: VBoxManage.exe: error: Failed to create the VirtualBox object!&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;VBoxManage.exe: error: Code E_NOINTERFACE (0x80004002) - No such interface supported (extended info not available)&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;VBoxManage.exe: error: Most likely, the VirtualBox COM server is not running or&amp;nbsp;failed to start.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;/p&gt;
+&lt;p&gt;First, make sure you installed VirtualBox using &#34;Run as Administrator&#34;. If you did not, then you should follow the directions in the Installing Virtual Box section to uninstall and reinstall VirtualBox. Second, try starting&amp;nbsp;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;command&lt;/span&gt; using &#34;Run as Administrator&#34; (right-click on command and select &#34;Run as Administrtor&#34;).&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-6&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/fcebde8ee52648d9859a063198b93f49&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_fcebde8ee52648d9859a063198b93f49&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;p style=&#34;font-size: 16px;&#34;&gt;On Linux, if you encounter the following error message:&amp;nbsp;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;SSH:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;* The following settings shouldn&#39;t exist: insert_key&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vm:&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;padding-left: 30px;&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;* The box &#39;sparkmooc/base&#39; could not be found.&lt;/span&gt;&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;It means that your Vagrant version is out of date.&amp;nbsp;Remove the vagrant install (&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;apt-get remove&lt;/span&gt;). Then you&#39;ll want to download the latest version from the vagrant site:&amp;nbsp;&lt;a href=&#34;https://www.vagrantup.com/downloads.html&#34; target=&#34;_blank&#34;&gt;https://www.vagrantup.com/downloads.html&lt;/a&gt;.&amp;nbsp;&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;Install using the command &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;sudo dpkg -i vagrant.deb&lt;/span&gt;&#34; and re-run &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34; and it should install correctly.&lt;/p&gt;
+&lt;p&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_5"
+    aria-labelledby="tab_5"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_db0dc6b7fada406a8e4023802a009696&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/4b96012ea15b4b4292e70436aeb87dcd&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_4b96012ea15b4b4292e70436aeb87dcd&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Basic Instructions for Using the Virtual Machine&lt;/h1&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;span style=&#34;font-size: 1em; line-height: 1.6em;&#34;&gt;To start the VM, from a DOS prompt (Windows) or Terminal (Mac/Linux), issue the command &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34;.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;To stop the VM, from a DOS prompt (Windows) or Terminal (Mac/Linux), issue the command &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant halt&lt;/span&gt;&#34;. &lt;em&gt;Note: You should always stop the VM before you log off, turn off, or reboot your computer.&lt;/em&gt;&lt;/li&gt;
+&lt;li&gt;At the end of the course, to erase or delete the VM, from a DOS prompt (Windows) or terminal (Mac/Linux), issue the command &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant destroy&lt;/span&gt;&#34;. &lt;strong&gt;&lt;em&gt;Warning: If you erase or delete the VM, you will lose any work you have done and data you have saved, and you will have download it again when you use the&amp;nbsp;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;&#34;&lt;/span&gt;&lt;span style=&#34;line-height: 25.600000381469727px; font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;&#34; command.&lt;/span&gt;&lt;/em&gt;&lt;/strong&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;Once the VM is running, to access the notebook, open a web browser to &#34;&lt;a href=&#34;http://localhost:8001/&#34; target=&#34;_blank&#34;&gt;http://localhost:8001/&lt;/a&gt;&#34; (on Windows and Mac) or &#34;&lt;a href=&#34;http://127.0.0.1:8001/&#34; target=&#34;_blank&#34;&gt;http://127.0.0.1:8001/&lt;/a&gt;&#34; (on Linux).&lt;/span&gt;&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;NOTE: In step #4 above, try &#34;&lt;a href=&#34;http://localhost:8001/&#34; target=&#34;_blank&#34;&gt;http://localhost:8001/&lt;/a&gt;&#34; first, if that doesn&#39;t work, try &#34;&lt;a href=&#34;http://127.0.0.1:8001/&#34; target=&#34;_blank&#34;&gt;http://127.0.0.1:8001/&lt;/a&gt;&#34;, the proper choice&amp;nbsp;depends on the configuration of your&amp;nbsp;computer. &amp;nbsp;We pre-configuted the virtual machine to by default&amp;nbsp;start the iPython notebook on port 8001. &amp;nbsp;If you are having problems connecting to the notebook (neither of the two links works), you should&amp;nbsp;check the output of the &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34; command. It may be the case that&amp;nbsp;there was a conflict on your computer with a program already using port 8001 and a higher port number was automatically&amp;nbsp;used. If this occurs, you should use that port number instead of port 8001, and all the rest of the instructions will be the same.&lt;/span&gt;&lt;/p&gt;
+&lt;p&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;The following videos walk you through these basic steps.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-1&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/51e921ee350d4b19a780ba58fcd93b69&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_51e921ee350d4b19a780ba58fcd93b69&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Basic Instructions for Using the VM on Windows&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;jeGsIxOcOUM&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_51e921ee350d4b19a780ba58fcd93b69/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V002100_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:jeGsIxOcOUM&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_51e921ee350d4b19a780ba58fcd93b69/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_51e921ee350d4b19a780ba58fcd93b69/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-51e921ee350d4b19a780ba58fcd93b69&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V002100_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_51e921ee350d4b19a780ba58fcd93b69/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-2&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/55593b990b9745a98e04e37fada99864&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_55593b990b9745a98e04e37fada99864&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Basic Instructions for Using the VM on Mac OS X&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;f23G74ol8xQ&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_55593b990b9745a98e04e37fada99864/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013600_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:f23G74ol8xQ&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_55593b990b9745a98e04e37fada99864/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_55593b990b9745a98e04e37fada99864/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-55593b990b9745a98e04e37fada99864&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V013600_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_55593b990b9745a98e04e37fada99864/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-3&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/482eb5793a834b9c80d7be92c38ad0cc&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_482eb5793a834b9c80d7be92c38ad0cc&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Basic Instructions for Using the VM on Linux&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;MXHsaTVqHe4&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_482eb5793a834b9c80d7be92c38ad0cc/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V011900_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:MXHsaTVqHe4&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_482eb5793a834b9c80d7be92c38ad0cc/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_482eb5793a834b9c80d7be92c38ad0cc/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-482eb5793a834b9c80d7be92c38ad0cc&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V011900_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+        &lt;li class=&#34;video-tracks video-download-button&#34;&gt;
+            &lt;a href=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_482eb5793a834b9c80d7be92c38ad0cc/handler/transcript/download&#34;&gt;Download transcript&lt;/a&gt;
+            &lt;div class=&#34;a11y-menu-container&#34;&gt;
+                &lt;a class=&#34;a11y-menu-button&#34; href=&#34;#&#34; title=&#34;.srt&#34; role=&#34;button&#34; aria-disabled=&#34;false&#34;&gt;.srt&lt;/a&gt;
+                &lt;ol class=&#34;a11y-menu-list&#34; role=&#34;menu&#34;&gt;
+                  &lt;li class=&#34;a11y-menu-item active&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#srt&#34; title=&#34;SubRip (.srt) file&#34; data-value=&#34;srt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class=&#34;a11y-menu-item&#34;&gt;
+                  
+                      &lt;a class=&#34;a11y-menu-item-link&#34; href=&#34;#txt&#34; title=&#34;Text (.txt) file&#34; data-value=&#34;txt&#34; role=&#34;menuitem&#34; aria-disabled=&#34;false&#34;&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_6"
+    aria-labelledby="tab_6"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_41c3737c2a82464aaef6310f99c45ae6&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/e3acde7e074e4023a2cad2f82a80fcc6&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_e3acde7e074e4023a2cad2f82a80fcc6&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h1&gt;Running Your First Notebook&lt;/h1&gt;
+&lt;p&gt;Running your first notebook will test your software setup and environment&lt;span style=&#34;font-size: 1em; line-height: 1.6em;&#34;&gt;.&lt;/span&gt;&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;span style=&#34;font-size: 1em; line-height: 1.6em;&#34;&gt;If it is not already running, start the Virtual Machine&amp;nbsp;by issuing&amp;nbsp;issue the command &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;vagrant up&lt;/span&gt;&#34; from a DOS prompt (Windows) or Terminal (Mac/Linux).&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;You should have already downloaded and unzipped the &lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;master.zip&lt;/span&gt; file in the&amp;nbsp;module&amp;nbsp;&#34;&lt;a href=&#34;https://courses.edx.org/courses/BerkeleyX/CS100.1x/1T2015/courseware/d1f293d0cb53466dbb5c0cd81f55b45b/920d3370060540c8b21d56f05c64bdda/&#34; target=&#34;[object Object]&#34;&gt;Downloading and installing the virtual machine&lt;/a&gt;&#34;.&amp;nbsp; The zip file contains the file &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;lab0_student.ipynb&lt;/span&gt;&#34; that you will need in step #4.&amp;nbsp; You can view a read-only online version of the Spark iPython notebook&amp;nbsp;&lt;a href=&#34;http://nbviewer.ipython.org/github/spark-mooc/mooc-setup/blob/master/lab0_student.ipynb&#34; target=&#34;_blank&#34;&gt;here&lt;/a&gt;.&lt;/li&gt;
+&lt;li&gt;Once the Virtual Machine&amp;nbsp;is running, access the Jupyter web UI for running IPython notebooks by navigating your web browser to &#34;&lt;a href=&#34;http://localhost:8001&#34; target=&#34;_blank&#34;&gt;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;http://localhost:8001&lt;/span&gt;&lt;/a&gt;&#34; (or &#34;&lt;a href=&#34;http://127.0.0.1:8001/&#34; target=&#34;[object Object]&#34;&gt;http://127.0.0.1:8001/&lt;/a&gt;&#34;).&lt;/li&gt;
+&lt;li&gt;On the Jupyter web page, use the Upload button to upload the &#34;&lt;span style=&#34;font-family: terminal, monaco;&#34;&gt;lab0_student.ipynb&lt;/span&gt;&#34; Spark iPython notebook file that was mentioned&amp;nbsp;in step #2.&lt;/li&gt;
+&lt;li&gt;Select the file and run each cell - verify that you do not encounter any errors.&amp;nbsp;&lt;/li&gt;
+&lt;li&gt;At the end of the notebook,&amp;nbsp;instructions are included on how to export the notebook as a Python (.py) file and to&amp;nbsp;submit that file to the autograder.&lt;/li&gt;
+&lt;/ol&gt;
+&lt;p&gt;&lt;span style=&#34;line-height: 1.6; font-size: 1em;&#34;&gt;The following videos walk you through the steps of running your first notebook.&lt;/span&gt;&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-1&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/video/345492fdf2aa4c13a383b1cb81670b0a&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-video xmodule_display xmodule_VideoModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;video&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_video;_345492fdf2aa4c13a383b1cb81670b0a&#34; data-type=&#34;Video&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Video&#34;}
+  &lt;/script&gt;
+  
+
+    &lt;h2&gt;Running Your First Notebook&lt;/h2&gt;
+
+&lt;div
+    id=&#34;video_i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34;
+    class=&#34;video closed&#34;
+    data-metadata=&#39;{&#34;ytApiUrl&#34;: &#34;www.youtube.com/iframe_api&#34;, &#34;transcriptLanguage&#34;: &#34;en&#34;, &#34;end&#34;: 0.0, &#34;sub&#34;: &#34;&#34;, &#34;showCaptions&#34;: &#34;true&#34;, &#34;start&#34;: 0.0, &#34;transcriptAvailableTranslationsUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_345492fdf2aa4c13a383b1cb81670b0a/handler/transcript/available_translations&#34;, &#34;savedVideoPosition&#34;: 0.0, &#34;ytTestUrl&#34;: &#34;gdata.youtube.com/feeds/api/videos/&#34;, &#34;ytTestTimeout&#34;: 1500, &#34;generalSpeed&#34;: 1.5, &#34;transcriptLanguages&#34;: {&#34;en&#34;: &#34;English&#34;}, &#34;sources&#34;: [&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V014000_DTH.mp4&#34;], &#34;autohideHtml5&#34;: false, &#34;streams&#34;: &#34;1.00:yDFoeud3uUI&#34;, &#34;saveStateUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_345492fdf2aa4c13a383b1cb81670b0a/handler/xmodule_handler/save_user_state&#34;, &#34;transcriptTranslationUrl&#34;: &#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_video;_345492fdf2aa4c13a383b1cb81670b0a/handler/transcript/translation/__lang__&#34;, &#34;speed&#34;: null, &#34;captionDataDir&#34;: null, &#34;autoplay&#34;: false}&#39;
+    data-bumper-metadata=&#39;null&#39;
+    data-poster=&#39;null&#39;
+    tabindex=&#34;-1&#34;
+&gt;
+    &lt;div class=&#34;focus_grabber first&#34;&gt;&lt;/div&gt;
+
+    &lt;div class=&#34;tc-wrapper&#34;&gt;
+      &lt;a href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34; class=&#34;nav-skip sr&#34;&gt;Skip to a navigable version of this video&#39;s transcript.&lt;/a&gt;
+
+      &lt;article class=&#34;video-wrapper&#34;&gt;
+          &lt;span tabindex=&#34;0&#34; class=&#34;spinner&#34; aria-hidden=&#34;false&#34; aria-label=&#34;Loading video player&#34;&gt;&lt;/span&gt;
+          &lt;span tabindex=&#34;-1&#34; class=&#34;btn-play is-hidden&#34; aria-hidden=&#34;true&#34; aria-label=&#34;Play video&#34;&gt;&lt;/span&gt;
+          &lt;div class=&#34;video-player-pre&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-player&#34;&gt;
+              &lt;div id=&#34;i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34;&gt;&lt;/div&gt;
+              &lt;h3 class=&#34;hidden&#34;&gt;No playable video sources found.&lt;/h3&gt;
+          &lt;/section&gt;
+          &lt;div class=&#34;video-player-post&#34;&gt;&lt;/div&gt;
+          &lt;section class=&#34;video-controls is-hidden&#34;&gt;
+              &lt;div&gt;
+                  &lt;div class=&#34;vcr&#34;&gt;&lt;div class=&#34;vidtime&#34;&gt;0:00 / 0:00&lt;/div&gt;&lt;/div&gt;
+                  &lt;div class=&#34;secondary-controls&#34;&gt;&lt;/div&gt;
+              &lt;/div&gt;
+          &lt;/section&gt;
+          &lt;a class=&#34;nav-skip sr&#34; id=&#34;before-transcript_i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34; href=&#34;#after-transcript_i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34;&gt;Skip to end of transcript.&lt;/a&gt;
+      &lt;/article&gt;
+    &lt;/div&gt;
+
+    &lt;a class=&#34;nav-skip sr&#34; id=&#34;after-transcript_i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34; href=&#34;#before-transcript_i4x-BerkeleyX-CS100_1x-video-345492fdf2aa4c13a383b1cb81670b0a&#34;&gt;Go back to start of transcript.&lt;/a&gt;
+
+    &lt;div class=&#34;focus_grabber last&#34;&gt;&lt;/div&gt;
+  &lt;ul class=&#34;wrapper-downloads&#34;&gt;
+        &lt;li class=&#34;video-sources video-download-button&#34;&gt;
+            &lt;a href=&#34;https://d2f1egay8yehza.cloudfront.net/BERCS100/BERCS100T115-V014000_DTH.mp4&#34;&gt;Download video&lt;/a&gt;
+        &lt;/li&gt;
+
+  &lt;/ul&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-2&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/c0a77ec463c64b1992eb4cd1e09cbae7&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_c0a77ec463c64b1992eb4cd1e09cbae7&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;p&gt;If you encounter an error when running the second test, such as:&lt;/p&gt;
+&lt;pre class=&#34;prettyprint&#34; style=&#34;padding: 10px; font-family: Monaco, Menlo, Consolas, &#39;Courier New&#39;, monospace; font-size: 13px; color: rgb(51, 51, 51); border-radius: 5px; margin: 8px; line-height: 16.25px; word-break: break-all; border: 1px solid rgb(198, 201, 204); -webkit-box-shadow: rgb(214, 217, 220) 0px 1px 2px; box-shadow: rgb(214, 217, 220) 0px 1px 2px; -webkit-background-clip: padding-box; background-image: -webkit-linear-gradient(top, rgb(248, 248, 249) 0%, rgb(236, 240, 243) 100%); background-attachment: initial; background-size: initial; background-origin: padding-box; background-clip: padding-box; background-position: initial; background-repeat: initial;&#34;&gt;&lt;span class=&#34;typ&#34; style=&#34;color: rgb(102, 0, 102);&#34;&gt;Py4JJavaError&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;                             &lt;/span&gt;&lt;span class=&#34;typ&#34; style=&#34;color: rgb(102, 0, 102);&#34;&gt;Traceback&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; &lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;most recent call &lt;/span&gt;&lt;span class=&#34;kwd&#34; style=&#34;color: rgb(0, 0, 136);&#34;&gt;last&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;&amp;lt;&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;ipython&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;input&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;2&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;-&lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;5453bfa2d105&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;&amp;gt;&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kwd&#34; style=&#34;color: rgb(0, 0, 136);&#34;&gt;in&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; &lt;/span&gt;&lt;span class=&#34;str&#34; style=&#34;color: rgb(0, 136, 0);&#34;&gt;&amp;lt;module&amp;gt;&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;
+      &lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;6&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; 
+      &lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;7&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; rawData &lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; sc&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;textFile&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;(&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;fileName&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;)&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;
+&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;----&amp;gt;&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; &lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;8&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; shakespeareCount &lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;=&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; rawData&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;.&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;count&lt;/span&gt;&lt;span class=&#34;pun&#34; style=&#34;color: rgb(102, 102, 0);&#34;&gt;()&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt;
+      &lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;9&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; 
+     &lt;/span&gt;&lt;span class=&#34;lit&#34; style=&#34;color: rgb(0, 102, 102);&#34;&gt;10&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; &lt;/span&gt;&lt;span class=&#34;kwd&#34; style=&#34;color: rgb(0, 0, 136);&#34;&gt;print&lt;/span&gt;&lt;span class=&#34;pln&#34; style=&#34;color: rgb(0, 0, 0);&#34;&gt; shakespeareCount&lt;/span&gt;&lt;/pre&gt;
+&lt;p&gt;This error is likely due to uploading the lab0 ipynb file into the data directory instead of the home (parent) directory. Try uploading the file into the home directory and running the notebook again.&lt;/p&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_contents_7"
+    aria-labelledby="tab_7"
+    aria-hidden="true"
+    class="seq_contents tex2jax_ignore asciimath2jax_ignore">
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-vertical&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_vertical;_becab56ac25a4916ab6ac1926ae93ea2&#34; data-block-type=&#34;vertical&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;div class=&#34;vert-mod&#34;&gt;
+  &lt;div class=&#34;vert vert-0&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/html/4b4589fa98b7455ebca9dca5b109932d&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-html xmodule_display xmodule_HtmlModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;html&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_html;_4b4589fa98b7455ebca9dca5b109932d&#34; data-type=&#34;HTMLModule&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;HTMLModule&#34;}
+  &lt;/script&gt;
+  &lt;h2&gt;&lt;span style=&#34;color: #4c4c4c; font-family: &#39;Open Sans&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif; line-height: 23.68000030517578px;&#34;&gt;The Course Autograder&lt;/span&gt;&lt;/h2&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;&lt;span color=&#34;#4c4c4c&#34; face=&#34;Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif&#34; style=&#34;color: #4c4c4c; font-family: &#39;Open Sans&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;line-height: 23.68000030517578px;&#34;&gt;Assignments in this course are automatically graded using an autograder, which runs in the cloud on Amazon EC2. The autograder uses automatic scaling to handle large increases in the number of submissions.&lt;/span&gt;&lt;/span&gt;&lt;/p&gt;
+&lt;h2&gt;&lt;span color=&#34;#4c4c4c&#34; face=&#34;Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif&#34; style=&#34;color: #4c4c4c; font-family: &#39;Open Sans&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;line-height: 23.68000030517578px;&#34;&gt;SUBMISSION FORMAT&lt;/span&gt;&lt;/span&gt;&lt;/h2&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;&lt;span&gt;Because we are using an autograder, it is very important that your submissions comply with the following rules:&lt;/span&gt;&lt;/p&gt;
+&lt;ul&gt;&lt;/ul&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 25.600000381469727px; font-size: 1em;&#34;&gt;Only use the following libraries: standard python libraries, numpy, pyspark, and test_helper (the autograder library).&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;Don&#39;t leave in extraneous code, as the autograder will timeout if a submission takes too long.&lt;/span&gt;&lt;/li&gt;
+&lt;li&gt;&lt;span style=&#34;color: #3d3c40; font-family: &#39;Open Sans&#39;, Verdana, Arial, Helvetica, sans-serif; font-size: 15px; line-height: 22px;&#34;&gt;Only change sections of code where you see &amp;lt;FILL IN&amp;gt;, as changing other parts of the code, including directory paths, may cause the code to fail the autograder&#39;s tests.&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;h2&gt;AUTOGRADER RESPONSE TIME&lt;/h2&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;&lt;span color=&#34;#4c4c4c&#34; face=&#34;Open Sans, Helvetica Neue, Helvetica, Arial, sans-serif&#34; style=&#34;color: #4c4c4c; font-family: &#39;Open Sans&#39;, &#39;Helvetica Neue&#39;, Helvetica, Arial, sans-serif;&#34;&gt;&lt;span style=&#34;line-height: 23.68000030517578px;&#34;&gt;When you submit an assignment to be graded, you can expect to see a graded response within a few&amp;nbsp;minutes. Note that th&lt;/span&gt;&lt;/span&gt;e scale-up process itself can take a few minutes when many users simultaneously submit their assignments, so you may see additional delays in grading. If you do not receive feedback from the autograder server within 1 hour, please resubmit your code. &amp;nbsp;If you not receive feedback on your resubmitted code within 30 minutes, please use the&amp;nbsp;&lt;a href=&#34;https://piazza.com/edx_berkeley/summer2015/cs1001x&#34; target=&#34;_blank&#34;&gt;Piazza discussion group&lt;/a&gt;&amp;nbsp;to contact the TAs for support.&lt;/p&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;Note: The autograder server cluster checks the submission volume (numbers of submissions) every five minutes. &amp;nbsp;If necessary, the autograder launches additional instances to handle the volume.&amp;nbsp;&lt;/p&gt;
+&lt;h2&gt;Autograder FEEDBACK&lt;/h2&gt;
+&lt;p style=&#34;font-size: 16px;&#34;&gt;There are 3 types of feedback.&lt;/p&gt;
+&lt;ul&gt;
+&lt;li&gt;&lt;em&gt;All tests passed or some tests failed&lt;/em&gt;. &amp;nbsp;The result for each test will be in the feedback.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Timeout&lt;/em&gt;. &amp;nbsp;The submitted code took too long to execute. &amp;nbsp;In this case, please optimize your code&#39;s running time.&lt;/li&gt;
+&lt;li&gt;&lt;em&gt;Abnormal results are detected&lt;/em&gt;. &amp;nbsp;In this case, please review your code carefully according to the guidelines found on this page. If you need help with your code, please use the&amp;nbsp;&lt;a href=&#34;https://piazza.com/edx_berkeley/summer2015/cs1001x&#34; target=&#34;_blank&#34; style=&#34;line-height: 25.600000381469727px;&#34;&gt;Piazza discussion group&lt;/a&gt;&lt;span style=&#34;line-height: 25.600000381469727px;&#34;&gt;&amp;nbsp;to contact the TAs for support.&lt;/span&gt;&lt;/li&gt;
+&lt;/ul&gt;
+&lt;/div&gt;
+
+  &lt;/div&gt;
+  &lt;div class=&#34;vert vert-1&#34; data-id=&#34;i4x://BerkeleyX/CS100.1x/problem/285ddb6f25e3483cb50383def3d17df5&#34;&gt;
+    &lt;div class=&#34;xblock xblock-student_view xblock-student_view-problem xmodule_display xmodule_CapaModule&#34; data-runtime-class=&#34;LmsRuntime&#34; data-init=&#34;XBlockToXModuleShim&#34; data-block-type=&#34;problem&#34; data-request-token=&#34;641175b011c111e5a9130a8d6245fa4f&#34; data-runtime-version=&#34;1&#34; data-usage-id=&#34;i4x:;_;_BerkeleyX;_CS100.1x;_problem;_285ddb6f25e3483cb50383def3d17df5&#34; data-type=&#34;Problem&#34; data-course-id=&#34;BerkeleyX/CS100.1x/1T2015&#34;&gt;
+  &lt;script type=&#34;json/xblock-args&#34; class=&#34;xblock-json-init-args&#34;&gt;
+    {&#34;xmodule-type&#34;: &#34;Problem&#34;}
+  &lt;/script&gt;
+  &lt;div id=&#34;problem_i4x-BerkeleyX-CS100_1x-problem-285ddb6f25e3483cb50383def3d17df5&#34; class=&#34;problems-wrapper&#34; data-problem-id=&#34;i4x://BerkeleyX/CS100.1x/problem/285ddb6f25e3483cb50383def3d17df5&#34; data-url=&#34;/courses/BerkeleyX/CS100.1x/1T2015/xblock/i4x:;_;_BerkeleyX;_CS100.1x;_problem;_285ddb6f25e3483cb50383def3d17df5/handler/xmodule_handler&#34; data-progress_status=&#34;none&#34; data-progress_detail=&#34;0.0/100.0&#34;&gt;&lt;/div&gt;
+
+&lt;/div&gt;
+
+  &lt;/div&gt;
+&lt;/div&gt;
+
+&lt;/div&gt;
+
+  </div>
+  <div id="seq_content"></div>
+
+  <nav class="sequence-bottom" aria-label="Section">
+    <button class="sequence-nav-button button-previous"><span class="icon fa fa-chevron-left" aria-hidden="true"></span><span class="sr">Previous</span></button>
+    <button class="sequence-nav-button button-next"><span class="icon fa fa-chevron-right" aria-hidden="true"></span><span class="sr">Next</span></button>
+  </nav>
+</div>
+
+
+
+<script type="text/javascript">
+  var sequenceNav;
+  $(document).ready(function() {
+    sequenceNav = new SequenceNav($('.sequence-nav'));
+  });
+</script>
+
+</div>
+
+    </section>
+  </div>
+</div>
+<div class="container-footer">
+    <div class="course-license">
+      
+
+
+    
+    <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">
+        <span class="sr">Creative Commons licensed content, with terms as follow:&nbsp;</span><i aria-hidden="true" class="icon-cc"></i>
+            <span class="sr">Attribution&nbsp;</span><i aria-hidden="true" class="icon-cc-by"></i>
+            <span class="sr">Noncommercial&nbsp;</span><i aria-hidden="true" class="icon-cc-nc"></i>
+            <span class="sr">Share Alike&nbsp;</span><i aria-hidden="true" class="icon-cc-sa"></i>
+        <span class="license-text">Some Rights Reserved</span>
+    </a>
+
+    </div>
+</div>
+
+<nav class="nav-utilities " aria-label="Course Utilities">
+
+
+</nav>
+
+
+<div id="accessibile-confirm-modal" class="modal" aria-hidden="true">
+  <div class="inner-wrapper" role="dialog" aria-labelledby="accessibile-confirm-title">
+    <button class="close-modal">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2 id="accessibile-confirm-title">
+          Confirm
+        <span class="sr">,
+          modal open
+        </span>
+      </h2>
+    </header>
+    <div role="alertdialog" class="status message" tabindex="-1">
+        <p class="message-title"></p>
+    </div>
+    <hr aria-hidden="true" />
+    <div class="actions">
+        <button class="dismiss ok-button">OK</button>
+        <button class="dismiss cancel-button" data-dismiss="leanModal">Cancel</button>
+    </div>
+  </div>
+  <a href="#accessibile-confirm-modal" rel="leanModal" id="confirm_open_button" style="display:none">open</a>
+</div>
+
+<script type="text/javascript">
+var accessible_confirm = function(message, callback) {
+    $("#accessibile-confirm-modal .cancel-button").click(function(){
+        $("#accessibile-confirm-modal .close-modal").click();
+    });
+    $("#accessibile-confirm-modal .ok-button").click(function(){
+        $("#accessibile-confirm-modal .close-modal").click();
+        callback();
+    });
+
+    accessible_modal("#accessibile-confirm-modal #confirm_open_button", "#accessibile-confirm-modal .close-modal", "#accessibile-confirm-modal", ".content-wrapper");
+    $("#accessibile-confirm-modal #confirm_open_button").click();
+    $("#accessibile-confirm-modal .message-title").html(message);
+};
+</script>
+
+
+      
+    </div>
+
+        
+
+  
+                
+
+
+
+<footer id="footer-edx-v3" role="contentinfo" aria-label="Page Footer"
+>
+    <h2 class="sr footer-about-title">About edX</h2>
+    <div class="footer-content-wrapper">
+      <div class="footer-logo">
+          <img alt="edX logo" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/edx-theme/edx-header-logo.517a627deaad.png">
+      </div>
+
+      <div class="site-details">
+          <nav class="site-nav" aria-label="About edX">
+              <a href="https://www.edx.org/about-us">About</a>
+              <a href="https://www.edx.org/edx-blog">Blog</a>
+              <a href="https://www.edx.org/news-announcements">News</a>
+              <a href="https://www.edx.org/student-faq">FAQs</a>
+              <a href="https://www.edx.org/contact">Contact</a>
+              <a href="https://www.edx.org/jobs">Jobs</a>
+              <a href="https://www.edx.org/donate">Donate</a>
+              <a href="https://www.edx.org/sitemap">Sitemap</a>
+          </nav>
+          <nav class="legal-notices" aria-label="Legal">
+              <a href="https://www.edx.org/edx-terms-service">Terms of Service & Honor Code</a>
+              <a href="https://www.edx.org/edx-privacy-policy">Privacy Policy</a>
+              <a href="https://www.edx.org/accessibility">Accessibility Policy</a>
+          </nav>
+          <p class="copyright">© edX Inc.  All rights reserved except where noted.  EdX, Open edX and the edX and Open EdX logos are registered trademarks or trademarks of edX Inc.</p>
+
+          <div class="openedx-link">
+            <a href="http://open.edx.org" title="Powered by Open edX">
+              <img alt="Powered by Open edX" src="https://files.edx.org/openedx-logos/edx-openedx-logo-tag.png" width="140">
+            </a>
+          </div>
+      </div>
+
+      <div class="external-links">
+        <div class="social-media-links">
+          <a href="http://www.facebook.com/EdxOnline" class="sm-link external" title="Facebook" rel="noreferrer">
+            <span class="icon fa fa-facebook-square" aria-hidden="true"></span>
+          </a>
+          <a href="https://twitter.com/edXOnline" class="sm-link external" title="Twitter" rel="noreferrer">
+            <span class="icon fa fa-twitter" aria-hidden="true"></span>
+          </a>
+          <a href="https://www.youtube.com/user/edxonline?sub_confirmation=1" class="sm-link external" title="Youtube" rel="noreferrer">
+            <span class="icon fa fa-youtube" aria-hidden="true"></span>
+          </a>
+          <a href="http://www.linkedin.com/company/edx" class="sm-link external" title="LinkedIn" rel="noreferrer">
+            <span class="icon fa fa-linkedin-square" aria-hidden="true"></span>
+          </a>
+          <a href="https://plus.google.com/+edXOnline" class="sm-link external" title="Google+" rel="noreferrer">
+            <span class="icon fa fa-google-plus-square" aria-hidden="true"></span>
+          </a>
+          <a href="http://www.reddit.com/r/edx" class="sm-link external" title="Reddit" rel="noreferrer">
+            <span class="icon fa fa-reddit" aria-hidden="true"></span>
+          </a>
+        </div>
+
+        <div class="mobile-app-links">
+          <a href="https://itunes.apple.com/us/app/edx/id945480667?mt=8" class="app-link external">
+            <img alt="Apple" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/app/app_store_badge_135x40.d0558d910630.svg">
+          </a>
+          <a href="https://play.google.com/store/apps/details?id=org.edx.mobile" class="app-link external">
+            <img alt="Google" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/app/google_play_badge_45.c02590f4a6f1.png">
+          </a>
+        </div>
+      </div>
+    </div>
+</footer>
+
+
+        
+
+  </div>
+
+    
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-application.df193053af9b.js" charset="utf-8"></script>
+
+
+    
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-modules.e4bcc0db829a.js" charset="utf-8"></script>
+
+
+
+  
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/jquery.scrollTo-1.4.2-min.4aa3e2dfa312.js"></script>
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/flot/jquery.flot.d3d45ff0c6a8.js"></script>
+
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/codemirror-compressed.dd4b74f7c5fe.js"></script>
+
+  
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-courseware.494336f1b837.js" charset="utf-8"></script>
+
+
+  
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/discussion.f08ab85892c3.js" charset="utf-8"></script>
+
+
+
+  
+
+
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {
+      inlineMath: [
+        ["\\(","\\)"],
+        ['[mathjaxinline]','[/mathjaxinline]']
+      ],
+      displayMath: [
+        ["\\[","\\]"],
+        ['[mathjax]','[/mathjax]']
+      ]
+    }
+  });
+</script>
+<script type="text/x-mathjax-config">
+  window.HUB = MathJax.Hub;
+  MathJax.Hub.signal.Interest(function(message) {
+    if(message[0] === "End Math") {
+        set_mathjax_display_div_settings();
+    }
+  });
+  function set_mathjax_display_div_settings() {
+    $('.MathJax_Display').each(function( index ) {
+      this.setAttribute('tabindex', '0');
+      this.setAttribute('aria-live', 'off');
+      this.removeAttribute('role');
+      this.removeAttribute('aria-readonly');
+    });
+  }
+</script>
+
+
+<!-- This must appear after all mathjax-config blocks, so it is after the imports from the other templates.
+     It can't be run through static.url because MathJax uses crazy url introspection to do lazy loading of
+     MathJax extension libraries -->
+<script type="text/javascript" src="https://cdn.mathjax.org/mathjax/2.4-latest/MathJax.js?config=TeX-MML-AM_HTMLorMML-full"></script>
+
+<script type='text/template' id='_inline_discussion'>
+
+<section class="discussion" data-discussion-id="{{discussionId}}">
+    <article class="new-post-article"></article>
+
+    <section class="threads">
+        {{#threads}}
+            <article class="discussion-thread" id="thread_{{id}}">
+            </article>
+        {{/threads}}
+    </section>
+
+    <section class="pagination">
+    </section>
+</section>
+</script>
+<script type='text/template' id='_profile_thread'>
+
+<article class="discussion-article" data-id="{{id}}">
+    <div class="discussion-post">
+        <header>
+            <h3>{{title}}</h3>
+            <p class="posted-details">                
+                {{#user}}
+                <a href="{{user_url}}" class="username">{{username}}</a>
+                {{/user}}
+                {{^user}}
+                anonymous
+                {{/user}}
+
+                <span class="timeago" title="{{created_at}}">{{created_at}}</span>
+                <span class="post-status-closed top-post-status" style="display: none">
+                    &bull; This thread is closed.
+                </span>
+            </p>
+        </header>
+        <div class="post-body">{{{abbreviatedBody}}}</div>
+    </div>
+    <div class="post-tools">
+        <a href="{{permalink}}">View discussion</a>
+    </div>
+
+</article>
+</script>
+<script type='text/template' id='_pagination'>
+
+<nav class="discussion-{{discussiontype}}-paginator discussion-paginator">
+    <ol>
+        {{#previous}}
+        <li><a class="discussion-pagination" href="{{url}}" data-page-number="{{number}}">&lt; Previous</a></li>
+        {{/previous}}
+        {{#first}}
+        <li><a class="discussion-pagination" href="{{url}}" data-page-number="1">1</a></li>
+        {{/first}}
+        {{#leftdots}}
+        <li>…</li>
+        {{/leftdots}}
+
+        {{#lowPages}}
+        <li><a class="discussion-pagination" href="{{url}}" data-page-number="{{number}}">{{number}}</a></li>
+        {{/lowPages}}
+        <li class="current-page"><span>{{page}}</span></li>
+        {{#highPages}}
+        <li><a class="discussion-pagination" href="{{url}}" data-page-number="{{number}}">{{number}}</a></li>
+        {{/highPages}}
+
+        {{#rightdots}}
+        <li>…</li>
+        {{/rightdots}}
+        {{#last}}
+        <li><a class="discussion-pagination" href="{{url}}" data-page-number="{{number}}">{{number}}</a></li>
+        {{/last}}
+        {{#next}}
+        <li><a class="discussion-pagination" href="{{url}}" data-page-number="{{number}}">Next &gt;</a></li>
+        {{/next}}
+    </ol>
+</nav>
+
+</script>
+<script type='text/template' id='_user_profile'>
+
+<h2>Active Threads</h2>
+<section class="discussion">
+    {{#threads}}
+        <article class="discussion-thread" id="thread_{{id}}"/>
+    {{/threads}}
+</section>
+<section class="pagination"/>
+</script>
+
+
+  <script type="text/javascript">
+    var $$course_id = "BerkeleyX/CS100.1x/1T2015";
+
+    $(function(){
+        $(".ui-accordion-header a, .ui-accordion-content .subtitle").each(function() {
+          var elemText = $(this).text().replace(/^\s+|\s+$/g,''); // Strip leading and trailing whitespace
+          var wordArray = elemText.split(" ");
+          var finalTitle = "";
+          if (wordArray.length > 0) {
+            for (i=0;i<=wordArray.length-1;i++) {
+              finalTitle += wordArray[i];
+              if (i == (wordArray.length-2)) {
+                finalTitle += "&nbsp;";
+              } else if (i == (wordArray.length-1)) {
+                // Do nothing
+              } else {
+                finalTitle += " ";
+              }
+            }
+          }
+          $(this).html(finalTitle);
+        });
+      });
+  </script>
+
+
+
+
+
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/noreferrer.aa62a3e70ffa.js" charset="utf-8"></script>
+</body>
+</html>
+
+
+
+<!-- Performance beacon for onload times -->
+<script>
+  (function () {
+    var sample_rate = 0.05;
+    var roll = Math.floor(Math.random() * 100)/100;
+    var onloadBeaconSent = false;
+
+    if(roll < sample_rate){
+      $(window).load(function() {
+        setTimeout(function(){
+          var t = window.performance.timing;
+
+          var data = {
+            event: "onload",
+            value: t.loadEventEnd - t.navigationStart,
+            page: window.location.href,
+          };
+
+          if (!onloadBeaconSent) {
+            $.ajax({method: "POST", url: "/performance", data: data});
+          }
+          onloadBeaconSent = true;
+        }, 0);
+      });
+    }
+  }());
+</script>
