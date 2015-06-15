@@ -75,10 +75,12 @@ class ClassicEdXPageExtractor(PageExtractor):
         # you don't need to !
         re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
         units = []
+
         for unit_html in re_units.findall(page):
             unit = self.extract_unit(unit_html, BASE_URL)
             if unit is not None and (unit[0].video_youtube_url is not None or len(unit[0].mp4_urls) > 0 or len(unit[0].resources_urls) > 0):
                 units.extend(unit)
+
         return units
 
     def extract_unit(self, text, BASE_URL):
@@ -89,20 +91,24 @@ class ClassicEdXPageExtractor(PageExtractor):
         available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
         mp4_urls = self.extract_mp4_urls(text)
         resources_urls = self.extract_resources_urls(text, BASE_URL)
+
         unit = Unit(video_youtube_url=video_youtube_url,
                     available_subs_url=available_subs_url,
                     sub_template_url=sub_template_url,
                     mp4_urls=mp4_urls,
                     resources_urls=resources_urls)
+
         return [unit]
 
     def extract_video_youtube_url(self, text):
         re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
         video_youtube_url = None
         match_video_youtube_url = re_video_youtube_url.search(text)
+
         if match_video_youtube_url is not None:
             video_id = match_video_youtube_url.group(1)
             video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+
         return video_youtube_url
 
     def extract_subtitle_urls(self, text, BASE_URL):
@@ -111,11 +117,13 @@ class ClassicEdXPageExtractor(PageExtractor):
         available_subs_url = None
         sub_template_url = None
         match_subs = re_sub_template_url.search(text)
+
         if match_subs:
             match_available_subs = re_available_subs_url.search(text)
             if match_available_subs:
                 available_subs_url = BASE_URL + match_available_subs.group(1)
                 sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
+
         return available_subs_url, sub_template_url
 
     def extract_mp4_urls(self, text):
@@ -126,6 +134,7 @@ class ClassicEdXPageExtractor(PageExtractor):
         # common.
         re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
         mp4_urls = list(set(re_mp4_urls.findall(text)))
+
         return mp4_urls
 
     def extract_resources_urls(self, text, BASE_URL):
@@ -134,6 +143,7 @@ class ClassicEdXPageExtractor(PageExtractor):
                           if url.startswith('http') or url.startswith('https')
                           else BASE_URL + url
                           for url in re_resources_urls.findall(text)]
+
         return resources_urls
 
 
@@ -145,6 +155,7 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         match_metadata = re_metadata.findall(text)
         units = []
+
         for matched_metadata in match_metadata:
             metadata = json.loads(html_parser.HTMLParser().unescape(matched_metadata))
 
@@ -174,8 +185,10 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
                         sub_template_url=sub_template_url,
                         mp4_urls=mp4_urls,
                         resources_urls=resources_urls))
+
         if units != []:
             return units
+
         return None
 
 
@@ -185,6 +198,7 @@ def get_page_extractor(url):
     """
     if url.startswith('https://courses.edx.org'):
         return NewEdXPageExtractor()
+
     return ClassicEdXPageExtractor()
 
 
@@ -195,6 +209,7 @@ def extract_courses_from_html(page, BASE_URL):
     soup = BeautifulSoup(page)
     courses_soup = soup.find_all('article', 'course')
     courses = []
+
     for course_soup in courses_soup:
         course_id = None
         course_name = course_soup.h3.text.strip()
@@ -214,6 +229,7 @@ def extract_courses_from_html(page, BASE_URL):
                               name=course_name,
                               url=course_url,
                               state=course_state))
+
     return courses
 
 
@@ -234,6 +250,7 @@ def extract_sections_from_html(page, BASE_URL):
                                   url=BASE_URL + s.a['href'],
                                   name=s.p.string)
                        for i, s in enumerate(subsections_soup, 1)]
+
         return subsections
 
     soup = BeautifulSoup(page)
@@ -244,4 +261,5 @@ def extract_sections_from_html(page, BASE_URL):
                         url=_make_url(section_soup),
                         subsections=_make_subsections(section_soup))
                 for i, section_soup in enumerate(sections_soup, 1)]
+
     return sections
