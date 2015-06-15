@@ -105,9 +105,3 @@ class TestParsing(unittest.TestCase):
             self.assertEquals(len(courses), 18)
             available_courses = [course for course in courses if course.state == 'Started']
             self.assertEquals(len(available_courses), 14)
-
-if __name__ == '__main__':
-    logging.basicConfig(stream=sys.stdout)
-    logging.getLogger("TestParsing").setLevel(logging.DEBUG)
-    suite = unittest.TestLoader().loadTestsFromTestCase(TestParsing)
-    unittest.TextTestRunner(verbosity=2).run(suite)
