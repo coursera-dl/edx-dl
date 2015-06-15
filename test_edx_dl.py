@@ -7,6 +7,7 @@ import unittest
 
 from edx_dl import edx_dl, parsing
 
+
 class TestEdX(unittest.TestCase):
 
     def setUp(self):
@@ -26,6 +27,7 @@ class TestEdX(unittest.TestCase):
             filtered_units = edx_dl.remove_repeated_urls(all_units)
             num_all_urls = edx_dl.num_urls_in_units_dict(all_units)
             num_filtered_urls = edx_dl.num_urls_in_units_dict(filtered_units)
+
             self.assertEquals(num_all_urls, 18)
             self.assertEquals(num_filtered_urls, 16)
             self.assertNotEquals(num_all_urls, num_filtered_urls)

@@ -23,6 +23,7 @@ class TestParsing(unittest.TestCase):
     def setUp(self):
         self.log = logging.getLogger('TestParsing')
 
+    # Test conversion of JSON subtitles to srt
     def test_empty_json_subtitle(self):
         with open('test/json/empty.json') as f:
             json_string = f.read()
@@ -64,6 +65,7 @@ class TestParsing(unittest.TestCase):
         expected = ''
         self.assertEquals(res, expected)
 
+    # Test extraction of video/other assets from HTML
     def test_extract_units_from_html_single_unit_multiple_subs(self):
         with open("test/html/single_unit_multiple_subs.html", "r") as f:
             units = NewEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
