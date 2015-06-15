@@ -57,6 +57,13 @@ class TestParsing(unittest.TestCase):
                     'so let\'s enjoy the beauty of combinatorics together.\n\n')
         self.assertEquals(res, expected)
 
+    def test_empty_text_subtitle(self):
+        with open('test/json/empty-text.json') as f:
+            json_contents = json.loads(f.read())
+        res = edx_json2srt(json_contents)
+        expected = ''
+        self.assertEquals(res, expected)
+
     def test_extract_units_from_html_single_unit_multiple_subs(self):
         with open("test/html/single_unit_multiple_subs.html", "r") as f:
             units = NewEdXPageExtractor().extract_units_from_html(f.read(), 'https://courses.edx.org')
