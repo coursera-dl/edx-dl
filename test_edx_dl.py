@@ -20,10 +20,13 @@ class TestEdX(unittest.TestCase):
 
     def test_remove_repeated_urls(self):
         url = "test/html/multiple_units.html"
+        site = 'https://courses.edx.org'
         with open(url, "r") as f:
-            all_units = {url:
-                         parsing.NewEdXPageExtractor().extract_units_from_html(f.read(),
-                                                         'https://courses.edx.org')}
+            html_contents = f.read()
+            page_extractor = parsing.NewEdXPageExtractor()
+            units_extracted = page_extractor.extract_units_from_html(html_contents, site)
+
+            all_units = {url: units_extracted}
             filtered_units = edx_dl.remove_repeated_urls(all_units)
             num_all_urls = edx_dl.num_urls_in_units_dict(all_units)
             num_filtered_urls = edx_dl.num_urls_in_units_dict(filtered_units)
