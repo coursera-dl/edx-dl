@@ -16,7 +16,7 @@ from collections import namedtuple
 # Notice that we don't represent the full tree structure for both performance
 # and UX reasons:
 #
-# Course ->  [Section] -> [SubSection] -> [Unit]
+# Course ->  [Section] -> [SubSection] -> [Unit] -> [Video]
 #
 # In the script the data structures used are:
 #
@@ -31,12 +31,16 @@ from collections import namedtuple
 #    Units it contains:
 #    all_units = {Subsection.url: [Unit]}
 #
+# 4. The units can contain multiple videos:
+#    Unit -> [Video]
+#
 Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
 Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
 SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
 Unit = namedtuple('Unit',
-                  ['video_youtube_url', 'available_subs_url',
-                   'sub_template_url', 'mp4_urls', 'resources_urls'])
+                  ['videos', 'resources_urls'])
+Video = namedtuple('Video', ['video_youtube_url', 'available_subs_url',
+                             'sub_template_url', 'mp4_urls'])
 
 YOUTUBE_DL_CMD = ['youtube-dl', '--ignore-config']
 DEFAULT_CACHE_FILENAME = 'edx-dl.cache'

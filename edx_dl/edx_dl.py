@@ -27,7 +27,7 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
-from .common import YOUTUBE_DL_CMD, DEFAULT_CACHE_FILENAME, Unit
+from .common import YOUTUBE_DL_CMD, DEFAULT_CACHE_FILENAME, Unit, Video
 from .compat import compat_print
 from .parsing import (
     edx_json2srt,
@@ -442,7 +442,7 @@ def get_subtitles_urls(available_subs_url, sub_template_url, headers):
     return {}
 
 
-def _build_subtitles_downloads(unit, target_dir, filename_prefix, headers):
+def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
     """
     Builds a dict {url: filename} for the subtitles, based on the
     filename_prefix of the video
@@ -452,7 +452,7 @@ def _build_subtitles_downloads(unit, target_dir, filename_prefix, headers):
     if filename is None:
         compat_print('[warning] no video downloaded for %s' % filename_prefix)
         return downloads
-    if unit.sub_template_url is None:
+    if video.sub_template_url is None:
         compat_print('[warning] no subtitles downloaded for %s' % filename_prefix)
         return downloads
 
@@ -462,8 +462,9 @@ def _build_subtitles_downloads(unit, target_dir, filename_prefix, headers):
     if filename.endswith('.srt'):
         filename = filename.split('.')[0]
 
-    subtitles_download_urls = get_subtitles_urls(unit.available_subs_url,
-                                                 unit.sub_template_url, headers)
+    subtitles_download_urls = get_subtitles_urls(video.available_subs_url,
+                                                 video.sub_template_url,
+                                                 headers)
     for sub_lang, sub_url in subtitles_download_urls.items():
         subs_filename = os.path.join(target_dir,
                                      filename + '.' + sub_lang + '.srt')
@@ -477,18 +478,25 @@ def _build_url_downloads(urls, target_dir, filename_prefix):
     If it is a youtube url it uses the valid template for youtube-dl
     otherwise just takes the name of the file from the url
     """
-    downloads = {}
-    for url in urls:
-        if is_youtube_url(url):
-            filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
-            filename = os.path.join(target_dir, filename_template)
-            downloads[url] = filename
-        else:
-            original_filename = url.rsplit('/', 1)[1]
-            filename = os.path.join(target_dir,
-                                    filename_prefix + '-' + original_filename)
-            downloads[url] = filename
+    downloads = {url:
+                 _build_filename_from_url(url, target_dir, filename_prefix)
+                 for url in urls}
     return downloads
+
+
+def _build_filename_from_url(url, target_dir, filename_prefix):
+    """
+    Builds the appropriate filename for the given args
+    """
+    if is_youtube_url(url):
+        filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
+        filename = os.path.join(target_dir, filename_template)
+        return filename
+    else:
+        original_filename = url.rsplit('/', 1)[1]
+        filename = os.path.join(target_dir,
+                                filename_prefix + '-' + original_filename)
+        return filename
 
 
 def download_url(url, filename, headers, args):
@@ -540,28 +548,44 @@ def skip_or_download(downloads, headers, args, f=download_url):
         f(url, filename, headers, args)
 
 
-def download_unit(unit, args, target_dir, filename_prefix, headers):
-    """
-    Downloads the urls in unit based on args in the given target_dir
-    with filename_prefix
-    """
+def download_video(video, args, target_dir, filename_prefix, headers):
     if args.prefer_cdn_videos:
-        mp4_downloads = _build_url_downloads(unit.mp4_urls, target_dir, filename_prefix)
+        mp4_downloads = _build_url_downloads(video.mp4_urls, target_dir,
+                                             filename_prefix)
         skip_or_download(mp4_downloads, headers, args)
     else:
-        if unit.video_youtube_url is not None:
-            youtube_downloads = _build_url_downloads([unit.video_youtube_url], target_dir, filename_prefix)
+        if video.video_youtube_url is not None:
+            youtube_downloads = _build_url_downloads([video.video_youtube_url],
+                                                     target_dir,
+                                                     filename_prefix)
             skip_or_download(youtube_downloads, headers, args)
 
     # the behavior with subtitles is different, since the subtitles don't know
     # the destination name until the video is downloaded with youtube-dl
     # also, subtitles must be transformed from the raw data to the srt format
     if args.subtitles:
-        sub_downloads = _build_subtitles_downloads(unit, target_dir,
+        sub_downloads = _build_subtitles_downloads(video, target_dir,
                                                    filename_prefix, headers)
         skip_or_download(sub_downloads, headers, args, download_subtitle)
 
-    res_downloads = _build_url_downloads(unit.resources_urls, target_dir, filename_prefix)
+
+def download_unit(unit, args, target_dir, filename_prefix, headers):
+    """
+    Downloads the urls in unit based on args in the given target_dir
+    with filename_prefix
+    """
+    if len(unit.videos) == 1:
+        download_video(unit.videos[0], args, target_dir, filename_prefix,
+                       headers)
+    else:
+        # we change the filename_prefix to avoid conflicts when downloading
+        # subtitles
+        for i, video in enumerate(unit.videos, 1):
+            new_prefix = filename_prefix + ('-%02d' % i)
+            download_video(video, args, target_dir, new_prefix, headers)
+
+    res_downloads = _build_url_downloads(unit.resources_urls, target_dir,
+                                         filename_prefix)
     skip_or_download(res_downloads, headers, args)
 
 
@@ -601,29 +625,37 @@ def remove_repeated_urls(all_units):
     for url, units in all_units.items():
         reduced_units = []
         for unit in units:
-            # we don't analyze the subtitles for repetition since
-            # their size is negligible for the goal of this function
-            video_youtube_url = None
-            if unit.video_youtube_url not in existing_urls:
-                video_youtube_url = unit.video_youtube_url
-                existing_urls.add(unit.video_youtube_url)
-            mp4_urls = []
-            for mp4_url in unit.mp4_urls:
-                if mp4_url not in existing_urls:
-                    mp4_urls.append(mp4_url)
-                    existing_urls.add(mp4_url)
+            videos = []
+            for video in unit.videos:
+                # we don't analyze the subtitles for repetition since
+                # their size is negligible for the goal of this function
+                video_youtube_url = None
+                if video.video_youtube_url not in existing_urls:
+                    video_youtube_url = video.video_youtube_url
+                    existing_urls.add(video_youtube_url)
+
+                mp4_urls = []
+                for mp4_url in video.mp4_urls:
+                    if mp4_url not in existing_urls:
+                        mp4_urls.append(mp4_url)
+                        existing_urls.add(mp4_url)
+
+                if video_youtube_url is not None or len(mp4_urls) > 0:
+                    videos.append(Video(video_youtube_url=video_youtube_url,
+                                        available_subs_url=video.available_subs_url,
+                                        sub_template_url=video.sub_template_url,
+                                        mp4_urls=mp4_urls))
+
             resources_urls = []
             for resource_url in unit.resources_urls:
                 if resource_url not in existing_urls:
                     resources_urls.append(resource_url)
                     existing_urls.add(resource_url)
 
-            if video_youtube_url is not None or len(mp4_urls) > 0 or len(resources_urls) > 0:
-                reduced_units.append(Unit(video_youtube_url=video_youtube_url,
-                                          available_subs_url=unit.available_subs_url,
-                                          sub_template_url=unit.sub_template_url,
-                                          mp4_urls=mp4_urls,
+            if len(videos) > 0 or len(resources_urls) > 0:
+                reduced_units.append(Unit(videos=videos,
                                           resources_urls=resources_urls))
+
         filtered_units[url] = reduced_units
     return filtered_units
 
@@ -633,11 +665,19 @@ def num_urls_in_units_dict(units_dict):
     Counts the number of urls in a all_units dict, it ignores subtitles from its
     counting
     """
-    return sum((1 if unit.video_youtube_url is not None else 0) +
-               (1 if unit.available_subs_url is not None else 0) +
-               (1 if unit.sub_template_url is not None else 0) +
-               len(unit.mp4_urls) + len(unit.resources_urls)
-               for units in units_dict.values() for unit in units)
+    num_urls = 0
+    for units in units_dict.values():
+        for unit in units:
+            for video in unit.videos:
+                if video.video_youtube_url is not None:
+                    num_urls += 1
+                if video.available_subs_url is not None:
+                    num_urls += 1
+                if video.sub_template_url is not None:
+                    num_urls += 1
+                num_urls += len(video.mp4_urls)
+            num_urls += len(unit.resources_urls)
+    return num_urls
 
 
 def extract_all_units_with_cache(all_urls, headers,
