@@ -70,8 +70,8 @@ class ClassicEdXPageExtractor(PageExtractor):
         units = []
         for unit_html in re_units.findall(page):
             unit = self.extract_unit(unit_html, BASE_URL)
-            if unit is not None and (unit.video_youtube_url is not None or len(unit.mp4_urls) > 0 or len(unit.resources_urls) > 0):
-                units.append(unit)
+            if unit is not None and (unit[0].video_youtube_url is not None or len(unit[0].mp4_urls) > 0 or len(unit[0].resources_urls) > 0):
+                units.extend(unit)
         return units
 
     def extract_unit(self, text, BASE_URL):
@@ -87,7 +87,7 @@ class ClassicEdXPageExtractor(PageExtractor):
                     sub_template_url=sub_template_url,
                     mp4_urls=mp4_urls,
                     resources_urls=resources_urls)
-        return unit
+        return [unit]
 
     def extract_video_youtube_url(self, text):
         re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
@@ -140,8 +140,9 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
     def extract_unit(self, text, BASE_URL):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         match_metadata = re_metadata.findall(text)
-        if match_metadata:
-            metadata = json.loads(html_parser.HTMLParser().unescape(match_metadata[0]))
+        units = []
+        for matched_metadata in match_metadata:
+            metadata = json.loads(html_parser.HTMLParser().unescape(matched_metadata))
 
             video_youtube_url = None
             re_video_speed = re.compile(r'1.0\d+\:(?:.*?)(.{11})')
@@ -164,12 +165,13 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
             # mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
             mp4_urls = self.extract_mp4_urls(text)
             resources_urls = self.extract_resources_urls(text, BASE_URL)
-            unit = Unit(video_youtube_url=video_youtube_url,
+            units.append(Unit(video_youtube_url=video_youtube_url,
                         available_subs_url=available_subs_url,
                         sub_template_url=sub_template_url,
                         mp4_urls=mp4_urls,
-                        resources_urls=resources_urls)
-            return unit
+                        resources_urls=resources_urls))
+        if units != []:
+            return units
         return None
 
 
