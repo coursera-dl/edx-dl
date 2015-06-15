@@ -10,6 +10,7 @@ import argparse
 import json
 import os
 import pickle
+import re
 import sys
 
 from functools import partial
@@ -457,10 +458,12 @@ def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
         return downloads
 
     # This is a fix for the case of retrials because the extension would be
-    # .lang.srt (e.g. .en.srt), so the matching does not detect correctly the
-    # subtitles
-    if filename.endswith('.srt'):
-        filename = filename.split('.')[0]
+    # .lang (from .lang.srt), so the matching does not detect correctly the
+    # subtitles name
+    re_is_subtitle = re.compile(r'(.*)(?:\.[a-z]{2})')
+    match_subtitle = re_is_subtitle.match(filename)
+    if match_subtitle:
+        filename = match_subtitle.group(1)
 
     subtitles_download_urls = get_subtitles_urls(video.available_subs_url,
                                                  video.sub_template_url,
