@@ -24,7 +24,6 @@ def test_empty_json_subtitle():
     with pytest.raises(ValueError):
         json_contents = json.loads(json_string)
 
-@pytest.mark.skipif(True, reason="Should harden edx_json2srt")
 def test_minimal_json_subtitle():
     with open('test/json/minimal.json') as f:
         json_contents = json.loads(f.read())

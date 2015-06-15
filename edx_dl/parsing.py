@@ -17,6 +17,9 @@ def edx_json2srt(o):
     """
     Transform the dict 'o' into the srt subtitles format
     """
+    if o == {}:
+        return ''
+
     BASE_TIME = datetime(1, 1, 1)
     output = []
 
