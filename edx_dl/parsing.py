@@ -66,6 +66,10 @@ class PageExtractor(object):
 
 class ClassicEdXPageExtractor(PageExtractor):
 
+    DEFAULT_FILE_FORMATS = ['e?ps', 'pdf', 'txt', 'doc', 'xls', 'ppt',
+                            'docx', 'xlsx', 'pptx', 'odf', 'odt', 'odp', 'odg',
+                            'zip', 'rar', 'gz', 'mp3', 'mp4']
+
     def extract_units_from_html(self, page, BASE_URL):
         """
         Extract Units from the html of a subsection webpage as a list of resources
@@ -137,8 +141,14 @@ class ClassicEdXPageExtractor(PageExtractor):
 
         return mp4_urls
 
-    def extract_resources_urls(self, text, BASE_URL):
-        re_resources_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
+    def extract_resources_urls(self, text, BASE_URL,
+                               file_formats=DEFAULT_FILE_FORMATS):
+        """
+        Extract resources looking for <a> references in the webpage and
+        matching the given file formats
+        """
+        formats = '|'.join(file_formats)
+        re_resources_urls = re.compile(r'&lt;a href=(?:&#34;|")([^"&]*.(?:' + formats + '))(?:&#34;|")')
         resources_urls = [url
                           if url.startswith('http') or url.startswith('https')
                           else BASE_URL + url
