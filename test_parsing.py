@@ -78,6 +78,13 @@ def test_extract_multiple_units_no_youtube_ids():
         assert len(mp4_urls) > 0
 
 
+def test_extract_multiple_units_youtube_link():
+    site = 'https://courses.edx.org'
+    with open("test/html/multiple_units_youtube_link.html", "r") as f:
+        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+        assert 'https://www.youtube.com/watch?v=5OXQypOAbdI' in units[0].resources_urls
+
+
 def test_extract_sections():
     site = 'https://courses.edx.org'
     with open("test/html/single_unit_multiple_subs.html", "r") as f:
@@ -94,3 +101,4 @@ def test_extract_courses_from_html():
         assert len(courses) == 18
         available_courses = [course for course in courses if course.state == 'Started']
         assert len(available_courses) == 14
+

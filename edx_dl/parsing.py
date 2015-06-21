@@ -159,6 +159,12 @@ class ClassicEdXPageExtractor(PageExtractor):
                           else BASE_URL + url
                           for url in re_resources_urls.findall(text)]
 
+        # we match links to youtube videos as <a href> and add them to the
+        # download list
+        re_youtube_links = re.compile(r'&lt;a href=(?:&#34;|")(https?\:\/\/(?:www\.)?(?:youtube\.com|youtu\.?be)\/.*?)(?:&#34;|")')
+        youtube_links = re_youtube_links.findall(text)
+        resources_urls += youtube_links
+
         return resources_urls
 
 
