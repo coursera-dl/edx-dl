@@ -68,7 +68,7 @@ class ClassicEdXPageExtractor(PageExtractor):
 
     DEFAULT_FILE_FORMATS = ['e?ps', 'pdf', 'txt', 'doc', 'xls', 'ppt',
                             'docx', 'xlsx', 'pptx', 'odf', 'odt', 'odp', 'odg',
-                            'zip', 'rar', 'gz', 'mp3', 'mp4']
+                            'zip', 'rar', 'gz', 'mp3']
 
     def extract_units_from_html(self, page, BASE_URL):
         """
