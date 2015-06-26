@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 from six.moves import html_parser
 from bs4 import BeautifulSoup as BeautifulSoup_
 
-from .common import Course, Section, SubSection, Unit
+from .common import Course, Section, SubSection, Unit, Video
 
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
@@ -66,21 +66,26 @@ class PageExtractor(object):
 
 class ClassicEdXPageExtractor(PageExtractor):
 
+    DEFAULT_FILE_FORMATS = ['e?ps', 'pdf', 'txt', 'doc', 'xls', 'ppt',
+                            'docx', 'xlsx', 'pptx', 'odt', 'ods', 'odp', 'odg',
+                            'zip', 'rar', 'gz', 'mp3']
+
     def extract_units_from_html(self, page, BASE_URL):
         """
-        Extract Units from the html of a subsection webpage as a list of resources
+        Extract Units from the html of a subsection webpage as a list of
+        resources
         """
         # in this function we avoid using beautifulsoup for performance reasons
         # parsing html with regular expressions is really nasty, don't do this if
         # you don't need to !
-        re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)', re.DOTALL)
+        re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)',
+                              re.DOTALL)
         units = []
 
         for unit_html in re_units.findall(page):
             unit = self.extract_unit(unit_html, BASE_URL)
-            if unit is not None and (unit[0].video_youtube_url is not None or len(unit[0].mp4_urls) > 0 or len(unit[0].resources_urls) > 0):
-                units.extend(unit)
-
+            if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
+                units.append(unit)
         return units
 
     def extract_unit(self, text, BASE_URL):
@@ -90,15 +95,13 @@ class ClassicEdXPageExtractor(PageExtractor):
         video_youtube_url = self.extract_video_youtube_url(text)
         available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
         mp4_urls = self.extract_mp4_urls(text)
+        videos = [Video(video_youtube_url=video_youtube_url,
+                        available_subs_url=available_subs_url,
+                        sub_template_url=sub_template_url,
+                        mp4_urls=mp4_urls)]
+
         resources_urls = self.extract_resources_urls(text, BASE_URL)
-
-        unit = Unit(video_youtube_url=video_youtube_url,
-                    available_subs_url=available_subs_url,
-                    sub_template_url=sub_template_url,
-                    mp4_urls=mp4_urls,
-                    resources_urls=resources_urls)
-
-        return [unit]
+        return Unit(videos=videos, resources_urls=resources_urls)
 
     def extract_video_youtube_url(self, text):
         re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
@@ -127,22 +130,37 @@ class ClassicEdXPageExtractor(PageExtractor):
         return available_subs_url, sub_template_url
 
     def extract_mp4_urls(self, text):
-        # mp4 urls may be in two places, in the field data-sources, and as <a> refs
-        # This regex tries to match all the appearances, however we exclude the ';'
-        # character in the urls, since it is used to separate multiple urls in one
-        # string, however ';' is a valid url name character, but it is not really
-        # common.
+        """
+        Looks for available links to the mp4 version of the videos
+        """
+        # mp4 urls may be in two places, in the field data-sources, and as <a>
+        # refs This regex tries to match all the appearances, however we
+        # exclude the ';' # character in the urls, since it is used to separate
+        # multiple urls in one string, however ';' is a valid url name
+        # character, but it is not really common.
         re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
         mp4_urls = list(set(re_mp4_urls.findall(text)))
 
         return mp4_urls
 
-    def extract_resources_urls(self, text, BASE_URL):
-        re_resources_urls = re.compile(r'href=(?:&#34;|")([^"&]*pdf)')
+    def extract_resources_urls(self, text, BASE_URL,
+                               file_formats=DEFAULT_FILE_FORMATS):
+        """
+        Extract resources looking for <a> references in the webpage and
+        matching the given file formats
+        """
+        formats = '|'.join(file_formats)
+        re_resources_urls = re.compile(r'&lt;a href=(?:&#34;|")([^"&]*.(?:' + formats + '))(?:&#34;|")')
         resources_urls = [url
                           if url.startswith('http') or url.startswith('https')
                           else BASE_URL + url
                           for url in re_resources_urls.findall(text)]
+
+        # we match links to youtube videos as <a href> and add them to the
+        # download list
+        re_youtube_links = re.compile(r'&lt;a href=(?:&#34;|")(https?\:\/\/(?:www\.)?(?:youtube\.com|youtu\.?be)\/.*?)(?:&#34;|")')
+        youtube_links = re_youtube_links.findall(text)
+        resources_urls += youtube_links
 
         return resources_urls
 
@@ -153,19 +171,16 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
     """
     def extract_unit(self, text, BASE_URL):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
-        match_metadata = re_metadata.findall(text)
-        units = []
-
-        for matched_metadata in match_metadata:
-            metadata = json.loads(html_parser.HTMLParser().unescape(matched_metadata))
-
+        videos = []
+        match_metadatas = re_metadata.findall(text)
+        for match_metadata in match_metadatas:
+            metadata = json.loads(html_parser.HTMLParser().unescape(match_metadata))
             video_youtube_url = None
             re_video_speed = re.compile(r'1.0\d+\:(?:.*?)(.{11})')
             match_video_youtube_url = re_video_speed.search(metadata['streams'])
             if match_video_youtube_url is not None:
                 video_id = match_video_youtube_url.group(1)
                 video_youtube_url = 'https://youtube.com/watch?v=' + video_id
-
             # notice that the concrete languages come now in
             # so we can eventually build the full urls here
             # subtitles_download_urls = {sub_lang:
@@ -173,23 +188,14 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
             #                            for sub_lang in metadata['transcriptLanguages'].keys()}
             available_subs_url = BASE_URL + metadata['transcriptAvailableTranslationsUrl']
             sub_template_url = BASE_URL + metadata['transcriptTranslationUrl'].replace('__lang__', '%s')
+            mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
+            videos.append(Video(video_youtube_url=video_youtube_url,
+                                available_subs_url=available_subs_url,
+                                sub_template_url=sub_template_url,
+                                mp4_urls=mp4_urls))
 
-            # notice that the urls for video downloads come also here, but we
-            # prefer to extract them with the old method to match the case of
-            # videos who are referenced as links
-            # mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
-            mp4_urls = self.extract_mp4_urls(text)
-            resources_urls = self.extract_resources_urls(text, BASE_URL)
-            units.append(Unit(video_youtube_url=video_youtube_url,
-                        available_subs_url=available_subs_url,
-                        sub_template_url=sub_template_url,
-                        mp4_urls=mp4_urls,
-                        resources_urls=resources_urls))
-
-        if units != []:
-            return units
-
-        return None
+        resources_urls = self.extract_resources_urls(text, BASE_URL)
+        return Unit(videos=videos, resources_urls=resources_urls)
 
 
 def get_page_extractor(url):
@@ -263,3 +269,8 @@ def extract_sections_from_html(page, BASE_URL):
                 for i, section_soup in enumerate(sections_soup, 1)]
 
     return sections
+
+
+def is_youtube_url(url):
+    re_youtube_url = re.compile(r'(https?\:\/\/(?:www\.)?(?:youtube\.com|youtu\.?be)\/.*?)')
+    return re_youtube_url.match(url)
