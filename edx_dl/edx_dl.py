@@ -255,7 +255,7 @@ def parse_args():
                         dest='youtube_options',
                         action='store',
                         default='',
-                        help='list available courses without downloading')
+                        help='set extra options to pass to youtube-dl')
     parser.add_argument('--prefer-cdn-videos',
                         dest='prefer_cdn_videos',
                         action='store_true',
