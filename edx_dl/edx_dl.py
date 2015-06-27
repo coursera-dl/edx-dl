@@ -688,12 +688,9 @@ def num_urls_in_units_dict(units_dict):
     for units in units_dict.values():
         for unit in units:
             for video in unit.videos:
-                if video.video_youtube_url is not None:
-                    num_urls += 1
-                if video.available_subs_url is not None:
-                    num_urls += 1
-                if video.sub_template_url is not None:
-                    num_urls += 1
+                num_urls += int(video.video_youtube_url is not None)
+                num_urls += int(video.available_subs_url is not None)
+                num_urls += int(video.sub_template_url is not None)
                 num_urls += len(video.mp4_urls)
             num_urls += len(unit.resources_urls)
 
