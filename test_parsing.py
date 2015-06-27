@@ -118,8 +118,14 @@ def test_is_youtube_url():
         'https://courses.edx.org/courses/course-v1:MITx+24.118x+2T2015/xblock/block-v1:MITx+24.118x+2T2015+type@video+block@b1588e7cccff4d448f4f9676c81184d9/handler/transcript/available_translations'
     ]
     valid_urls = [
+        'http://www.youtu.be/rjOpZ3i6pRo',
+        'http://www.youtube.com/watch?v=rjOpZ3i6pRo',
+        'http://youtu.be/rjOpZ3i6pRo',
         'http://youtube.com/watch?v=rjOpZ3i6pRo',
-        'https://youtube.com/watch?v=rjOpZ3i6pRo'
+        'https://www.youtu.be/rjOpZ3i6pRo',
+        'https://www.youtube.com/watch?v=rjOpZ3i6pRo',
+        'https://youtu.be/rjOpZ3i6pRo',
+        'https://youtube.com/watch?v=rjOpZ3i6pRo',
     ]
     for url in invalid_urls:
         assert not is_youtube_url(url)
