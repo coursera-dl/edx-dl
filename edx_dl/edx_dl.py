@@ -551,8 +551,9 @@ def download_subtitle(url, filename, headers, args):
     """
     subs_string = edx_get_subtitle(url, headers)
     if subs_string:
-        open(os.path.join(os.getcwd(), filename),
-             'wb+').write(subs_string.encode('utf-8'))
+        full_filename = os.path.join(os.getcwd(), filename)
+        with open(full_filename, 'wb+') as f:
+            f.write(subs_string.encode('utf-8'))
 
 
 def skip_or_download(downloads, headers, args, f=download_url):
