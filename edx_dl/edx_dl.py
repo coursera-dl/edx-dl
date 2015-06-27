@@ -509,12 +509,12 @@ def _build_filename_from_url(url, target_dir, filename_prefix):
     if is_youtube_url(url):
         filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
         filename = os.path.join(target_dir, filename_template)
-        return filename
     else:
         original_filename = url.rsplit('/', 1)[1]
         filename = os.path.join(target_dir,
                                 filename_prefix + '-' + original_filename)
-        return filename
+
+    return filename
 
 
 def download_url(url, filename, headers, args):
