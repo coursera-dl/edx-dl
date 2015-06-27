@@ -45,6 +45,7 @@ from .utils import (
     get_page_contents,
     get_page_contents_as_json,
     mkdir_p,
+    remove_duplicates,
 )
 
 
@@ -637,11 +638,7 @@ def remove_repeated_urls(all_units):
                     video_youtube_url = video.video_youtube_url
                     existing_urls.add(video_youtube_url)
 
-                mp4_urls = []
-                for mp4_url in video.mp4_urls:
-                    if mp4_url not in existing_urls:
-                        mp4_urls.append(mp4_url)
-                        existing_urls.add(mp4_url)
+                mp4_urls, existing_urls = remove_duplicates(video.mp4_urls, existing_urls)
 
                 if video_youtube_url is not None or len(mp4_urls) > 0:
                     videos.append(Video(video_youtube_url=video_youtube_url,
@@ -649,11 +646,7 @@ def remove_repeated_urls(all_units):
                                         sub_template_url=video.sub_template_url,
                                         mp4_urls=mp4_urls))
 
-            resources_urls = []
-            for resource_url in unit.resources_urls:
-                if resource_url not in existing_urls:
-                    resources_urls.append(resource_url)
-                    existing_urls.add(resource_url)
+            resources_urls, existing_urls = remove_duplicates(unit.resources_urls, existing_urls)
 
             if len(videos) > 0 or len(resources_urls) > 0:
                 reduced_units.append(Unit(videos=videos,
