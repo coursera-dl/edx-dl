@@ -524,7 +524,10 @@ def download_url(url, filename, headers, args):
     if is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
     else:
-        urlretrieve(url, filename)
+        try:
+            urlretrieve(url, filename)
+        except HTTPError as e:
+            compat_print('[warning] Got HTTP error: %s' % e)
 
 
 def download_youtube_url(url, filename, headers, args):
