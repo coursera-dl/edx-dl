@@ -121,4 +121,3 @@ def test_is_youtube_url():
         assert not is_youtube_url(url)
     for url in valid_urls:
         assert is_youtube_url(url)
-

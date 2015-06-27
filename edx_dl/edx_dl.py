@@ -272,10 +272,10 @@ def parse_args():
                         default=False,
                         help='makes a dry run, only lists the resources')
     parser.add_argument('--sequence',
-                    dest='sequence',
-                    action='store_true',
-                    default=False,
-                    help='extracts the resources from the pages sequentially')
+                        dest='sequence',
+                        action='store_true',
+                        default=False,
+                        help='extracts the resources from the pages sequentially')
 
     args = parser.parse_args()
     return args
@@ -622,7 +622,7 @@ def download(args, selections, all_units, headers):
 def remove_repeated_urls(all_units):
     """
     Removes repeated urls from the units, it does not consider subtitles.
-    This is done to avoid repeated downloads
+    This is done to avoid repeated downloads.
     """
     existing_urls = set()
     filtered_units = {}
