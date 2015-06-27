@@ -66,3 +66,25 @@ def test_get_filename_from_prefix():
     for k, v in six.iteritems(cases):
         actual_res = utils.get_filename_from_prefix(target_dir, k)
         assert actual_res == v, actual_res
+
+
+def test_remove_duplicates():
+    lists = [
+        ([], []),
+        ([1], [1]),
+        ([1, 1], [1]),
+        ([None], [None]),
+        ([None, None], [None]),
+        ([1, None], [1, None]),
+        (['a'], ['a']),
+        (['a', 'a'], ['a']),
+        (['a', 'b'], ['a', 'b']),
+        (['a', 'b', 'a'], ['a', 'b']),
+        (['a', 'a', 'b'], ['a', 'b']),
+        (['b', 'a', 'b'], ['b', 'a']),
+        (['b', 'a', 'a'], ['b', 'a']),
+        ([1, 2, 1, 2], [1, 2]),
+    ]
+    for k, v in lists:
+        actual_res = utils.remove_duplicates(k)
+        assert actual_res == v, actual_res
