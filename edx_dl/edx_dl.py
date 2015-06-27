@@ -112,6 +112,7 @@ def _display_courses(courses):
     List the courses that the user has enrolled.
     """
     compat_print('You can access %d courses' % len(courses))
+
     for i, course in enumerate(courses, 1):
         compat_print('%2d - %s [%s]' % (i, course.name, course.id))
         compat_print('     %s' % course.url)
@@ -179,9 +180,11 @@ def edx_login(url, headers, username, password):
     post_data = urlencode({'email': username,
                            'password': password,
                            'remember': False}).encode('utf-8')
+
     request = Request(url, post_data, headers)
     response = urlopen(request)
     resp = json.loads(response.read().decode('utf-8'))
+
     return resp
 
 
@@ -278,6 +281,7 @@ def parse_args():
                         help='extracts the resources from the pages sequentially')
 
     args = parser.parse_args()
+
     return args
 
 
@@ -293,6 +297,7 @@ def edx_get_headers():
         'X-Requested-With': 'XMLHttpRequest',
         'X-CSRFToken': _get_initial_token(EDX_HOMEPAGE),
     }
+
     return headers
 
 
@@ -304,6 +309,7 @@ def extract_units(url, headers):
     page = get_page_contents(url, headers)
     page_extractor = get_page_extractor(url)
     units = page_extractor.extract_units_from_html(page, BASE_URL)
+
     return units
 
 
@@ -314,6 +320,7 @@ def extract_all_units_in_sequence(urls, headers):
     """
     units = [extract_units(url, headers) for url in urls]
     all_units = dict(zip(urls, units))
+
     return all_units
 
 
@@ -328,6 +335,7 @@ def extract_all_units_in_parallel(urls, headers):
     pool.close()
     pool.join()
     all_units = dict(zip(urls, units))
+
     return all_units
 
 
@@ -336,6 +344,7 @@ def _display_sections_menu(course, sections):
     List the weeks for the given course.
     """
     num_sections = len(sections)
+
     compat_print('%s [%s] has %d sections so far' % (course.name, course.id, num_sections))
     for i, section in enumerate(sections, 1):
         compat_print('%2d - Download %s videos' % (i, section.name))
@@ -346,6 +355,7 @@ def _filter_sections(index, sections):
     Get the sections for the given index, if the index is not valid chooses all
     """
     num_sections = len(sections)
+
     if index is not None:
         try:
             index = int(index)
@@ -353,6 +363,7 @@ def _filter_sections(index, sections):
                 return [sections[index - 1]]
         except ValueError:
             pass
+
     return sections
 
 
@@ -361,6 +372,7 @@ def _display_sections(sections):
     Displays a tree of section(s) and subsections
     """
     compat_print('Downloading %d section(s)' % len(sections))
+
     for section in sections:
         compat_print('Section %2d: %s' % (section.position, section.name))
         for subsection in section.subsections:
@@ -441,6 +453,7 @@ def get_subtitles_urls(available_subs_url, sub_template_url, headers):
 
         return {sub_lang: sub_template_url % sub_lang
                 for sub_lang in available_subs}
+
     return {}
 
 
@@ -451,6 +464,7 @@ def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
     """
     downloads = {}
     filename = get_filename_from_prefix(target_dir, filename_prefix)
+
     if filename is None:
         compat_print('[warning] no video downloaded for %s' % filename_prefix)
         return downloads
@@ -519,10 +533,12 @@ def download_youtube_url(url, filename, headers, args):
     """
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
+
     if args.subtitles:
         cmd.append('--all-subs')
     cmd.extend(args.youtube_options.split())
     cmd.append(url)
+
     execute_command(cmd)
 
 
@@ -598,9 +614,11 @@ def download(args, selections, all_units, headers):
     Downloads all the resources based on the selections
     """
     compat_print("[info] Output directory: " + args.output_dir)
+
     # Download Videos
     # notice that we could iterate over all_units, but we prefer to do it over
-    # sections/subsections to add correct prefixes and shows nicer information
+    # sections/subsections to add correct prefixes and show nicer information.
+
     for selected_course, selected_sections in selections.items():
         coursename = directory_name(selected_course.name)
         for selected_section in selected_sections:
@@ -658,10 +676,11 @@ def remove_repeated_urls(all_units):
 
 def num_urls_in_units_dict(units_dict):
     """
-    Counts the number of urls in a all_units dict, it ignores subtitles from its
-    counting
+    Counts the number of urls in a all_units dict, it ignores subtitles from
+    its counting.
     """
     num_urls = 0
+
     for units in units_dict.values():
         for unit in units:
             for video in unit.videos:
@@ -673,6 +692,7 @@ def num_urls_in_units_dict(units_dict):
                     num_urls += 1
                 num_urls += len(video.mp4_urls)
             num_urls += len(unit.resources_urls)
+
     return num_urls
 
 
@@ -689,6 +709,7 @@ def extract_all_units_with_cache(all_urls, headers,
     additionally it speeds development of code unrelated to extraction.
     """
     cached_units = {}
+
     if os.path.exists(filename):
         with open(filename, 'rb') as f:
             cached_units = pickle.load(f)
@@ -700,6 +721,7 @@ def extract_all_units_with_cache(all_urls, headers,
     new_units = extractor(new_urls, headers)
     all_units = cached_units.copy()
     all_units.update(new_units)
+
     return all_units
 
 
