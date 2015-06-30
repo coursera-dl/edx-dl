@@ -67,6 +67,28 @@ def get_page_contents_as_json(url, headers):
     return json_object
 
 
+def remove_duplicates(orig_list, seen=set()):
+    """
+    Returns a new list based on orig_list with elements from the (optional)
+    set seen and elements of orig_list removed.
+
+    The function tries to maintain the order of the elements in orig_list as
+    much as possible, only "removing" a given element if it appeared earlier
+    in orig_list or if it was already a member of seen.
+
+    This function does *not* modify any of its input parameters.
+    """
+    new_list = []
+    new_seen = set(seen)
+
+    for elem in orig_list:
+        if elem not in new_seen:
+            new_list.append(elem)
+            new_seen.add(elem)
+
+    return new_list, new_seen
+
+
 # The next functions come from coursera-dl/coursera
 def mkdir_p(path, mode=0o777):
     """
