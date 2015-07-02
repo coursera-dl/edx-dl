@@ -96,8 +96,9 @@ def change_openedx_site(site_name):
     global DASHBOARD
     global COURSEWARE_SEL
 
-    if site_name not in OPENEDX_SITES.keys():
-        compat_print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
+    sites = sorted(OPENEDX_SITES.keys())
+    if site_name not in sites:
+        compat_print("OpenEdX platform should be one of: %s" % ', '.join(sites))
         sys.exit(2)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
@@ -233,11 +234,13 @@ def parse_args():
                         dest='output_dir',
                         help='store the files to the specified directory',
                         default='Downloaded')
+
+    sites = sorted(OPENEDX_SITES.keys())
     parser.add_argument('-x',
                         '--platform',
                         action='store',
                         dest='platform',
-                        help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
+                        help='OpenEdX platform, one of: %s' % ', '.join(sites),
                         default='edx')
     parser.add_argument('--list-courses',
                         dest='list_courses',
