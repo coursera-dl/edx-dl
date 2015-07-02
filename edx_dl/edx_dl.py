@@ -257,8 +257,9 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='list available sections')
-    parser.add_argument('--youtube-options',
-                        dest='youtube_options',
+
+    parser.add_argument('--youtube-dl-options',
+                        dest='youtube_dl_options',
                         action='store',
                         default='',
                         help='set extra options to pass to youtube-dl')
@@ -543,7 +544,7 @@ def download_youtube_url(url, filename, headers, args):
 
     if args.subtitles:
         cmd.append('--all-subs')
-    cmd.extend(args.youtube_options.split())
+    cmd.extend(args.youtube_dl_options.split())
     cmd.append(url)
 
     execute_command(cmd)
