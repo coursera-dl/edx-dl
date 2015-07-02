@@ -24,7 +24,7 @@ def edx_json2srt(o):
     if o == {}:
         return ''
 
-    BASE_TIME = datetime(1, 1, 1)
+    base_time = datetime(1, 1, 1)
     output = []
 
     for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
@@ -33,8 +33,8 @@ def edx_json2srt(o):
 
         output.append(str(i) + '\n')
 
-        s = BASE_TIME + timedelta(seconds=s/1000.)
-        e = BASE_TIME + timedelta(seconds=e/1000.)
+        s = base_time + timedelta(seconds=s/1000.)
+        e = base_time + timedelta(seconds=e/1000.)
         time_range = "%02d:%02d:%02d,%03d --> %02d:%02d:%02d,%03d\n" % \
                      (s.hour, s.minute, s.second, s.microsecond/1000,
                       e.hour, e.minute, e.second, e.microsecond/1000)
