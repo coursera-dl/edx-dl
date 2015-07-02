@@ -528,10 +528,33 @@ def download_url(url, filename, headers, args):
     if is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
     else:
+        import ssl
+        # FIXME: Ugly hack for coping with broken SSL sites:
+        # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
+        #
+        # We should really ask the user if they want to stop the downloads
+        # or if they are OK proceeding without verification.
+        #
+        # Note that skipping verification by default could be a problem for
+        # people's lives if they happen to live ditatorial countries.
+        #
+        # Note: The mess with various exceptions being caught (and their
+        # order) is due to different behaviors in different Python versions
+        # (e.g., 2.7 vs. 3.4).
         try:
             urlretrieve(url, filename)
+        except ssl.SSLError as e:
+            compat_print('[warning] Got SSL error: %s' % e)
+            raise e
         except HTTPError as e:
             compat_print('[warning] Got HTTP error: %s' % e)
+            raise e
+        except URLError as e:
+            compat_print('[warning] Got URL error: %s' % e)
+            raise e
+        except IOError as e:
+            compat_print('[warning] Got a connection error: %s' % e)
+            raise e
 
 
 def download_youtube_url(url, filename, headers, args):
