@@ -3,6 +3,8 @@
 
 from __future__ import unicode_literals
 
+import subprocess
+
 import six
 
 from edx_dl import utils
@@ -46,12 +48,20 @@ def test_clean_filename_minimal_change():
         assert actual_res == v, actual_res
 
 
-def test_execute_command():
+def test_execute_command_should_succeed():
     actual_res = utils.execute_command(['ls', '--help'])
     assert actual_res == 0, actual_res
 
-    actual_res = utils.execute_command(['ls', '--help-does-not-exist'])
-    assert actual_res == 2, actual_res
+def test_execute_command_should_fail():
+    try:
+        actual_res = utils.execute_command(['ls', '--help-does-not-exist'])
+    except subprocess.CalledProcessError as e:
+        assert True, "Expected exception thrown."
+    else:
+        assert False, "Unexpected exception (or no exception) thrown"
+
+    # For the future
+    # actual_res == 2, actual_res
 
 
 def test_get_filename_from_prefix():
