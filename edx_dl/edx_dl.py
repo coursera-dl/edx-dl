@@ -288,11 +288,12 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='makes a dry run, only lists the resources')
-    parser.add_argument('--sequence',
-                        dest='sequence',
+
+    parser.add_argument('--parallel',
+                        dest='parallel',
                         action='store_true',
                         default=False,
-                        help='extracts the resources from the pages sequentially')
+                        help='extracts the resources from pages in parallel (BETA)')
 
     args = parser.parse_args()
 
@@ -815,9 +816,9 @@ def main():
                 for selected_section in selected_sections
                 for subsection in selected_section.subsections]
 
-    extractor = extract_all_units_in_parallel
-    if args.sequence:
-        extractor = extract_all_units_in_sequence
+    extractor = extract_all_units_in_sequence
+    if args.parallel:
+        extractor = extract_all_units_in_parallel
 
     if args.cache:
         all_units = extract_all_units_with_cache(all_urls, headers, extractor=extractor)
