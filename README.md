@@ -1,11 +1,17 @@
-# DESCRIPTION
+# Description
 
-`edx-dl` is a simple tool to download video lectures from Open edX-based
-sites.  It requires a Python interpreter (>= 2.7) and very few other
-dependencies.  It is platform independent, and should work fine under Unix
-(Linux, BSDs etc.), Windows or Mac OS X.
+`edx-dl` is a simple tool to download videos and lecture materials from Open
+edX-based sites.  It requires a [Python][python] interpreter (>= 2.7) and
+very few other dependencies.  It is platform independent, and should work
+fine under Unix (Linux, BSDs etc.), Windows or Mac OS X.
 
-# DEPENDENCIES
+We strongly recommend that, if you don't already have a Python interpreter
+installed, that you [install Python >= 3.4][python3], if possible.
+
+[python]: https://www.python.org/
+[python3]: https://www.python.org/downloads/
+
+# Dependencies
 
 To install all the dependencies please do:
 
@@ -13,9 +19,9 @@ To install all the dependencies please do:
 
 ## youtube-dl
 
-One of the dependencies that `edx-dl` uses is `youtube-dl`. The installation
-step listed above already pulls in the morst recent version of `youtube-dl`
-for you.
+One of the most important dependencies of `edx-dl` is `youtube-dl`. The
+installation step listed above already pulls in the most recent version of
+`youtube-dl` for you.
 
 Unfortunately, since many Open edX sites store their videos on Youtube and
 Youtube changes their layout from time to time, it may be necessary to
@@ -26,44 +32,63 @@ the simplest is to simply use:
 
 # Quick Start
 
-To use `edx-dl.py`, simply execute it, as in:
-
-    python edx-dl.py -u user@user.com -p password COURSE_URL
-
-The `COURSE_URL` must correspond to a course you are enregistered, it is the
-one that ends in `/info`, e.g.
-https://courses.edx.org/courses/edX/DemoX.1/2014/info
-
-You must pass the URL of at least one course, you can check the correct url
+Once you have installed everything, to use `edx-dl.py`, let it discover the
+courses in which you are enrolled, by issuing:
 
     python edx-dl.py -u user@user.com -p password --list-courses
 
+From there, choose the course you are interested in, copy its URL and use it
+in the following command:
+
+    python edx-dl.py -u user@user.com -p password COURSE_URL
+
+replacing `COURSE_URL` with the URL that you just copied in the first step.
+It should look something like:
+https://courses.edx.org/courses/edX/DemoX.1/2014/info
+
 Your downloaded videos will be placed in a new Directory called
-`Downloaded`, but you can also choose another destination with the `-o`
-argument.
+`Downloaded`, inside your current directory, but you can also choose another
+destination with the `-o` argument.
 
-To see all available options:
+To see all available options and a brief description of what they do, simply
+execute:
 
-    python edx-dl.py
+    python edx-dl.py --help
+
+*Important Note:* To use sites other than edx.org, you have to specify the
+site along with the `-x` option. For example, `-x stanford`, if the course
+that you want to get is hosted on Stanford's site.
 
 # Reporting issues
 
-Before reporting any issue please verify that you are running the latest
-version of the script and of `youtube-dl`. Please include in your report the
+Before reporting any issue please follow the steps below:
+
+1. Verify that you are running the latest version of all the programs (both
+of `ex-dl` and of `youtube-dl`).  Use the following command if in doubt:
+
+        pip install --upgrade edx-dl
+
+2. If the problem persists, feel free to [open an issue][issue] in our
+bugtracker, with *as much information as possible*.  At a bare minimum,
+please specify the following information:
 following information:
 
-    os:
-    python version:
-    youtube-dl version:
-    course URL:
+    - Your operating system/version
+    - Python version
+    - Version of youtube-dl
+    - Which course (the URL) you have problems with:
+    - If it helps it is better if you refer to a concrete subsection or unit.
+    - Any other information that you may think that would help us finding
+      the problem.
 
-If it helps it is better if you refer to a concrete subsection or unit:
+[issue]: https://github.com/shk3/edx-downloader/issues
 
-    sub-section URL:
+If the script fails and throws some exception, please copy the *entire*
+output of the command or the stacktrace (but you may be free to obfuscate
+your username and password, of course).
 
-If the script fails and throws some exception, please copy the output of the
-command or the stacktrace. If you cannot copy it, please attach a screen
-capture.
+If you cannot copy the exception that the script shows, attach a screen
+shot/capture to the bug system.
 
 # Supported sites
 
@@ -76,8 +101,11 @@ These are the current supported sites:
 - [GW Online SEAS](http://openedx.seas.gwu.edu/) - George Washington University
 - [GW Online Open](http://mooc.online.gwu.edu/) - George Washington University
 
-This is the full [list of sites powered by Open
-edX](https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX). Feel free to contribute your patches to include them.
+This is the full [list of sites powered by Open edX][sites]. Not all of them
+are supported at the moment, we welcome you to contribute support for them
+and send a pull request also via our [issue tracker][issue].
+
+[sites]: https://github.com/edx/edx-platform/wiki/Sites-powered-by-Open-edX
 
 # Authors
 
