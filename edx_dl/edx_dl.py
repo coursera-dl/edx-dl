@@ -96,8 +96,9 @@ def change_openedx_site(site_name):
     global DASHBOARD
     global COURSEWARE_SEL
 
-    if site_name not in OPENEDX_SITES.keys():
-        compat_print("OpenEdX platform should be one of: %s" % ', '.join(OPENEDX_SITES.keys()))
+    sites = sorted(OPENEDX_SITES.keys())
+    if site_name not in sites:
+        compat_print("OpenEdX platform should be one of: %s" % ', '.join(sites))
         sys.exit(2)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
@@ -201,7 +202,7 @@ def parse_args():
                         nargs='*',
                         action='store',
                         default=[],
-                        help='target course urls'
+                        help='target course urls '
                         '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)')
 
     # optional
@@ -210,65 +211,78 @@ def parse_args():
                         required=True,
                         action='store',
                         help='your edX username (email)')
+
     parser.add_argument('-p',
                         '--password',
                         required=True,
                         action='store',
                         help='your edX password')
+
     parser.add_argument('-f',
                         '--format',
                         dest='format',
                         action='store',
                         default=None,
                         help='format of videos to download')
+
     parser.add_argument('-s',
                         '--with-subtitles',
                         dest='subtitles',
                         action='store_true',
                         default=False,
                         help='download subtitles with the videos')
+
     parser.add_argument('-o',
                         '--output-dir',
                         action='store',
                         dest='output_dir',
                         help='store the files to the specified directory',
                         default='Downloaded')
+
+    sites = sorted(OPENEDX_SITES.keys())
     parser.add_argument('-x',
                         '--platform',
                         action='store',
                         dest='platform',
-                        help='OpenEdX platform, currently either "edx", "stanford" or "usyd-sit"',
+                        help='OpenEdX platform, one of: %s' % ', '.join(sites),
                         default='edx')
+
     parser.add_argument('--list-courses',
                         dest='list_courses',
                         action='store_true',
                         default=False,
                         help='list available courses')
+
     parser.add_argument('--filter-section',
                         dest='filter_section',
                         action='store',
                         default=None,
                         help='filters sections to be downloaded')
+
     parser.add_argument('--list-sections',
                         dest='list_sections',
                         action='store_true',
                         default=False,
                         help='list available sections')
-    parser.add_argument('--youtube-options',
-                        dest='youtube_options',
+
+    parser.add_argument('--youtube-dl-options',
+                        dest='youtube_dl_options',
                         action='store',
                         default='',
                         help='set extra options to pass to youtube-dl')
+
     parser.add_argument('--prefer-cdn-videos',
                         dest='prefer_cdn_videos',
                         action='store_true',
                         default=False,
                         help='prefer CDN video downloads over youtube (BETA)')
+
     parser.add_argument('--cache',
                         dest='cache',
                         action='store_true',
                         default=False,
                         help='create and use a cache of extracted resources')
+
     parser.add_argument('--dry-run',
                         dest='dry_run',
                         action='store_true',
@@ -519,15 +533,39 @@ def _build_filename_from_url(url, target_dir, filename_prefix):
 
 def download_url(url, filename, headers, args):
     """
-    Downloads the given url in filename
+    Downloads the given url in filename.
     """
+
     if is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
     else:
+        import ssl
+        # FIXME: Ugly hack for coping with broken SSL sites:
+        # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
+        #
+        # We should really ask the user if they want to stop the downloads
+        # or if they are OK proceeding without verification.
+        #
+        # Note that skipping verification by default could be a problem for
+        # people's lives if they happen to live ditatorial countries.
+        #
+        # Note: The mess with various exceptions being caught (and their
+        # order) is due to different behaviors in different Python versions
+        # (e.g., 2.7 vs. 3.4).
         try:
             urlretrieve(url, filename)
+        except ssl.SSLError as e:
+            compat_print('[warning] Got SSL error: %s' % e)
+            raise e
         except HTTPError as e:
             compat_print('[warning] Got HTTP error: %s' % e)
+            raise e
+        except URLError as e:
+            compat_print('[warning] Got URL error: %s' % e)
+            raise e
+        except IOError as e:
+            compat_print('[warning] Got a connection error: %s' % e)
+            raise e
 
 
 def download_youtube_url(url, filename, headers, args):
@@ -539,7 +577,7 @@ def download_youtube_url(url, filename, headers, args):
 
     if args.subtitles:
         cmd.append('--all-subs')
-    cmd.extend(args.youtube_options.split())
+    cmd.extend(args.youtube_dl_options.split())
     cmd.append(url)
 
     execute_command(cmd)

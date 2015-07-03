@@ -32,7 +32,7 @@ def execute_command(cmd):
     """
     Creates a process with the given command cmd.
     """
-    return subprocess.call(cmd)
+    return subprocess.check_call(cmd)
 
 
 def directory_name(initial_name):
