@@ -17,8 +17,8 @@ from setuptools import setup
 setup(
     name='edx-dl',
     version='0.0',
-    maintainer='FIXME',
-    maintainer_email='FIXME@example.com',
+    maintainer='Ismaël Mejía, Rogério Theodoro de Brito',
+    maintainer_email='iemejia@gmail.com, rbrito@ime.usp.br',
 
     license='LGPL',
     url='https://github.com/shk3/edx-downloader',
@@ -28,9 +28,9 @@ setup(
         dev=open('requirements-dev.txt').readlines()
     ),
 
-    description='A simple tool to download video lectures from edx.org.',
+    description='Simple tool to download video and lecture materials from edx.org.',
     long_description=open('README.rst', 'r').read(),
-    keywords=['edX', 'download', 'education', 'MOOCs', 'video'],  # FIXME
+    keywords=['edX', 'download', 'education', 'MOOCs', 'video'],
     classifiers=[
         'Development Status :: 4 - Beta',
         'Environment :: Console',
