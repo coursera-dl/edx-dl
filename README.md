@@ -1,9 +1,15 @@
 # Description
 
 `edx-dl` is a simple tool to download videos and lecture materials from Open
-edX-based sites.  It requires a Python interpreter (>= 2.7) and very few
-other dependencies.  It is platform independent, and should work fine under
-Unix (Linux, BSDs etc.), Windows or Mac OS X.
+edX-based sites.  It requires a [Python][python] interpreter (>= 2.7) and
+very few other dependencies.  It is platform independent, and should work
+fine under Unix (Linux, BSDs etc.), Windows or Mac OS X.
+
+We strongly recommend that, if you don't already have a Python interpreter
+installed, that you [install Python >= 3.4][python3], if possible.
+
+[python]: https://www.python.org/
+[python3]: https://www.python.org/downloads/
 
 # Dependencies
 
