@@ -7,6 +7,7 @@ It corresponds to the cli interface
 """
 
 import argparse
+import getpass
 import json
 import os
 import pickle
@@ -214,7 +215,6 @@ def parse_args():
 
     parser.add_argument('-p',
                         '--password',
-                        required=True,
                         action='store',
                         help='your edX password')
 
@@ -781,6 +781,11 @@ def main():
     args = parse_args()
 
     change_openedx_site(args.platform)
+
+
+    # Query password, if not alredy passed by command line.
+    if not args.password:
+        args.password = getpass.getpass(stream = sys.stderr)
 
     if not args.username or not args.password:
         compat_print("You must supply username and password to log-in")
