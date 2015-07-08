@@ -7,11 +7,10 @@ from six.moves import html_parser
 
 import errno
 import json
+import logging
 import os
 import string
 import subprocess
-
-from .compat import compat_print
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
@@ -38,7 +37,7 @@ def execute_command(cmd, args):
         subprocess.check_call(cmd)
     except subprocess.CalledProcessError as e:
         if args.ignore_errors:
-            compat_print('[warning] External command error ignored: %s' % e)
+            logging.warn('External command error ignored: %s', e)
         else:
             raise e
 

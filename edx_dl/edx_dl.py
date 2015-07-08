@@ -9,6 +9,7 @@ It corresponds to the cli interface
 import argparse
 import getpass
 import json
+import logging
 import os
 import pickle
 import re
@@ -30,7 +31,6 @@ from six.moves.urllib.request import (
 )
 
 from .common import YOUTUBE_DL_CMD, DEFAULT_CACHE_FILENAME, Unit, Video
-from .compat import compat_print
 from .parsing import (
     edx_json2srt,
     extract_courses_from_html,
@@ -99,7 +99,7 @@ def change_openedx_site(site_name):
 
     sites = sorted(OPENEDX_SITES.keys())
     if site_name not in sites:
-        compat_print("OpenEdX platform should be one of: %s" % ', '.join(sites))
+        logging.error("OpenEdX platform should be one of: %s", ', '.join(sites))
         sys.exit(2)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
@@ -113,11 +113,11 @@ def _display_courses(courses):
     """
     List the courses that the user has enrolled.
     """
-    compat_print('You can access %d courses' % len(courses))
+    logging.info('You can access %d courses', len(courses))
 
     for i, course in enumerate(courses, 1):
-        compat_print('%2d - %s [%s]' % (i, course.name, course.id))
-        compat_print('     %s' % course.url)
+        logging.info('%2d - %s [%s]', i, course.name, course.id)
+        logging.info('     %s', course.url)
 
 
 def get_courses_info(url, headers):
@@ -168,10 +168,10 @@ def edx_get_subtitle(url, headers):
         json_object = get_page_contents_as_json(url, headers)
         return edx_json2srt(json_object)
     except URLError as exception:
-        compat_print('[warning] edX subtitles (error:%s)' % exception.reason)
+        logging.warn('edX subtitles (error: %s)', exception.reason)
         return None
     except ValueError as exception:
-        compat_print('[warning] edX subtitles (error:%s)' % exception.message)
+        logging.warn('edX subtitles (error: %s)', exception.message)
         return None
 
 
@@ -326,7 +326,8 @@ def extract_units(url, headers):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
-    compat_print("Processing '%s'" % url)
+    logging.info("Processing '%s'", url)
+
     page = get_page_contents(url, headers)
     page_extractor = get_page_extractor(url)
     units = page_extractor.extract_units_from_html(page, BASE_URL)
@@ -366,9 +367,9 @@ def _display_sections_menu(course, sections):
     """
     num_sections = len(sections)
 
-    compat_print('%s [%s] has %d sections so far' % (course.name, course.id, num_sections))
+    logging.info('%s [%s] has %d sections so far', course.name, course.id, num_sections)
     for i, section in enumerate(sections, 1):
-        compat_print('%2d - Download %s videos' % (i, section.name))
+        logging.info('%2d - Download %s videos', i, section.name)
 
 
 def _filter_sections(index, sections):
@@ -392,12 +393,12 @@ def _display_sections(sections):
     """
     Displays a tree of section(s) and subsections
     """
-    compat_print('Downloading %d section(s)' % len(sections))
+    logging.info('Downloading %d section(s)', len(sections))
 
     for section in sections:
-        compat_print('Section %2d: %s' % (section.position, section.name))
+        logging.info('Section %2d: %s', section.position, section.name)
         for subsection in section.subsections:
-            compat_print('  %s' % subsection.name)
+            logging.info('  %s', subsection.name)
 
 
 def parse_courses(args, available_courses):
@@ -409,7 +410,7 @@ def parse_courses(args, available_courses):
         exit(0)
 
     if len(args.course_urls) == 0:
-        compat_print('You must pass the URL of at least one course, check the correct url with --list-courses')
+        logging.error('You must pass the URL of at least one course, check the correct url with --list-courses')
         exit(3)
 
     selected_courses = [available_course
@@ -417,7 +418,7 @@ def parse_courses(args, available_courses):
                         for url in args.course_urls
                         if available_course.url == url]
     if len(selected_courses) == 0:
-        compat_print('You have not passed a valid course url, check the correct url with --list-courses')
+        logging.error('You have not passed a valid course url, check the correct url with --list-courses')
         exit(4)
     return selected_courses
 
@@ -446,8 +447,8 @@ def _display_selections(selections):
     Displays the course, sections and subsections to be downloaded
     """
     for selected_course, selected_sections in selections.items():
-        compat_print('Downloading %s [%s]' % (selected_course.name,
-                                              selected_course.id))
+        logging.info('Downloading %s [%s]',
+                     selected_course.name, selected_course.id)
         _display_sections(selected_sections)
 
 
@@ -457,7 +458,7 @@ def parse_units(all_units):
     """
     flat_units = [unit for units in all_units.values() for unit in units]
     if len(flat_units) < 1:
-        compat_print('WARNING: No downloadable video found.')
+        logging.warn('No downloadable video found.')
         exit(6)
 
 
@@ -487,10 +488,10 @@ def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
     filename = get_filename_from_prefix(target_dir, filename_prefix)
 
     if filename is None:
-        compat_print('[warning] no video downloaded for %s' % filename_prefix)
+        logging.warn('No video downloaded for %s', filename_prefix)
         return downloads
     if video.sub_template_url is None:
-        compat_print('[warning] no subtitles downloaded for %s' % filename_prefix)
+        logging.warn('No subtitles downloaded for %s', filename_prefix)
         return downloads
 
     # This is a fix for the case of retrials because the extension would be
@@ -561,18 +562,12 @@ def download_url(url, filename, headers, args):
         # (e.g., 2.7 vs. 3.4).
         try:
             urlretrieve(url, filename)
-        except ssl.SSLError as e:
-            compat_print('[warning] Got SSL error: %s' % e)
-            raise e
-        except HTTPError as e:
-            compat_print('[warning] Got HTTP error: %s' % e)
-            raise e
-        except URLError as e:
-            compat_print('[warning] Got URL error: %s' % e)
-            raise e
-        except IOError as e:
-            compat_print('[warning] Got a connection error: %s' % e)
-            raise e
+        except Exception as e:
+            logging.warn('Got SSL/Connection error: %s', e)
+            if not args.ignore_errors:
+                raise e
+            else:
+                logging.warn('SSL/Connection error ignored: %s', e)
 
 
 def download_youtube_url(url, filename, headers, args):
@@ -608,10 +603,10 @@ def skip_or_download(downloads, headers, args, f=download_url):
     """
     for url, filename in downloads.items():
         if os.path.exists(filename):
-            compat_print('[skipping] %s => %s' % (url, filename))
+            logging.info('[skipping] %s => %s', url, filename)
             continue
         else:
-            compat_print('[download] %s => %s' % (url, filename))
+            logging.info('[download] %s => %s', url, filename)
         if args.dry_run:
             continue
         f(url, filename, headers, args)
@@ -662,7 +657,7 @@ def download(args, selections, all_units, headers):
     """
     Downloads all the resources based on the selections
     """
-    compat_print("[info] Output directory: " + args.output_dir)
+    logging.info("Output directory: " + args.output_dir)
 
     # Download Videos
     # notice that we could iterate over all_units, but we prefer to do it over
@@ -762,8 +757,8 @@ def extract_all_units_with_cache(all_urls, headers,
 
     # we filter the cached urls
     new_urls = [url for url in all_urls if url not in cached_units]
-    compat_print('loading %d urls from cache [%s]' % (len(cached_units.keys()),
-                                                      filename))
+    logging.info('loading %d urls from cache [%s]', len(cached_units.keys()),
+                 filename)
     new_units = extractor(new_urls, headers)
     all_units = cached_units.copy()
     all_units.update(new_units)
@@ -775,8 +770,8 @@ def write_units_to_cache(units, filename=DEFAULT_CACHE_FILENAME):
     """
     writes units to cache
     """
-    compat_print('writing %d urls to cache [%s]' % (len(units.keys()),
-                                                    filename))
+    logging.info('writing %d urls to cache [%s]', len(units.keys()),
+                 filename)
     with open(filename, 'wb') as f:
         pickle.dump(units, f)
 
@@ -795,7 +790,7 @@ def main():
         args.password = getpass.getpass(stream = sys.stderr)
 
     if not args.username or not args.password:
-        compat_print("You must supply username and password to log-in")
+        logging.error("You must supply username and password to log-in")
         exit(1)
 
     # Prepare Headers
@@ -804,7 +799,7 @@ def main():
     # Login
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
     if not resp.get('success', False):
-        compat_print(resp.get('value', "Wrong Email or Password."))
+        logging.error(resp.get('value', "Wrong Email or Password."))
         exit(2)
 
     # Parse and select the available courses
@@ -848,8 +843,8 @@ def main():
     filtered_units = remove_repeated_urls(all_units)
     num_all_urls = num_urls_in_units_dict(all_units)
     num_filtered_urls = num_urls_in_units_dict(filtered_units)
-    compat_print('Removed %d duplicated urls from %d in total' %
-                 ((num_all_urls - num_filtered_urls), num_all_urls))
+    logging.warn('Removed %d duplicated urls from %d in total',
+                 (num_all_urls - num_filtered_urls), num_all_urls)
 
     # finally we download all the resources
     download(args, selections, all_units, headers)
@@ -859,5 +854,5 @@ if __name__ == '__main__':
     try:
         main()
     except KeyboardInterrupt:
-        compat_print("\n\nCTRL-C detected, shutting down....")
+        logging.warn("\n\nCTRL-C detected, shutting down....")
         sys.exit(0)
