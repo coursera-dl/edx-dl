@@ -288,8 +288,8 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='makes a dry run, only lists the resources')
-    parser.add_argument('--sequence',
-                        dest='sequence',
+    parser.add_argument('--sequential',
+                        dest='sequential',
                         action='store_true',
                         default=False,
                         help='extracts the resources from the pages sequentially')
@@ -821,7 +821,7 @@ def main():
                 for subsection in selected_section.subsections]
 
     extractor = extract_all_units_in_parallel
-    if args.sequence:
+    if args.sequential:
         extractor = extract_all_units_in_sequence
 
     if args.cache:
