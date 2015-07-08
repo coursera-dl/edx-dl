@@ -239,6 +239,13 @@ def parse_args():
                         help='store the files to the specified directory',
                         default='Downloaded')
 
+    parser.add_argument('-i',
+                        '--ignore-errors',
+                        dest='ignore_errors',
+                        action='store_true',
+                        default=False,
+                        help='continue on download errors, to avoid stopping large downloads')
+
     sites = sorted(OPENEDX_SITES.keys())
     parser.add_argument('-x',
                         '--platform',
@@ -580,7 +587,7 @@ def download_youtube_url(url, filename, headers, args):
     cmd.extend(args.youtube_dl_options.split())
     cmd.append(url)
 
-    execute_command(cmd)
+    execute_command(cmd, args)
 
 
 def download_subtitle(url, filename, headers, args):
