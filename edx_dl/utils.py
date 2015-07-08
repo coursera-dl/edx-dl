@@ -11,6 +11,8 @@ import os
 import string
 import subprocess
 
+from .compat import compat_print
+
 
 def get_filename_from_prefix(target_dir, filename_prefix):
     """
@@ -28,11 +30,17 @@ def get_filename_from_prefix(target_dir, filename_prefix):
     return None
 
 
-def execute_command(cmd):
+def execute_command(cmd, args):
     """
     Creates a process with the given command cmd.
     """
-    return subprocess.check_call(cmd)
+    try:
+        subprocess.check_call(cmd)
+    except subprocess.CalledProcessError as e:
+        if args.ignore_errors:
+            compat_print('[warning] External command error ignored: %s' % e)
+        else:
+            raise e
 
 
 def directory_name(initial_name):

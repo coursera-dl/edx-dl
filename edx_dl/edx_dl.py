@@ -239,6 +239,13 @@ def parse_args():
                         help='store the files to the specified directory',
                         default='Downloaded')
 
+    parser.add_argument('-i',
+                        '--ignore-errors',
+                        dest='ignore_errors',
+                        action='store_true',
+                        default=False,
+                        help='continue on download errors, to avoid stopping large downloads')
+
     sites = sorted(OPENEDX_SITES.keys())
     parser.add_argument('-x',
                         '--platform',
@@ -288,8 +295,8 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='makes a dry run, only lists the resources')
-    parser.add_argument('--sequence',
-                        dest='sequence',
+    parser.add_argument('--sequential',
+                        dest='sequential',
                         action='store_true',
                         default=False,
                         help='extracts the resources from the pages sequentially')
@@ -580,7 +587,7 @@ def download_youtube_url(url, filename, headers, args):
     cmd.extend(args.youtube_dl_options.split())
     cmd.append(url)
 
-    execute_command(cmd)
+    execute_command(cmd, args)
 
 
 def download_subtitle(url, filename, headers, args):
@@ -821,7 +828,7 @@ def main():
                 for subsection in selected_section.subsections]
 
     extractor = extract_all_units_in_parallel
-    if args.sequence:
+    if args.sequential:
         extractor = extract_all_units_in_sequence
 
     if args.cache:
