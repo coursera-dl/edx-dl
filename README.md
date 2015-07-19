@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.org/coursera-dl/edx-dl.svg?branch=master)](https://travis-ci.org/coursera-dl/edx-dl)
+
 # Description
 
 `edx-dl` is a simple tool to download videos and lecture materials from Open
