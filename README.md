@@ -1,4 +1,5 @@
 [![Build Status](https://travis-ci.org/coursera-dl/edx-dl.svg?branch=master)](https://travis-ci.org/coursera-dl/edx-dl)
+[![Coverage Status](https://coveralls.io/repos/coursera-dl/edx-dl/badge.svg?branch=master&service=github)](https://coveralls.io/github/coursera-dl/edx-dl?branch=master)
 
 # Description
 
