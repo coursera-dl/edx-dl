@@ -10,20 +10,10 @@ matrix:
 # command to install dependencies
 install:
   - pip install -r requirements.txt
-  - pip install pytest pytest-cov pytest-xdist
+  - pip install pytest pytest-cov pytest-xdist coveralls coverage
 
 # command to run tests
-script: py.test -v
+script: py.test -v --cov edx_dl --cov-report html
 
-
-# For when we enable code coverage
-
-# In the install phase:
-#  - pip install coveralls coverage
-
-# In the script phase:
-# script: py.test -v --cov edx_dl --cov-report html
-
-# In the after_success phase:
-# after_success:
-#   coveralls
+after_success:
+  coveralls
