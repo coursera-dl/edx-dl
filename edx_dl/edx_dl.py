@@ -620,6 +620,14 @@ def download_url(url, filename, headers, args):
     if is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
     else:
+
+        cmd = ['aria2c', '-o', filename, '--check-certificate=false',
+               '--log-level=notice',
+               '--max-connection-per-server=4', '--min-split-size=1M', url]
+
+        execute_command(cmd, args)
+        return
+
         import ssl
         # FIXME: Ugly hack for coping with broken SSL sites:
         # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
