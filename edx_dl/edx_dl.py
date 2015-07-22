@@ -306,6 +306,7 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='makes a dry run, only lists the resources')
+
     parser.add_argument('--sequential',
                         dest='sequential',
                         action='store_true',
