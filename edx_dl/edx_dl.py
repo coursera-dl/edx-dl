@@ -124,8 +124,13 @@ def get_courses_info(url, headers):
     """
     Extracts the courses information from the dashboard.
     """
+    logging.info('Extracting course information from dashboard.')
+
     page = get_page_contents(url, headers)
     courses = extract_courses_from_html(page, BASE_URL)
+
+    logging.info('Data extracted: %s', str(courses))
+
     return courses
 
 
@@ -138,6 +143,8 @@ def _get_initial_token(url):
     X-CSRFToken header or the empty string if we didn't find any token in
     the cookies.
     """
+    logging.info('Getting initial CSRF token.')
+
     cookiejar = CookieJar()
     opener = build_opener(HTTPCookieProcessor(cookiejar))
     install_opener(opener)
@@ -145,8 +152,10 @@ def _get_initial_token(url):
 
     for cookie in cookiejar:
         if cookie.name == 'csrftoken':
+            logging.info('Found CSRF token.')
             return cookie.value
 
+    logging.warn('Did not find the CSRF token.')
     return ''
 
 
@@ -179,6 +188,8 @@ def edx_login(url, headers, username, password):
     """
     logins user into the openedx website
     """
+    logging.info('Logging into Open edX site: %s', url)
+
     post_data = urlencode({'email': username,
                            'password': password,
                            'remember': False}).encode('utf-8')
@@ -334,6 +345,8 @@ def edx_get_headers():
     """
     Builds the openedx headers to create requests
     """
+    logging.info('Building initial headers for future requests.')
+
     headers = {
         'User-Agent': 'edX-downloader/0.01',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
@@ -343,6 +356,7 @@ def edx_get_headers():
         'X-CSRFToken': _get_initial_token(EDX_HOMEPAGE),
     }
 
+    logging.info('Headers built: %s', headers)
     return headers
 
 
@@ -375,6 +389,8 @@ def extract_all_units_in_parallel(urls, headers):
     Returns a dict of all the units in the selected_sections: {url, units}
     in parallel
     """
+    logging.info('Extracting all units information in parallel.')
+
     mapfunc = partial(extract_units, headers=headers)
     pool = ThreadPool(16)
     units = pool.map(mapfunc, urls)
@@ -402,13 +418,19 @@ def _filter_sections(index, sections):
     """
     num_sections = len(sections)
 
+    logging.info('Filtering sections')
     if index is not None:
         try:
             index = int(index)
             if index > 0 and index <= num_sections:
+                logging.info('Sections filtered to: %d', index)
                 return [sections[index - 1]]
+            else:
+                pass  # log some info here
         except ValueError:
-            pass
+            pass   # log some info here
+    else:
+        pass  # log some info here
 
     return sections
 
@@ -598,6 +620,7 @@ def download_youtube_url(url, filename, headers, args):
     """
     Downloads a youtube URL and applies the filters from args
     """
+    logging.info('Downloading video with URL %s from YouTube.', url)
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
 
