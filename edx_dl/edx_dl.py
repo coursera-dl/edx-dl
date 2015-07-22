@@ -186,7 +186,7 @@ def edx_get_subtitle(url, headers):
 
 def edx_login(url, headers, username, password):
     """
-    logins user into the openedx website
+    Log in user into the openedx website.
     """
     logging.info('Logging into Open edX site: %s', url)
 
@@ -343,7 +343,7 @@ def parse_args():
 
 def edx_get_headers():
     """
-    Builds the openedx headers to create requests
+    Build the Open edX headers to create future requests.
     """
     logging.info('Building initial headers for future requests.')
 
@@ -414,7 +414,11 @@ def _display_sections_menu(course, sections):
 
 def _filter_sections(index, sections):
     """
-    Get the sections for the given index, if the index is not valid chooses all
+    Get the sections for the given index.
+
+    If the index is not valid (that is, None, a non-integer, a negative
+    integer, or an integer above the number of the sectons), we choose all
+    sections.
     """
     num_sections = len(sections)
 
@@ -449,7 +453,7 @@ def _display_sections(sections):
 
 def parse_courses(args, available_courses):
     """
-    Parses courses options and returns the selected_courses
+    Parses courses options and returns the selected_courses.
     """
     if args.list_courses:
         _display_courses(available_courses)
