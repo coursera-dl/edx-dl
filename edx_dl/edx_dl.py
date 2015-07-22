@@ -129,7 +129,7 @@ def get_courses_info(url, headers):
     page = get_page_contents(url, headers)
     courses = extract_courses_from_html(page, BASE_URL)
 
-    logging.info('Data extracted: %s', str(courses))
+    logging.debug('Data extracted: %s', str(courses))
 
     return courses
 
@@ -357,7 +357,7 @@ def edx_get_headers():
         'X-CSRFToken': _get_initial_token(EDX_HOMEPAGE),
     }
 
-    logging.info('Headers built: %s', headers)
+    logging.debug('Headers built: %s', headers)
     return headers
 
 
