@@ -227,7 +227,8 @@ def parse_args():
     parser.add_argument('-p',
                         '--password',
                         action='store',
-                        help='your edX password')
+                        help='your edX password, '
+                        'beware: it might be visible to other users on your system')
 
     parser.add_argument('-f',
                         '--format',
