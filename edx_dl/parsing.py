@@ -244,7 +244,9 @@ def extract_sections_from_html(page, BASE_URL):
     Extract sections (Section->SubSection) from the html page
     """
     def _make_url(section_soup):  # FIXME: Extract from here and test
-        return BASE_URL + section_soup.ul.find('a')['href']
+        ul_a = section_soup.ul.find('a')
+        # Section might be empty and contain no links
+        return BASE_URL + ul_a['href'] if ul_a else None
 
     def _get_section_name(section_soup):  # FIXME: Extract from here and test
         return section_soup.h3.a.string.strip()
