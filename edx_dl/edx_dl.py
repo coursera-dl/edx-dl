@@ -296,6 +296,21 @@ def parse_args():
                         default=False,
                         help='prefer CDN video downloads over youtube (BETA)')
 
+    parser.add_argument('--export-filename',
+                        dest='export_filename',
+                        default=None,
+                        help='filename where to put an exported list of urls. '
+                        'Use dash "-" to output to stdout. '
+                        'Download will not be performed if this option is '
+                        'present')
+
+    parser.add_argument('--export-format',
+                        dest='export_format',
+                        default='%(url)s',
+                        help='export format string. Old-style python formatting '
+                        'is used. Available variables: %%(url)s. Default: '
+                        '"%%(url)s"')
+
     parser.add_argument('--cache',
                         dest='cache',
                         action='store_true',
@@ -829,6 +844,44 @@ def write_units_to_cache(units, filename=DEFAULT_CACHE_FILENAME):
         pickle.dump(units, f)
 
 
+def extract_urls_from_units(all_units, format_):
+    """
+    Extract urls from units into a set of strings. Format is specified by
+    the user. The original purpose of this function is to export urls into
+    a file for external downloader.
+    """
+    all_urls = set()
+
+    # Collect all urls into a set to remove duplicates
+    for units in all_units.values():
+        for unit in units:
+            if isinstance(unit, Unit):
+                for video in unit.videos:
+                    if isinstance(video, Video):
+                        for url in video.mp4_urls:
+                            all_urls.add('%s\n' % (format_ % {'url': url}))
+                    else:
+                        raise TypeError('Unknown unit video type (%s) occured '
+                                        'while exporting urls' % type(video))
+                for url in unit.resources_urls:
+                    all_urls.add('%s\n' % (format_ % {'url': url}))
+            else:
+                raise TypeError('Unknown unit type (%s) occured while '
+                                'exporting urls' % type(unit))
+    return list(all_urls)
+
+
+def save_urls_to_file(urls, filename):
+    """
+    Save urls to file. Filename is specified by the user. The original
+    purpose of this function is to export urls into a file for external
+    downloader.
+    """
+    file_ = sys.stdout if filename == '-' else open(filename, 'w')
+    file_.writelines(urls)
+    file_.close()
+
+
 def main():
     """
     Main program function
@@ -837,10 +890,9 @@ def main():
 
     change_openedx_site(args.platform)
 
-
     # Query password, if not alredy passed by command line.
     if not args.password:
-        args.password = getpass.getpass(stream = sys.stderr)
+        args.password = getpass.getpass(stream=sys.stderr)
 
     if not args.username or not args.password:
         logging.error("You must supply username and password to log-in")
@@ -899,8 +951,13 @@ def main():
     logging.warn('Removed %d duplicated urls from %d in total',
                  (num_all_urls - num_filtered_urls), num_all_urls)
 
-    # finally we download all the resources
-    download(args, selections, all_units, headers)
+    # finally we download or export all the resources
+    if args.export_filename is not None:
+        logging.info('exporting urls to file %s' % args.export_filename)
+        urls = extract_urls_from_units(all_units, args.export_format)
+        save_urls_to_file(urls, args.export_filename)
+    else:
+        download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
