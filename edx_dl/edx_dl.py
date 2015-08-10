@@ -177,7 +177,7 @@ def edx_get_subtitle(url, headers):
         json_object = get_page_contents_as_json(url, headers)
         return edx_json2srt(json_object)
     except URLError as exception:
-        logging.warn('edX subtitles (error: %s)', exception.reason)
+        logging.warn('edX subtitles (error: %s)', exception)
         return None
     except ValueError as exception:
         logging.warn('edX subtitles (error: %s)', exception.message)
