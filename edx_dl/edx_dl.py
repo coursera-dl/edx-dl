@@ -49,7 +49,6 @@ from .utils import (
     remove_duplicates,
 )
 
-
 OPENEDX_SITES = {
     'edx': {
         'url': 'https://courses.edx.org',
@@ -208,14 +207,14 @@ def parse_args():
     parser = argparse.ArgumentParser(prog='edx-dl',
                                      description='Get videos from the OpenEdX platform',
                                      epilog='For further use information,'
-                                     'see the file README.md',)
+                                            'see the file README.md', )
     # positional
     parser.add_argument('course_urls',
                         nargs='*',
                         action='store',
                         default=[],
                         help='target course urls '
-                        '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)')
+                             '(e.g., https://courses.edx.org/courses/BerkeleyX/CS191x/2013_Spring/info)')
 
     # optional
     parser.add_argument('-u',
@@ -228,7 +227,7 @@ def parse_args():
                         '--password',
                         action='store',
                         help='your edX password, '
-                        'beware: it might be visible to other users on your system')
+                             'beware: it might be visible to other users on your system')
 
     parser.add_argument('-f',
                         '--format',
@@ -300,16 +299,16 @@ def parse_args():
                         dest='export_filename',
                         default=None,
                         help='filename where to put an exported list of urls. '
-                        'Use dash "-" to output to stdout. '
-                        'Download will not be performed if this option is '
-                        'present')
+                             'Use dash "-" to output to stdout. '
+                             'Download will not be performed if this option is '
+                             'present')
 
     parser.add_argument('--export-format',
                         dest='export_format',
                         default='%(url)s',
                         help='export format string. Old-style python formatting '
-                        'is used. Available variables: %%(url)s. Default: '
-                        '"%%(url)s"')
+                             'is used. Available variables: %%(url)s. Default: '
+                             '"%%(url)s"')
 
     parser.add_argument('--cache',
                         dest='cache',
@@ -449,7 +448,7 @@ def _filter_sections(index, sections):
             else:
                 pass  # log some info here
         except ValueError:
-            pass   # log some info here
+            pass  # log some info here
     else:
         pass  # log some info here
 
@@ -504,7 +503,7 @@ def parse_sections(args, selections):
         return selections
 
     filtered_selections = {selected_course:
-                           _filter_sections(args.filter_section, selected_sections)
+                               _filter_sections(args.filter_section, selected_sections)
                            for selected_course, selected_sections in selections.items()}
     return filtered_selections
 
@@ -585,10 +584,11 @@ def _build_url_downloads(urls, target_dir, filename_prefix):
     If it is a youtube url it uses the valid template for youtube-dl
     otherwise just takes the name of the file from the url
     """
-    downloads = {url:
-                 _build_filename_from_url(url, target_dir, filename_prefix)
-                 for url in urls}
-    return downloads
+    return {
+        (lambda url: BASE_URL + url if url.startswith('/') else url)(url): _build_filename_from_url(
+            url, target_dir, filename_prefix
+        )
+        for url in urls}
 
 
 def _build_filename_from_url(url, target_dir, filename_prefix):
@@ -622,7 +622,7 @@ def download_url(url, filename, headers, args):
         # or if they are OK proceeding without verification.
         #
         # Note that skipping verification by default could be a problem for
-        # people's lives if they happen to live ditatorial countries.
+        # people's lives if they happen to live dictatorial countries.
         #
         # Note: The mess with various exceptions being caught (and their
         # order) is due to different behaviors in different Python versions
@@ -913,9 +913,10 @@ def main():
     selected_courses = parse_courses(args, available_courses)
 
     # Parse the sections and build the selections dict filtered by sections
-    all_selections = {selected_course:
-                      get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
-                      for selected_course in selected_courses}
+    all_selections = {
+        selected_course:
+            get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
+        for selected_course in selected_courses}
     selections = parse_sections(args, all_selections)
     _display_selections(selections)
 
