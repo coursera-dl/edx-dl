@@ -35,7 +35,27 @@ Common type definitions and constants for edx-dl
 #
 
 class Course(object):
+    """
+    Course class represents course information.
+    """
     def __init__(self, id, name, url, state):
+        """
+        @param id: The id of a course in edX is composed by the path
+            {organization}/{course_number}/{course_run]
+        @type id: str or None
+
+        @param name: Name of the course. The name is taken from course page
+            h3 header.
+        @type name: str
+
+        @param url: URL of the course.
+        @type url: str or None
+
+        @param state: State of the course. One of the following values:
+            * 'Not yet'
+            * 'Started'
+        @type state: str
+        """
         self.id = id
         self.name = name
         self.url = url
@@ -43,7 +63,25 @@ class Course(object):
 
 
 class Section(object):
+    """
+    Representation of a section of the course.
+    """
     def __init__(self, position, name, url, subsections):
+        """
+        @param position: Integer position of the section in the list of
+            sections. Starts at 1.
+        @type position: int
+
+        @param name: Name of the section.
+        @type name: str
+
+        @param url: URL of the section. None when section contains no
+            subsections.
+        @type url: str or None
+
+        @param subsections: List of subsections.
+        @type subsections: [SubSection]
+        """
         self.position = position
         self.name = name
         self.url = url
@@ -51,21 +89,63 @@ class Section(object):
 
 
 class SubSection(object):
+    """
+    Representation of a subsection in a section.
+    """
     def __init__(self, position, name, url):
+        """
+        @param position: Integer position of the subsection in the subsection
+            list. Starts at 1.
+        @type position: int
+
+        @param name: Name of the subsection.
+        @type name: str
+
+        @param url: URL of the subsection.
+        @type url: str
+        """
         self.position = position
         self.name = name
         self.url = url
 
 
 class Unit(object):
+    """
+    Representation of a single unit of the course.
+    """
     def __init__(self, videos, resources_urls):
+        """
+        @param videos: List of videos present in the unit.
+        @type videos: [Video]
+
+        @param resources_urls: List of additional resourses that are come along
+            with the unit. Resourses include files with certain extensions
+            and youtube links.
+        @type resources_urls: [str]
+        """
         self.videos = videos
         self.resources_urls = resources_urls
 
 
 class Video(object):
+    """
+    Representation of a single video.
+    """
     def __init__(self, video_youtube_url, available_subs_url,
                  sub_template_url, mp4_urls):
+        """
+        @param video_youtube_url: Youtube link (if any).
+        @type video_youtube_url: str or None
+
+        @param available_subs_url: URL to the available subtitles.
+        @type available_subs_url: str
+
+        @param sub_template_url: ???
+        @type sub_template_url: str
+
+        @param mp4_urls: List of URLs to mp4 video files.
+        @type mp4_urls: [str]
+        """
         self.video_youtube_url = video_youtube_url
         self.available_subs_url = available_subs_url
         self.sub_template_url = sub_template_url
