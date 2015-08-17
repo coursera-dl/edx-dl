@@ -3,10 +3,9 @@
 """
 Common type definitions and constants for edx-dl
 """
-from collections import namedtuple
 
 
-# The next four named tuples represent the structure of courses in edX.  The
+# The next four classes represent the structure of courses in edX.  The
 # structure is:
 #
 # * A Course contains Sections
@@ -34,13 +33,44 @@ from collections import namedtuple
 # 4. The units can contain multiple videos:
 #    Unit -> [Video]
 #
-Course = namedtuple('Course', ['id', 'name', 'url', 'state'])
-Section = namedtuple('Section', ['position', 'name', 'url', 'subsections'])
-SubSection = namedtuple('SubSection', ['position', 'name', 'url'])
-Unit = namedtuple('Unit',
-                  ['videos', 'resources_urls'])
-Video = namedtuple('Video', ['video_youtube_url', 'available_subs_url',
-                             'sub_template_url', 'mp4_urls'])
+
+class Course(object):
+    def __init__(self, id, name, url, state):
+        self.id = id
+        self.name = name
+        self.url = url
+        self.state = state
+
+
+class Section(object):
+    def __init__(self, position, name, url, subsections):
+        self.position = position
+        self.name = name
+        self.url = url
+        self.subsections = subsections
+
+
+class SubSection(object):
+    def __init__(self, position, name, url):
+        self.position = position
+        self.name = name
+        self.url = url
+
+
+class Unit(object):
+    def __init__(self, videos, resources_urls):
+        self.videos = videos
+        self.resources_urls = resources_urls
+
+
+class Video(object):
+    def __init__(self, video_youtube_url, available_subs_url,
+                 sub_template_url, mp4_urls):
+        self.video_youtube_url = video_youtube_url
+        self.available_subs_url = available_subs_url
+        self.sub_template_url = sub_template_url
+        self.mp4_urls = mp4_urls
+
 
 YOUTUBE_DL_CMD = ['youtube-dl', '--ignore-config']
 DEFAULT_CACHE_FILENAME = 'edx-dl.cache'
