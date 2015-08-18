@@ -17,3 +17,9 @@ script: py.test -v --cov edx_dl --cov-report html
 
 after_success:
   coveralls
+
+notifications:
+  email:
+    - iemejia@gmail.com
+    - kidsshk3@gmail.com
+    - rbrito@ime.usp.br
