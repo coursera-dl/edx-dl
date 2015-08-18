@@ -227,7 +227,7 @@ def extract_courses_from_html(page, BASE_URL):
             if course_url.endswith('info') or course_url.endswith('info/'):
                 course_state = 'Started'
             # The id of a course in edX is composed by the path
-            # {organization}/{course_number}/{course_run]
+            # {organization}/{course_number}/{course_run}
             course_id = course_soup.a['href'][9:-5]
         except KeyError:
             pass
