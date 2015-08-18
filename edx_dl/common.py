@@ -41,7 +41,7 @@ class Course(object):
     def __init__(self, id, name, url, state):
         """
         @param id: The id of a course in edX is composed by the path
-            {organization}/{course_number}/{course_run]
+            {organization}/{course_number}/{course_run}
         @type id: str or None
 
         @param name: Name of the course. The name is taken from course page
@@ -118,8 +118,8 @@ class Unit(object):
         @param videos: List of videos present in the unit.
         @type videos: [Video]
 
-        @param resources_urls: List of additional resourses that are come along
-            with the unit. Resourses include files with certain extensions
+        @param resources_urls: List of additional resources that are come along
+            with the unit. Resources include files with certain extensions
             and youtube links.
         @type resources_urls: [str]
         """
