@@ -30,7 +30,13 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
-from .common import YOUTUBE_DL_CMD, DEFAULT_CACHE_FILENAME, Unit, Video
+from .common import (
+    YOUTUBE_DL_CMD,
+    DEFAULT_CACHE_FILENAME,
+    Unit,
+    Video,
+    ExitCode,
+)
 from .parsing import (
     edx_json2srt,
     extract_courses_from_html,
@@ -100,7 +106,7 @@ def change_openedx_site(site_name):
     sites = sorted(OPENEDX_SITES.keys())
     if site_name not in sites:
         logging.error("OpenEdX platform should be one of: %s", ', '.join(sites))
-        sys.exit(2)
+        sys.exit(ExitCode.UNKNOWN_PLATFORM)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
@@ -474,11 +480,11 @@ def parse_courses(args, available_courses):
     """
     if args.list_courses:
         _display_courses(available_courses)
-        exit(0)
+        exit(ExitCode.OK)
 
     if len(args.course_urls) == 0:
         logging.error('You must pass the URL of at least one course, check the correct url with --list-courses')
-        exit(3)
+        exit(ExitCode.MISSING_COURSE_URL)
 
     selected_courses = [available_course
                         for available_course in available_courses
@@ -486,7 +492,7 @@ def parse_courses(args, available_courses):
                         if available_course.url == url]
     if len(selected_courses) == 0:
         logging.error('You have not passed a valid course url, check the correct url with --list-courses')
-        exit(4)
+        exit(ExitCode.INVALID_COURSE_URL)
     return selected_courses
 
 
@@ -498,7 +504,7 @@ def parse_sections(args, selections):
     if args.list_sections:
         for selected_course, selected_sections in selections.items():
             _display_sections_menu(selected_course, selected_sections)
-        exit(0)
+        exit(ExitCode.OK)
 
     if not args.filter_section:
         return selections
@@ -526,7 +532,7 @@ def parse_units(all_units):
     flat_units = [unit for units in all_units.values() for unit in units]
     if len(flat_units) < 1:
         logging.warn('No downloadable video found.')
-        exit(6)
+        exit(ExitCode.NO_DOWNLOADABLE_VIDEO)
 
 
 def get_subtitles_urls(available_subs_url, sub_template_url, headers):
@@ -896,7 +902,7 @@ def main():
 
     if not args.username or not args.password:
         logging.error("You must supply username and password to log-in")
-        exit(1)
+        exit(ExitCode.MISSING_CREDENTIALS)
 
     # Prepare Headers
     headers = edx_get_headers()
@@ -905,7 +911,7 @@ def main():
     resp = edx_login(LOGIN_API, headers, args.username, args.password)
     if not resp.get('success', False):
         logging.error(resp.get('value', "Wrong Email or Password."))
-        exit(2)
+        exit(ExitCode.WRONG_EMAIL_OR_PASSWORD)
 
     # Parse and select the available courses
     courses = get_courses_info(DASHBOARD, headers)
@@ -965,4 +971,4 @@ if __name__ == '__main__':
         main()
     except KeyboardInterrupt:
         logging.warn("\n\nCTRL-C detected, shutting down....")
-        sys.exit(0)
+        sys.exit(ExitCode.OK)
