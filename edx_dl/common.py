@@ -151,5 +151,18 @@ class Video(object):
         self.mp4_urls = mp4_urls
 
 
+class ExitCode(object):
+    """
+    Class that contains all exit codes of the program.
+    """
+    OK = 0
+    MISSING_CREDENTIALS = 1
+    WRONG_EMAIL_OR_PASSWORD = 2
+    MISSING_COURSE_URL = 3
+    INVALID_COURSE_URL = 4
+    UNKNOWN_PLATFORM = 5
+    NO_DOWNLOADABLE_VIDEO = 6
+
+
 YOUTUBE_DL_CMD = ['youtube-dl', '--ignore-config']
 DEFAULT_CACHE_FILENAME = 'edx-dl.cache'
