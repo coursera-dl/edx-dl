@@ -93,13 +93,19 @@ def test_extract_multiple_units_multiple_youtube_videos():
         assert 'https://youtube.com/watch?v=3atHHNa2UwI' in [video.video_youtube_url for video in units[0].videos]
 
 
-def test_extract_sections():
+@pytest.mark.parametrize(
+    'file,num_sections_expected,num_subsections_expected', [
+        ('test/html/single_unit_multiple_subs.html', 6, 11),
+        ('test/html/empty_sections.html', 0, 0)
+    ]
+)
+def test_extract_sections(file, num_sections_expected, num_subsections_expected):
     site = 'https://courses.edx.org'
-    with open("test/html/single_unit_multiple_subs.html", "r") as f:
+    with open(file, "r") as f:
         sections = extract_sections_from_html(f.read(), site)
-        assert len(sections) == 6
+        assert len(sections) == num_sections_expected
         num_subsections = sum(len(section.subsections) for section in sections)
-        assert num_subsections == 11
+        assert num_subsections == num_subsections_expected
 
 
 def test_extract_courses_from_html():
