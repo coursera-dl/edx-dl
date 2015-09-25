@@ -1,6 +1,6 @@
 # Introduction
 
-In no lexicographic/alphabetical order, this file lists authors and
+In lexicographic/alphabetical order, this file lists authors and
 contributors to the project.  It is meant to recognize and credit their
 contributions to the project.
 
