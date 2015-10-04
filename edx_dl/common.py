@@ -111,6 +111,8 @@ class SubSection(object):
         self.name = name
         self.url = url
 
+    def __repr__(self):
+        return self.name + ": " + self.url
 
 class Unit(object):
     """
