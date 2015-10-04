@@ -17,7 +17,7 @@ def test_remove_repeated_urls():
     site = 'https://courses.edx.org'
     with open(url, "r") as f:
         html_contents = f.read()
-        page_extractor = parsing.NewEdXPageExtractor()
+        page_extractor = parsing.CurrentEdXPageExtractor()
         units_extracted = page_extractor.extract_units_from_html(html_contents, site)
 
         all_units = {url: units_extracted}

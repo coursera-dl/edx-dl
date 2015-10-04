@@ -253,7 +253,7 @@ class ClassicEdXPageExtractor(PageExtractor):
         return courses
 
 
-class NewEdXPageExtractor(ClassicEdXPageExtractor):
+class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
@@ -335,7 +335,7 @@ def get_page_extractor(url):
     factory method for page extractors
     """
     if url.startswith('https://courses.edx.org'):
-        return NewEdXPageExtractor()
+        return CurrentEdXPageExtractor()
 
     return ClassicEdXPageExtractor()
 

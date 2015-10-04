@@ -10,9 +10,7 @@ import pytest
 from edx_dl.parsing import (
     edx_json2srt,
     ClassicEdXPageExtractor,
-    NewEdXPageExtractor,
-    extract_sections_from_html,
-    extract_courses_from_html,
+    CurrentEdXPageExtractor,
     is_youtube_url,
 )
 
@@ -51,7 +49,7 @@ def test_subtitles_from_json(file, expected):
 def test_extract_units_from_html_single_unit_multiple_subs():
     site = 'https://courses.edx.org'
     with open("test/html/single_unit_multiple_subs.html", "r") as f:
-        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
 
         assert units[0].videos[0].video_youtube_url == 'https://youtube.com/watch?v=b7xgknqkQk8'
         assert units[0].videos[0].mp4_urls[0] == 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4'
@@ -61,7 +59,7 @@ def test_extract_units_from_html_single_unit_multiple_subs():
 def test_extract_multiple_units_multiple_resources():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units.html", "r") as f:
-        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
         assert len(units) == 3
         # this one has multiple speeds in the data-streams field
         assert 'https://youtube.com/watch?v=CJ482b9r_0g' in [video.video_youtube_url for video in units[0].videos]
@@ -81,28 +79,28 @@ def test_extract_multiple_units_no_youtube_ids():
 def test_extract_multiple_units_youtube_link():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units_youtube_link.html", "r") as f:
-        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
         assert 'https://www.youtube.com/watch?v=5OXQypOAbdI' in units[0].resources_urls
 
 
 def test_extract_multiple_units_multiple_youtube_videos():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units_multiple_youtube_videos.html", "r") as f:
-        units = NewEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
         assert len(units[0].videos) == 3
         assert 'https://youtube.com/watch?v=3atHHNa2UwI' in [video.video_youtube_url for video in units[0].videos]
 
 
 @pytest.mark.parametrize(
     'file,num_sections_expected,num_subsections_expected', [
-        ('test/html/single_unit_multiple_subs.html', 6, 11),
+        ('test/html/new_sections_structure.html', 2, 12),
         ('test/html/empty_sections.html', 0, 0)
     ]
 )
 def test_extract_sections(file, num_sections_expected, num_subsections_expected):
     site = 'https://courses.edx.org'
     with open(file, "r") as f:
-        sections = extract_sections_from_html(f.read(), site)
+        sections = CurrentEdXPageExtractor().extract_sections_from_html(f.read(), site)
         assert len(sections) == num_sections_expected
         num_subsections = sum(len(section.subsections) for section in sections)
         assert num_subsections == num_subsections_expected
@@ -111,7 +109,7 @@ def test_extract_sections(file, num_sections_expected, num_subsections_expected)
 def test_extract_courses_from_html():
     site = 'https://courses.edx.org'
     with open("test/html/dashboard.html", "r") as f:
-        courses = extract_courses_from_html(f.read(), site)
+        courses = CurrentEdXPageExtractor().extract_courses_from_html(f.read(), site)
         assert len(courses) == 18
         available_courses = [course for course in courses if course.state == 'Started']
         assert len(available_courses) == 14
