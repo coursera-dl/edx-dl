@@ -60,6 +60,10 @@ class Course(object):
         self.url = url
         self.state = state
 
+    def __repr__(self):
+        url = self.url if self.url else "None"
+        return self.name + ": " + url
+
 
 class Section(object):
     """
