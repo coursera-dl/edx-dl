@@ -285,6 +285,50 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
         resources_urls = self.extract_resources_urls(text, BASE_URL)
         return Unit(videos=videos, resources_urls=resources_urls)
 
+    def extract_sections_from_html(self, page, BASE_URL):
+        """
+        Extract sections (Section->SubSection) from the html page
+        """
+        def _make_url(section_soup):  # FIXME: Extract from here and test
+            try:
+                return BASE_URL + section_soup.div.div.a['href']
+            except AttributeError:
+                # Section might be empty and contain no links
+                return None
+
+        def _get_section_name(section_soup):  # FIXME: Extract from here and test
+            try:
+                return section_soup['aria-label'][:-8] # -8 cuts the submenu word
+            except AttributeError:
+                return None
+
+        def _make_subsections(section_soup):
+            try:
+                subsections_soup = section_soup.find_all('div', attrs={'class': 'menu-item'})
+            except AttributeError:
+                return []
+            # FIXME correct extraction of subsection.name (unicode)
+            subsections = [SubSection(position=i,
+                                      url=BASE_URL + s.a['href'],
+                                      name=s.p.string)
+                           for i, s in enumerate(subsections_soup, 1)]
+
+            return subsections
+
+        soup = BeautifulSoup(page)
+        sections_soup = soup.find_all('div', attrs={'class': 'chapter-content-container'})
+
+        sections = [Section(position=i,
+                            name=_get_section_name(section_soup),
+                            url=_make_url(section_soup),
+                            subsections=_make_subsections(section_soup))
+                    for i, section_soup in enumerate(sections_soup, 1)]
+        # Filter out those sections for which name or url could not be parsed
+        sections = [section for section in sections
+                    if section.name and section.url]
+
+        return sections
+
 
 def get_page_extractor(url):
     """
