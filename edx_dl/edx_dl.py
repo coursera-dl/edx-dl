@@ -39,8 +39,6 @@ from .common import (
 )
 from .parsing import (
     edx_json2srt,
-    extract_courses_from_html,
-    extract_sections_from_html,
     get_page_extractor,
     is_youtube_url,
 )
@@ -133,9 +131,10 @@ def get_courses_info(url, headers):
     logging.info('Extracting course information from dashboard.')
 
     page = get_page_contents(url, headers)
-    courses = extract_courses_from_html(page, BASE_URL)
+    page_extractor = get_page_extractor(url)
+    courses = page_extractor.extract_courses_from_html(page, BASE_URL)
 
-    logging.debug('Data extracted: %s', str(courses))
+    logging.debug('Data extracted: %s', courses)
 
     return courses
 
@@ -169,8 +168,13 @@ def get_available_sections(url, headers):
     """
     Extracts the sections and subsections from a given url
     """
+    logging.debug("Extracting sections for :" + url)
+
     page = get_page_contents(url, headers)
-    sections = extract_sections_from_html(page, BASE_URL)
+    page_extractor = get_page_extractor(url)
+    sections = page_extractor.extract_sections_from_html(page, BASE_URL)
+
+    logging.debug("Extracted sections: " + str(sections))
     return sections
 
 
@@ -401,6 +405,9 @@ def extract_all_units_in_sequence(urls, headers):
     Returns a dict of all the units in the selected_sections: {url, units}
     sequentially, this is clearer for debug purposes
     """
+    logging.info('Extracting all units information in sequentially.')
+    logging.debug('urls: ' + str(urls))
+
     units = [extract_units(url, headers) for url in urls]
     all_units = dict(zip(urls, units))
 
@@ -413,6 +420,7 @@ def extract_all_units_in_parallel(urls, headers):
     in parallel
     """
     logging.info('Extracting all units information in parallel.')
+    logging.debug('urls: ' + str(urls))
 
     mapfunc = partial(extract_units, headers=headers)
     pool = ThreadPool(16)
@@ -440,12 +448,13 @@ def _filter_sections(index, sections):
     Get the sections for the given index.
 
     If the index is not valid (that is, None, a non-integer, a negative
-    integer, or an integer above the number of the sectons), we choose all
+    integer, or an integer above the number of the sections), we choose all
     sections.
     """
     num_sections = len(sections)
 
     logging.info('Filtering sections')
+
     if index is not None:
         try:
             index = int(index)

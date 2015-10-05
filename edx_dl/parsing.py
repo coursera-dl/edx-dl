@@ -48,18 +48,32 @@ def edx_json2srt(o):
 class PageExtractor(object):
     """
     Base class for PageExtractor
-    Every subclass should implement the extract_units_from_html method.
+    Every subclass can represent a different layout for an OpenEdX site.
+    They should implement the given methods.
 
     Usage:
 
       >>> import parsing
       >>> d = parsing.SubclassFromPageExtractor()
       >>> units = d.extract_units_from_html(page, BASE_URL)
+      >>> ...
     """
 
     def extract_units_from_html(self, page, BASE_URL):
         """
         Method to extract the resources (units) from the given page
+        """
+        raise NotImplementedError("Subclasses should implement this")
+
+    def extract_sections_from_html(self, page, BASE_URL):
+        """
+        Method to extract the sections (and subsections) from an html page
+        """
+        raise NotImplementedError("Subclasses should implement this")
+
+    def extract_courses_from_html(self, page, BASE_URL):
+        """
+        Method to extract the courses from an html page
         """
         raise NotImplementedError("Subclasses should implement this")
 
@@ -164,8 +178,82 @@ class ClassicEdXPageExtractor(PageExtractor):
 
         return resources_urls
 
+    def extract_sections_from_html(self, page, BASE_URL):
+        """
+        Extract sections (Section->SubSection) from the html page
+        """
+        def _make_url(section_soup):  # FIXME: Extract from here and test
+            try:
+                return BASE_URL + section_soup.ul.a['href']
+            except AttributeError:
+                # Section might be empty and contain no links
+                return None
 
-class NewEdXPageExtractor(ClassicEdXPageExtractor):
+        def _get_section_name(section_soup):  # FIXME: Extract from here and test
+            try:
+                return section_soup.h3.a.string.strip()
+            except AttributeError:
+                return None
+
+        def _make_subsections(section_soup):
+            try:
+                subsections_soup = section_soup.ul.find_all("li")
+            except AttributeError:
+                return []
+            # FIXME correct extraction of subsection.name (unicode)
+            subsections = [SubSection(position=i,
+                                      url=BASE_URL + s.a['href'],
+                                      name=s.p.string)
+                           for i, s in enumerate(subsections_soup, 1)]
+
+            return subsections
+
+        soup = BeautifulSoup(page)
+        sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
+
+        sections = [Section(position=i,
+                            name=_get_section_name(section_soup),
+                            url=_make_url(section_soup),
+                            subsections=_make_subsections(section_soup))
+                    for i, section_soup in enumerate(sections_soup, 1)]
+        # Filter out those sections for which name or url could not be parsed
+        sections = [section for section in sections
+                    if section.name and section.url]
+
+        return sections
+
+    def extract_courses_from_html(self, page, BASE_URL):
+        """
+        Extracts courses (Course) from the html page
+        """
+        soup = BeautifulSoup(page)
+        courses_soup = soup.find_all('article', 'course')
+        courses = []
+
+        for course_soup in courses_soup:
+            course_id = None
+            course_name = course_soup.h3.text.strip()
+            course_url = None
+            course_state = 'Not yet'
+            try:
+                # started courses include the course link in the href attribute
+                course_url = BASE_URL + course_soup.a['href']
+                if course_url.endswith('info') or course_url.endswith('info/'):
+                    course_state = 'Started'
+                # The id of a course in edX is composed by the path
+                # {organization}/{course_number}/{course_run}
+                course_id = course_soup.a['href'][9:-5]
+            except KeyError:
+                pass
+            courses.append(Course(id=course_id,
+                                  name=course_name,
+                                  url=course_url,
+                                  state=course_state))
+
+        return courses
+
+
+class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
@@ -197,91 +285,59 @@ class NewEdXPageExtractor(ClassicEdXPageExtractor):
         resources_urls = self.extract_resources_urls(text, BASE_URL)
         return Unit(videos=videos, resources_urls=resources_urls)
 
+    def extract_sections_from_html(self, page, BASE_URL):
+        """
+        Extract sections (Section->SubSection) from the html page
+        """
+        def _make_url(section_soup):  # FIXME: Extract from here and test
+            try:
+                return BASE_URL + section_soup.div.div.a['href']
+            except AttributeError:
+                # Section might be empty and contain no links
+                return None
+
+        def _get_section_name(section_soup):  # FIXME: Extract from here and test
+            try:
+                return section_soup['aria-label'][:-8] # -8 cuts the submenu word
+            except AttributeError:
+                return None
+
+        def _make_subsections(section_soup):
+            try:
+                subsections_soup = section_soup.find_all('div', attrs={'class': 'menu-item'})
+            except AttributeError:
+                return []
+            # FIXME correct extraction of subsection.name (unicode)
+            subsections = [SubSection(position=i,
+                                      url=BASE_URL + s.a['href'],
+                                      name=s.p.string)
+                           for i, s in enumerate(subsections_soup, 1)]
+
+            return subsections
+
+        soup = BeautifulSoup(page)
+        sections_soup = soup.find_all('div', attrs={'class': 'chapter-content-container'})
+
+        sections = [Section(position=i,
+                            name=_get_section_name(section_soup),
+                            url=_make_url(section_soup),
+                            subsections=_make_subsections(section_soup))
+                    for i, section_soup in enumerate(sections_soup, 1)]
+        # Filter out those sections for which name or url could not be parsed
+        sections = [section for section in sections
+                    if section.name and section.url]
+
+        return sections
+
 
 def get_page_extractor(url):
     """
     factory method for page extractors
     """
     if url.startswith('https://courses.edx.org'):
-        return NewEdXPageExtractor()
+        return CurrentEdXPageExtractor()
 
     return ClassicEdXPageExtractor()
-
-
-def extract_courses_from_html(page, BASE_URL):
-    """
-    Extracts courses (Course) from the html page
-    """
-    soup = BeautifulSoup(page)
-    courses_soup = soup.find_all('article', 'course')
-    courses = []
-
-    for course_soup in courses_soup:
-        course_id = None
-        course_name = course_soup.h3.text.strip()
-        course_url = None
-        course_state = 'Not yet'
-        try:
-            # started courses include the course link in the href attribute
-            course_url = BASE_URL + course_soup.a['href']
-            if course_url.endswith('info') or course_url.endswith('info/'):
-                course_state = 'Started'
-            # The id of a course in edX is composed by the path
-            # {organization}/{course_number}/{course_run}
-            course_id = course_soup.a['href'][9:-5]
-        except KeyError:
-            pass
-        courses.append(Course(id=course_id,
-                              name=course_name,
-                              url=course_url,
-                              state=course_state))
-
-    return courses
-
-
-def extract_sections_from_html(page, BASE_URL):
-    """
-    Extract sections (Section->SubSection) from the html page
-    """
-    def _make_url(section_soup):  # FIXME: Extract from here and test
-        try:
-            return BASE_URL + section_soup.ul.a['href']
-        except AttributeError:
-            # Section might be empty and contain no links
-            return None
-
-    def _get_section_name(section_soup):  # FIXME: Extract from here and test
-        try:
-            return section_soup.h3.a.string.strip()
-        except AttributeError:
-            return None
-
-    def _make_subsections(section_soup):
-        try:
-            subsections_soup = section_soup.ul.find_all("li")
-        except AttributeError:
-            return []
-        # FIXME correct extraction of subsection.name (unicode)
-        subsections = [SubSection(position=i,
-                                  url=BASE_URL + s.a['href'],
-                                  name=s.p.string)
-                       for i, s in enumerate(subsections_soup, 1)]
-
-        return subsections
-
-    soup = BeautifulSoup(page)
-    sections_soup = soup.find_all('div', attrs={'class': 'chapter'})
-
-    sections = [Section(position=i,
-                        name=_get_section_name(section_soup),
-                        url=_make_url(section_soup),
-                        subsections=_make_subsections(section_soup))
-                for i, section_soup in enumerate(sections_soup, 1)]
-    # Filter out those sections for which name or url could not be parsed
-    sections = [section for section in sections
-                if section.name and section.url]
-
-    return sections
 
 
 def is_youtube_url(url):

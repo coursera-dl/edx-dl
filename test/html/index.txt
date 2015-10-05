@@ -2,3 +2,4 @@
 single_unit_multiple_subs.html: https://courses.edx.org/courses/edX/DemoX.1/2014/courseware/6156e0e685ee4a2ab017258108c0bccd/194bd1729fab47aba6507f737d9b90ba
 multiple_units.html: https://courses.edx.org/courses/BerkeleyX/CS184.1x/2012_Fall/courseware/Unit_0/L1
 from_html_single_unit_multiple_subs: https://mitprofessionalx.mit.edu
+new_sections_structure: https://courses.edx.org/courses/course-v1:Microsoft+DEV207.1x+1T2016/courseware/2e4818cb44e546e18777fa7e4b250574/
