@@ -33,7 +33,7 @@ Youtube changes their layout from time to time, it may be necessary to
 upgrade your copy of `youtube-dl`.  There are many ways to proceed here, but
 the simplest is to simply use:
 
-    pip install --upgrade youtube_dl
+    pip install --upgrade youtube-dl
 
 # Quick Start
 
