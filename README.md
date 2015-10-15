@@ -69,7 +69,7 @@ that you want to get is hosted on Stanford's site.
 Before reporting any issue please follow the steps below:
 
 1. Verify that you are running the latest version of all the programs (both
-of `ex-dl` and of `youtube-dl`).  Use the following command if in doubt:
+of `edx-dl` and of `youtube-dl`).  Use the following command if in doubt:
 
         pip install --upgrade edx-dl
 
