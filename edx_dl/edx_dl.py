@@ -647,6 +647,8 @@ def download_url(url, filename, headers, args):
         except Exception as e:
             logging.warn('Got SSL/Connection error: %s', e)
             if not args.ignore_errors:
+                logging.warn('Hint: if you want to ignore this error, add '
+                             '--ignore-errors option to the command line')
                 raise e
             else:
                 logging.warn('SSL/Connection error ignored: %s', e)
