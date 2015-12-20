@@ -28,7 +28,7 @@ def edx_json2srt(o):
     output = []
 
     for i, (s, e, t) in enumerate(zip(o['start'], o['end'], o['text'])):
-        if t == '':
+        if t is None or t == '':
             continue
 
         output.append(str(i) + '\n')
