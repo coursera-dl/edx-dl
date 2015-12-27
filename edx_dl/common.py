@@ -89,6 +89,7 @@ class Section(object):
         self.name = name
         self.url = url
         self.subsections = subsections
+        self.dirname = None
 
 
 class SubSection(object):
@@ -130,6 +131,7 @@ class Unit(object):
         """
         self.videos = videos
         self.resources_urls = resources_urls
+        self.position = None
 
 
 class Video(object):
@@ -155,6 +157,13 @@ class Video(object):
         self.available_subs_url = available_subs_url
         self.sub_template_url = sub_template_url
         self.mp4_urls = mp4_urls
+
+    def __eq__(self, other):
+        # TODO What should we do if other urls differ?
+        return self.video_youtube_url == other.video_youtube_url
+
+    def __hash__(self):
+        return hash(self.video_youtube_url)
 
 
 class ExitCode(object):
