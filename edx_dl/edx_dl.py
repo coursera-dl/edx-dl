@@ -178,7 +178,7 @@ def get_available_sections(url, headers):
     return sections
 
 
-def edx_get_subtitle(url, headers):
+def edx_get_subtitle(url, headers, get_page_contents=get_page_contents, get_page_contents_as_json=get_page_contents_as_json):
     """
     Return a string with the subtitles content from the url or None if no
     subtitles are available.

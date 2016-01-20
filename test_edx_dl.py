@@ -85,3 +85,34 @@ def test_extract_urls_from_units_unknown_videos(unknown_videos):
     """
     with pytest.raises(TypeError):
         edx_dl.extract_urls_from_units(unknown_videos, '%(url)s')
+
+
+def test_edx_get_subtitle():
+    """
+    Make sure Stanford subtitle URLs are distinguished from EdX ones.
+    """
+
+    def mock_get_page_contents(u, h):
+        assert u == url
+        assert h == headers
+        return u
+    
+    def mock_get_page_contents_as_json(u, h):
+        assert u == url
+        assert h == headers
+        return { 'start' : [123], 'end' : [456], 'text' : ["subtitle content"] }
+
+    url = "https://lagunita.stanford.edu/courses/Engineering/QMSE02./Winter2016/xblock/i4x:;_;_Engineering;_QMSE02.;_video;_7f4f16e3eb294538aa8db4c43877132b/handler/transcript/download"
+    headers = {}
+    get_page_contents = lambda u, h: u
+    
+    expected = url
+    actual = edx_dl.edx_get_subtitle(url, headers, mock_get_page_contents, mock_get_page_contents_as_json)
+    assert expected == actual
+
+    # Make sure Non-Stanford URLs still work
+    url = "https://www.edx.org/could/be/more/realistic"
+
+    expected = '0\n00:00:00,123 --> 00:00:00,456\nsubtitle content\n\n'
+    actual = edx_dl.edx_get_subtitle(url, headers, mock_get_page_contents, mock_get_page_contents_as_json)
+    assert expected == actual
