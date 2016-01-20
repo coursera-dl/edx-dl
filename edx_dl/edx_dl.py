@@ -184,8 +184,11 @@ def edx_get_subtitle(url, headers):
     subtitles are available.
     """
     try:
-        json_object = get_page_contents_as_json(url, headers)
-        return edx_json2srt(json_object)
+        if ';' in url:  # non-JSON format (e.g. Stanford)
+            return get_page_contents(url, headers)
+        else:
+            json_object = get_page_contents_as_json(url, headers)
+            return edx_json2srt(json_object)
     except URLError as exception:
         logging.warn('edX subtitles (error: %s)', exception)
         return None
@@ -557,6 +560,15 @@ def get_subtitles_urls(available_subs_url, sub_template_url, headers):
 
         return {sub_lang: sub_template_url % sub_lang
                 for sub_lang in available_subs}
+
+    elif sub_template_url is not None:
+        try:
+            available_subs = get_page_contents(sub_template_url,
+                                                       headers)
+        except HTTPError:
+            available_subs = ['en']
+
+        return {'en': sub_template_url}
 
     return {}
 
