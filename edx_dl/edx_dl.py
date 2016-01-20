@@ -698,7 +698,7 @@ def skip_or_download(downloads, headers, args, f=download_url):
 
 
 def download_video(video, args, target_dir, filename_prefix, headers):
-    if args.prefer_cdn_videos:
+    if args.prefer_cdn_videos or video.video_youtube_url is None:
         mp4_downloads = _build_url_downloads(video.mp4_urls, target_dir,
                                              filename_prefix)
         skip_or_download(mp4_downloads, headers, args)
