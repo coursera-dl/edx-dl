@@ -116,3 +116,35 @@ def test_edx_get_subtitle():
     expected = '0\n00:00:00,123 --> 00:00:00,456\nsubtitle content\n\n'
     actual = edx_dl.edx_get_subtitle(url, headers, mock_get_page_contents, mock_get_page_contents_as_json)
     assert expected == actual
+
+
+def test_extract_subtitle_urls():
+    text = """
+&lt;li class="video-tracks video-download-button"&gt;
+            &lt;a href="/courses/Engineering/QMSE02./Winter2016/xblock/i4x:;_;_Engineering;_QMSE02.;_video;_1a4c7ff41e484a15927987b745a5c779/handler/transcript/download"&gt;Download transcript&lt;/a&gt;
+            &lt;div class="a11y-menu-container"&gt;
+                &lt;a class="a11y-menu-button" href="#" title=".srt" role="button" aria-disabled="false"&gt;.srt&lt;/a&gt;
+                &lt;ol class="a11y-menu-list" role="menu"&gt;
+                  &lt;li class="a11y-menu-item active"&gt;
+                  
+                      &lt;a class="a11y-menu-item-link" href="#srt" title="SubRip (.srt) file" data-value="srt" role="menuitem" aria-disabled="false"&gt;
+                        SubRip (.srt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                  &lt;li class="a11y-menu-item"&gt;
+                  
+                      &lt;a class="a11y-menu-item-link" href="#txt" title="Text (.txt) file" data-value="txt" role="menuitem" aria-disabled="false"&gt;
+                        Text (.txt) file
+                      &lt;/a&gt;
+                  &lt;/li&gt;
+                &lt;/ol&gt;
+            &lt;/div&gt;
+        &lt;/li&gt;
+    """
+
+    page_extractor = parsing.CurrentEdXPageExtractor()
+    expected = (None, 'https://base.url/courses/Engineering/QMSE02./Winter2016/xblock/i4x:;_;_Engineering;_QMSE02.;_video;_1a4c7ff41e484a15927987b745a5c779/handler/transcript/download')
+    actual = page_extractor.extract_subtitle_urls(text, "https://base.url")
+    print("actual", actual)
+    assert expected == actual
+
