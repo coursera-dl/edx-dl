@@ -141,6 +141,13 @@ class ClassicEdXPageExtractor(PageExtractor):
                 available_subs_url = BASE_URL + match_available_subs.group(1)
                 sub_template_url = BASE_URL + match_subs.group(1) + "/%s"
 
+        else:
+            re_available_subs_url=re.compile(r'href=(?:&#34;|")([^"&]+)(?:&#34;|")&gt;Download transcript&lt;')
+            match_available_subs = re_available_subs_url.search(text)
+            if match_available_subs:
+                sub_template_url = BASE_URL + match_available_subs.group(1)
+                available_subs_url = None
+
         return available_subs_url, sub_template_url
 
     def extract_mp4_urls(self, text):

@@ -178,14 +178,17 @@ def get_available_sections(url, headers):
     return sections
 
 
-def edx_get_subtitle(url, headers):
+def edx_get_subtitle(url, headers, get_page_contents=get_page_contents, get_page_contents_as_json=get_page_contents_as_json):
     """
     Return a string with the subtitles content from the url or None if no
     subtitles are available.
     """
     try:
-        json_object = get_page_contents_as_json(url, headers)
-        return edx_json2srt(json_object)
+        if ';' in url:  # non-JSON format (e.g. Stanford)
+            return get_page_contents(url, headers)
+        else:
+            json_object = get_page_contents_as_json(url, headers)
+            return edx_json2srt(json_object)
     except URLError as exception:
         logging.warn('edX subtitles (error: %s)', exception)
         return None
@@ -558,6 +561,15 @@ def get_subtitles_urls(available_subs_url, sub_template_url, headers):
         return {sub_lang: sub_template_url % sub_lang
                 for sub_lang in available_subs}
 
+    elif sub_template_url is not None:
+        try:
+            available_subs = get_page_contents(sub_template_url,
+                                                       headers)
+        except HTTPError:
+            available_subs = ['en']
+
+        return {'en': sub_template_url}
+
     return {}
 
 
@@ -698,7 +710,7 @@ def skip_or_download(downloads, headers, args, f=download_url):
 
 
 def download_video(video, args, target_dir, filename_prefix, headers):
-    if args.prefer_cdn_videos:
+    if args.prefer_cdn_videos or video.video_youtube_url is None:
         mp4_downloads = _build_url_downloads(video.mp4_urls, target_dir,
                                              filename_prefix)
         skip_or_download(mp4_downloads, headers, args)
