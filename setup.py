@@ -16,7 +16,7 @@ from setuptools import setup
 
 setup(
     name='edx-dl',
-    version='0.0',
+    version='0.0.2',
     maintainer='Ismaël Mejía, Rogério Theodoro de Brito',
     maintainer_email='iemejia@gmail.com, rbrito@ime.usp.br',
 
