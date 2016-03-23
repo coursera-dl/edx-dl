@@ -5,6 +5,7 @@ Describe your issue here.
 * Operating System (name/version):
 * Python version:
 * youtube-dl version:
+* edx-dl version:
 
 ### Steps to reproduce
 Tell us how to reproduce this issue. Please provide us the course URL, and the
