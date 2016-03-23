@@ -11,11 +11,9 @@ Tell us how to reproduce this issue. Please provide us the course URL, and the
 specific subsection or unit if possible.
 
 ### Expected behaviour
-Tell us what should happen
+Tell us what should happen.
 
 ### Actual behaviour
-Tell us what happens instead, if the script fails and throws some exception,
-please copy the *entire* output of the command or the stacktrace (don't forget
-to obfuscate your username and password).
-
-If you cannot copy the exception, attach a screenshot to the bug system.
+Tell us what happens instead. If the script fails, please copy the *entire*
+output of the command or the stacktrace (don't forget to obfuscate your
+username and password). If you cannot copy the exception, attach a screenshot.
