@@ -76,7 +76,6 @@ of `edx-dl` and of `youtube-dl`).  Use the following command if in doubt:
 2. If the problem persists, feel free to [open an issue][issue] in our
 bugtracker, with *as much information as possible*.  At a bare minimum,
 please specify the following information:
-following information:
 
     - Your operating system/version
     - Python version
@@ -86,11 +85,11 @@ following information:
     - Any other information that you may think that would help us finding
       the problem.
 
-[issue]: https://github.com/shk3/edx-downloader/issues
+[issue]: https://github.com/coursera-dl/edx-dl/issues
 
 If the script fails and throws some exception, please copy the *entire*
-output of the command or the stacktrace (but you may be free to obfuscate
-your username and password, of course).
+output of the command or the stacktrace (don't forget to obfuscate your
+username and password, of course).
 
 If you cannot copy the exception that the script shows, attach a screen
 shot/capture to the bug system.
@@ -118,4 +117,4 @@ See the contributors to the project in the [AUTHORS.md][authors] file.  If
 you have contributed to the project, we would like to gladly credit you for
 your work. Just send us a note to be added to that list.
 
-[authors]: https://github.com/shk3/edx-downloader/blob/master/AUTHORS.md
+[authors]: https://github.com/coursera-dl/edx-dl/blob/master/AUTHORS.md
