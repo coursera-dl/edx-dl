@@ -51,7 +51,7 @@ replacing `COURSE_URL` with the URL that you just copied in the first step.
 It should look something like:
 https://courses.edx.org/courses/edX/DemoX.1/2014/info
 
-Your downloaded videos will be placed in a new Directory called
+Your downloaded videos will be placed in a new directory called
 `Downloaded`, inside your current directory, but you can also choose another
 destination with the `-o` argument.
 
@@ -74,25 +74,10 @@ of `edx-dl` and of `youtube-dl`).  Use the following command if in doubt:
         pip install --upgrade edx-dl
 
 2. If the problem persists, feel free to [open an issue][issue] in our
-bugtracker, with *as much information as possible*.  At a bare minimum,
-please specify the following information:
-
-    - Your operating system/version
-    - Python version
-    - Version of youtube-dl
-    - Which course (the URL) you have problems with:
-    - If it helps it is better if you refer to a concrete subsection or unit.
-    - Any other information that you may think that would help us finding
-      the problem.
+bugtracker, please fill the issue template with *as much information as
+possible*.
 
 [issue]: https://github.com/coursera-dl/edx-dl/issues
-
-If the script fails and throws some exception, please copy the *entire*
-output of the command or the stacktrace (don't forget to obfuscate your
-username and password, of course).
-
-If you cannot copy the exception that the script shows, attach a screen
-shot/capture to the bug system.
 
 # Supported sites
 
