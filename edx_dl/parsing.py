@@ -269,7 +269,8 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
         videos = []
         match_metadatas = re_metadata.findall(text)
         for match_metadata in match_metadatas:
-            metadata = json.loads(html_parser.HTMLParser().unescape(match_metadata))
+            metadata = html_parser.HTMLParser().unescape(match_metadata)
+            metadata = json.loads(html_parser.HTMLParser().unescape(metadata))
             video_youtube_url = None
             re_video_speed = re.compile(r'1.0\d+\:(?:.*?)(.{11})')
             match_video_youtube_url = re_video_speed.search(metadata['streams'])
