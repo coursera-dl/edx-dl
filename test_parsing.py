@@ -7,6 +7,8 @@ import json
 
 import pytest
 
+from edx_dl.common import DEFAULT_FILE_FORMATS
+
 from edx_dl.parsing import (
     edx_json2srt,
     ClassicEdXPageExtractor,
@@ -49,7 +51,9 @@ def test_subtitles_from_json(file, expected):
 def test_extract_units_from_html_single_unit_multiple_subs():
     site = 'https://courses.edx.org'
     with open("test/html/single_unit_multiple_subs.html", "r") as f:
-        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(),
+                                                                  site,
+                                                                  DEFAULT_FILE_FORMATS)
 
         assert units[0].videos[0].video_youtube_url == 'https://youtube.com/watch?v=b7xgknqkQk8'
         assert units[0].videos[0].mp4_urls[0] == 'https://d2f1egay8yehza.cloudfront.net/edx-edx101/EDXSPCPJSP13-H010000_100.mp4'
@@ -59,7 +63,9 @@ def test_extract_units_from_html_single_unit_multiple_subs():
 def test_extract_multiple_units_multiple_resources():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units.html", "r") as f:
-        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(),
+                                                                  site,
+                                                                  DEFAULT_FILE_FORMATS)
         assert len(units) == 3
         # this one has multiple speeds in the data-streams field
         assert 'https://youtube.com/watch?v=CJ482b9r_0g' in [video.video_youtube_url for video in units[0].videos]
@@ -71,7 +77,9 @@ def test_extract_multiple_units_multiple_resources():
 def test_extract_multiple_units_no_youtube_ids():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units_no_youtube_ids.html", "r") as f:
-        units = ClassicEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = ClassicEdXPageExtractor().extract_units_from_html(f.read(),
+                                                                  site,
+                                                                  DEFAULT_FILE_FORMATS)
         assert units[0].videos[0].video_youtube_url is None
         assert len(units[0].videos[0].mp4_urls) > 0
 
@@ -79,14 +87,18 @@ def test_extract_multiple_units_no_youtube_ids():
 def test_extract_multiple_units_youtube_link():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units_youtube_link.html", "r") as f:
-        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(),
+                                                                  site,
+                                                                  DEFAULT_FILE_FORMATS)
         assert 'https://www.youtube.com/watch?v=5OXQypOAbdI' in units[0].resources_urls
 
 
 def test_extract_multiple_units_multiple_youtube_videos():
     site = 'https://courses.edx.org'
     with open("test/html/multiple_units_multiple_youtube_videos.html", "r") as f:
-        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(), site)
+        units = CurrentEdXPageExtractor().extract_units_from_html(f.read(),
+                                                                  site,
+                                                                  DEFAULT_FILE_FORMATS)
         assert len(units[0].videos) == 3
         assert 'https://youtube.com/watch?v=3atHHNa2UwI' in [video.video_youtube_url for video in units[0].videos]
 
