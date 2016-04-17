@@ -329,6 +329,26 @@ def parse_args():
                         'is used. Available variables: %%(url)s. Default: '
                         '"%%(url)s"')
 
+    parser.add_argument('--list-file-formats',
+                        dest='list_file_formats',
+                        action='store_true',
+                        default=False,
+                        help='list the default file formats extracted')
+
+    parser.add_argument('--file-formats',
+                        dest='file_formats',
+                        action='store',
+                        default=None,
+                        help='appends file formats to be extracted (comma '
+                        'separated)')
+
+    parser.add_argument('--overwrite-file-formats',
+                        dest='overwrite_file_formats',
+                        action='store_true',
+                        default=False,
+                        help='if active overwrites the file formats to be '
+                        'extracted')
+
     parser.add_argument('--cache',
                         dest='cache',
                         action='store_true',
@@ -530,6 +550,27 @@ def parse_sections(args, selections):
                            _filter_sections(args.filter_section, selected_sections)
                            for selected_course, selected_sections in selections.items()}
     return filtered_selections
+
+
+def parse_file_formats(args):
+    """
+    parse options for file formats and builds the array to be used
+    """
+    file_formats = DEFAULT_FILE_FORMATS
+
+    if args.list_file_formats:
+        logging.info(file_formats)
+        exit(ExitCode.OK)
+
+    if args.overwrite_file_formats:
+        file_formats = []
+
+    if args.file_formats:
+        new_file_formats = args.file_formats.split(",")
+        file_formats.extend(new_file_formats)
+
+    logging.debug("file_formats: %s", file_formats)
+    return file_formats
 
 
 def _display_selections(selections):
@@ -921,6 +962,7 @@ def main():
     Main program function
     """
     args = parse_args()
+    file_formats = parse_file_formats(args)
 
     change_openedx_site(args.platform)
 
