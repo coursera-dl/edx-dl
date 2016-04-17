@@ -68,7 +68,7 @@ OPENEDX_SITES = {
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
     'fun': {
-        'url': 'https://www.france-universite-numerique-mooc.fr',
+        'url': 'https://www.fun-mooc.fr',
         'courseware-selector': ('section', {'aria-label': 'Menu du cours'}),
     },
     'gwu-seas': {
