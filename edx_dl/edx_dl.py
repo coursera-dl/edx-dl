@@ -36,6 +36,7 @@ from .common import (
     Unit,
     Video,
     ExitCode,
+    DEFAULT_FILE_FORMATS,
 )
 from .parsing import (
     edx_json2srt,
@@ -85,7 +86,7 @@ OPENEDX_SITES = {
     },
     'bits':{
         'url':'http://any-learn.bits-pilani.ac.in',
-        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),  
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     }
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
@@ -328,6 +329,26 @@ def parse_args():
                         'is used. Available variables: %%(url)s. Default: '
                         '"%%(url)s"')
 
+    parser.add_argument('--list-file-formats',
+                        dest='list_file_formats',
+                        action='store_true',
+                        default=False,
+                        help='list the default file formats extracted')
+
+    parser.add_argument('--file-formats',
+                        dest='file_formats',
+                        action='store',
+                        default=None,
+                        help='appends file formats to be extracted (comma '
+                        'separated)')
+
+    parser.add_argument('--overwrite-file-formats',
+                        dest='overwrite_file_formats',
+                        action='store_true',
+                        default=False,
+                        help='if active overwrites the file formats to be '
+                        'extracted')
+
     parser.add_argument('--cache',
                         dest='cache',
                         action='store_true',
@@ -394,7 +415,7 @@ def edx_get_headers():
     return headers
 
 
-def extract_units(url, headers):
+def extract_units(url, headers, file_formats):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
@@ -402,12 +423,12 @@ def extract_units(url, headers):
 
     page = get_page_contents(url, headers)
     page_extractor = get_page_extractor(url)
-    units = page_extractor.extract_units_from_html(page, BASE_URL)
+    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
 
     return units
 
 
-def extract_all_units_in_sequence(urls, headers):
+def extract_all_units_in_sequence(urls, headers, file_formats):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
     sequentially, this is clearer for debug purposes
@@ -415,13 +436,13 @@ def extract_all_units_in_sequence(urls, headers):
     logging.info('Extracting all units information in sequentially.')
     logging.debug('urls: ' + str(urls))
 
-    units = [extract_units(url, headers) for url in urls]
+    units = [extract_units(url, headers, file_formats) for url in urls]
     all_units = dict(zip(urls, units))
 
     return all_units
 
 
-def extract_all_units_in_parallel(urls, headers):
+def extract_all_units_in_parallel(urls, headers, file_formats):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
     in parallel
@@ -429,7 +450,7 @@ def extract_all_units_in_parallel(urls, headers):
     logging.info('Extracting all units information in parallel.')
     logging.debug('urls: ' + str(urls))
 
-    mapfunc = partial(extract_units, headers=headers)
+    mapfunc = partial(extract_units, file_formats=file_formats, headers=headers)
     pool = ThreadPool(16)
     units = pool.map(mapfunc, urls)
     pool.close()
@@ -529,6 +550,27 @@ def parse_sections(args, selections):
                            _filter_sections(args.filter_section, selected_sections)
                            for selected_course, selected_sections in selections.items()}
     return filtered_selections
+
+
+def parse_file_formats(args):
+    """
+    parse options for file formats and builds the array to be used
+    """
+    file_formats = DEFAULT_FILE_FORMATS
+
+    if args.list_file_formats:
+        logging.info(file_formats)
+        exit(ExitCode.OK)
+
+    if args.overwrite_file_formats:
+        file_formats = []
+
+    if args.file_formats:
+        new_file_formats = args.file_formats.split(",")
+        file_formats.extend(new_file_formats)
+
+    logging.debug("file_formats: %s", file_formats)
+    return file_formats
 
 
 def _display_selections(selections):
@@ -838,7 +880,7 @@ def num_urls_in_units_dict(units_dict):
     return num_urls
 
 
-def extract_all_units_with_cache(all_urls, headers,
+def extract_all_units_with_cache(all_urls, headers, file_formats,
                                  filename=DEFAULT_CACHE_FILENAME,
                                  extractor=extract_all_units_in_parallel):
     """
@@ -860,7 +902,7 @@ def extract_all_units_with_cache(all_urls, headers,
     new_urls = [url for url in all_urls if url not in cached_units]
     logging.info('loading %d urls from cache [%s]', len(cached_units.keys()),
                  filename)
-    new_units = extractor(new_urls, headers)
+    new_units = extractor(new_urls, headers, file_formats)
     all_units = cached_units.copy()
     all_units.update(new_units)
 
@@ -920,6 +962,7 @@ def main():
     Main program function
     """
     args = parse_args()
+    file_formats = parse_file_formats(args)
 
     change_openedx_site(args.platform)
 
@@ -965,9 +1008,11 @@ def main():
         extractor = extract_all_units_in_sequence
 
     if args.cache:
-        all_units = extract_all_units_with_cache(all_urls, headers, extractor=extractor)
+        all_units = extract_all_units_with_cache(all_urls, headers,
+                                                 file_formats,
+                                                 extractor=extractor)
     else:
-        all_units = extractor(all_urls, headers)
+        all_units = extractor(all_urls, headers, file_formats)
 
     parse_units(selections)
 

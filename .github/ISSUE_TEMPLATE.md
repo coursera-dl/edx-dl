@@ -1,3 +1,7 @@
+🚨Please review the [Troubleshooting](../#troubleshooting) section
+before reporting any issue. Don't forget also to check the current issues to
+avoid duplicates.
+
 ### Subject of the issue
 Describe your issue here.
 

@@ -19,6 +19,7 @@ __pycache__/
 /.tox
 /.coverage
 /htmlcov
+.cache/
 
 # Application files
 edx-dl.cache

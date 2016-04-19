@@ -16,7 +16,6 @@ from .common import Course, Section, SubSection, Unit, Video
 # Force use of bs4 with html5lib
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
 
-
 def edx_json2srt(o):
     """
     Transform the dict 'o' into the srt subtitles format
@@ -59,7 +58,7 @@ class PageExtractor(object):
       >>> ...
     """
 
-    def extract_units_from_html(self, page, BASE_URL):
+    def extract_units_from_html(self, page, BASE_URL, file_formats):
         """
         Method to extract the resources (units) from the given page
         """
@@ -80,11 +79,7 @@ class PageExtractor(object):
 
 class ClassicEdXPageExtractor(PageExtractor):
 
-    DEFAULT_FILE_FORMATS = ['e?ps', 'pdf', 'txt', 'doc', 'xls', 'ppt',
-                            'docx', 'xlsx', 'pptx', 'odt', 'ods', 'odp', 'odg',
-                            'zip', 'rar', 'gz', 'mp3']
-
-    def extract_units_from_html(self, page, BASE_URL):
+    def extract_units_from_html(self, page, BASE_URL, file_formats):
         """
         Extract Units from the html of a subsection webpage as a list of
         resources
@@ -97,12 +92,12 @@ class ClassicEdXPageExtractor(PageExtractor):
         units = []
 
         for unit_html in re_units.findall(page):
-            unit = self.extract_unit(unit_html, BASE_URL)
+            unit = self.extract_unit(unit_html, BASE_URL, file_formats)
             if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
                 units.append(unit)
         return units
 
-    def extract_unit(self, text, BASE_URL):
+    def extract_unit(self, text, BASE_URL, file_formats):
         """
         Parses the <div> of each unit and extracts the urls of its resources
         """
@@ -114,7 +109,8 @@ class ClassicEdXPageExtractor(PageExtractor):
                         sub_template_url=sub_template_url,
                         mp4_urls=mp4_urls)]
 
-        resources_urls = self.extract_resources_urls(text, BASE_URL)
+        resources_urls = self.extract_resources_urls(text, BASE_URL,
+                                                     file_formats)
         return Unit(videos=videos, resources_urls=resources_urls)
 
     def extract_video_youtube_url(self, text):
@@ -164,8 +160,7 @@ class ClassicEdXPageExtractor(PageExtractor):
 
         return mp4_urls
 
-    def extract_resources_urls(self, text, BASE_URL,
-                               file_formats=DEFAULT_FILE_FORMATS):
+    def extract_resources_urls(self, text, BASE_URL, file_formats):
         """
         Extract resources looking for <a> references in the webpage and
         matching the given file formats
@@ -264,7 +259,7 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
-    def extract_unit(self, text, BASE_URL):
+    def extract_unit(self, text, BASE_URL, file_formats):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         videos = []
         match_metadatas = re_metadata.findall(text)
@@ -290,7 +285,8 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
                                 sub_template_url=sub_template_url,
                                 mp4_urls=mp4_urls))
 
-        resources_urls = self.extract_resources_urls(text, BASE_URL)
+        resources_urls = self.extract_resources_urls(text, BASE_URL,
+                                                     file_formats)
         return Unit(videos=videos, resources_urls=resources_urls)
 
     def extract_sections_from_html(self, page, BASE_URL):
