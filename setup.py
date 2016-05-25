@@ -21,7 +21,7 @@ setup(
     maintainer_email='iemejia@gmail.com, rbrito@ime.usp.br',
 
     license='LGPL',
-    url='https://github.com/shk3/edx-downloader',
+    url='https://github.com/coursera-dl/edx-dl',
 
     install_requires=open('requirements.txt').readlines(),
     extras_require=dict(
