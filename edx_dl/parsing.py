@@ -167,10 +167,14 @@ class ClassicEdXPageExtractor(PageExtractor):
         """
         formats = '|'.join(file_formats)
         re_resources_urls = re.compile(r'&lt;a href=(?:&#34;|")([^"&]*.(?:' + formats + '))(?:&#34;|")')
-        resources_urls = [url
-                          if url.startswith('http') or url.startswith('https')
-                          else BASE_URL + url
-                          for url in re_resources_urls.findall(text)]
+        resources_urls = []
+        for url in re_resources_urls.findall(text):
+            if url.startswith('http') or url.startswith('https'):
+                resources_urls.append(url)
+            elif url.startswith('//'):
+                resources_urls.append('https:' + url)
+            else:
+                resources_urls.append(BASE_URL + url)
 
         # we match links to youtube videos as <a href> and add them to the
         # download list
