@@ -2,6 +2,8 @@
 
 from setuptools import setup
 
+from edx_dl import __version__
+
 # you can install this to a local test virtualenv like so:
 #   virtualenv venv
 #   ./venv/bin/pip install --editable .
@@ -16,7 +18,7 @@ from setuptools import setup
 
 setup(
     name='edx-dl',
-    version='0.0',
+    version=__version__,
     maintainer='Ismaël Mejía, Rogério Theodoro de Brito',
     maintainer_email='iemejia@gmail.com, rbrito@ime.usp.br',
 

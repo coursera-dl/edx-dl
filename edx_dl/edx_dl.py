@@ -30,6 +30,8 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
+from edx_dl import __version__
+
 from .common import (
     YOUTUBE_DL_CMD,
     DEFAULT_CACHE_FILENAME,
@@ -379,7 +381,17 @@ def parse_args():
                         default=False,
                         help='print lots of debug information')
 
+    parser.add_argument('--version',
+                        dest='version',
+                        action='store_true',
+                        default=False,
+                        help='display version and exit')
+
     args = parser.parse_args()
+
+    if args.version:
+        print(__version__)
+        sys.exit(ExitCode.OK)
 
     # Initialize the logging system first so that other functions
     # can use it right away.
@@ -962,6 +974,7 @@ def main():
     Main program function
     """
     args = parse_args()
+    logging.info('edx_dl version %s' % __version__)
     file_formats = parse_file_formats(args)
 
     change_openedx_site(args.platform)
