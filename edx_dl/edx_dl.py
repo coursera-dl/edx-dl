@@ -30,7 +30,7 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
-from edx_dl import __version__
+from ._version import __version__
 
 from .common import (
     YOUTUBE_DL_CMD,

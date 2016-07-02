@@ -2,7 +2,7 @@
 
 from setuptools import setup
 
-from edx_dl import __version__
+from edx_dl._version import __version__
 
 # you can install this to a local test virtualenv like so:
 #   virtualenv venv
