@@ -16,7 +16,13 @@ has better security than Python 2.
 [python]: https://www.python.org/
 [python3]: https://www.python.org/downloads/
 
-# Dependencies
+# Installation (recommended)
+
+To install edx-dl run:
+
+    pip install edx-dl
+
+# Manual Installation
 
 To install all the dependencies please do:
 
