@@ -209,7 +209,7 @@ class ClassicEdXPageExtractor(PageExtractor):
             # FIXME correct extraction of subsection.name (unicode)
             subsections = [SubSection(position=i,
                                       url=BASE_URL + s.a['href'],
-                                      name=s.p.string)
+                                      name=s.p.get_text().replace('current section',''))
                            for i, s in enumerate(subsections_soup, 1)]
 
             return subsections
