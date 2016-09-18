@@ -118,6 +118,10 @@ class ClassicEdXPageExtractor(PageExtractor):
         video_youtube_url = None
         match_video_youtube_url = re_video_youtube_url.search(text)
 
+        if match_video_youtube_url is None:
+            re_video_youtube_url = re.compile(r'https://www.youtube.com/embed/(.{11})\?rel=')
+            match_video_youtube_url = re_video_youtube_url.search(text)
+
         if match_video_youtube_url is not None:
             video_id = match_video_youtube_url.group(1)
             video_youtube_url = 'https://youtube.com/watch?v=' + video_id
