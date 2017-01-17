@@ -5,6 +5,7 @@ Parsing and extraction functions
 """
 import re
 import json
+import logging
 
 from datetime import timedelta, datetime
 
@@ -12,6 +13,7 @@ from six.moves import html_parser
 from bs4 import BeautifulSoup as BeautifulSoup_
 
 from .common import Course, Section, SubSection, Unit, Video
+from .utils import get_page_contents
 
 
 # Force use of bs4 with html.parser
@@ -408,6 +410,75 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
         return sections
 
 
+class XuetangxPageExtractor(ClassicEdXPageExtractor):
+
+    def __init__(self):
+        self.headers = None
+
+    def set_headers(self, headers):
+        """Sets the headers necessary for accessing the video URL API"""
+        self.headers = headers
+        self.base_url = None
+
+    def extract_courses(self, results, BASE_URL):
+        """
+        Extract courses from a list of dicts.
+        """
+        courses = []
+
+        for result in results:
+            try:
+                course_id = result['id']
+                course_name = result['name']
+                course_url = BASE_URL + result['info_link']
+                # Xuetangx allows accessing materials for all archived courses,
+                # so it's safe to mark all courses as 'Started'.
+                course_state = 'Started'
+            except KeyError:
+                continue
+            courses.append(Course(id=course_id,
+                                  name=course_name,
+                                  url=course_url,
+                                  state=course_state))
+
+        return courses
+
+    def extract_units_from_html(self, page, BASE_URL, file_formats):
+        self.base_url = BASE_URL
+        return ClassicEdXPageExtractor.extract_units_from_html(self, page,
+                                                               BASE_URL,
+                                                               file_formats)
+
+    def extract_mp4_urls(self, text):
+        """
+        Looks for available links to the mp4 version of the videos
+        """
+        # Xuetangx does not provide the video URL directly in the page;
+        # instead, a video id can be found in the page and translated into
+        # actual URL through a "video2source" API.
+        m = re.search('(?<=data-ccsource=&#39;).+(?=&#39;)', text)
+        if not m:
+            return []
+
+        video_id = m.group(0)
+        if not self.base_url:
+            logging.debug('Base URL unset; please set self.base_url before '
+                          'calling extract_mp4_urls')
+            return []
+        video_src_url = self.base_url + '/videoid2source/' + video_id
+        video_src_json = get_page_contents(video_src_url, self.headers)
+        try:
+            sources = json.loads(video_src_json)['sources']
+        except (json.JSONDecodeError, KeyError):
+            return []
+
+        mp4_urls = []
+        for quality in sources:
+            if sources[quality]:
+                mp4_urls.append(sources[quality][0])
+        return mp4_urls
+
+
 def get_page_extractor(url):
     """
     factory method for page extractors
@@ -423,6 +494,8 @@ def get_page_extractor(url):
         url.startswith('https://www.fun-mooc.fr')
     ):
         return CurrentEdXPageExtractor()
+    elif 'xuetangx.com' in url:
+        return XuetangxPageExtractor()
     else:
         return ClassicEdXPageExtractor()
 

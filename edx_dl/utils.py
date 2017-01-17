@@ -42,11 +42,11 @@ def execute_command(cmd, args):
             raise e
 
 
-def directory_name(initial_name):
+def directory_name(initial_name, minimal_change=False):
     """
     Transform the name of a directory into an ascii version
     """
-    result = clean_filename(initial_name)
+    result = clean_filename(initial_name, minimal_change=minimal_change)
     return result if result != "" else "course_folder"
 
 
