@@ -13,7 +13,7 @@ from six.moves import html_parser
 from bs4 import BeautifulSoup as BeautifulSoup_
 
 from .common import Course, Section, SubSection, Unit, Video
-from .utils import get_page_contents
+from .utils import get_page_contents, remove_blanks
 
 
 # Force use of bs4 with html.parser
@@ -190,7 +190,9 @@ class ClassicEdXPageExtractor(PageExtractor):
         youtube_links = re_youtube_links.findall(text)
         resources_urls += youtube_links
 
-        return resources_urls
+        # there may be some surplus blank characters extracted from the HTML;
+        # remove them
+        return list(map(remove_blanks, resources_urls))
 
     def extract_sections_from_html(self, page, BASE_URL):
         """
