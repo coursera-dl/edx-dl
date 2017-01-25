@@ -189,7 +189,7 @@ def get_courses_info_xuetangx(url, headers):
 
     for param in query_params:
         total, results = fetch_and_parse(api_url, param)
-        page_count = math.ceil(1.0 * total / page_size)
+        page_count = int(math.ceil(1.0 * total / page_size))
         for i in range(page_count):
             if i:
                 # page needs to be re-fetched unless it is the first one
