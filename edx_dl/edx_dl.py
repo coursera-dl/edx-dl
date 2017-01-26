@@ -781,8 +781,9 @@ def _build_filename_from_url(url, target_dir, filename_prefix, is_video=False,
             original_filename = 'video_%05d.mp4' % video_counter[0]
         else:
             original_filename = url.rsplit('/', 1)[1]
-        # escape characters like ':' that may cause problems under Windows
-        original_filename = quote(original_filename)
+        # remove special characters that may cause problems under Windows
+        original_filename = ''.join(list(filter(
+            lambda c: c not in ';/?:@&=+$,', original_filename)))
         filename = os.path.join(target_dir,
                                 filename_prefix + '-' + original_filename)
 
