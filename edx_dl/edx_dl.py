@@ -1002,9 +1002,15 @@ def main():
     selected_courses = parse_courses(args, available_courses)
 
     # Parse the sections and build the selections dict filtered by sections
-    all_selections = {selected_course:
-                      get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
-                      for selected_course in selected_courses}
+    if args.platform == 'edx':
+        all_selections = {selected_course:
+                          get_available_sections(selected_course.url.replace('info', 'course'), headers)
+                          for selected_course in selected_courses}
+    else:
+        all_selections = {selected_course:
+                          get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
+                          for selected_course in selected_courses}
+
     selections = parse_sections(args, all_selections)
     _display_selections(selections)
 
