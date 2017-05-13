@@ -65,23 +65,32 @@ To see all available options and a brief description of what they do, simply
 execute:
 
     edx-dl --help
-
 *Important Note:* To use sites other than edx.org, you have to specify the
 site along with the `-x` option. For example, `-x stanford`, if the course
 that you want to get is hosted on Stanford's site.
+
+# Docker container
+
+You can run this application via [Docker](https://docker.com) if you want. Just install docker and run
+
+```
+docker run --rm -it \
+       -v "$(pwd)/edx/:/Downloaded" \
+       strm/edx-dl -u <USER> -p <PASSWORD>
+```
 
 # Reporting issues
 
 Before reporting any issue please follow the steps below:
 
 1. Verify that you are running the latest version of all the programs (both
-of `edx-dl` and of `youtube-dl`).  Use the following command if in doubt:
+   of `edx-dl` and of `youtube-dl`).  Use the following command if in doubt:
 
-        pip install --upgrade edx-dl
+         pip install --upgrade edx-dl
 
 2. If the problem persists, feel free to [open an issue][issue] in our
-bugtracker, please fill the issue template with *as much information as
-possible*.
+   bugtracker, please fill the issue template with *as much information as
+   possible*.
 
 [issue]: https://github.com/coursera-dl/edx-dl/issues
 
