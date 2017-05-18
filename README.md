@@ -70,6 +70,16 @@ execute:
 site along with the `-x` option. For example, `-x stanford`, if the course
 that you want to get is hosted on Stanford's site.
 
+# Docker container
+
+You can run this application via [Docker](https://docker.com) if you want. Just install docker and run
+
+```
+docker run --rm -it \
+       -v "$(pwd)/edx/:/Downloaded" \
+       strm/edx-dl -u <USER> -p <PASSWORD>
+```
+
 # Reporting issues
 
 Before reporting any issue please follow the steps below:
