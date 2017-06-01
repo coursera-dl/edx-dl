@@ -788,6 +788,11 @@ def download_video(video, args, target_dir, filename_prefix, headers):
         skip_or_download(sub_downloads, headers, args, download_subtitle)
 
 
+def download_resource(resource, args, target_dir, filename_prefix, headers):
+    filename = os.path.join(target_dir, filename_prefix + resource.rsplit('/', 1)[1])
+    skip_or_download({resource: filename}, headers, args)
+
+
 def download_unit(unit, args, target_dir, filename_prefix, headers):
     """
     Downloads the urls in unit based on args in the given target_dir
@@ -819,21 +824,40 @@ def download(args, selections, all_units, headers):
     # sections/subsections to add correct prefixes and show nicer information.
 
     for selected_course, selected_sections in selections.items():
+        videos = {}
+        resources = {}
         coursename = directory_name(selected_course.name)
         for selected_section in selected_sections:
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
-            target_dir = os.path.join(args.output_dir, coursename,
-                                      clean_filename(section_dirname))
-            mkdir_p(target_dir)
-            counter = 0
+            selected_section.dirname = os.path.join(args.output_dir, coursename,
+                                                    clean_filename(section_dirname))
+            mkdir_p(selected_section.dirname)
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
-                for unit in units:
-                    counter += 1
-                    filename_prefix = "%02d" % counter
-                    download_unit(unit, args, target_dir, filename_prefix,
-                                  headers)
+                # Collect all video and resource urls for all units
+                for idx, unit in enumerate(units):
+                    unit.position = idx + 1
+                    for video_url in unit.videos:
+                        videos.setdefault(video_url, []).append((selected_section, subsection, unit))
+                    for resource_url in unit.resources_urls:
+                        resources.setdefault(resource_url, []).append((selected_section, subsection, unit))
+        for video in videos:
+            # TODO apply duplicate resolution strategy: save first / save all / create links
+            # Current hardcoded strategy is "save to the unit of the first occurrence"
+            first_occurrence = videos[video][0]
+            download_video(video, args, first_occurrence[0].dirname,
+                           '{:02d}-{:02d}'.format(first_occurrence[1].position,
+                                                  first_occurrence[2].position),
+                           headers)
+        for resource in resources:
+            first_occurrence = resources[resource][0]
+            # TODO enable optional dropping of the filename prefix
+            # (resources tend to have reasonable file names)
+            download_resource(resource, args, first_occurrence[0].dirname,
+                              '{:02d}-{:02d}-'.format(first_occurrence[1].position,
+                                                     first_occurrence[2].position),
+                              headers)
 
 
 def remove_repeated_urls(all_units):
