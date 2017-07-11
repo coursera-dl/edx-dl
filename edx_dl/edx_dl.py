@@ -62,6 +62,10 @@ OPENEDX_SITES = {
         'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
+    'edge': {
+        'url': 'https://edge.edx.org',
+        'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
     'stanford': {
         'url': 'https://lagunita.stanford.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
