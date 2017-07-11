@@ -398,6 +398,8 @@ def get_page_extractor(url):
     """
     if url.startswith('https://courses.edx.org'):
         return NewEdXPageExtractor()
+    elif url.startswith('https://edge.edx.org'):
+        return CurrentEdXPageExtractor()
     elif url.startswith('https://lagunita.stanford.edu'):
         return CurrentEdXPageExtractor()
     else:
