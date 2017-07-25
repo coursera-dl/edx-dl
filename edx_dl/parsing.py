@@ -248,7 +248,7 @@ class ClassicEdXPageExtractor(PageExtractor):
             try:
                 # started courses include the course link in the href attribute
                 course_url = BASE_URL + course_soup.a['href']
-                if course_url.endswith('info') or course_url.endswith('info/'):
+                if course_url.endswith('course') or course_url.endswith('course/'):
                     course_state = 'Started'
                 # The id of a course in edX is composed by the path
                 # {organization}/{course_number}/{course_run}
