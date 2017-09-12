@@ -1,6 +1,6 @@
 FROM python:3.4-slim
 
-LABEL maintainer "opsxcq@thestorm.com.br"
+LABEL maintainer "opsxcq@strm.sh"
 
 WORKDIR /src
 COPY requirements.txt /src
