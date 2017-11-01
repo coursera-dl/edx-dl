@@ -386,16 +386,12 @@ def parse_args():
                         help='print lots of debug information')
 
     parser.add_argument('--version',
-                        dest='version',
-                        action='store_true',
-                        default=False,
+                        action='version',
+                        version=__version__,
                         help='display version and exit')
 
     args = parser.parse_args()
 
-    if args.version:
-        print(__version__)
-        sys.exit(ExitCode.OK)
 
     # Initialize the logging system first so that other functions
     # can use it right away.
