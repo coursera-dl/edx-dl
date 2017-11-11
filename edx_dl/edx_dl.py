@@ -538,8 +538,7 @@ def parse_courses(args, available_courses):
         exit(ExitCode.OK)
 
     if len(args.course_urls) == 0:
-        logging.error('You must pass the URL of at least one course, ' + 
-                      'check the correct url with --list-courses')
+        logging.error('You must pass the URL of at least one course, check the correct url with --list-courses')
         exit(ExitCode.MISSING_COURSE_URL)
 
     selected_courses = [available_course
@@ -547,8 +546,7 @@ def parse_courses(args, available_courses):
                         for url in args.course_urls
                         if available_course.url == url]
     if len(selected_courses) == 0:
-        logging.error('You have not passed a valid course url, ' + 
-                      'check the correct url with --list-courses')
+        logging.error('You have not passed a valid course url, check the correct url with --list-courses')
         exit(ExitCode.INVALID_COURSE_URL)
     return selected_courses
 
