@@ -189,7 +189,9 @@ def get_available_sections(url, headers):
     return sections
 
 
-def edx_get_subtitle(url, headers, get_page_contents=get_page_contents, get_page_contents_as_json=get_page_contents_as_json):
+def edx_get_subtitle(url, headers,
+                     get_page_contents=get_page_contents,
+                     get_page_contents_as_json=get_page_contents_as_json):
     """
     Return a string with the subtitles content from the url or None if no
     subtitles are available.
@@ -1004,11 +1006,13 @@ def main():
     # Parse the sections and build the selections dict filtered by sections
     if args.platform == 'edx':
         all_selections = {selected_course:
-                          get_available_sections(selected_course.url.replace('info', 'course'), headers)
+                          get_available_sections(selected_course.url.replace('info', 'course'), 
+                                                 headers)
                           for selected_course in selected_courses}
     else:
         all_selections = {selected_course:
-                          get_available_sections(selected_course.url.replace('info', 'courseware'), headers)
+                          get_available_sections(selected_course.url.replace('info', 'courseware'), 
+                                                 headers)
                           for selected_course in selected_courses}
 
     selections = parse_sections(args, all_selections)
