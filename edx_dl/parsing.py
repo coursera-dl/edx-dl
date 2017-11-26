@@ -239,7 +239,7 @@ class ClassicEdXPageExtractor(PageExtractor):
         Extracts courses (Course) from the html page
         """
         soup = BeautifulSoup(page)
-        courses_soup = soup.find_all('article', 'course')
+        courses_soup = soup.find_all('div', 'course audit')
         courses = []
 
         for course_soup in courses_soup:
