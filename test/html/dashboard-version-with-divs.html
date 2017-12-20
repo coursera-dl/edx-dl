@@ -1,0 +1,2923 @@
+
+
+<!DOCTYPE html>
+<!--[if lte IE 9]><html class="ie ie9 lte9" lang="en"><![endif]-->
+<!--[if !IE]><!--><html lang="en"><!--<![endif]-->
+<head dir="ltr">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge"><script type="text/javascript">(window.NREUM||(NREUM={})).loader_config={xpid:"XA4GVl5ACwAEV1JQAA=="};window.NREUM||(NREUM={}),__nr_require=function(t,e,n){function r(n){if(!e[n]){var o=e[n]={exports:{}};t[n][0].call(o.exports,function(e){var o=t[n][1][e];return r(o?o:e)},o,o.exports)}return e[n].exports}if("function"==typeof __nr_require)return __nr_require;for(var o=0;o<n.length;o++)r(n[o]);return r}({QJf3ax:[function(t,e){function n(t){function e(e,n,a){t&&t(e,n,a),a||(a={});for(var c=s(e),f=c.length,u=i(a,o,r),d=0;f>d;d++)c[d].apply(u,n);return u}function a(t,e){f[t]=s(t).concat(e)}function s(t){return f[t]||[]}function c(){return n(e)}var f={};return{on:a,emit:e,create:c,listeners:s,_events:f}}function r(){return{}}var o="nr@context",i=t("gos");e.exports=n()},{gos:"7eSDFh"}],ee:[function(t,e){e.exports=t("QJf3ax")},{}],3:[function(t){function e(t){try{i.console&&console.log(t)}catch(e){}}var n,r=t("ee"),o=t(1),i={};try{n=localStorage.getItem("__nr_flags").split(","),console&&"function"==typeof console.log&&(i.console=!0,-1!==n.indexOf("dev")&&(i.dev=!0),-1!==n.indexOf("nr_dev")&&(i.nrDev=!0))}catch(a){}i.nrDev&&r.on("internal-error",function(t){e(t.stack)}),i.dev&&r.on("fn-err",function(t,n,r){e(r.stack)}),i.dev&&(e("NR AGENT IN DEVELOPMENT MODE"),e("flags: "+o(i,function(t){return t}).join(", ")))},{1:23,ee:"QJf3ax"}],4:[function(t){function e(t,e,n,i,s){try{c?c-=1:r("err",[s||new UncaughtException(t,e,n)])}catch(f){try{r("ierr",[f,(new Date).getTime(),!0])}catch(u){}}return"function"==typeof a?a.apply(this,o(arguments)):!1}function UncaughtException(t,e,n){this.message=t||"Uncaught error with no additional information",this.sourceURL=e,this.line=n}function n(t){r("err",[t,(new Date).getTime()])}var r=t("handle"),o=t(6),i=t("ee"),a=window.onerror,s=!1,c=0;t("loader").features.err=!0,t(5),window.onerror=e;try{throw new Error}catch(f){"stack"in f&&(t(1),t(2),"addEventListener"in window&&t(3),window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)&&t(4),s=!0)}i.on("fn-start",function(){s&&(c+=1)}),i.on("fn-err",function(t,e,r){s&&(this.thrown=!0,n(r))}),i.on("fn-end",function(){s&&!this.thrown&&c>0&&(c-=1)}),i.on("internal-error",function(t){r("ierr",[t,(new Date).getTime(),!0])})},{1:10,2:9,3:7,4:11,5:3,6:24,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],5:[function(t){t("loader").features.ins=!0},{loader:"G9z0Bl"}],6:[function(t){function e(){}if(window.performance&&window.performance.timing&&window.performance.getEntriesByType){var n=t("ee"),r=t("handle"),o=t(1),i=t(2);t("loader").features.stn=!0,t(3),n.on("fn-start",function(t){var e=t[0];e instanceof Event&&(this.bstStart=Date.now())}),n.on("fn-end",function(t,e){var n=t[0];n instanceof Event&&r("bst",[n,e,this.bstStart,Date.now()])}),o.on("fn-start",function(t,e,n){this.bstStart=Date.now(),this.bstType=n}),o.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),this.bstType])}),i.on("fn-start",function(){this.bstStart=Date.now()}),i.on("fn-end",function(t,e){r("bstTimer",[e,this.bstStart,Date.now(),"requestAnimationFrame"])}),n.on("pushState-start",function(){this.time=Date.now(),this.startPath=location.pathname+location.hash}),n.on("pushState-end",function(){r("bstHist",[location.pathname+location.hash,this.startPath,this.time])}),"addEventListener"in window.performance&&(window.performance.addEventListener("webkitresourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.webkitClearResourceTimings()},!1),window.performance.addEventListener("resourcetimingbufferfull",function(){r("bstResource",[window.performance.getEntriesByType("resource")]),window.performance.clearResourceTimings()},!1)),document.addEventListener("scroll",e,!1),document.addEventListener("keypress",e,!1),document.addEventListener("click",e,!1)}},{1:10,2:9,3:8,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],7:[function(t,e){function n(t){i.inPlace(t,["addEventListener","removeEventListener"],"-",r)}function r(t){return t[1]}var o=(t(1),t("ee").create()),i=t(2)(o),a=t("gos");if(e.exports=o,n(window),"getPrototypeOf"in Object){for(var s=document;s&&!s.hasOwnProperty("addEventListener");)s=Object.getPrototypeOf(s);s&&n(s);for(var c=XMLHttpRequest.prototype;c&&!c.hasOwnProperty("addEventListener");)c=Object.getPrototypeOf(c);c&&n(c)}else XMLHttpRequest.prototype.hasOwnProperty("addEventListener")&&n(XMLHttpRequest.prototype);o.on("addEventListener-start",function(t){if(t[1]){var e=t[1];"function"==typeof e?this.wrapped=t[1]=a(e,"nr@wrapped",function(){return i(e,"fn-",null,e.name||"anonymous")}):"function"==typeof e.handleEvent&&i.inPlace(e,["handleEvent"],"fn-")}}),o.on("removeEventListener-start",function(t){var e=this.wrapped;e&&(t[1]=e)})},{1:24,2:25,ee:"QJf3ax",gos:"7eSDFh"}],8:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window.history,["pushState"],"-")},{1:25,2:24,ee:"QJf3ax"}],9:[function(t,e){var n=(t(2),t("ee").create()),r=t(1)(n);e.exports=n,r.inPlace(window,["requestAnimationFrame","mozRequestAnimationFrame","webkitRequestAnimationFrame","msRequestAnimationFrame"],"raf-"),n.on("raf-start",function(t){t[0]=r(t[0],"fn-")})},{1:25,2:24,ee:"QJf3ax"}],10:[function(t,e){function n(t,e,n){t[0]=o(t[0],"fn-",null,n)}var r=(t(2),t("ee").create()),o=t(1)(r);e.exports=r,o.inPlace(window,["setTimeout","setInterval","setImmediate"],"setTimer-"),r.on("setTimer-start",n)},{1:25,2:24,ee:"QJf3ax"}],11:[function(t,e){function n(){f.inPlace(this,p,"fn-")}function r(t,e){f.inPlace(e,["onreadystatechange"],"fn-")}function o(t,e){return e}function i(t,e){for(var n in t)e[n]=t[n];return e}var a=t("ee").create(),s=t(1),c=t(2),f=c(a),u=c(s),d=window.XMLHttpRequest,p=["onload","onerror","onabort","onloadstart","onloadend","onprogress","ontimeout"];e.exports=a,window.XMLHttpRequest=function(t){var e=new d(t);try{a.emit("new-xhr",[],e),u.inPlace(e,["addEventListener","removeEventListener"],"-",o),e.addEventListener("readystatechange",n,!1)}catch(r){try{a.emit("internal-error",[r])}catch(i){}}return e},i(d,XMLHttpRequest),XMLHttpRequest.prototype=d.prototype,f.inPlace(XMLHttpRequest.prototype,["open","send"],"-xhr-",o),a.on("send-xhr-start",r),a.on("open-xhr-start",r)},{1:7,2:25,ee:"QJf3ax"}],12:[function(t){function e(t){var e=this.params,r=this.metrics;if(!this.ended){this.ended=!0;for(var i=0;c>i;i++)t.removeEventListener(s[i],this.listener,!1);if(!e.aborted){if(r.duration=(new Date).getTime()-this.startTime,4===t.readyState){e.status=t.status;var a=t.responseType,f="arraybuffer"===a||"blob"===a||"json"===a?t.response:t.responseText,u=n(f);if(u&&(r.rxSize=u),this.sameOrigin){var d=t.getResponseHeader("X-NewRelic-App-Data");d&&(e.cat=d.split(", ").pop())}}else e.status=0;r.cbTime=this.cbTime,o("xhr",[e,r,this.startTime])}}}function n(t){if("string"==typeof t&&t.length)return t.length;if("object"!=typeof t)return void 0;if("undefined"!=typeof ArrayBuffer&&t instanceof ArrayBuffer&&t.byteLength)return t.byteLength;if("undefined"!=typeof Blob&&t instanceof Blob&&t.size)return t.size;if("undefined"!=typeof FormData&&t instanceof FormData)return void 0;try{return JSON.stringify(t).length}catch(e){return void 0}}function r(t,e){var n=i(e),r=t.params;r.host=n.hostname+":"+n.port,r.pathname=n.pathname,t.sameOrigin=n.sameOrigin}if(window.XMLHttpRequest&&XMLHttpRequest.prototype&&XMLHttpRequest.prototype.addEventListener&&!/CriOS/.test(navigator.userAgent)){t("loader").features.xhr=!0;var o=t("handle"),i=t(2),a=t("ee"),s=["load","error","abort","timeout"],c=s.length,f=t(1);t(4),t(3),a.on("new-xhr",function(){this.totalCbs=0,this.called=0,this.cbTime=0,this.end=e,this.ended=!1,this.xhrGuids={}}),a.on("open-xhr-start",function(t){this.params={method:t[0]},r(this,t[1]),this.metrics={}}),a.on("open-xhr-end",function(t,e){"loader_config"in NREUM&&"xpid"in NREUM.loader_config&&this.sameOrigin&&e.setRequestHeader("X-NewRelic-ID",NREUM.loader_config.xpid)}),a.on("send-xhr-start",function(t,e){var r=this.metrics,o=t[0],i=this;if(r&&o){var f=n(o);f&&(r.txSize=f)}this.startTime=(new Date).getTime(),this.listener=function(t){try{"abort"===t.type&&(i.params.aborted=!0),("load"!==t.type||i.called===i.totalCbs&&(i.onloadCalled||"function"!=typeof e.onload))&&i.end(e)}catch(n){try{a.emit("internal-error",[n])}catch(r){}}};for(var u=0;c>u;u++)e.addEventListener(s[u],this.listener,!1)}),a.on("xhr-cb-time",function(t,e,n){this.cbTime+=t,e?this.onloadCalled=!0:this.called+=1,this.called!==this.totalCbs||!this.onloadCalled&&"function"==typeof n.onload||this.end(n)}),a.on("xhr-load-added",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&!this.xhrGuids[n]&&(this.xhrGuids[n]=!0,this.totalCbs+=1)}),a.on("xhr-load-removed",function(t,e){var n=""+f(t)+!!e;this.xhrGuids&&this.xhrGuids[n]&&(delete this.xhrGuids[n],this.totalCbs-=1)}),a.on("addEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-added",[t[1],t[2]],e)}),a.on("removeEventListener-end",function(t,e){e instanceof XMLHttpRequest&&"load"===t[0]&&a.emit("xhr-load-removed",[t[1],t[2]],e)}),a.on("fn-start",function(t,e,n){e instanceof XMLHttpRequest&&("onload"===n&&(this.onload=!0),("load"===(t[0]&&t[0].type)||this.onload)&&(this.xhrCbStart=(new Date).getTime()))}),a.on("fn-end",function(t,e){this.xhrCbStart&&a.emit("xhr-cb-time",[(new Date).getTime()-this.xhrCbStart,this.onload,e],e)})}},{1:"XL7HBI",2:13,3:11,4:7,ee:"QJf3ax",handle:"D5DuLP",loader:"G9z0Bl"}],13:[function(t,e){e.exports=function(t){var e=document.createElement("a"),n=window.location,r={};e.href=t,r.port=e.port;var o=e.href.split("://");return!r.port&&o[1]&&(r.port=o[1].split("/")[0].split("@").pop().split(":")[1]),r.port&&"0"!==r.port||(r.port="https"===o[0]?"443":"80"),r.hostname=e.hostname||n.hostname,r.pathname=e.pathname,r.protocol=o[0],"/"!==r.pathname.charAt(0)&&(r.pathname="/"+r.pathname),r.sameOrigin=!e.hostname||e.hostname===document.domain&&e.port===n.port&&e.protocol===n.protocol,r}},{}],14:[function(t,e){function n(t){return function(){r(t,[(new Date).getTime()].concat(i(arguments)))}}var r=t("handle"),o=t(1),i=t(2);"undefined"==typeof window.newrelic&&(newrelic=window.NREUM);var a=["setPageViewName","addPageAction","setCustomAttribute","finished","addToTrace","inlineHit","noticeError"];o(a,function(t,e){window.NREUM[e]=n("api-"+e)}),e.exports=window.NREUM},{1:23,2:24,handle:"D5DuLP"}],"7eSDFh":[function(t,e){function n(t,e,n){if(r.call(t,e))return t[e];var o=n();if(Object.defineProperty&&Object.keys)try{return Object.defineProperty(t,e,{value:o,writable:!0,enumerable:!1}),o}catch(i){}return t[e]=o,o}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],gos:[function(t,e){e.exports=t("7eSDFh")},{}],handle:[function(t,e){e.exports=t("D5DuLP")},{}],D5DuLP:[function(t,e){function n(t,e,n){return r.listeners(t).length?r.emit(t,e,n):(o[t]||(o[t]=[]),void o[t].push(e))}var r=t("ee").create(),o={};e.exports=n,n.ee=r,r.q=o},{ee:"QJf3ax"}],id:[function(t,e){e.exports=t("XL7HBI")},{}],XL7HBI:[function(t,e){function n(t){var e=typeof t;return!t||"object"!==e&&"function"!==e?-1:t===window?0:i(t,o,function(){return r++})}var r=1,o="nr@id",i=t("gos");e.exports=n},{gos:"7eSDFh"}],G9z0Bl:[function(t,e){function n(){var t=p.info=NREUM.info,e=f.getElementsByTagName("script")[0];if(t&&t.licenseKey&&t.applicationID&&e){s(d,function(e,n){e in t||(t[e]=n)});var n="https"===u.split(":")[0]||t.sslForHttp;p.proto=n?"https://":"http://",a("mark",["onload",i()]);var r=f.createElement("script");r.src=p.proto+t.agent,e.parentNode.insertBefore(r,e)}}function r(){"complete"===f.readyState&&o()}function o(){a("mark",["domContent",i()])}function i(){return(new Date).getTime()}var a=t("handle"),s=t(1),c=(t(2),window),f=c.document,u=(""+location).split("?")[0],d={beacon:"bam.nr-data.net",errorBeacon:"bam.nr-data.net",agent:"js-agent.newrelic.com/nr-632.min.js"},p=e.exports={offset:i(),origin:u,features:{}};f.addEventListener?(f.addEventListener("DOMContentLoaded",o,!1),c.addEventListener("load",n,!1)):(f.attachEvent("onreadystatechange",r),c.attachEvent("onload",n)),a("mark",["firstbyte",i()])},{1:23,2:14,handle:"D5DuLP"}],loader:[function(t,e){e.exports=t("G9z0Bl")},{}],23:[function(t,e){function n(t,e){var n=[],o="",i=0;for(o in t)r.call(t,o)&&(n[i]=e(o,t[o]),i+=1);return n}var r=Object.prototype.hasOwnProperty;e.exports=n},{}],24:[function(t,e){function n(t,e,n){e||(e=0),"undefined"==typeof n&&(n=t?t.length:0);for(var r=-1,o=n-e||0,i=Array(0>o?0:o);++r<o;)i[r]=t[e+r];return i}e.exports=n},{}],25:[function(t,e){function n(t){return!(t&&"function"==typeof t&&t.apply&&!t[i])}var r=t("ee"),o=t(1),i="nr@wrapper",a=Object.prototype.hasOwnProperty;e.exports=function(t){function e(t,e,r,a){function nrWrapper(){var n,i,s,f;try{i=this,n=o(arguments),s=r&&r(n,i)||{}}catch(d){u([d,"",[n,i,a],s])}c(e+"start",[n,i,a],s);try{return f=t.apply(i,n)}catch(p){throw c(e+"err",[n,i,p],s),p}finally{c(e+"end",[n,i,f],s)}}return n(t)?t:(e||(e=""),nrWrapper[i]=!0,f(t,nrWrapper),nrWrapper)}function s(t,r,o,i){o||(o="");var a,s,c,f="-"===o.charAt(0);for(c=0;c<r.length;c++)s=r[c],a=t[s],n(a)||(t[s]=e(a,f?s+o:o,i,s))}function c(e,n,r){try{t.emit(e,n,r)}catch(o){u([o,e,n,r])}}function f(t,e){if(Object.defineProperty&&Object.keys)try{var n=Object.keys(t);return n.forEach(function(n){Object.defineProperty(e,n,{get:function(){return t[n]},set:function(e){return t[n]=e,e}})}),e}catch(r){u([r])}for(var o in t)a.call(t,o)&&(e[o]=t[o]);return e}function u(e){try{t.emit("internal-error",e)}catch(n){}}return t||(t=r),e.inPlace=s,e.flag=i,e}},{1:24,ee:"QJf3ax"}]},{},["G9z0Bl",4,12,6,5]);</script><script type="text/javascript">window.NREUM||(NREUM={});NREUM.info={"beacon":"bam.nr-data.net","queueTime":0,"licenseKey":"1beac94c95","agent":"js-agent.newrelic.com/nr-632.min.js","transactionName":"NQQGYUZWDUNSVUMPWQxOIkBaVBdZXFgYFUIXBQFbQBkVWVZBRFxSAxIMV1tWEVQ=","applicationID":"3343327","errorBeacon":"bam.nr-data.net","applicationTime":1685}</script>
+
+
+
+
+
+
+
+  
+      <title>
+       Dashboard | edX
+      </title>
+  
+
+      <script type="text/javascript">
+        /* immediately break out of an iframe if coming from the marketing website */
+        (function(window) {
+          if (window.location !== window.top.location) {
+            window.top.location = window.location;
+          }
+        })(this);
+      </script>
+
+  <script type="text/javascript" src="/jsi18n/"></script>
+
+  <link rel="icon" type="image/x-icon" href="https://d37djvu3ytnwxt.cloudfront.net/static/images/favicon.c074c912999f.ico" />
+
+  
+  
+
+    <link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-style-vendor.c29dfc26527f.css" rel="stylesheet" type="text/css" />
+
+
+
+  
+  
+
+    <link href="https://d37djvu3ytnwxt.cloudfront.net/static/css/lms-main.f46e51496268.css" rel="stylesheet" type="text/css" />
+
+
+
+
+    
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-main_vendor.c1170b9488ac.js" charset="utf-8"></script>
+
+
+
+  <script>
+    window.baseUrl = "https://d37djvu3ytnwxt.cloudfront.net/static/";
+    (function (require) {
+        var urlArgs = "v=8415595";
+      require.config({
+          baseUrl: baseUrl,
+          urlArgs: urlArgs
+      });
+    }).call(this, require || RequireJS.require);
+  </script>
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/require-config-lms.3946088f006f.js"></script>
+
+  
+
+
+  
+  
+
+
+  <script src=//cdn.optimizely.com/js/1743970571.js></script>
+
+  <!-- begin Segment.io -->
+<script type="text/javascript">
+  // Asynchronously load Segment.io's analytics.js library
+  window.analytics||(window.analytics=[]),window.analytics.methods=["identify","track","trackLink","trackForm","trackClick","trackSubmit","page","pageview","ab","alias","ready","group","on","once","off"],window.analytics.factory=function(t){return function(){var a=Array.prototype.slice.call(arguments);return a.unshift(t),window.analytics.push(a),window.analytics}};for(var i=0;i<window.analytics.methods.length;i++){var method=window.analytics.methods[i];window.analytics[method]=window.analytics.factory(method)}window.analytics.load=function(t){var a=document.createElement("script");a.type="text/javascript",a.async=!0,a.src=("https:"===document.location.protocol?"https://":"http://")+"d2dq2ahtl5zl1z.cloudfront.net/analytics.js/v1/"+t+"/analytics.min.js";var n=document.getElementsByTagName("script")[0];n.parentNode.insertBefore(a,n)},window.analytics.SNIPPET_VERSION="2.0.8",
+  analytics.load("8fncv13bt5");
+  analytics.page();
+
+    analytics.identify("0", {
+      email: "me@gmail.com",
+      username: "me"
+    });
+</script>
+<!-- end Segment.io -->
+
+
+  <meta name="path_prefix" content="">
+  <meta name="google-site-verification" content="_mipQ4AtZQDNmbtOkwehQDOgCxUUV2fb_C0b6wbiRHY" />
+
+  
+
+
+</head>
+
+<body class="ltr view-dashboard is-authenticated lang_en">
+  <div class="window-wrap" dir="ltr">
+    <a class="nav-skip" href="#my-courses">Skip to main content</a>
+
+        
+
+
+
+
+
+
+
+
+
+
+
+
+<header class="global-new" aria-label="Main" role="banner">
+  <div class="wrapper-header nav-container">
+    <h1 class="logo" itemscope="" itemtype="http://schema.org/Organization">
+      <a href="https://www.edx.org" title="Home page" itemprop="url">
+        
+            <img src="https://d37djvu3ytnwxt.cloudfront.net/static/images/edx-theme/edx-logo-77x36.png" alt="edX" title="edX" itemprop="url" />
+            <span class="sr">Home Page</span>
+        
+      </a>
+    </h1>
+
+
+    <nav aria-label="Main" class="nav-main">
+      <ul class="left nav-global authenticated">
+        
+          <li class="nav-global-01">
+            <a href="https://www.edx.org/how-it-works">How it Works</a>
+          </li>
+          <li class="nav-global-02">
+            <a href="https://www.edx.org/course">Find Courses</a>
+          </li>
+          <li class="nav-global-03">
+            <a href="https://www.edx.org/schools-partners">Schools & Partners</a>
+          </li>
+        
+      </ul>
+    </nav>
+
+    <ul class="user">
+      <li class="primary">
+        <a href="/dashboard" class="user-link">
+          <i class="icon fa fa-home" aria-hidden="true"></i>
+          <span class="sr">Dashboard for:</span>
+          <div>me</div>
+        </a>
+      </li>
+      <li class="primary">
+        <a href="#" class="dropdown" aria-haspopup="true" aria-expanded="false"><span class="sr">More options dropdown</span> &#9662;</a>
+        <ul class="dropdown-menu" aria-label="More Options" role="menu">
+          
+            <li><a href="/account/settings">Account Settings</a></li>
+            <li><a href="/u/me">My Profile</a></li>
+          
+          <li><a href="/logout" role="menuitem">Sign Out</a></li>
+        </ul>
+      </li>
+    </ul>
+
+
+  </div>
+</header>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div class="help-tab">
+  <a href="#help-modal" rel="leanModal" role="button">Help</a>
+</div>
+
+<section id="help-modal" class="modal" aria-hidden="true" role="dialog" aria-label="edX Help">
+  <div class="inner-wrapper" id="help_wrapper">
+    <button class="close-modal "tabindex="0">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2>
+	<span class="edx">edX</span> Help
+      </h2>
+      <hr>
+    </header>
+
+
+
+
+    <p>Have <strong>general questions about edX</strong>? You can find lots of helpful information in the edX <a href="https://www.edx.org/student-faq" target="_blank">FAQ</a>.
+      </p>
+
+    <p>Have a <strong>question about something specific</strong>? You can contact the edX general support team directly:</p>
+    <hr>
+
+    <div class="help-buttons">
+      <a href="#" id="feedback_link_problem">Report a problem</a>
+      <a href="#" id="feedback_link_suggestion">Make a suggestion</a>
+      <a href="#" id="feedback_link_question">Ask a question</a>
+    </div>
+
+    <p class="note">Please note: The edX support team is English speaking. While we will do our best to address your inquiry in any language, our responses will be in English.</p>
+
+  </div>
+
+  <div class="inner-wrapper" id="feedback_form_wrapper">
+    <button class="close-modal">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header></header>
+
+    <form id="feedback_form" class="feedback_form" method="post" data-remote="true" action="/submit_feedback">
+      <div id="feedback_error" class="modal-form-error" tabindex="-1"></div>
+      <label data-field="subject" for="feedback_form_subject">Briefly describe your issue*</label>
+      <input name="subject" type="text" id="feedback_form_subject" aria-required="true">
+      <label data-field="details" for="feedback_form_details">Tell us the details*
+<span class="tip">Include error messages, steps which lead to the issue, etc</span></label>
+      <textarea name="details" id="feedback_form_details" aria-required="true"></textarea>
+      <input name="issue_type" type="hidden">
+      <div class="submit">
+        <input name="submit" type="submit" value="Submit" id="feedback_submit">
+      </div>
+    </form>
+  </div>
+
+  <div class="inner-wrapper" id="feedback_success_wrapper" tabindex="0">
+    <button class="close-modal" tabindex="0">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2>Thank You!</h2>
+      <hr>
+    </header>
+
+    
+    <p>
+    Thank you for your inquiry or feedback.  We typically respond to a request within one business day (Monday to Friday, 13:00 UTC to 21:00 UTC.) In the meantime, please review our <a href="https://www.edx.org/student-faq" target="_blank" id="feedback-faq-link" tabindex="0">detailed FAQs</a> where most questions have already been answered.
+    </p>
+  </div>
+</section>
+
+<script type="text/javascript">
+(function() {
+    var onModalClose = function() {
+            $("#help-modal .close-modal").off("click");
+            $("#lean_overlay").off("click");
+            $("#help-modal").attr("aria-hidden", "true");
+            $('area,input,select,textarea,button').removeAttr('tabindex');
+            $(".help-tab a").focus();
+        },
+        cycle_modal_tab = function(from_element_name, to_element_name) {
+            $(from_element_name).on('keydown', function(e) {
+                var keyCode = e.keyCode || e.which;
+                if (keyCode === 9) {
+                    e.preventDefault();
+                    $(to_element_name).focus();
+                }
+            });
+        };
+
+    $(".help-tab").click(function() {
+        $(".field-error").removeClass("field-error");
+        $("#feedback_form")[0].reset();
+        $("#feedback_form input[type='submit']").removeAttr("disabled");
+        $("#feedback_form_wrapper").css("display", "none");
+        $("#feedback_error").css("display", "none");
+        $("#feedback_success_wrapper").css("display", "none");
+        $("#help_wrapper").css("display", "block");
+        $("#help-modal").attr("aria-hidden", "false");
+        $("#help-modal .close-modal").click(onModalClose);
+        $("#lean_overlay").click(onModalClose);
+        $("#help_wrapper .close-modal").focus();
+    });
+    showFeedback = function(event, issue_type, title, subject_label, details_label) {
+        $("#help_wrapper").css("display", "none");
+        $("#feedback_form input[name='issue_type']").val(issue_type);
+        $("#feedback_form_wrapper").css("display", "block");
+        $("#feedback_form_wrapper header").html("<h2>" + title + "</h2><hr>");
+        $("#feedback_form_wrapper label[data-field='subject']").html(subject_label);
+        $("#feedback_form_wrapper label[data-field='details']").html(details_label);
+        $("#feedback_form_wrapper .close-modal").focus();
+        event.preventDefault();
+    };
+    cycle_modal_tab("#feedback_link_question", "#help_wrapper .close-modal");
+    cycle_modal_tab("#feedback_submit", "#feedback_form_wrapper .close-modal");
+    cycle_modal_tab("#feedback-faq-link", "#feedback_success_wrapper .close-modal");
+    $("#help-modal").on("keydown", function(e) {
+        var keyCode = e.keyCode || e.which;
+        if (keyCode === 27) {
+            e.preventDefault();
+            $("#help_wrapper .close-modal").click();
+        }
+    });
+    $("#feedback_link_problem").click(function(event) {
+        showFeedback(
+            event,
+            "problem",
+            "Report a Problem",
+            "Brief description of the problem" + "*",
+            "Details of the problem you are encountering" + "*" + "<span class='tip'>" +
+              "Include error messages, steps which lead to the issue, etc." + "</span>"
+        );
+    });
+    $("#feedback_link_suggestion").click(function(event) {
+        showFeedback(
+            event,
+            "suggestion",
+            "Make a Suggestion",
+            "Brief description of your suggestion" + "*",
+            "Details" + "*"
+        );
+    });
+    $("#feedback_link_question").click(function(event) {
+        showFeedback(
+            event,
+            "question",
+            "Ask a Question",
+            "Brief summary of your question" + "*",
+            "Details" + "*"
+        );
+    });
+    $("#feedback_form").submit(function() {
+        $("input[type='submit']", this).attr("disabled", "disabled");
+        $('area,input,select,textarea,button').attr('tabindex', -1);
+        $("#feedback_form_wrapper .close-modal").focus();
+    });
+    $("#feedback_form").on("ajax:complete", function() {
+        $("input[type='submit']", this).removeAttr("disabled");
+    });
+    $("#feedback_form").on("ajax:success", function(event, data, status, xhr) {
+        $("#feedback_form_wrapper").css("display", "none");
+        $("#feedback_success_wrapper").css("display", "block");
+        $("#feedback_success_wrapper").focus();
+    });
+    $("#feedback_form").on("ajax:error", function(event, xhr, status, error) {
+        $(".field-error").removeClass("field-error").removeAttr("aria-invalid");
+        var responseData;
+        try {
+            responseData = jQuery.parseJSON(xhr.responseText);
+        } catch(err) {
+        }
+        if (responseData) {
+            $("[data-field='"+responseData.field+"']").addClass("field-error").attr("aria-invalid", "true");
+            $("#feedback_error").html(responseData.error).stop().css("display", "block");
+        } else {
+            // If no data (or malformed data) is returned, a server error occurred
+            htmlStr = "An error has occurred.";
+            htmlStr += " " + _.template(
+              "Please {link_start}send us e-mail{link_end}.",
+              {link_start: '<a href="#" id="feedback_email">', link_end: '</a>'},
+              {interpolate: /\{(.+?)\}/g})
+            $("#feedback_error").html(htmlStr).stop().css("display", "block");
+            $("#feedback_email").click(function(e) {
+                mailto = "mailto:" + "bugs@edx.org" +
+                    "?subject=" + $("#feedback_form input[name='subject']").val() +
+                    "&body=" + $("#feedback_form textarea[name='details']").val();
+                window.open(mailto);
+                e.preventDefault();
+            });
+        }
+        // Make change explicit to assistive technology
+        $("#feedback_error").focus();
+    });
+})(this)
+</script>
+
+
+
+
+    <div class="content-wrapper" id="content">
+      
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/template" id="donation-tpl">
+  <div class="donation-error-msg" />
+<form class="nav-item donate-form">
+    <span class="monetary-symbol">$</span>
+    <input class="amount" type="text" name="amount" value="5" />
+    <button class="btn action-primary action-donate" type="submit" name="Donate"><%- gettext('Donate') %></button>
+</form>
+<form class="payment-form"></form>
+
+</script>
+
+<script type="text/template" id="dashboard_search_item-tpl">
+    <div class="result-excerpt"><%= excerpt %></div>
+<a class="result-link" href="<%- url %>"><%= gettext("View") %> <i class="icon fa fa-arrow-right"></i></a>
+<span class="result-course-name"><%- course_name %>:</span>
+<span class="result-location"><%- location.join(' ▸ ') %></span>
+<span class="result-type"><%- content_type %></span>
+
+</script>
+<script type="text/template" id="dashboard_search_results-tpl">
+    <header class="search-info">
+    <a class="search-back-to-courses" href="#"><%= gettext("Back to Dashboard") %></a>
+    <h2><%= gettext("Search Results") %></h2>
+    <div class="search-count"><%= totalCountMsg %></div>
+</header>
+
+<% if (totalCount > 0 ) { %>
+
+    <ol class='search-result-list'></ol>
+
+    <% if (hasMoreResults) { %>
+        <a class="search-load-next" href="#">
+            <%= interpolate(
+                ngettext("Load next %(num_items)s result", "Load next %(num_items)s results", pageSize),
+                { num_items: pageSize },
+                true
+            ) %>
+            <i class="icon fa fa-spinner fa-spin"></i>
+        </a>
+    <% } %>
+
+<% } else { %>
+
+    <p><%= gettext("Sorry, no results were found.") %></p>
+
+<% } %>
+
+</script>
+<script type="text/template" id="search_loading-tpl">
+    <i class="icon fa fa-spinner fa-spin"></i> <%= gettext("Loading") %>
+
+
+</script>
+<script type="text/template" id="search_error-tpl">
+    <%= gettext("There was an error, try searching again.") %>
+
+</script>
+
+
+
+
+<div class="dashboard-notifications" tabindex="-1">
+
+</div>
+
+<section class="container dashboard" id="dashboard-main">
+  <section class="my-courses" id="my-courses" role="main" aria-label="Content">
+    <header class="wrapper-header-courses">
+      <h2 class="header-courses">Current Courses</h2>
+    </header>
+
+
+      <ul class="listing-courses">
+      
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/SMES/ASLCx/1T2015/info" class="cover">
+              <img src="/c4x/SMES/ASLCx/asset/flamenco_dancer.jpeg" class="course-image" alt="ASLCx Advanced Spanish Language and Culture Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/SMES/ASLCx/1T2015/info">Advanced Spanish Language and Culture</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">SMES - </span>
+          <span class="info-course-id">ASLCx</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Ended - May 12, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/SMES/ASLCx/1T2015/info" class="enter-course archived">View Archived Course<span class="sr">&nbsp;Advanced Spanish Language and Culture</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-0" class="action action-more" id="actions-dropdown-link-0" aria-haspopup="true" aria-expanded="false" data-course-number="ASLCx" data-dashboard-index="0">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-0" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-0" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-0">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="SMES/ASLCx/1T2015" data-course-number="ASLCx" data-dashboard-index="0"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-0">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="SMES/ASLCx/1T2015" data-course-number="ASLCx" data-dashboard-index="0" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+        
+
+
+
+
+
+
+
+<div class="message message-status course-status-processing is-shown">
+
+  <p class="message-copy">Final course details are being wrapped up at this time. Your final standing will be available shortly.</p>
+
+</div>
+
+
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+        <a class="cover">
+          <img src="/asset-v1:AdelaideX+HumBio101x+2T2015+type@asset+block@image002.jpg" class="course-image" alt="HumBio101x Essential Human Biology: Cells and Tissues Cover Image" />
+        </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+            <span>Essential Human Biology: Cells and Tissues</span>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">AdelaideX - </span>
+          <span class="info-course-id">HumBio101x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Starts - Jun 10, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-1" class="action action-more" id="actions-dropdown-link-1" aria-haspopup="true" aria-expanded="false" data-course-number="HumBio101x" data-dashboard-index="1">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-1" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-1" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-1">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:AdelaideX+HumBio101x+2T2015" data-course-number="HumBio101x" data-dashboard-index="1"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-1">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:AdelaideX+HumBio101x+2T2015" data-course-number="HumBio101x" data-dashboard-index="1" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade"
+                      href="/verify_student/upgrade/course-v1:AdelaideX+HumBio101x+2T2015/"
+                      data-course-id="course-v1:AdelaideX+HumBio101x+2T2015"
+                      data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+        <a class="cover">
+          <img src="/asset-v1:AdelaideX+Wine101x+2T2015.2+type@asset+block@Thumbnail_World_of_Wine.jpeg" class="course-image" alt="Wine101x The World of Wine Cover Image" />
+        </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+            <span>The World of Wine</span>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">AdelaideX - </span>
+          <span class="info-course-id">Wine101x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Starts - June 10, 2015- Self-Paced
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-2" class="action action-more" id="actions-dropdown-link-2" aria-haspopup="true" aria-expanded="false" data-course-number="Wine101x" data-dashboard-index="2">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-2" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-2" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-2">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:AdelaideX+Wine101x+2T2015.2" data-course-number="Wine101x" data-dashboard-index="2"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-2">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:AdelaideX+Wine101x+2T2015.2" data-course-number="Wine101x" data-dashboard-index="2" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/course-v1:AdelaideX+Wine101x+2T2015.2/" data-course-id="course-v1:AdelaideX+Wine101x+2T2015.2" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:UWashingtonX+ECFS311x+2T2015/info" class="cover">
+              <img src="/asset-v1:UWashingtonX+ECFS311x+2T2015+type@asset+block@resilience-608-211.jpg" class="course-image" alt="ECFS311x Becoming a Resilient Person: The Science of Stress Management and Promoting Wellbeing Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:UWashingtonX+ECFS311x+2T2015/info">Becoming a Resilient Person: The Science of Stress Management and Promoting Wellbeing</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">UWashingtonX - </span>
+          <span class="info-course-id">ECFS311x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Jun 02, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:UWashingtonX+ECFS311x+2T2015/info" class="enter-course">View Course<span class="sr">&nbsp;Becoming a Resilient Person: The Science of Stress Management and Promoting Wellbeing</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-3" class="action action-more" id="actions-dropdown-link-3" aria-haspopup="true" aria-expanded="false" data-course-number="ECFS311x" data-dashboard-index="3">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-3" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-3" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-3">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:UWashingtonX+ECFS311x+2T2015" data-course-number="ECFS311x" data-dashboard-index="3"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-3">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:UWashingtonX+ECFS311x+2T2015" data-course-number="ECFS311x" data-dashboard-index="3" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:Microsoft+DEV204x+2015_T4/info" class="cover">
+              <img src="/asset-v1:Microsoft+DEV204x+2015_T4+type@asset+block@WIN12_Will_06.png" class="course-image" alt="DEV204x Programming with C# Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:Microsoft+DEV204x+2015_T4/info">Programming with C#</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">Microsoft - </span>
+          <span class="info-course-id">DEV204x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Jun 02, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:Microsoft+DEV204x+2015_T4/info" class="enter-course">View Course<span class="sr">&nbsp;Programming with C#</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-4" class="action action-more" id="actions-dropdown-link-4" aria-haspopup="true" aria-expanded="false" data-course-number="DEV204x" data-dashboard-index="4">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-4" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-4" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-4">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:Microsoft+DEV204x+2015_T4" data-course-number="DEV204x" data-dashboard-index="4"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-4">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:Microsoft+DEV204x+2015_T4" data-course-number="DEV204x" data-dashboard-index="4" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/course-v1:Microsoft+DEV204x+2015_T4/" data-course-id="course-v1:Microsoft+DEV204x+2015_T4" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:IEEEx+CloudIntro.x+2015T2/info" class="cover">
+              <img src="/asset-v1:IEEEx+CloudIntro.x+2015T2+type@asset+block@CloudIntro.1x_Thumbnail.jpg" class="course-image" alt="CloudIntro.x Introduction to Cloud Computing Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:IEEEx+CloudIntro.x+2015T2/info">Introduction to Cloud Computing</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">IEEEx - </span>
+          <span class="info-course-id">CloudIntro.x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Jun 03, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:IEEEx+CloudIntro.x+2015T2/info" class="enter-course">View Course<span class="sr">&nbsp;Introduction to Cloud Computing</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-5" class="action action-more" id="actions-dropdown-link-5" aria-haspopup="true" aria-expanded="false" data-course-number="CloudIntro.x" data-dashboard-index="5">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-5" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-5" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-5">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:IEEEx+CloudIntro.x+2015T2" data-course-number="CloudIntro.x" data-dashboard-index="5"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-5">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:IEEEx+CloudIntro.x+2015T2" data-course-number="CloudIntro.x" data-dashboard-index="5" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified IEEE Introduction to Cloud Computing for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified IEEE Introduction to Cloud Computing</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/course-v1:IEEEx+CloudIntro.x+2015T2/" data-course-id="course-v1:IEEEx+CloudIntro.x+2015T2" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:MITx+15.071x_2a+2T2015/info" class="cover">
+              <img src="/asset-v1:MITx+15.071x_2a+2T2015+type@asset+block@15.071x_CourseImage.png" class="course-image" alt="15.071x_2a The Analytics Edge Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:MITx+15.071x_2a+2T2015/info">The Analytics Edge</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">MITx - </span>
+          <span class="info-course-id">15.071x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Jun 02, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:MITx+15.071x_2a+2T2015/info" class="enter-course">View Course<span class="sr">&nbsp;The Analytics Edge</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-6" class="action action-more" id="actions-dropdown-link-6" aria-haspopup="true" aria-expanded="false" data-course-number="15.071x_2a" data-dashboard-index="6">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-6" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-6" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-6">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:MITx+15.071x_2a+2T2015" data-course-number="15.071x_2a" data-dashboard-index="6"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-6">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:MITx+15.071x_2a+2T2015" data-course-number="15.071x_2a" data-dashboard-index="6" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/course-v1:MITx+15.071x_2a+2T2015/" data-course-id="course-v1:MITx+15.071x_2a+2T2015" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:PekingX+20000001x+2015T1/info" class="cover">
+              <img src="/asset-v1:PekingX+20000001x+2015T1+type@asset+block@20000001_Intermediate_Chinese_Grammar.jpg" class="course-image" alt="20000001x Intermediate Chinese grammar 中级汉语语法 Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:PekingX+20000001x+2015T1/info">Intermediate Chinese grammar 中级汉语语法</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">PekingX - </span>
+          <span class="info-course-id">20000001x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Mar 16, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:PekingX+20000001x+2015T1/info" class="enter-course">View Course<span class="sr">&nbsp;Intermediate Chinese grammar 中级汉语语法</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-7" class="action action-more" id="actions-dropdown-link-7" aria-haspopup="true" aria-expanded="false" data-course-number="20000001x" data-dashboard-index="7">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-7" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-7" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-7">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:PekingX+20000001x+2015T1" data-course-number="20000001x" data-dashboard-index="7"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-7">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:PekingX+20000001x+2015T1" data-course-number="20000001x" data-dashboard-index="7" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/edX/DemoX.1/2014/info" class="cover">
+              <img src="/c4x/edX/DemoX.1/asset/edX101MarketingContent_DashboardImage.png" class="course-image" alt="DemoX.1 Demo Course Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/edX/DemoX.1/2014/info">Demo Course</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">edX - </span>
+          <span class="info-course-id">DemoX.1</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Aug 01, 2014
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/edX/DemoX.1/2014/info" class="enter-course">View Course<span class="sr">&nbsp;Demo Course</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-8" class="action action-more" id="actions-dropdown-link-8" aria-haspopup="true" aria-expanded="false" data-course-number="DemoX.1" data-dashboard-index="8">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-8" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-8" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-8">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="edX/DemoX.1/2014" data-course-number="DemoX.1" data-dashboard-index="8"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-8">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="edX/DemoX.1/2014" data-course-number="DemoX.1" data-dashboard-index="8" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:BerkleeX+BMPR365x+2T2015/info" class="cover">
+              <img src="/asset-v1:BerkleeX+BMPR365x+2T2015+type@asset+block@edx-vocal-production-small.jpg" class="course-image" alt="BMPR365x Vocal Recording Technology Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:BerkleeX+BMPR365x+2T2015/info">Vocal Recording Technology</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">BerkleeX - </span>
+          <span class="info-course-id">BMPR365x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Ended - Jun 03, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:BerkleeX+BMPR365x+2T2015/info" class="enter-course archived">View Archived Course<span class="sr">&nbsp;Vocal Recording Technology</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-9" class="action action-more" id="actions-dropdown-link-9" aria-haspopup="true" aria-expanded="false" data-course-number="BMPR365x" data-dashboard-index="9">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-9" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-9" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-9">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:BerkleeX+BMPR365x+2T2015" data-course-number="BMPR365x" data-dashboard-index="9"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-9">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:BerkleeX+BMPR365x+2T2015" data-course-number="BMPR365x" data-dashboard-index="9" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+        
+
+
+
+
+
+
+
+<div class="message message-status course-status-certnotavailable is-shown">
+
+  <p class="message-copy">Your final grade:
+  <span class="grade-value">0%</span>.
+       Grade required for a Certificate: <span class="grade-value">
+         65%</span>.
+  </p>
+
+</div>
+
+
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+        <a class="cover">
+          <img src="/asset-v1:HarvardX+SPU27x+2015_Q2+type@asset+block@cooking_course_378X225.jpg" class="course-image" alt="SPU27x Science &amp; Cooking: From Haute Cuisine to Soft Matter Science Cover Image" />
+        </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+            <span>Science & Cooking: From Haute Cuisine to Soft Matter Science</span>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">HarvardX - </span>
+          <span class="info-course-id">SPU27x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Starts - Jun 17, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-10" class="action action-more" id="actions-dropdown-link-10" aria-haspopup="true" aria-expanded="false" data-course-number="SPU27x" data-dashboard-index="10">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-10" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-10" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-10">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:HarvardX+SPU27x+2015_Q2" data-course-number="SPU27x" data-dashboard-index="10"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-10">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:HarvardX+SPU27x+2015_Q2" data-course-number="SPU27x" data-dashboard-index="10" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/course-v1:HarvardX+SPU27x+2015_Q2/" data-course-id="course-v1:HarvardX+SPU27x+2015_Q2" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+        <a class="cover">
+          <img src="/c4x/BerkeleyX/CS190.1x/asset/CS190.1x_Banner.jpg" class="course-image" alt="CS190.1x Scalable Machine Learning Cover Image" />
+        </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+            <span>Scalable Machine Learning</span>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">BerkeleyX - </span>
+          <span class="info-course-id">CS190.1x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Starts - Jun 29, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-11" class="action action-more" id="actions-dropdown-link-11" aria-haspopup="true" aria-expanded="false" data-course-number="CS190.1x" data-dashboard-index="11">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-11" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-11" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-11">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="BerkeleyX/CS190.1x/1T2015" data-course-number="CS190.1x" data-dashboard-index="11"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-11">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="BerkeleyX/CS190.1x/1T2015" data-course-number="CS190.1x" data-dashboard-index="11" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/BerkeleyX/CS190.1x/1T2015/" data-course-id="BerkeleyX/CS190.1x/1T2015" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/BerkeleyX/CS100.1x/1T2015/info" class="cover">
+              <img src="/c4x/BerkeleyX/CS100.1x/asset/CS100.1x_Banner.jpg" class="course-image" alt="CS100.1x Introduction to Big Data with Apache Spark Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/BerkeleyX/CS100.1x/1T2015/info">Introduction to Big Data with Apache Spark</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">BerkeleyX - </span>
+          <span class="info-course-id">CS100.1x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Jun 01, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/BerkeleyX/CS100.1x/1T2015/info" class="enter-course">View Course<span class="sr">&nbsp;Introduction to Big Data with Apache Spark</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-12" class="action action-more" id="actions-dropdown-link-12" aria-haspopup="true" aria-expanded="false" data-course-number="CS100.1x" data-dashboard-index="12">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-12" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-12" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-12">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="BerkeleyX/CS100.1x/1T2015" data-course-number="CS100.1x" data-dashboard-index="12"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-12">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="BerkeleyX/CS100.1x/1T2015" data-course-number="CS100.1x" data-dashboard-index="12" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified Certificate of Achievement for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified Certificate of Achievement</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/BerkeleyX/CS100.1x/1T2015/" data-course-id="BerkeleyX/CS100.1x/1T2015" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/course-v1:LinuxFoundationX+LFS101x.2+1T2015/info" class="cover">
+              <img src="/asset-v1:LinuxFoundationX+LFS101x.2+1T2015+type@asset+block@MOOC_thumbnail-linux-262x136.jpg" class="course-image" alt="LFS101x.2 Introduction to Linux Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/course-v1:LinuxFoundationX+LFS101x.2+1T2015/info">Introduction to Linux</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">LinuxFoundationX - </span>
+          <span class="info-course-id">LFS101x.2</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Started - Jan 05, 2015
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/course-v1:LinuxFoundationX+LFS101x.2+1T2015/info" class="enter-course">View Course<span class="sr">&nbsp;Introduction to Linux</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-13" class="action action-more" id="actions-dropdown-link-13" aria-haspopup="true" aria-expanded="false" data-course-number="LFS101x.2" data-dashboard-index="13">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-13" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-13" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-13">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="course-v1:LinuxFoundationX+LFS101x.2+1T2015" data-course-number="LFS101x.2" data-dashboard-index="13"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-13">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="course-v1:LinuxFoundationX+LFS101x.2+1T2015" data-course-number="LFS101x.2" data-dashboard-index="13" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+
+
+          <div class="message message-upsell has-actions is-expandable is-shown">
+            <div class="wrapper-tip">
+              <h4 class="message-title">
+                <i class="icon fa fa-caret-right ui-toggle-expansion"></i>
+                  <span class="value">Challenge Yourself!</span>
+              </h4>
+              <p class="message-copy">Take this course as an ID-verified student.</p>
+            </div>
+
+            <div class="wrapper-extended">
+                <p class="message-copy">You can still sign up for an ID verified LFS101x.2: Introduction to Linux for this course. If you plan to complete the whole course, it is a great way to recognize your achievement. <a href="https://www.edx.org/verified-certificate">Learn more about the verified LFS101x.2: Introduction to Linux</a>.</p>
+
+              <ul class="actions message-actions">
+                <li class="action-item">
+                  <a class="action action-upgrade" href="/verify_student/upgrade/course-v1:LinuxFoundationX+LFS101x.2+1T2015/" data-course-id="course-v1:LinuxFoundationX+LFS101x.2+1T2015" data-user="me">
+                    <img class="deco-graphic" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/vcert-ribbon-s.b9a273b0cebf.png" alt="ID Verified Ribbon/Badge">
+                    <span class="wrapper-copy">
+                      <span class="copy" id="upgrade-to-verified">Upgrade to Verified Track</span>
+                    </span>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course audit">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/DelftX/FP101x/3T2014/info" class="cover">
+              <img src="/c4x/DelftX/FP101x/asset/images_course_image.jpg" class="course-image" alt="FP101x Introduction to Functional Programming Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're auditing this course">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Auditing</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/DelftX/FP101x/3T2014/info">Introduction to Functional Programming</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">DelftX - </span>
+          <span class="info-course-id">FP101x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Ended - Dec 31, 2014
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/DelftX/FP101x/3T2014/info" class="enter-course archived">View Archived Course<span class="sr">&nbsp;Introduction to Functional Programming</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-14" class="action action-more" id="actions-dropdown-link-14" aria-haspopup="true" aria-expanded="false" data-course-number="FP101x" data-dashboard-index="14">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-14" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-14" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-14">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="DelftX/FP101x/3T2014" data-course-number="FP101x" data-dashboard-index="14"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-14">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="DelftX/FP101x/3T2014" data-course-number="FP101x" data-dashboard-index="14" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+        
+
+
+
+
+
+
+
+<div class="message message-status course-status-certavailable is-shown">
+
+  <p class="message-copy">Your final grade:
+  <span class="grade-value">69%</span>.
+  </p>
+
+  <div class="wrapper-message-primary">
+    <ul class="actions actions-primary">
+        <li class="action action-certificate">
+        <a class="btn" href="https://s3.amazonaws.com/verify.edx.org/downloads/250f3b2632be4633b23b93cac58fb866/Certificate.pdf"
+           title="This link will open/download a PDF document">
+           Download Certificate (PDF)</a></li>
+
+    </ul>
+  </div>
+
+  <ul class="actions actions-secondary">
+      <li class="action action-share">
+        <a class="action-linkedin-profile" target="_blank" href="http://www.linkedin.com/profile/add?_ed=0_7nTFLiuDkkQkdELSpruCwD4F6jzqtTFsx3PfJUIT2qHqXRLG1_0Ls9cuIE_YkkJpaSgvthvZk7wTBMS3S-m0L6A6mLjErM6PJiwMkk6nYZylU7__75hCVwJdOTZCAkdv&pfCertificationName=edX+Certificate+for+Introduction+to+Functional+Programming&pfCertificationUrl=https%3A%2F%2Fs3.amazonaws.com%2Fverify.edx.org%2Fdownloads%2F250f3b2632be4633b23b93cac58fb866%2FCertificate.pdf&source=o&trk=edx-DelftX%2FFP101x%2F3T2014_audit-dashboard"
+         title="Add Certificate to LinkedIn Profile"
+         data-course-id="DelftX/FP101x/3T2014"
+         data-certificate-mode="audit"
+        >
+          <img class="action-linkedin-profile-img"
+               src="https://d37djvu3ytnwxt.cloudfront.net/static/images/linkedin_add_to_profile.5a5cc9aca585.png"
+               alt="Share on LinkedIn">
+        </a>
+    </li>
+  </ul>
+
+</div>
+
+
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/HarvardX/SPU27x/2013_Oct/info" class="cover">
+              <img src="/c4x/HarvardX/SPU27x/asset/images_course_image.jpg" class="course-image" alt="SPU27x Science &amp; Cooking: From Haute Cuisine to Soft Matter Science Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/HarvardX/SPU27x/2013_Oct/info">Science & Cooking: From Haute Cuisine to Soft Matter Science</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">HarvardX - </span>
+          <span class="info-course-id">SPU27x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Ended - Mar 16, 2014
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/HarvardX/SPU27x/2013_Oct/info" class="enter-course archived">View Archived Course<span class="sr">&nbsp;Science & Cooking: From Haute Cuisine to Soft Matter Science</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-15" class="action action-more" id="actions-dropdown-link-15" aria-haspopup="true" aria-expanded="false" data-course-number="SPU27x" data-dashboard-index="15">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-15" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-15" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-15">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="HarvardX/SPU27x/2013_Oct" data-course-number="SPU27x" data-dashboard-index="15"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-15">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="HarvardX/SPU27x/2013_Oct" data-course-number="SPU27x" data-dashboard-index="15" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+        
+
+
+
+
+
+
+
+<div class="message message-status course-status-certnotavailable is-shown">
+
+  <p class="message-copy">Your final grade:
+  <span class="grade-value">27%</span>.
+       Grade required for a Certificate: <span class="grade-value">
+         60%</span>.
+  </p>
+
+</div>
+
+
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/BerkeleyX/Stat2.1x/2013_Spring/info" class="cover">
+              <img src="/c4x/BerkeleyX/Stat2.1x/asset/images_course_image.jpg" class="course-image" alt="Stat2.1x Introduction to Statistics: Descriptive Statistics Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/BerkeleyX/Stat2.1x/2013_Spring/info">Introduction to Statistics: Descriptive Statistics</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">BerkeleyX - </span>
+          <span class="info-course-id">Stat2.1x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Ended - Apr 01, 2013
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/BerkeleyX/Stat2.1x/2013_Spring/info" class="enter-course archived">View Archived Course<span class="sr">&nbsp;Introduction to Statistics: Descriptive Statistics</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-16" class="action action-more" id="actions-dropdown-link-16" aria-haspopup="true" aria-expanded="false" data-course-number="Stat2.1x" data-dashboard-index="16">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-16" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-16" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-16">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="BerkeleyX/Stat2.1x/2013_Spring" data-course-number="Stat2.1x" data-dashboard-index="16"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-16">
+                        <a href="#email-settings-modal" class="action action-email-settings" rel="leanModal" data-course-id="BerkeleyX/Stat2.1x/2013_Spring" data-course-number="Stat2.1x" data-dashboard-index="16" data-optout="False">Email Settings</a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+        
+
+
+
+
+
+
+
+<div class="message message-status course-status-certavailable is-shown">
+
+  <p class="message-copy">Your final grade:
+  <span class="grade-value">75%</span>.
+  </p>
+
+  <div class="wrapper-message-primary">
+    <ul class="actions actions-primary">
+        <li class="action action-certificate">
+        <a class="btn" href="https://s3.amazonaws.com/verify.edx.org/downloads/203c170e0dcb47618b2443d7504388bb/Certificate.pdf"
+           title="This link will open/download a PDF document">
+           Download Certificate (PDF)</a></li>
+
+    </ul>
+  </div>
+
+  <ul class="actions actions-secondary">
+      <li class="action action-share">
+        <a class="action-linkedin-profile" target="_blank" href="http://www.linkedin.com/profile/add?_ed=0_7nTFLiuDkkQkdELSpruCwD4F6jzqtTFsx3PfJUIT2qHqXRLG1_0Ls9cuIE_YkkJpaSgvthvZk7wTBMS3S-m0L6A6mLjErM6PJiwMkk6nYZylU7__75hCVwJdOTZCAkdv&pfCertificationName=edX+Honor+Code+Certificate+for+Introduction+to+Statistics%3A+Descriptive+Statistics&pfCertificationUrl=https%3A%2F%2Fs3.amazonaws.com%2Fverify.edx.org%2Fdownloads%2F203c170e0dcb47618b2443d7504388bb%2FCertificate.pdf&source=o&trk=edx-BerkeleyX%2FStat2.1x%2F2013_Spring_honor-dashboard"
+         title="Add Certificate to LinkedIn Profile"
+         data-course-id="BerkeleyX/Stat2.1x/2013_Spring"
+         data-certificate-mode="honor"
+        >
+          <img class="action-linkedin-profile-img"
+               src="https://d37djvu3ytnwxt.cloudfront.net/static/images/linkedin_add_to_profile.5a5cc9aca585.png"
+               alt="Share on LinkedIn">
+        </a>
+    </li>
+  </ul>
+
+</div>
+
+
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+
+
+
+
+
+
+
+<li class="course-item">
+    
+    
+
+<article class="course honor">
+  
+  <section class="details">
+    <div class="wrapper-course-image" aria-hidden="true">
+            <a href="/courses/BerkeleyX/CS184.1x/2012_Fall/info" class="cover">
+              <img src="/static/CS184.1x/images/course_image.jpg" class="course-image" alt="CS184.1x Foundations of Computer Graphics Home Page" />
+            </a>
+        <span class="sts-enrollment" title="You're enrolled as an honor code student">
+          <span class="label">Enrolled as: </span>
+          <div class="sts-enrollment-value">Honor Code</div>
+        </span>
+    </div>
+      <div class="wrapper-course-details">
+        <h3 class="course-title">
+              <a href="/courses/BerkeleyX/CS184.1x/2012_Fall/info">Foundations of Computer Graphics</a>
+        </h3>
+        <div class="course-info">
+          <span class="info-university">BerkeleyX - </span>
+          <span class="info-course-id">CS184.1x</span>
+          <span class="info-date-block" data-tooltip="Hi">
+            Ended - Dec 21, 2012
+          </span>
+        </div>
+        <div class="wrapper-course-actions">
+          <div class="course-actions">
+                  <a href="/courses/BerkeleyX/CS184.1x/2012_Fall/info" class="enter-course archived">View Archived Course<span class="sr">&nbsp;Foundations of Computer Graphics</span></a>
+
+                
+            <div class="wrapper-action-more">
+              <a href="#actions-dropdown-17" class="action action-more" id="actions-dropdown-link-17" aria-haspopup="true" aria-expanded="false" data-course-number="CS184.1x" data-dashboard-index="17">
+                <span class="sr">Course options dropdown</span>
+                <i class="fa fa-cog" aria-hidden="true"></i>
+              </a>
+              <div class="actions-dropdown" id="actions-dropdown-17" aria-label="Additional Actions Menu">
+                <ul class="actions-dropdown-list" id="actions-dropdown-list-17" aria-label="Available Actions" role="menu">
+                  <li class="actions-item" id="actions-item-unenroll-17">
+                      <a href="#unenroll-modal" class="action action-unenroll" rel="leanModal" data-course-id="BerkeleyX/CS184.1x/2012_Fall" data-course-number="CS184.1x" data-dashboard-index="17"
+                         onclick="set_unenroll_message('Are you sure you want to unenroll from %(course_number)s?', '')">
+                        Unenroll
+                      </a>
+                  </li>
+                  <li class="actions-item" id="actions-item-email-settings-17">
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+  </section>
+  <footer class="wrapper-messages-primary">
+    <ul class="messages-list">
+        
+
+
+
+
+
+
+
+<div class="message message-status course-status-certavailable is-shown">
+
+  <p class="message-copy">Your final grade:
+  <span class="grade-value">65%</span>.
+  </p>
+
+  <div class="wrapper-message-primary">
+    <ul class="actions actions-primary">
+        <li class="action action-certificate">
+        <a class="btn" href="https://s3.amazonaws.com/verify.edx.org/downloads/b56f63f5949b4478879a02ebf5a3c363/Certificate.pdf"
+           title="This link will open/download a PDF document">
+           Download Certificate (PDF)</a></li>
+
+    </ul>
+  </div>
+
+  <ul class="actions actions-secondary">
+      <li class="action action-share">
+        <a class="action-linkedin-profile" target="_blank" href="http://www.linkedin.com/profile/add?_ed=0_7nTFLiuDkkQkdELSpruCwD4F6jzqtTFsx3PfJUIT2qHqXRLG1_0Ls9cuIE_YkkJpaSgvthvZk7wTBMS3S-m0L6A6mLjErM6PJiwMkk6nYZylU7__75hCVwJdOTZCAkdv&pfCertificationName=edX+Honor+Code+Certificate+for+Foundations+of+Computer+Graphics&pfCertificationUrl=https%3A%2F%2Fs3.amazonaws.com%2Fverify.edx.org%2Fdownloads%2Fb56f63f5949b4478879a02ebf5a3c363%2FCertificate.pdf&source=o&trk=edx-BerkeleyX%2FCS184.1x%2F2012_Fall_honor-dashboard"
+         title="Add Certificate to LinkedIn Profile"
+         data-course-id="BerkeleyX/CS184.1x/2012_Fall"
+         data-certificate-mode="honor"
+        >
+          <img class="action-linkedin-profile-img"
+               src="https://d37djvu3ytnwxt.cloudfront.net/static/images/linkedin_add_to_profile.5a5cc9aca585.png"
+               alt="Share on LinkedIn">
+        </a>
+    </li>
+  </ul>
+
+</div>
+
+
+
+
+
+
+
+    </ul>
+  </footer>
+</article>
+</li>
+<script>
+           $( document ).ready(function() {
+
+               if("False" == "True"){
+                   $( "#unregister_block_course" ).click(function() {
+                       $('.disable-look-unregister').click();
+                   });
+               }
+           });
+
+           function set_unenroll_message(track_info, refund_info) {
+               document.getElementById('track-info').innerHTML = interpolate(track_info, {course_number: "<span id='unenroll_course_number'></span>"}, true);
+               document.getElementById('refund-info').innerHTML = refund_info;
+           }
+</script>
+
+
+
+      </ul>
+
+  </section>
+
+
+
+  <section class="profile-sidebar" id="profile-sidebar" role="region" aria-label="User info">
+    <header class="profile">
+      <h2 class="username-header"><span class="sr">Username: </span></h2>
+    </header>
+    <section class="user-info">
+      <ul>
+        <li class="heads-up">
+          <span class="title">Want to change your account settings?</span>
+          <span class="copy">Click the arrow next to your username above.</span>
+        </li>
+
+
+        
+
+
+
+
+
+
+
+
+
+
+      </ul>
+    </section>
+  </section>
+</section>
+
+<section id="email-settings-modal" class="modal" aria-hidden="true">
+  <div class="inner-wrapper" role="dialog" aria-labelledby="email-settings-title">
+    <button class="close-modal">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2 id="email-settings-title">
+        Email Settings for <span id="email_settings_course_number"></span>
+        <span class="sr">,
+          window open
+        </span>
+      </h2>
+      <hr/>
+    </header>
+
+    <form id="email_settings_form" method="post">
+      <input name="course_id" id="email_settings_course_id" type="hidden" />
+      <label>Receive course emails <input type="checkbox" id="receive_emails" name="receive_emails" /></label>
+      <div class="submit">
+        <input type="submit" id="submit" value="Save Settings" />
+      </div>
+    </form>
+  </div>
+</section>
+
+<section id="unenroll-modal" class="modal unenroll-modal" aria-hidden="true">
+  <div class="inner-wrapper" role="dialog" aria-labelledby="unenrollment-modal-title">
+    <button class="close-modal">
+      <i class="icon fa fa-remove"></i>
+      <span class="sr">
+        Close
+      </span>
+    </button>
+
+    <header>
+      <h2 id="unenrollment-modal-title">
+        <span id='track-info'></span>
+        <span id='refund-info'></span>
+        <span class="sr">,
+          window open
+        </span>
+      </h2>
+      <hr/>
+    </header>
+    <div id="unenroll_error" class="modal-form-error"></div>
+    <form id="unenroll_form" method="post" data-remote="true" action="/change_enrollment">
+      <input name="course_id" id="unenroll_course_id" type="hidden" />
+      <input name="enrollment_action" type="hidden" value="unenroll" />
+      <div class="submit">
+        <input name="submit" type="submit" value="Unenroll" />
+      </div>
+    </form>
+  </div>
+</section>
+
+      
+    </div>
+
+        
+
+  
+                
+
+
+<div class="wrapper wrapper-footer edx-footer edx-footer-new">
+  <footer id="footer-global" class="footer-global" role="contentinfo" aria-label="Footer">
+
+    <div class="footer-about">
+      <h2 class="sr footer-about-title">About edX</h2>
+
+      <div class="footer-about-logo">
+        <img alt="edX logo" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/edx-theme/edx-header-logo.517a627deaad.png">
+      </div>
+
+      <div class="footer-about-copy">
+        <p>
+          EdX offers interactive online classes and MOOCs from the world's best universities. Online courses from MITx, HarvardX, BerkeleyX, UTx and many other universities. Topics include biology, business, chemistry, computer science, economics, finance, electronics, engineering, food and nutrition, history, humanities, law, literature, math, medicine, music, philosophy, physics, science, statistics and more. EdX is a non-profit online initiative created by founding partners Harvard and MIT.
+        </p>
+      </div>
+
+      <div class="footer-about-copyright">
+      	<p>&copy; 2015 edX Inc.</p>
+
+      	<p>
+      	  EdX, Open edX, and the edX and Open edX logos are registered trademarks or trademarks of <a href='https://www.edx.org/'><span class='copy'>edX Inc.</span></a>
+      	</p>
+      </div>
+
+      <div class="footer-about-openedx">
+        <a href="http://open.edx.org" title="Powered by Open edX">
+          <img alt="Powered by Open edX" src="https://files.edx.org/openedx-logos/edx-openedx-logo-tag.png">
+        </a>
+      </div>
+
+      <div class="footer-about-links">
+        <a href="https://www.edx.org/edx-terms-service"><span class="copy">Terms of Service and Honor Code</span></a>
+        <a href="https://www.edx.org/edx-privacy-policy"><span class="copy">Privacy Policy</span>
+	  <span class="note">
+	    (Revised 10/22/2014)
+	</span></a>
+      </div>
+    </div>
+
+    <nav class="footer-nav" role="navigation" aria-label="About edX">
+      <h2 class="footer-nav-title">About edX</h2>
+
+      <div class="footer-nav-links">
+        <a href="https://www.edx.org/about-us"><span class="copy">About</span></a>
+        <a href="https://www.edx.org/news-announcements"><span class="copy">News</span></a>
+        <a href="https://www.edx.org/contact"><span class="copy">Contact</span></a>
+        <a href="https://www.edx.org/student-faq"><span class="copy">FAQ</span></a>
+        <a href="https://www.edx.org/edx-blog"><span class="copy">edX Blog</span></a>
+        <a href="https://www.edx.org/donate"><span class="copy">Donate to edX</span></a>
+        <a href="https://www.edx.org/jobs"><span class="copy">Jobs at edX</span></a>
+      </div>
+    </nav>
+
+    <div class="footer-follow">
+      <h2 class="footer-follow-title">Follow Us</h2>
+
+      <div class="footer-follow-links">
+        
+        <a href="http://www.facebook.com/EdxOnline" title="Facebook" rel="noreferrer">
+          <i class="icon fa fa-facebook-square element-invisible"></i>
+          <span class="copy">Facebook</span>
+        </a>
+        
+        <a href="https://twitter.com/edXOnline" title="Twitter" rel="noreferrer">
+          <i class="icon fa fa-twitter element-invisible"></i>
+          <span class="copy">Twitter</span>
+        </a>
+        
+        <a href="https://www.youtube.com/user/edxonline?sub_confirmation=1" title="Youtube" rel="noreferrer">
+          <i class="icon fa fa-youtube element-invisible"></i>
+          <span class="copy">Youtube</span>
+        </a>
+        
+        <a href="http://www.linkedin.com/company/edx" title="LinkedIn" rel="noreferrer">
+          <i class="icon fa fa-linkedin-square element-invisible"></i>
+          <span class="copy">LinkedIn</span>
+        </a>
+        
+        <a href="https://plus.google.com/+edXOnline" title="Google+" rel="noreferrer">
+          <i class="icon fa fa-google-plus-square element-invisible"></i>
+          <span class="copy">Google+</span>
+        </a>
+        
+        <a href="http://www.reddit.com/r/edx" title="Reddit" rel="noreferrer">
+          <i class="icon fa fa-reddit element-invisible"></i>
+          <span class="copy">Reddit</span>
+        </a>
+      </div>
+
+      <div class="footer-mobile-apps">
+        <h2 class="footer-nav-title">Mobile Apps</h2>
+        <div class="mobile-app-wrapper">
+          <a href="https://itunes.apple.com/us/app/edx/id945480667?mt=8">
+            <img class="app-store" alt="Apple app on Apple Store" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/app/app_store_badge_135x40.d0558d910630.svg">
+          </a>
+        </div>
+        <div class="mobile-app-wrapper">
+          <a href="https://play.google.com/store/apps/details?id=org.edx.mobile">
+            <img class="google-play" alt="Android app on Google Play" src="https://d37djvu3ytnwxt.cloudfront.net/static/images/app/google_play_badge_45.c02590f4a6f1.png">
+          </a>
+        </div>
+      </div>
+    </div>
+  </footer>
+</div>
+
+<script type="text/javascript" src="/static/js/vendor/noreferrer.js" charset="utf-8"></script>
+
+
+        
+
+  </div>
+
+    
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-application.df193053af9b.js" charset="utf-8"></script>
+
+
+    
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/lms-modules.a8528e38b16f.js" charset="utf-8"></script>
+
+
+
+  
+  
+    <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/dashboard.cadb458d24fc.js" charset="utf-8"></script>
+
+
+  <script type="text/javascript">
+    $(document).ready(function() {
+      edx.dashboard.legacy.init({
+        dashboard: "/dashboard",
+        signInUser: "/login",
+        changeEmailSettings: "/change_email_settings"
+      });
+    });
+  </script>
+
+  <script type="text/javascript" src="https://d37djvu3ytnwxt.cloudfront.net/static/js/vendor/noreferrer.aa62a3e70ffa.js" charset="utf-8"></script>
+</body>
+</html>
+
+
+
+<!-- Performance beacon for onload times -->
+<script>
+  (function () {
+    var sample_rate = 0.05;
+    var roll = Math.floor(Math.random() * 100)/100;
+    var onloadBeaconSent = false;
+
+    if(roll < sample_rate){
+      $(window).load(function() {
+        setTimeout(function(){
+          var t = window.performance.timing;
+
+          var data = {
+            event: "onload",
+            value: t.loadEventEnd - t.navigationStart,
+            page: window.location.href,
+          };
+
+          if (!onloadBeaconSent) {
+            $.ajax({method: "POST", url: "/performance", data: data});
+          }
+          onloadBeaconSent = true;
+        }, 0);
+      });
+    }
+  }());
+</script>
