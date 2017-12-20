@@ -121,6 +121,7 @@ def test_extract_sections(file, num_sections_expected, num_subsections_expected)
 @pytest.mark.parametrize(
     'filename,site,num_courses_expected,num_available_courses_expected', [
         ('test/html/dashboard-version-with-articles.html', 'https://courses.edx.org', 18, 14),
+        ('test/html/dashboard-version-with-divs.html', 'https://courses.edx.org', 18, 14),
     ]
 )
 def test_extract_courses_from_html(filename, site, num_courses_expected, num_available_courses_expected):
