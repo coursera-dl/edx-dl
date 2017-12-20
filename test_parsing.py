@@ -118,13 +118,17 @@ def test_extract_sections(file, num_sections_expected, num_subsections_expected)
         assert num_subsections == num_subsections_expected
 
 
-def test_extract_courses_from_html():
-    site = 'https://courses.edx.org'
-    with open("test/html/dashboard.html", "r") as f:
+@pytest.mark.parametrize(
+    'filename,site,num_courses_expected,num_available_courses_expected', [
+        ('test/html/dashboard-version-with-articles.html', 'https://courses.edx.org', 18, 14),
+    ]
+)
+def test_extract_courses_from_html(filename, site, num_courses_expected, num_available_courses_expected):
+    with open(filename, "r") as f:
         courses = CurrentEdXPageExtractor().extract_courses_from_html(f.read(), site)
-        assert len(courses) == 18
+        assert len(courses) == num_courses_expected
         available_courses = [course for course in courses if course.state == 'Started']
-        assert len(available_courses) == 14
+        assert len(available_courses) == num_available_courses_expected
 
 
 def test_is_youtube_url():
