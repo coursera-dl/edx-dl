@@ -11,8 +11,8 @@ very few other dependencies.  It is platform independent, and should work
 fine under Unix (Linux, BSDs etc.), Windows or Mac OS X.
 
 We strongly recommend that, if you don't already have a Python interpreter
-installed, that you [install Python >= 3.4][python3], if possible, since it
-has better security than Python 2.
+installed, that you [install Python >= 3.6][python3], if possible, since it
+is better in general.
 
 [python]: https://www.python.org/
 [python3]: https://www.python.org/downloads/
