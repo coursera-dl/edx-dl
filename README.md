@@ -67,7 +67,7 @@ execute:
 
     edx-dl --help
 
-*Important Note:* To use sites other than edx.org, you have to specify the
+*Important Note:* To use sites other than <edx.org>, you **have** to specify the
 site along with the `-x` option. For example, `-x stanford`, if the course
 that you want to get is hosted on Stanford's site.
 
