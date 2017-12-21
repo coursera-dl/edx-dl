@@ -89,7 +89,9 @@ of `edx-dl` and of `youtube-dl`).  Use the following command if in doubt:
 
         pip install --upgrade edx-dl
 
-2. If the problem persists, feel free to [open an issue][issue] in our
+2. If you get an error like `"YouTube said: Please sign in to view this video."`, then we can't do much about it. You can try to pass your credentials to `youtube-dl` (see https://github.com/rg3/youtube-dl#authentication-options) with the use of `edx-dl`'s option `--youtube-dl-options`. If it doesn't work, then you will have to tell `edx-dl` to ignore the download of that particular video with the option `--ignore-errors`.
+
+3. If the problem persists, feel free to [open an issue][issue] in our
 bugtracker, please fill the issue template with *as much information as
 possible*.
 
