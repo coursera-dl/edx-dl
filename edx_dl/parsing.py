@@ -376,25 +376,25 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         def _get_section_name(section_soup):  # FIXME: Extract from here and test
             try:
-                return section_soup.div.h3.string
+                return section_soup.button.h3.string.strip()
             except AttributeError:
                 return None
 
         def _make_subsections(section_soup):
             try:
-                subsections_soup = section_soup.find_all('li', class_='subsection')
+                subsections_soup = section_soup.find_all('li', class_='vertical outline-item focusable')
             except AttributeError:
                 return []
             # FIXME correct extraction of subsection.name (unicode)
             subsections = [SubSection(position=i,
                                       url=s.a['href'],
-                                      name=s.a.div.span.string)
+                                      name=s.a.div.span.string.strip())
                            for i, s in enumerate(subsections_soup, 1)]
 
             return subsections
 
         soup = BeautifulSoup(page)
-        sections_soup = soup.find_all('li', class_='section')
+        sections_soup = soup.find_all('li', class_='outline-item section')
 
         sections = [Section(position=i,
                             name=_get_section_name(section_soup),
