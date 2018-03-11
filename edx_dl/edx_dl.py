@@ -715,7 +715,12 @@ def download_url(url, filename, headers, args):
         # order) is due to different behaviors in different Python versions
         # (e.g., 2.7 vs. 3.4).
         try:
-            urlretrieve(url, filename)
+            headers_list = [(k,headers[k]) for k in headers]
+            opener = build_opener()
+            opener.addheaders = headers_list
+            response = opener.open(url)
+            with open(filename, 'wb') as f:
+                f.write(response.read())
         except Exception as e:
             logging.warn('Got SSL/Connection error: %s', e)
             if not args.ignore_errors:
