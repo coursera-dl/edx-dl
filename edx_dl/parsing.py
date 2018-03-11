@@ -376,7 +376,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         def _get_section_name(section_soup):  # FIXME: Extract from here and test
             try:
-                return section_soup.div.h3.string
+                return section_soup.find_all("h3", class_="section-title")[0].string
             except AttributeError:
                 return None
 
