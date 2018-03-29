@@ -86,8 +86,8 @@ OPENEDX_SITES = {
         'url': 'http://mooc.online.gwu.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
-    'mitprox': {
-        'url': 'https://mitprofessionalx.mit.edu',
+    'mitxpro': {
+        'url': 'https://mitxpro.mit.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     },
     'bits':{
