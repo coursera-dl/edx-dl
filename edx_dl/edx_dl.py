@@ -1055,10 +1055,10 @@ def main():
     # finally we download or export all the resources
     if args.export_filename is not None:
         logging.info('exporting urls to file %s', args.export_filename)
-        urls = extract_urls_from_units(all_units, args.export_format)
+        urls = extract_urls_from_units(filtered_units, args.export_format)
         save_urls_to_file(urls, args.export_filename)
     else:
-        download(args, selections, all_units, headers)
+        download(args, selections, filtered_units, headers)
 
 
 if __name__ == '__main__':
