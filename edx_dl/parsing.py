@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 from six.moves import html_parser
 from bs4 import BeautifulSoup as BeautifulSoup_
 
-from .common import Course, Section, SubSection, Unit, Video
+from .common import Course, Section, NavSection, SubSection, Unit, Video
 
 
 # Force use of bs4 with html5lib
@@ -93,13 +93,14 @@ class ClassicEdXPageExtractor(PageExtractor):
                               re.DOTALL)
         units = []
 
-        for unit_html in re_units.findall(page):
-            unit = self.extract_unit(unit_html, BASE_URL, file_formats)
+        for i, unit_html in enumerate(re_units.findall(page), 1):
+            unit = self.extract_unit(unit_html, BASE_URL, file_formats, i)
+
             if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
                 units.append(unit)
         return units
 
-    def extract_unit(self, text, BASE_URL, file_formats):
+    def extract_unit(self, text, BASE_URL, file_formats, position):
         """
         Parses the <div> of each unit and extracts the urls of its resources
         """
@@ -113,7 +114,7 @@ class ClassicEdXPageExtractor(PageExtractor):
 
         resources_urls = self.extract_resources_urls(text, BASE_URL,
                                                      file_formats)
-        return Unit(videos=videos, resources_urls=resources_urls)
+        return Unit(videos=videos, resources_urls=resources_urls, position=position)
 
     def extract_video_youtube_url(self, text):
         re_video_youtube_url = re.compile(r'data-streams=&#34;.*?1.0\d+\:(?:.*?)(.{11})')
@@ -239,21 +240,11 @@ class ClassicEdXPageExtractor(PageExtractor):
         Extracts courses (Course) from the html page
         """
         soup = BeautifulSoup(page)
-
-        # First, try with new course structure (as of December 2017).  If
-        # that doesn't work, we fallback to an older course structure
-        # (released with version 0.1.6). If even that doesn't work, then we
-        # try with the oldest course structure (that was current before
-        # version 0.1.6).
-        #
-        # rbrito---This code is ugly.
-
         courses_soup = soup.find_all('article', 'course')
         if len(courses_soup) == 0:
             courses_soup = soup.find_all('div', 'course')
         if len(courses_soup) == 0:
             courses_soup = soup.find_all('div', 'course audit')
-
         courses = []
 
         for course_soup in courses_soup:
@@ -283,7 +274,7 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
-    def extract_unit(self, text, BASE_URL, file_formats):
+    def extract_unit(self, text, BASE_URL, file_formats, position):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         videos = []
         match_metadatas = re_metadata.findall(text)
@@ -311,7 +302,7 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
 
         resources_urls = self.extract_resources_urls(text, BASE_URL,
                                                      file_formats)
-        return Unit(videos=videos, resources_urls=resources_urls)
+        return Unit(videos=videos, resources_urls=resources_urls, position=position)
 
     def extract_sections_from_html(self, page, BASE_URL):
         """
@@ -380,6 +371,19 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
             except AttributeError:
                 return None
 
+        def _make_navsections(section_soup):
+            try:
+                navsections_soup = section_soup.find_all('li', class_='subsection')
+            except AttributeError:
+                return []
+            # FIXME correct extraction of subsection.name (unicode)
+            navsections = [NavSection(position=i,
+                                      name=navsection_soup.find('span', class_='subsection-title').get_text().strip(),
+                                     subsections=_make_subsections(navsection_soup))
+                           for i, navsection_soup in enumerate(navsections_soup, 1)]
+
+            return navsections
+
         def _make_subsections(section_soup):
             try:
                 subsections_soup = section_soup.find_all('li', class_='vertical outline-item focusable')
@@ -399,7 +403,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
         sections = [Section(position=i,
                             name=_get_section_name(section_soup),
                             url=_make_url(section_soup),
-                            subsections=_make_subsections(section_soup))
+                            navsections=_make_navsections(section_soup))
                     for i, section_soup in enumerate(sections_soup, 1)]
         # Filter out those sections for which name could not be parsed
         sections = [section for section in sections
