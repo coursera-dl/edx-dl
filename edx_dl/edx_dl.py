@@ -683,7 +683,9 @@ def _build_url_downloads(urls, target_dir, filename_prefix, external=False):
     otherwise just takes the name of the file from the url
     """
     if external:
+
         if len(urls) > 1:
+            urls, _ = remove_duplicates(urls)
             downloads = {url:
                          _build_filename_from_url(url, target_dir, '%02d' % i)
                          for i, url in enumerate(urls, 1) if url.find('/user/') == -1}
@@ -737,8 +739,8 @@ def download_url(url, filename, headers, args):
         download_youtube_url(url, filename, headers, args)
     else:
         try:
-            bin = 'wget'
-            cmd = [bin, url, '-c', '-O', unquote(filename), '--no-cookies', '--no-check-certificate']
+            bin = 'curl'
+            cmd = [bin, '-f', url, '-o', unquote(filename)]
             execute_command(cmd, args)
         except:
             import ssl
@@ -774,6 +776,7 @@ def download_youtube_url(url, filename, headers, args):
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
 
+
     if args.subtitles:
         # cmd.append('--all-subs')
         cmd.append('--write-sub')
@@ -790,11 +793,17 @@ def download_subtitle(url, filename, headers, args):
     """
     Downloads the subtitle from the url and transforms it to the srt format
     """
-    subs_string = edx_get_subtitle(url, headers)
-    if subs_string:
-        full_filename = os.path.join(os.getcwd(), filename)
-        with open(full_filename, 'wb+') as f:
-            f.write(subs_string.encode('utf-8'))
+    # subs_string = edx_get_subtitle(url, headers)
+    # if subs_string:
+    #     full_filename = os.path.join(os.getcwd(), filename)
+    #     with open(full_filename, 'wb+') as f:
+    #         f.write(subs_string.encode('utf-8'))
+    try:
+        bin = 'curl'
+        cmd = [bin, '-f', url, '-o', filename]
+        execute_command(cmd, args)
+    except:
+        pass
 
 
 def skip_or_download(downloads, headers, args, f=download_url):
@@ -803,6 +812,7 @@ def skip_or_download(downloads, headers, args, f=download_url):
     if filename exists it skips
     """
     for url, filename in downloads.items():
+        url = re.sub('transcript/translation/en', 'transcript/download', url)
         if os.path.exists(filename):
             logging.info('[skipping] %s => %s', url, filename)
             continue
@@ -913,13 +923,14 @@ def download(args, selections, all_units, headers):
                         except OSError:
                             pass
 
-                    try:
-                        repeated_mp4_filename = target_dir + '/*.mp4.mp4'
-                        fnames = glob.glob(repeated_mp4_filename)
-                        for fname in fnames:
-                            os.rename(fname, fname[:-4])
-                    except OSError:
-                        pass
+                    for ext in ['mp4', 'mov', 'avi']:
+                        try:
+                            repeated_filename = target_dir + '/*.' + ext + '.mp4'
+                            fnames = glob.glob(repeated_filename)
+                            for fname in fnames:
+                                os.rename(fname, fname[:-7] + ext)
+                        except OSError:
+                            pass
 
                     try:
                         repeated_dot_mp4_filename = target_dir + '/*..mp4'
@@ -983,17 +994,18 @@ def download(args, selections, all_units, headers):
                             except OSError:
                                 pass
 
-                    try:
-                        mp4srt_filename = target_dir + '/*.mp4.srt'
-                        fnames = glob.glob(mp4srt_filename)
-                        for fname in fnames:
-                            try:
-                                os.remove(fname[:-7] + 'srt')
-                            except OSError:
-                                pass                            
-                            os.rename(fname, fname[:-7] + 'srt')
-                    except OSError:
-                        pass
+                    for ext in ['mp4', 'mov', 'avi']:
+                        try:
+                            srt_filename = target_dir + '/*.' + ext + '.srt'
+                            fnames = glob.glob(srt_filename)
+                            for fname in fnames:
+                                try:
+                                    os.remove(fname[:-7] + 'srt')
+                                except OSError:
+                                    pass                            
+                                os.rename(fname, fname[:-7] + 'srt')
+                        except OSError:
+                            pass
 
 
 def remove_repeated_urls(all_units):

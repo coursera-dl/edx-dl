@@ -11,6 +11,7 @@ import logging
 import os
 import string
 import subprocess
+import re
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
@@ -89,6 +90,9 @@ def remove_duplicates(orig_list, seen=set()):
     new_seen = set(seen)
 
     for elem in orig_list:
+        # Remove youtube start time.
+        elem = re.sub('(?:((\?|\&)?(t=|start=)((?:(\d+h)?(\d+m)?(\d+s)?)|\d+))$)', '', elem)
+        elem = re.sub('(?:((t=|start=)((?:(\d+h)?(\d+m)?(\d+s)?)|\d+))\&)', '', elem)
         if elem not in new_seen:
             new_list.append(elem)
             new_seen.add(elem)
