@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 # This module contains generic functions, ideally useful to any other module
@@ -11,6 +11,7 @@ import logging
 import os
 import string
 import subprocess
+import re
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
@@ -21,7 +22,7 @@ def get_filename_from_prefix(target_dir, filename_prefix):
     # things clearer. A good refactoring would be to get the info from the
     # video_url or the current output, to avoid the iteration from the
     # current dir.
-    filenames = os.listdir(target_dir)
+    filenames = [filename for filename in os.listdir(target_dir) if filename.lower().endswith(('.mp4', '.webm'))] # Subtitle files for video files only.
     for name in filenames:  # Find the filename of the downloaded video
         if name.startswith(filename_prefix):
             basename, _ = os.path.splitext(name)
@@ -89,6 +90,9 @@ def remove_duplicates(orig_list, seen=set()):
     new_seen = set(seen)
 
     for elem in orig_list:
+        # Remove youtube start time.
+        elem = re.sub('(?:((\?|\&)?(t=|start=)((?:(\d+h)?(\d+m)?(\d+s)?)|\d+))$)', '', elem)
+        elem = re.sub('(?:((t=|start=)((?:(\d+h)?(\d+m)?(\d+s)?)|\d+))\&)', '', elem)
         if elem not in new_seen:
             new_list.append(elem)
             new_seen.add(elem)

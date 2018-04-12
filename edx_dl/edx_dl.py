@@ -1,4 +1,4 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 
 """
@@ -14,6 +14,8 @@ import os
 import pickle
 import re
 import sys
+import glob
+import shutil
 
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
@@ -21,6 +23,7 @@ from multiprocessing.dummy import Pool as ThreadPool
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.error import HTTPError, URLError
 from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import unquote
 from six.moves.urllib.request import (
     urlopen,
     build_opener,
@@ -521,8 +524,10 @@ def _display_sections(sections):
 
     for section in sections:
         logging.info('Section %2d: %s', section.position, section.name)
-        for subsection in section.subsections:
-            logging.info('  %s', subsection.name)
+        for navsection in section.navsections:
+            logging.info('NavSection %2d: %s', navsection.position, navsection.name)
+            for subsection in navsection.subsections:
+                logging.info('  %s', subsection.name)
 
 
 def parse_courses(args, available_courses):
@@ -660,21 +665,39 @@ def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
                                                  video.sub_template_url,
                                                  headers)
     for sub_lang, sub_url in subtitles_download_urls.items():
-        subs_filename = os.path.join(target_dir,
-                                     filename + '.' + sub_lang + '.srt')
-        downloads[sub_url] = subs_filename
+        if sub_lang == 'en':
+            subs_filename = os.path.join(target_dir, filename + '.srt')
+            downloads[sub_url] = subs_filename
+        else:
+            subs_filename = os.path.join(target_dir,
+                                         filename + '.' + sub_lang + '.srt')
+            downloads[sub_url] = subs_filename
     return downloads
 
 
-def _build_url_downloads(urls, target_dir, filename_prefix):
+def _build_url_downloads(urls, target_dir, filename_prefix, external=False):
+
     """
     Builds a dict {url: filename} for the given urls
     If it is a youtube url it uses the valid template for youtube-dl
     otherwise just takes the name of the file from the url
     """
-    downloads = {url:
-                 _build_filename_from_url(url, target_dir, filename_prefix)
-                 for url in urls}
+    if external:
+
+        if len(urls) > 1:
+            urls, _ = remove_duplicates(urls)
+            downloads = {url:
+                         _build_filename_from_url(url, target_dir, '%02d' % i)
+                         for i, url in enumerate(urls, 1) if url.find('/user/') == -1}
+        else:
+            downloads = {url:
+                         _build_filename_from_url(url, target_dir, '')
+                         for url in urls if url.find('/user/') == -1}
+    else:
+        downloads = {url:
+                     _build_filename_from_url(url, target_dir, filename_prefix)
+                     for url in urls}
+
     return downloads
 
 
@@ -683,12 +706,26 @@ def _build_filename_from_url(url, target_dir, filename_prefix):
     Builds the appropriate filename for the given args
     """
     if is_youtube_url(url):
-        filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
+        if url.find("playlist?list=") == -1:
+            # filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
+            if filename_prefix == '':
+                filename_template = "%(title)s.%(ext)s"
+            else:
+                filename_template = filename_prefix + "-%(title)s.%(ext)s"            
+        else:
+            if filename_prefix == '':
+                filename_template = "%(playlist_index)s-%(title)s.%(ext)s"
+            else:
+                filename_template = filename_prefix + "-%(playlist_index)s-%(title)s.%(ext)s"
         filename = os.path.join(target_dir, filename_template)
     else:
         original_filename = url.rsplit('/', 1)[1]
-        filename = os.path.join(target_dir,
-                                filename_prefix + '-' + original_filename)
+        if filename_prefix == '':
+            filename = os.path.join(target_dir,
+                                    original_filename)
+        else:
+            filename = os.path.join(target_dir,
+                                    filename_prefix + '-' + original_filename)
 
     return filename
 
@@ -701,29 +738,34 @@ def download_url(url, filename, headers, args):
     if is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
     else:
-        import ssl
-        # FIXME: Ugly hack for coping with broken SSL sites:
-        # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
-        #
-        # We should really ask the user if they want to stop the downloads
-        # or if they are OK proceeding without verification.
-        #
-        # Note that skipping verification by default could be a problem for
-        # people's lives if they happen to live ditatorial countries.
-        #
-        # Note: The mess with various exceptions being caught (and their
-        # order) is due to different behaviors in different Python versions
-        # (e.g., 2.7 vs. 3.4).
         try:
-            urlretrieve(url, filename)
-        except Exception as e:
-            logging.warn('Got SSL/Connection error: %s', e)
-            if not args.ignore_errors:
-                logging.warn('Hint: if you want to ignore this error, add '
-                             '--ignore-errors option to the command line')
-                raise e
-            else:
-                logging.warn('SSL/Connection error ignored: %s', e)
+            bin = 'curl'
+            cmd = [bin, '-f', url, '-o', unquote(filename)]
+            execute_command(cmd, args)
+        except:
+            import ssl
+            # FIXME: Ugly hack for coping with broken SSL sites:
+            # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
+            #
+            # We should really ask the user if they want to stop the downloads
+            # or if they are OK proceeding without verification.
+            #
+            # Note that skipping verification by default could be a problem for
+            # people's lives if they happen to live ditatorial countries.
+            #
+            # Note: The mess with various exceptions being caught (and their
+            # order) is due to different behaviors in different Python versions
+            # (e.g., 2.7 vs. 3.4).
+            try:
+                urlretrieve(url, unquote(filename))
+            except Exception as e:
+                logging.warn('Got SSL/Connection error: %s', e)
+                if not args.ignore_errors:
+                    logging.warn('Hint: if you want to ignore this error, add '
+                                 '--ignore-errors option to the command line')
+                    raise e
+                else:
+                    logging.warn('SSL/Connection error ignored: %s', e)
 
 
 def download_youtube_url(url, filename, headers, args):
@@ -734,8 +776,13 @@ def download_youtube_url(url, filename, headers, args):
     video_format_option = args.format + '/mp4' if args.format else 'mp4'
     cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
 
+
     if args.subtitles:
-        cmd.append('--all-subs')
+        # cmd.append('--all-subs')
+        cmd.append('--write-sub')
+        cmd.append('--srt-lang')
+        cmd.append('en') # For English only.
+    cmd.append('--no-playlist')
     cmd.extend(args.youtube_dl_options.split())
     cmd.append(url)
 
@@ -746,11 +793,17 @@ def download_subtitle(url, filename, headers, args):
     """
     Downloads the subtitle from the url and transforms it to the srt format
     """
-    subs_string = edx_get_subtitle(url, headers)
-    if subs_string:
-        full_filename = os.path.join(os.getcwd(), filename)
-        with open(full_filename, 'wb+') as f:
-            f.write(subs_string.encode('utf-8'))
+    # subs_string = edx_get_subtitle(url, headers)
+    # if subs_string:
+    #     full_filename = os.path.join(os.getcwd(), filename)
+    #     with open(full_filename, 'wb+') as f:
+    #         f.write(subs_string.encode('utf-8'))
+    try:
+        bin = 'curl'
+        cmd = [bin, '-f', url, '-o', filename]
+        execute_command(cmd, args)
+    except:
+        pass
 
 
 def skip_or_download(downloads, headers, args, f=download_url):
@@ -759,6 +812,7 @@ def skip_or_download(downloads, headers, args, f=download_url):
     if filename exists it skips
     """
     for url, filename in downloads.items():
+        url = re.sub('transcript/translation/en', 'transcript/download', url)
         if os.path.exists(filename):
             logging.info('[skipping] %s => %s', url, filename)
             continue
@@ -796,17 +850,17 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     with filename_prefix
     """
     if len(unit.videos) == 1:
-        download_video(unit.videos[0], args, target_dir, filename_prefix,
+        download_video(unit.videos[0], args, target_dir, '',
                        headers)
     else:
         # we change the filename_prefix to avoid conflicts when downloading
         # subtitles
         for i, video in enumerate(unit.videos, 1):
-            new_prefix = filename_prefix + ('-%02d' % i)
+            new_prefix = '%02d' % i
             download_video(video, args, target_dir, new_prefix, headers)
 
     res_downloads = _build_url_downloads(unit.resources_urls, target_dir,
-                                         filename_prefix)
+                                         filename_prefix, True)
     skip_or_download(res_downloads, headers, args)
 
 
@@ -825,17 +879,133 @@ def download(args, selections, all_units, headers):
         for selected_section in selected_sections:
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
-            target_dir = os.path.join(args.output_dir, coursename,
+            section_target_dir = os.path.join(args.output_dir, coursename,
                                       clean_filename(section_dirname))
-            mkdir_p(target_dir)
-            counter = 0
-            for subsection in selected_section.subsections:
-                units = all_units.get(subsection.url, [])
-                for unit in units:
-                    counter += 1
-                    filename_prefix = "%02d" % counter
-                    download_unit(unit, args, target_dir, filename_prefix,
-                                  headers)
+            mkdir_p(section_target_dir)
+
+            for navsection in selected_section.navsections:
+                navsection_dirname = "%02d-%s" % (navsection.position,
+                                          navsection.name)
+                navsection_target_dir = os.path.join(section_target_dir,
+                                          clean_filename(navsection_dirname))
+                mkdir_p(navsection_target_dir)
+
+                for subsection in navsection.subsections:
+                    units = all_units.get(subsection.url, [])
+
+                    if len(navsection.subsections) == 1 and len(units) == 0:
+                        continue
+
+                    subsection_dirname = "%02d-%s" % (subsection.position,
+                                                      subsection.name)
+                    target_dir = os.path.join(navsection_target_dir,
+                                              clean_filename(subsection_dirname))
+                    mkdir_p(target_dir)
+                    counter = 0
+                    for unit in units:
+                        if unit.position != subsection.position:
+                            continue
+                        counter += 1
+                        filename_prefix = "%02d" % counter
+                        download_unit(unit, args, target_dir, filename_prefix,
+                                      headers)
+
+                    if shutil.which("ffmpeg"): # Convert .webm to .mp4
+                        try:
+                            webm_filename = target_dir + '/*.webm'
+                            fnames = glob.glob(webm_filename)
+                            for fname in fnames:
+                                os.system('echo 3 | ffmpeg -i "%s" -preset fast "%s".mp4 >/dev/null 2>&1' % (fname, fname[:-5]))
+                                try:
+                                    os.remove(fname)
+                                except OSError:
+                                    pass
+                        except OSError:
+                            pass
+
+                    for ext in ['mp4', 'mov', 'avi']:
+                        try:
+                            repeated_filename = target_dir + '/*.' + ext + '.mp4'
+                            fnames = glob.glob(repeated_filename)
+                            for fname in fnames:
+                                os.rename(fname, fname[:-7] + ext)
+                        except OSError:
+                            pass
+
+                    try:
+                        repeated_dot_mp4_filename = target_dir + '/*..mp4'
+                        fnames = glob.glob(repeated_dot_mp4_filename)
+                        for fname in fnames:
+                            os.rename(fname, fname[:-4] + 'mp4')
+                    except OSError:
+                        pass
+
+                    try:
+                        srt_filename = target_dir + '/*.en.srt'
+                        fnames = glob.glob(srt_filename)
+                        for fname in fnames:
+                            os.rename(fname, fname[:-6] + 'srt')
+                    except OSError:
+                        pass
+
+                    try:
+                        repeated_dot_srt_filename = target_dir + '/*..srt'
+                        fnames = glob.glob(repeated_dot_srt_filename)
+                        for fname in fnames:
+                            os.rename(fname, fname[:-4] + 'srt')
+                    except OSError:
+                        pass
+
+                    vtt_pathname = target_dir + '/*.en.vtt'
+                    vtt_filenames = glob.glob(vtt_pathname)
+
+                    if vtt_filenames:
+                        regc = re.compile(r"(\d{2}:\d{2}:\d{2})\.(\d{3}\s+)-->(\s+\d{2}:\d{2}:\d{2})\.(\d{3}\s*)")
+                        for vtt_filename in vtt_filenames:
+                            vttfile = open(vtt_filename, 'r')
+                            srtfile = open(vtt_filename.replace('.en.vtt', '.srt'), 'w')
+
+                            linenum = 1
+                            timeline = False
+                            lines_so_far = 0
+                            for line in vttfile:
+                                match = re.search(regc, line)
+                                if match or timeline:
+                                    if not timeline:
+                                        srtfile.write("%d\n" % linenum)
+                                        linenum += 1
+                                        lines_so_far += 1
+                                    timeline = True
+                                    if match:
+                                        line = match.group(1) + ',' + match.group(2) + '-->' + match.group(3) + ',' + match.group(4).strip() + '\n'
+                                    srtfile.write(line)
+                                    lines_so_far += 1
+                                    if len(line.strip()) == 0:
+                                        timeline = False
+                                        for i in range(4 - lines_so_far):
+                                            srtfile.write("\n")
+                                        lines_so_far = 0
+
+                            vttfile.close()
+                            srtfile.close()
+
+                            try:
+                                os.remove(vtt_filename)
+                            except OSError:
+                                pass
+
+                    for ext in ['mp4', 'mov', 'avi']:
+                        try:
+                            srt_filename = target_dir + '/*.' + ext + '.srt'
+                            fnames = glob.glob(srt_filename)
+                            for fname in fnames:
+                                try:
+                                    os.remove(fname[:-7] + 'srt')
+                                except OSError:
+                                    pass                            
+                                os.rename(fname, fname[:-7] + 'srt')
+                        except OSError:
+                            pass
 
 
 def remove_repeated_urls(all_units):
@@ -869,7 +1039,8 @@ def remove_repeated_urls(all_units):
 
             if len(videos) > 0 or len(resources_urls) > 0:
                 reduced_units.append(Unit(videos=videos,
-                                          resources_urls=resources_urls))
+                                          resources_urls=resources_urls,
+                                          position=unit.position))
 
         filtered_units[url] = reduced_units
     return filtered_units
@@ -1024,7 +1195,8 @@ def main():
     all_urls = [subsection.url
                 for selected_sections in selections.values()
                 for selected_section in selected_sections
-                for subsection in selected_section.subsections]
+                for navsection in selected_section.navsections
+                for subsection in navsection.subsections]
 
     extractor = extract_all_units_in_parallel
     if args.sequential:
@@ -1055,10 +1227,10 @@ def main():
     # finally we download or export all the resources
     if args.export_filename is not None:
         logging.info('exporting urls to file %s', args.export_filename)
-        urls = extract_urls_from_units(filtered_units, args.export_format)
+        urls = extract_urls_from_units(all_units, args.export_format)
         save_urls_to_file(urls, args.export_filename)
     else:
-        download(args, selections, filtered_units, headers)
+        download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
