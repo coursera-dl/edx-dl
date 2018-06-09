@@ -14,7 +14,7 @@ from bs4 import BeautifulSoup as BeautifulSoup_
 from .common import Course, Section, SubSection, Unit, Video
 
 
-# Force use of bs4 with html5lib
+# Force use of bs4 with html.parser
 BeautifulSoup = lambda page: BeautifulSoup_(page, 'html.parser')
 
 
