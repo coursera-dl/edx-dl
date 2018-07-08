@@ -702,6 +702,7 @@ def download_url(url, filename, headers, args):
         download_youtube_url(url, filename, headers, args)
     else:
         import ssl
+        import requests
         # FIXME: Ugly hack for coping with broken SSL sites:
         # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
         #
@@ -715,7 +716,12 @@ def download_url(url, filename, headers, args):
         # order) is due to different behaviors in different Python versions
         # (e.g., 2.7 vs. 3.4).
         try:
-            urlretrieve(url, filename)
+            if 'zip' in url and 'mitxpro' in url:
+                urlretrieve(url, filename)
+            else:
+                r = requests.get(url, headers=headers)
+                with open(filename, 'wb') as fp:
+                    fp.write(r.content)
         except Exception as e:
             logging.warn('Got SSL/Connection error: %s', e)
             if not args.ignore_errors:
