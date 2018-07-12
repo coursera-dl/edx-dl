@@ -268,7 +268,7 @@ class ClassicEdXPageExtractor(PageExtractor):
                     course_state = 'Started'
                 # The id of a course in edX is composed by the path
                 # {organization}/{course_number}/{course_run}
-                course_id = course_soup.a['href'][9:-8]  # modified by kyilmaz80
+                course_id = course_soup.a['href'][9:-5]
             except KeyError:
                 pass
             courses.append(Course(id=course_id,
@@ -388,7 +388,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
             # FIXME correct extraction of subsection.name (unicode)
             subsections = [SubSection(position=i,
                                       url=s.a['href'],
-                                      name=s.a.div.div.string.strip())  # modified by kyilmaz80
+                                      name=s.a.div.div.string.strip())
                            for i, s in enumerate(subsections_soup, 1)]
 
             return subsections
@@ -413,8 +413,8 @@ def get_page_extractor(url):
     factory method for page extractors
     """
     if (
-        url.startswith('https://courses.edx.org') or  # modified by kyilmaz80
-        url.startswith('https://mitxpro.mit.edu')     # added by kyilmaz80
+        url.startswith('https://courses.edx.org') or
+        url.startswith('https://mitxpro.mit.edu')
     ):
         return NewEdXPageExtractor()
     elif (

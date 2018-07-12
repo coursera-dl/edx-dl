@@ -716,6 +716,7 @@ def download_url(url, filename, headers, args):
         # order) is due to different behaviors in different Python versions
         # (e.g., 2.7 vs. 3.4).
         try:
+            # mitxpro fix for downloading compressed files
             if 'zip' in url and 'mitxpro' in url:
                 urlretrieve(url, filename)
             else:
