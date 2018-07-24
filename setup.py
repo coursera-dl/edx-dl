@@ -87,8 +87,8 @@ trove_classifiers = [
 setup(
     name='edx-dl',
     version=__version__,
-    maintainer='Ismaël Mejía, Rogério Theodoro de Brito',
-    maintainer_email='iemejia@gmail.com, rbrito@ime.usp.br',
+    maintainer='Ismaël Mejía, Rogério Theodoro de Brito, Yuri Bochkarev',
+    maintainer_email='iemejia@gmail.com, rbrito@ime.usp.br, baltazar.bz@gmail.com',
 
     license='LGPL',
     url='https://github.com/coursera-dl/edx-dl',
