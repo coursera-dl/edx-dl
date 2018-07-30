@@ -14,8 +14,8 @@ from bs4 import BeautifulSoup as BeautifulSoup_
 from .common import Course, Section, SubSection, Unit, Video
 
 
-# Force use of bs4 with html5lib
-BeautifulSoup = lambda page: BeautifulSoup_(page, 'html5lib')
+# Force use of bs4 with html.parser
+BeautifulSoup = lambda page: BeautifulSoup_(page, 'html.parser')
 
 
 def edx_json2srt(o):
@@ -412,7 +412,10 @@ def get_page_extractor(url):
     """
     factory method for page extractors
     """
-    if url.startswith('https://courses.edx.org'):
+    if (
+        url.startswith('https://courses.edx.org') or
+        url.startswith('https://mitxpro.mit.edu')
+    ):
         return NewEdXPageExtractor()
     elif (
         url.startswith('https://edge.edx.org') or
