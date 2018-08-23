@@ -62,6 +62,30 @@ Your downloaded videos will be placed in a new directory called
 `Downloaded`, inside your current directory, but you can also choose another
 destination with the `-o` argument.
 
+## Subtitles
+
+You can tell edx-dl to download subtitles along with the videos.
+
+    edx-dl -u user@user.com COURSE_URL --with-subtitles
+    
+If you have already downloaded the videos and would like to download only the
+subtitles, you have two options.
+
+*Option 1:* Instructor provided subtitles
+
+    edx-dl -u user@user.com COURSE_URL --youtube-dl-options="--sub-lang LANGS --write-sub --skip-download"
+
+*Option 2:* **Auto**generated subtitles (for Youtube hosted videos only)
+
+    edx-dl -u user@user.com COURSE_URL --youtube-dl-options="--sub-lang LANGS --write-auto-sub --skip-download"
+
+Notes:
+* In the above commands `--skip-download` is to skip downloading the video. 
+  The subtitles will be downloaded.
+* `LANGS` must be replaced with IETF language tags like `en,ru` for english,russian
+* For more subtitle options see youtube-dl [docunentation](https://github.com/rg3/youtube-dl/#subtitle-options)
+
+## More options
 To see all available options and a brief description of what they do, simply
 execute:
 
