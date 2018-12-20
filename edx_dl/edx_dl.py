@@ -224,7 +224,6 @@ def edx_get_subtitle(url, headers,
         return None
 
 
-
 def get_config_paths(config_name):  # pragma: no test
     """
     [Code from https://github.com/coursera-dl/coursera-dl/...]
@@ -342,12 +341,14 @@ def get_credentials(username=None, password=None, netrc=None):
         return authenticate_through_netrc(path)
 
     if username:
-        # Query password, if not alredy passed by command line or not found in any netrc file.
+        # Query password, if not alredy passed by command line
+        # or not found in any netrc file.
         if not password:
             password = getpass.getpass(stream=sys.stderr)
 
     if not username or not password:
-        logging.error("You must supply username and password to log-in, or provide them in a netrc file")
+        logging.error("You must supply username and password to log-in" +
+                      ", or provide them in a netrc file")
         exit(ExitCode.MISSING_CREDENTIALS)
 
     return username, password
