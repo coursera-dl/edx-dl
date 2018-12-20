@@ -12,6 +12,17 @@ def test_failed_login():
     assert not resp.get('success', False)
 
 
+# def test_netrc_login():
+#     """
+#     Testing with the login with a local netrc file.
+#     This way, no login/password gets shown.
+#     """
+#     username, password = get_credentials(netrc=True)
+#     resp = edx_dl.edx_login(
+#         edx_dl.LOGIN_API, edx_dl.edx_get_headers(), username, password)
+#     assert not resp.get('success', True)
+
+
 def test_remove_repeated_urls():
     url = "test/html/multiple_units.html"
     site = 'https://courses.edx.org'
