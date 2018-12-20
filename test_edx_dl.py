@@ -1,26 +1,45 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 
+import os
+
 import pytest
 from edx_dl import edx_dl, parsing
 from edx_dl.common import Unit, Video, DEFAULT_FILE_FORMATS
+
+
+NETRC = \
+    os.path.join(os.path.dirname(__file__),
+                 "test", "auth", "netrc")
+
+NOT_NETRC = \
+    os.path.join(os.path.dirname(__file__),
+                 "test", "auth", "not_netrc")
+
+
+def test_authenticate_through_netrc_with_given_path():
+    username, password = edx_dl.authenticate_through_netrc(NETRC)
+    assert username == 'user@mail.com'
+    assert password == 'secret'
+
+
+def test_authenticate_through_netrc_raises_exception():
+    pytest.raises(
+        edx_dl.CredentialsError,
+        edx_dl.authenticate_through_netrc,
+        NOT_NETRC)
+
+
+def test_get_credentials_with_netrc():
+    username, password = edx_dl.get_credentials(netrc=NETRC)
+    assert username == 'user@mail.com'
+    assert password == 'secret'
 
 
 def test_failed_login():
     resp = edx_dl.edx_login(
         edx_dl.LOGIN_API, edx_dl.edx_get_headers(), "guest", "guest")
     assert not resp.get('success', False)
-
-
-# def test_netrc_login():
-#     """
-#     Testing with the login with a local netrc file.
-#     This way, no login/password gets shown.
-#     """
-#     username, password = get_credentials(netrc=True)
-#     resp = edx_dl.edx_login(
-#         edx_dl.LOGIN_API, edx_dl.edx_get_headers(), username, password)
-#     assert not resp.get('success', True)
 
 
 def test_remove_repeated_urls():
