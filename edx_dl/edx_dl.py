@@ -399,10 +399,17 @@ def parse_args():
                         help='your edX password, '
                         'beware: it might be visible to other users on your system')
 
+    # the netrc option can be passed a path to the netrc file or 
+    # it can be used with noting in order to use the default
+    # netrc file location
     parser.add_argument(
                         '-n',
                         '--netrc',
-                        action='store_true',
+                        dest='netrc',
+                        nargs='?',
+                        action='store',
+                        const=True,
+                        default=False,
                         help='use netrc for reading passwords, uses default'
                         ' location if no path specified. Only for *nix systems.')
 
