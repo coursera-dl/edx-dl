@@ -408,6 +408,56 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
         return sections
 
 
+class StanfordEdXPageExtractor(CurrentEdXPageExtractor):
+    """
+    A new page extractor for the latest changes in layout of stanford
+    """
+
+    def extract_sections_from_html(self, page, BASE_URL):
+        """
+        Extract sections (Section->SubSection) from the html page
+        """
+        def _make_url(section_soup):  # FIXME: Extract from here and test
+            try:
+                return None
+            except AttributeError:
+                # Section might be empty and contain no links
+                return None
+
+        def _get_section_name(section_soup):  # FIXME: Extract from here and test
+            try:
+                return section_soup.div.h3.string.strip()
+            except AttributeError:
+                return None
+
+        def _make_subsections(section_soup):
+            try:
+                subsections_soup = section_soup.find_all('li', class_='subsection')
+            except AttributeError:
+                return []
+            # FIXME correct extraction of subsection.name (unicode)
+            subsections = [SubSection(position=i,
+                                      url=s.a['href'],
+                                      name=s.a.div.span.string.strip())
+                           for i, s in enumerate(subsections_soup, 1)]
+
+            return subsections
+
+        soup = BeautifulSoup(page)
+        sections_soup = soup.find_all('li', class_='outline-item focusable section')
+
+        sections = [Section(position=i,
+                            name=_get_section_name(section_soup),
+                            url=_make_url(section_soup),
+                            subsections=_make_subsections(section_soup))
+                    for i, section_soup in enumerate(sections_soup, 1)]
+        # Filter out those sections for which name could not be parsed
+        sections = [section for section in sections
+                    if section.name]
+
+        return sections
+
+
 def get_page_extractor(url):
     """
     factory method for page extractors
@@ -418,8 +468,11 @@ def get_page_extractor(url):
     ):
         return NewEdXPageExtractor()
     elif (
+        url.startswith('https://lagunita.stanford.edu')
+    ):
+        return StanfordEdXPageExtractor()
+    elif (
         url.startswith('https://edge.edx.org') or
-        url.startswith('https://lagunita.stanford.edu') or
         url.startswith('https://www.fun-mooc.fr')
     ):
         return CurrentEdXPageExtractor()
