@@ -114,6 +114,7 @@ These are the current supported sites:
 - [France Université Numérique](https://www.france-universite-numerique-mooc.fr/)
 - [GW Online SEAS](http://openedx.seas.gwu.edu/) - George Washington University
 - [GW Online Open](http://mooc.online.gwu.edu/) - George Washington University
+- [Xuetangx （学堂在线）](http://www.xuetangx.com/)
 
 This is the full [list of sites powered by Open edX][sites]. Not all of them
 are supported at the moment, we welcome you to contribute support for them

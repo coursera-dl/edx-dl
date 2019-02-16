@@ -42,11 +42,11 @@ def execute_command(cmd, args):
             raise e
 
 
-def directory_name(initial_name):
+def directory_name(initial_name, minimal_change=False):
     """
     Transform the name of a directory into an ascii version
     """
-    result = clean_filename(initial_name)
+    result = clean_filename(initial_name, minimal_change=minimal_change)
     return result if result != "" else "course_folder"
 
 
@@ -139,3 +139,8 @@ def clean_filename(s, minimal_change=False):
     s = s.strip().replace(' ', '_')
     valid_chars = '-_.()%s%s' % (string.ascii_letters, string.digits)
     return ''.join(c for c in s if c in valid_chars)
+
+
+def remove_blanks(s):
+    """Remove all blank characters from a string."""
+    return ''.join(list(filter(lambda c: not c.isspace(), s)))

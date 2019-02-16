@@ -14,13 +14,14 @@ import os
 import pickle
 import re
 import sys
+import math
 
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
 
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.error import HTTPError, URLError
-from six.moves.urllib.parse import urlencode
+from six.moves.urllib.parse import urlencode, quote
 from six.moves.urllib.request import (
     urlopen,
     build_opener,
@@ -93,19 +94,25 @@ OPENEDX_SITES = {
     'bits':{
         'url':'http://any-learn.bits-pilani.ac.in',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
+    'xuetangx': {
+        'url': 'http://www.xuetangx.com',
+        'courseware-selector': None,
     }
 }
-BASE_URL = OPENEDX_SITES['edx']['url']
+SITE_NAME = 'edx'
+BASE_URL = OPENEDX_SITES[SITE_NAME]['url']
 EDX_HOMEPAGE = BASE_URL + '/login_ajax'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
-COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
+COURSEWARE_SEL = OPENEDX_SITES[SITE_NAME]['courseware-selector']
 
 
 def change_openedx_site(site_name):
     """
     Changes the openedx website for the given one via the key
     """
+    global SITE_NAME
     global BASE_URL
     global EDX_HOMEPAGE
     global LOGIN_API
@@ -117,11 +124,15 @@ def change_openedx_site(site_name):
         logging.error("OpenEdX platform should be one of: %s", ', '.join(sites))
         sys.exit(ExitCode.UNKNOWN_PLATFORM)
 
-    BASE_URL = OPENEDX_SITES[site_name]['url']
+    SITE_NAME = site_name
+    BASE_URL = OPENEDX_SITES[SITE_NAME]['url']
     EDX_HOMEPAGE = BASE_URL + '/login_ajax'
     LOGIN_API = BASE_URL + '/login_ajax'
-    DASHBOARD = BASE_URL + '/dashboard'
-    COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
+    if site_name == 'xuetangx':
+        DASHBOARD = BASE_URL + '/api/web/courses/mycourses?format=json'
+    else:
+        DASHBOARD = BASE_URL + '/dashboard'
+    COURSEWARE_SEL = OPENEDX_SITES[SITE_NAME]['courseware-selector']
 
 
 def _display_courses(courses):
@@ -135,10 +146,67 @@ def _display_courses(courses):
         logging.info('     %s', course.url)
 
 
+def get_courses_info_xuetangx(url, headers):
+    """
+    Extracts the courses information from the dashboard.
+
+    This function is re-implemented for http://www.xuetangx.com, because
+    Xuetangx uses a REST API, which is quite different from other OpenEdX sites.
+    """
+    def fetch_and_parse(base_url, param):
+        """
+        Fetches the JSON API, and returns the total count, and a list of dicts
+        for the results on the current page.
+
+        :param base_url: the URL of the API.
+        :param param: query parameters, represented by a list of tuples.
+        :return: a (total, results) tuple; (0, []) on failure.
+        """
+        url = base_url + '?' + urlencode(param)
+        page = get_page_contents(url, headers)
+        try:
+            d = json.loads(page)
+            total = d['total']
+            results = d['results']
+        except (json.JSONDecodeError, KeyError):
+            total = 0
+            results = []
+        return total, results
+
+    logging.info('Extracting course information from JSON API.')
+
+    api_url = BASE_URL + '/api/web/courses/mycourses'
+    query_params = [
+        [('type', 'started'), ('format', 'json')],
+        [('type', 'ended'), ('format', 'json')]
+    ]
+    # use default page size, and fetch multiple times, in case there is a hard
+    # limit set by the API
+    page_size = 10
+
+    courses = []
+    page_extractor = get_page_extractor(url)
+
+    for param in query_params:
+        total, results = fetch_and_parse(api_url, param)
+        page_count = int(math.ceil(1.0 * total / page_size))
+        for i in range(page_count):
+            if i:
+                # page needs to be re-fetched unless it is the first one
+                new_param = param + [('offset', i * page_size)]
+                _, results = fetch_and_parse(api_url, new_param)
+            courses += page_extractor.extract_courses(results, BASE_URL)
+
+    return courses
+
+
 def get_courses_info(url, headers):
     """
     Extracts the courses information from the dashboard.
     """
+    if SITE_NAME == 'xuetangx':
+        return get_courses_info_xuetangx(url, headers)
+
     logging.info('Extracting course information from dashboard.')
 
     page = get_page_contents(url, headers)
@@ -310,6 +378,14 @@ def parse_args():
                         default=False,
                         help='list available sections')
 
+    parser.add_argument('--quality',
+                        dest='quality',
+                        action='store',
+                        choices={'high', 'standard'},
+                        default='high',
+                        help='quality of video to download; works for xuetangx'
+                             ' only')
+
     parser.add_argument('--youtube-dl-options',
                         dest='youtube_dl_options',
                         action='store',
@@ -437,6 +513,9 @@ def extract_units(url, headers, file_formats):
 
     page = get_page_contents(url, headers)
     page_extractor = get_page_extractor(url)
+    set_headers = getattr(page_extractor, 'set_headers', None)
+    if callable(set_headers):
+        set_headers(headers)
     units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
 
     return units
@@ -666,27 +745,45 @@ def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
     return downloads
 
 
-def _build_url_downloads(urls, target_dir, filename_prefix):
+def _build_url_downloads(urls, target_dir, filename_prefix, args,
+                         is_video=False):
     """
     Builds a dict {url: filename} for the given urls
     If it is a youtube url it uses the valid template for youtube-dl
     otherwise just takes the name of the file from the url
     """
+    if SITE_NAME == 'xuetangx' and is_video and urls:
+        # take advantage of the fact that the URL of HQ videos are
+        # lexicographically larger on Xuetangx ('quality20' > 'quality10')
+        urls = [max(urls)] if args.quality == 'high' else [min(urls)]
     downloads = {url:
-                 _build_filename_from_url(url, target_dir, filename_prefix)
+                 _build_filename_from_url(url, target_dir, filename_prefix,
+                                          is_video=is_video)
                  for url in urls}
     return downloads
 
 
-def _build_filename_from_url(url, target_dir, filename_prefix):
+def _build_filename_from_url(url, target_dir, filename_prefix, is_video=False,
+                             video_counter=[0]):
     """
     Builds the appropriate filename for the given args
     """
+    # video file names in Xuetangx do not make sense;
+    # use a counter as a workaround
+    if is_video:
+        video_counter[0] += 1
+
     if is_youtube_url(url):
         filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
         filename = os.path.join(target_dir, filename_template)
     else:
-        original_filename = url.rsplit('/', 1)[1]
+        if SITE_NAME == 'xuetangx' and is_video:
+            original_filename = 'video_%05d.mp4' % video_counter[0]
+        else:
+            original_filename = url.rsplit('/', 1)[1]
+        # remove special characters that may cause problems under Windows
+        original_filename = ''.join(list(filter(
+            lambda c: c not in ';/?:@&=+$,', original_filename)))
         filename = os.path.join(target_dir,
                                 filename_prefix + '-' + original_filename)
 
@@ -697,6 +794,8 @@ def download_url(url, filename, headers, args):
     """
     Downloads the given url in filename.
     """
+    # resolve unicode issue
+    url = quote(url, safe=';/?:@&=+$,')
 
     if is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
@@ -779,13 +878,15 @@ def skip_or_download(downloads, headers, args, f=download_url):
 def download_video(video, args, target_dir, filename_prefix, headers):
     if args.prefer_cdn_videos or video.video_youtube_url is None:
         mp4_downloads = _build_url_downloads(video.mp4_urls, target_dir,
-                                             filename_prefix)
+                                             filename_prefix, args,
+                                             is_video=True)
         skip_or_download(mp4_downloads, headers, args)
     else:
         if video.video_youtube_url is not None:
             youtube_downloads = _build_url_downloads([video.video_youtube_url],
                                                      target_dir,
-                                                     filename_prefix)
+                                                     filename_prefix,
+                                                     is_video=True)
             skip_or_download(youtube_downloads, headers, args)
 
     # the behavior with subtitles is different, since the subtitles don't know
@@ -813,7 +914,7 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
             download_video(video, args, target_dir, new_prefix, headers)
 
     res_downloads = _build_url_downloads(unit.resources_urls, target_dir,
-                                         filename_prefix)
+                                         filename_prefix, args)
     skip_or_download(res_downloads, headers, args)
 
 
@@ -827,13 +928,19 @@ def download(args, selections, all_units, headers):
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and show nicer information.
 
+    # courses on Xuetangx may contain chinese characters
+    preserve_non_ascii = (SITE_NAME == 'xuetangx')
+
     for selected_course, selected_sections in selections.items():
-        coursename = directory_name(selected_course.name)
+        coursename = directory_name(selected_course.name,
+                                    minimal_change=preserve_non_ascii)
         for selected_section in selected_sections:
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
             target_dir = os.path.join(args.output_dir, coursename,
-                                      clean_filename(section_dirname))
+                                      clean_filename(section_dirname,
+                                                     minimal_change=
+                                                     preserve_non_ascii))
             mkdir_p(target_dir)
             counter = 0
             for subsection in selected_section.subsections:
