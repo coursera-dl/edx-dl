@@ -53,9 +53,13 @@ From there, choose the course you are interested in, copy its URL and use it
 in the following command:
 
     edx-dl -u user@user.com COURSE_URL
+    
 (You need to run this script in the command line):
-cd ../edx-dl
-python edx-dl -u user@user.com -p 123456 COURSE_URL
+
+    cd ../edx-dl
+
+    python edx-dl -u user@user.com -p 123456 COURSE_URL
+
 
 replacing `COURSE_URL` with the URL that you just copied in the first step.
 It should look something like:
