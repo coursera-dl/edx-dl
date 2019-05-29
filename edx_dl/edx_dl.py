@@ -93,6 +93,10 @@ OPENEDX_SITES = {
     'bits':{
         'url':'http://any-learn.bits-pilani.ac.in',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+    },
+    'mathesis':{
+    'url': 'https://mathesis.cup.gr',
+    'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
     }
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
@@ -408,7 +412,6 @@ def parse_args():
                             format='%(message)s')
 
     return args
-
 
 def edx_get_headers():
     """
@@ -828,11 +831,20 @@ def download(args, selections, all_units, headers):
     # sections/subsections to add correct prefixes and show nicer information.
 
     for selected_course, selected_sections in selections.items():
-        coursename = directory_name(selected_course.name)
+        # If the platform is  mathesis don't convert the directory name to ascii
+        if args.platform == 'mathesis':
+            coursename = directory_name(selected_course.name, dont_use_ascii=True)
+        else:
+            coursename = directory_name(selected_course.name)
         for selected_section in selected_sections:
             section_dirname = "%02d-%s" % (selected_section.position,
                                            selected_section.name)
-            target_dir = os.path.join(args.output_dir, coursename,
+    # If our platform is mathesis, then the filename contains greek chars, so clean the bare minimum
+            if args.platform == 'mathesis':
+                target_dir = os.path.join(args.output_dir, coursename,
+                                      clean_filename(section_dirname, minimal_change=True))
+            else:
+                target_dir = os.path.join(args.output_dir, coursename,
                                       clean_filename(section_dirname))
             mkdir_p(target_dir)
             counter = 0
