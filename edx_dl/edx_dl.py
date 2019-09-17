@@ -686,7 +686,7 @@ def _build_filename_from_url(url, target_dir, filename_prefix):
         filename_template = filename_prefix + "-%(title)s-%(id)s.%(ext)s"
         filename = os.path.join(target_dir, filename_template)
     else:
-        original_filename = url.rsplit('/', 1)[1]
+        original_filename = clean_filename(url.rsplit('/', 1)[1])
         filename = os.path.join(target_dir,
                                 filename_prefix + '-' + original_filename)
 
