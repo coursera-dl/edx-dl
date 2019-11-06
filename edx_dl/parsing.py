@@ -394,7 +394,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
             return subsections
 
         soup = BeautifulSoup(page)
-        sections_soup = soup.find_all('li', class_=['outline-item section', 'outline-item section'])
+        sections_soup = soup.find_all('li', class_=['outline-item section', 'outline-item section scored'])
 
         sections = [Section(position=i,
                             name=_get_section_name(section_soup),
