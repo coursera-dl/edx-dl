@@ -96,7 +96,7 @@ OPENEDX_SITES = {
     }
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
-EDX_HOMEPAGE = BASE_URL + '/login_ajax'
+EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
@@ -118,7 +118,7 @@ def change_openedx_site(site_name):
         sys.exit(ExitCode.UNKNOWN_PLATFORM)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
-    EDX_HOMEPAGE = BASE_URL + '/login_ajax'
+    EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
@@ -1013,12 +1013,12 @@ def main():
     # Parse the sections and build the selections dict filtered by sections
     if args.platform == 'edx':
         all_selections = {selected_course:
-                          get_available_sections(selected_course.url.replace('info', 'course'), 
+                          get_available_sections(selected_course.url.replace('info', 'course'),
                                                  headers)
                           for selected_course in selected_courses}
     else:
         all_selections = {selected_course:
-                          get_available_sections(selected_course.url.replace('info', 'courseware'), 
+                          get_available_sections(selected_course.url.replace('info', 'courseware'),
                                                  headers)
                           for selected_course in selected_courses}
 
