@@ -96,7 +96,7 @@ OPENEDX_SITES = {
     }
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
-EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session/'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
@@ -118,7 +118,7 @@ def change_openedx_site(site_name):
         sys.exit(ExitCode.UNKNOWN_PLATFORM)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
-    EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+    EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session/'
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
