@@ -382,7 +382,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         def _make_subsections(section_soup):
             try:
-                subsections_soup = section_soup.find_all('li', class_='vertical outline-item focusable')
+                subsections_soup = section_soup.select("li.vertical.outline-item.focusable")
             except AttributeError:
                 return []
             # FIXME correct extraction of subsection.name (unicode)
@@ -394,7 +394,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
             return subsections
 
         soup = BeautifulSoup(page)
-        sections_soup = soup.find_all('li', class_='outline-item section')
+        sections_soup = soup.select("li.outline-item.section")
 
         sections = [Section(position=i,
                             name=_get_section_name(section_soup),
