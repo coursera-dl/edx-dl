@@ -385,10 +385,15 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
                 subsections_soup = section_soup.select("li.vertical.outline-item.focusable")
             except AttributeError:
                 return []
+
+            def _is_subsection_scored(str_list):
+                return 'scored' in str_list
+
             # FIXME correct extraction of subsection.name (unicode)
             subsections = [SubSection(position=i,
                                       url=s.a['href'],
-                                      name=s.a.div.div.string.strip())
+                                      name=s.a.div.div.string.strip(),
+                                      scored=_is_subsection_scored(s['class']))
                            for i, s in enumerate(subsections_soup, 1)]
 
             return subsections
