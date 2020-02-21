@@ -36,4 +36,4 @@ jobs:
         pip install pytest
         pip install pytest-cov
         #pytest -v --cov edx_dl --cov-report html
-        pytest -s -vvv --doctest-modules --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
+        pytest -s -vvv --junitxml=junit/test-results.xml --cov=com --cov-report=xml --cov-report=html
