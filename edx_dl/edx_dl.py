@@ -221,7 +221,12 @@ def edx_login(url, headers, username, password):
                            'remember': False}).encode('utf-8')
 
     request = Request(url, post_data, headers)
-    response = urlopen(request)
+    try:
+        response = urlopen(request)
+    except HTTPError as e:
+        logging.info('Error, cannot login: %s', e)
+        return {'success': False}
+
     resp = json.loads(response.read().decode('utf-8'))
 
     return resp
