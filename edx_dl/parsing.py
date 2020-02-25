@@ -376,7 +376,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         def _get_section_name(section_soup):  # FIXME: Extract from here and test
             try:
-                return section_soup.a.h4.string.strip()
+                return section_soup.button.h3.string.strip()
             except AttributeError:
                 return None
 
@@ -394,7 +394,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
             return subsections
 
         soup = BeautifulSoup(page)
-        sections_soup = soup.find_all('li', class_=['outline-item section'])
+        sections_soup = soup.find_all('li', class_=['outline-item','section'])
 
         sections = [Section(position=i,
                             name=_get_section_name(section_soup),
