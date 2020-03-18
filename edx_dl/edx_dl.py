@@ -61,42 +61,51 @@ OPENEDX_SITES = {
     'edx': {
         'url': 'https://courses.edx.org',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/user_api/v1/account/login_session/',
     },
     'edge': {
         'url': 'https://edge.edx.org',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     },
     'stanford': {
         'url': 'https://lagunita.stanford.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     },
     'usyd-sit': {
         'url': 'http://online.it.usyd.edu.au',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     },
     'fun': {
         'url': 'https://www.fun-mooc.fr',
         'courseware-selector': ('section', {'aria-label': 'Menu du cours'}),
+        'homepage': '/login_ajax',
     },
     'gwu-seas': {
         'url': 'http://openedx.seas.gwu.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     },
     'gwu-open': {
         'url': 'http://mooc.online.gwu.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     },
     'mitxpro': {
         'url': 'https://mitxpro.mit.edu',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     },
     'bits':{
         'url':'http://any-learn.bits-pilani.ac.in',
         'courseware-selector': ('nav', {'aria-label': 'Course Navigation'}),
+        'homepage': '/login_ajax',
     }
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
-EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+EDX_HOMEPAGE = BASE_URL + OPENEDX_SITES['edx']['homepage']
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
@@ -118,7 +127,7 @@ def change_openedx_site(site_name):
         sys.exit(ExitCode.UNKNOWN_PLATFORM)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
-    EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+    EDX_HOMEPAGE = BASE_URL + OPENEDX_SITES[site_name]['homepage']
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
