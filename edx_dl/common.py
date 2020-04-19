@@ -168,6 +168,7 @@ class ExitCode(object):
     INVALID_COURSE_URL = 4
     UNKNOWN_PLATFORM = 5
     NO_DOWNLOADABLE_VIDEO = 6
+    MISSING_CSRF_TOKEN = 7
 
 
 YOUTUBE_DL_CMD = ['youtube-dl', '--ignore-config']
