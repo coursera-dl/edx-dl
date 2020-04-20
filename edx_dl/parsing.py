@@ -60,7 +60,7 @@ class PageExtractor(object):
       >>> ...
     """
 
-    def extract_units_from_html(self, page, BASE_URL, file_formats):
+    def extract_units_from_html(self, page, BASE_URL, file_formats, quality):
         """
         Method to extract the resources (units) from the given page
         """
@@ -81,7 +81,7 @@ class PageExtractor(object):
 
 class ClassicEdXPageExtractor(PageExtractor):
 
-    def extract_units_from_html(self, page, BASE_URL, file_formats):
+    def extract_units_from_html(self, page, BASE_URL, file_formats, quality):
         """
         Extract Units from the html of a subsection webpage as a list of
         resources
@@ -94,18 +94,18 @@ class ClassicEdXPageExtractor(PageExtractor):
         units = []
 
         for unit_html in re_units.findall(page):
-            unit = self.extract_unit(unit_html, BASE_URL, file_formats)
+            unit = self.extract_unit(unit_html, BASE_URL, file_formats, quality)
             if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
                 units.append(unit)
         return units
 
-    def extract_unit(self, text, BASE_URL, file_formats):
+    def extract_unit(self, text, BASE_URL, file_formats, quality = None):
         """
         Parses the <div> of each unit and extracts the urls of its resources
         """
         video_youtube_url = self.extract_video_youtube_url(text)
         available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
-        mp4_urls = self.extract_mp4_urls(text)
+        mp4_urls = self.extract_mp4_urls(text, quality)
         videos = [Video(video_youtube_url=video_youtube_url,
                         available_subs_url=available_subs_url,
                         sub_template_url=sub_template_url,
@@ -152,7 +152,7 @@ class ClassicEdXPageExtractor(PageExtractor):
 
         return available_subs_url, sub_template_url
 
-    def extract_mp4_urls(self, text):
+    def extract_mp4_urls(self, text, quality = None):
         """
         Looks for available links to the mp4 version of the videos
         """
@@ -283,7 +283,7 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
-    def extract_unit(self, text, BASE_URL, file_formats):
+    def extract_unit(self, text, BASE_URL, file_formats, quality = None):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         videos = []
         match_metadatas = re_metadata.findall(text)
@@ -411,7 +411,7 @@ class FunMoocPageExtractor(CurrentEdXPageExtractor):
     """
     A new page extractor for the latest changes of Fun Mooc
     """
-    def extract_units_from_html(self, page, BASE_URL, file_formats, quality):
+    def extract_units_from_html(self, page, BASE_URL, file_formats, quality = None):
         """
         Extract Units from the html of a subsection webpage as a list of
         resources
@@ -507,7 +507,7 @@ class FunMoocPageExtractor(CurrentEdXPageExtractor):
 
         return new_mp4_urls
 
-    def extract_unit(self, text, BASE_URL, file_formats, quality):
+    def extract_unit(self, text, BASE_URL, file_formats, quality = None):
         """
         Parses the <div> of each unit and extracts the urls of its resources
         """

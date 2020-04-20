@@ -178,7 +178,7 @@ def _get_initial_token(url, isSpecialLogin):
     for cookie in cookiejar:
         if cookie.name == 'csrftoken':
             if isSpecialLogin:
-                logging.info('Found first CSRF token: %s.', cookie.value)
+                logging.info('Found first CSRF token')
             else:
                 logging.info('Found CSRF token.')
             return cookie.value
@@ -241,12 +241,9 @@ def edx_login(url, headers, username, password, isSpecialLogin):
         for cookieItem in cookieItems:
             cookieEntry = cookieItem.split('=')
             if cookieEntry[0] == 'csrftoken' and cookieEntry[1]:
-                logging.info('Found new CSRF token %s.', cookieEntry[1])
+                logging.info('Found new CSRF token')
                 csrfToken = cookieEntry[1]
                 break
-        if csrfToken == '':
-            logging.error('Unable to find any CSRF token')
-            exit(ExitCode.MISSING_CSRF_TOKEN)
 
     except HTTPError as e:
         logging.info('Error, cannot login: %s', e)
@@ -775,7 +772,7 @@ def download_youtube_url(url, filename, headers, args):
     """
     Downloads a youtube URL and applies the filters from args
     """
-    logging.info('Downloading video with URL %s from YouTube with quality %s. If quality is not found, take the best of the format %s.', url, args.quality, args.format)
+    logging.info('Downloading video with URL %s from YouTube with quality %s. If quality is not found, take the best of the format selected.', url, args.quality)
     quality = re.sub('\D', '', args.quality)
     if quality:
         video_format_option = '(' + args.format + ')[height=' + quality + ']' + '/' + args.format + '/(mp4)[height=' + quality + ']/mp4' if args.format else '(mp4)[height=' + quality + ']/mp4'
@@ -1048,12 +1045,9 @@ def main():
     if not resp.get('success', False):
         logging.error(resp.get('value', "Wrong Email or Password."))
         exit(ExitCode.WRONG_EMAIL_OR_PASSWORD)
-    if not resp.get('csrfToken', False):
-        logging.error('Unable to find any CSRF token')
-        exit(ExitCode.MISSING_CSRF_TOKEN)
-
-    # Set new header especially csrftoken
-    headers = edx_get_headers(resp.get('csrfToken'))
+    if resp.get('csrfToken', False):
+        # Set new header especially csrftoken
+        headers = edx_get_headers(resp.get('csrfToken'))
 
     # Parse and select the available courses
     courses = get_courses_info(DASHBOARD, headers)
