@@ -76,6 +76,7 @@ OPENEDX_SITES = {
     },
     'fun': {
         'url': 'https://www.fun-mooc.fr',
+        'isSpecialLogin': True,
         'courseware-selector': ('section', {'aria-label': 'Menu du cours'}),
     },
     'gwu-seas': {
@@ -97,6 +98,7 @@ OPENEDX_SITES = {
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+IS_SPECIAL_LOGIN = False
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
@@ -108,6 +110,7 @@ def change_openedx_site(site_name):
     """
     global BASE_URL
     global EDX_HOMEPAGE
+    global IS_SPECIAL_LOGIN
     global LOGIN_API
     global DASHBOARD
     global COURSEWARE_SEL
@@ -118,7 +121,13 @@ def change_openedx_site(site_name):
         sys.exit(ExitCode.UNKNOWN_PLATFORM)
 
     BASE_URL = OPENEDX_SITES[site_name]['url']
-    EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+    if 'isSpecialLogin' in OPENEDX_SITES[site_name]:
+        EDX_HOMEPAGE = BASE_URL
+        IS_SPECIAL_LOGIN = True
+    else:
+        EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+        IS_SPECIAL_LOGIN = False
+    logging.info('%s', EDX_HOMEPAGE)
     LOGIN_API = BASE_URL + '/login_ajax'
     DASHBOARD = BASE_URL + '/dashboard'
     COURSEWARE_SEL = OPENEDX_SITES[site_name]['courseware-selector']
@@ -150,7 +159,7 @@ def get_courses_info(url, headers):
     return courses
 
 
-def _get_initial_token(url):
+def _get_initial_token(url, isSpecialLogin):
     """
     Create initial connection to get authentication token for future
     requests.
@@ -168,7 +177,10 @@ def _get_initial_token(url):
 
     for cookie in cookiejar:
         if cookie.name == 'csrftoken':
-            logging.info('Found CSRF token.')
+            if isSpecialLogin:
+                logging.info('Found first CSRF token')
+            else:
+                logging.info('Found CSRF token.')
             return cookie.value
 
     logging.warn('Did not find the CSRF token.')
@@ -210,7 +222,7 @@ def edx_get_subtitle(url, headers,
         return None
 
 
-def edx_login(url, headers, username, password):
+def edx_login(url, headers, username, password, isSpecialLogin):
     """
     Log in user into the openedx website.
     """
@@ -223,11 +235,22 @@ def edx_login(url, headers, username, password):
     request = Request(url, post_data, headers)
     try:
         response = urlopen(request)
+
+        cookieItems = response.info()['Set-Cookie'].split(';')
+        csrfToken = ''
+        for cookieItem in cookieItems:
+            cookieEntry = cookieItem.split('=')
+            if cookieEntry[0] == 'csrftoken' and cookieEntry[1]:
+                logging.info('Found new CSRF token')
+                csrfToken = cookieEntry[1]
+                break
+
     except HTTPError as e:
         logging.info('Error, cannot login: %s', e)
         return {'success': False}
 
     resp = json.loads(response.read().decode('utf-8'))
+    resp.update({'csrfToken': csrfToken})
 
     return resp
 
@@ -274,6 +297,13 @@ def parse_args():
                         action='store_true',
                         default=False,
                         help='download subtitles with the videos')
+
+    parser.add_argument('-q',
+                        '--quality',
+                        dest='quality',
+                        action='store',
+                        default='720p',
+                        help='specify quality of video to download, one of: 1080p, 720p, 480p, 240p')
 
     parser.add_argument('-o',
                         '--output-dir',
@@ -415,7 +445,7 @@ def parse_args():
     return args
 
 
-def edx_get_headers():
+def edx_get_headers(csrfToken = None):
     """
     Build the Open edX headers to create future requests.
     """
@@ -427,14 +457,14 @@ def edx_get_headers():
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
         'X-Requested-With': 'XMLHttpRequest',
-        'X-CSRFToken': _get_initial_token(EDX_HOMEPAGE),
+        'X-CSRFToken': csrfToken if csrfToken else _get_initial_token(EDX_HOMEPAGE, IS_SPECIAL_LOGIN),
     }
 
     logging.debug('Headers built: %s', headers)
     return headers
 
 
-def extract_units(url, headers, file_formats):
+def extract_units(url, headers, file_formats, quality):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
@@ -442,12 +472,12 @@ def extract_units(url, headers, file_formats):
 
     page = get_page_contents(url, headers)
     page_extractor = get_page_extractor(url)
-    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
+    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats, quality)
 
     return units
 
 
-def extract_all_units_in_sequence(urls, headers, file_formats):
+def extract_all_units_in_sequence(urls, headers, file_formats, quality):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
     sequentially, this is clearer for debug purposes
@@ -455,13 +485,13 @@ def extract_all_units_in_sequence(urls, headers, file_formats):
     logging.info('Extracting all units information in sequentially.')
     logging.debug('urls: ' + str(urls))
 
-    units = [extract_units(url, headers, file_formats) for url in urls]
+    units = [extract_units(url, headers, file_formats, quality) for url in urls]
     all_units = dict(zip(urls, units))
 
     return all_units
 
 
-def extract_all_units_in_parallel(urls, headers, file_formats):
+def extract_all_units_in_parallel(urls, headers, file_formats, quality):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
     in parallel
@@ -469,7 +499,7 @@ def extract_all_units_in_parallel(urls, headers, file_formats):
     logging.info('Extracting all units information in parallel.')
     logging.debug('urls: ' + str(urls))
 
-    mapfunc = partial(extract_units, file_formats=file_formats, headers=headers)
+    mapfunc = partial(extract_units, file_formats=file_formats, headers=headers, quality=quality)
     pool = ThreadPool(16)
     units = pool.map(mapfunc, urls)
     pool.close()
@@ -742,8 +772,12 @@ def download_youtube_url(url, filename, headers, args):
     """
     Downloads a youtube URL and applies the filters from args
     """
-    logging.info('Downloading video with URL %s from YouTube.', url)
-    video_format_option = args.format + '/mp4' if args.format else 'mp4'
+    logging.info('Downloading video with URL %s from YouTube with quality %s. If quality is not found, take the best of the format selected.', url, args.quality)
+    quality = re.sub('\D', '', args.quality)
+    if quality:
+        video_format_option = '(' + args.format + ')[height=' + quality + ']' + '/' + args.format + '/(mp4)[height=' + quality + ']/mp4' if args.format else '(mp4)[height=' + quality + ']/mp4'
+    else:
+        video_format_option = args.format + '/mp4' if args.format else 'mp4'
     cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
 
     if args.subtitles:
@@ -751,6 +785,7 @@ def download_youtube_url(url, filename, headers, args):
     cmd.extend(args.youtube_dl_options.split())
     cmd.append(url)
 
+    logging.debug('Youtube_dl cmd: %s', cmd)
     execute_command(cmd, args)
 
 
@@ -908,7 +943,8 @@ def num_urls_in_units_dict(units_dict):
 
 def extract_all_units_with_cache(all_urls, headers, file_formats,
                                  filename=DEFAULT_CACHE_FILENAME,
-                                 extractor=extract_all_units_in_parallel):
+                                 extractor=extract_all_units_in_parallel,
+                                 quality=None):
     """
     Extracts the units which are not in the cache and extract their resources
     returns the full list of units (cached+new)
@@ -928,7 +964,7 @@ def extract_all_units_with_cache(all_urls, headers, file_formats,
     new_urls = [url for url in all_urls if url not in cached_units]
     logging.info('loading %d urls from cache [%s]', len(cached_units.keys()),
                  filename)
-    new_units = extractor(new_urls, headers, file_formats)
+    new_units = extractor(new_urls, headers, file_formats, quality)
     all_units = cached_units.copy()
     all_units.update(new_units)
 
@@ -1005,10 +1041,13 @@ def main():
     headers = edx_get_headers()
 
     # Login
-    resp = edx_login(LOGIN_API, headers, args.username, args.password)
+    resp = edx_login(LOGIN_API, headers, args.username, args.password, IS_SPECIAL_LOGIN)
     if not resp.get('success', False):
         logging.error(resp.get('value', "Wrong Email or Password."))
         exit(ExitCode.WRONG_EMAIL_OR_PASSWORD)
+    if resp.get('csrfToken', False):
+        # Set new header especially csrftoken
+        headers = edx_get_headers(resp.get('csrfToken'))
 
     # Parse and select the available courses
     courses = get_courses_info(DASHBOARD, headers)
@@ -1045,9 +1084,10 @@ def main():
     if args.cache:
         all_units = extract_all_units_with_cache(all_urls, headers,
                                                  file_formats,
-                                                 extractor=extractor)
+                                                 extractor=extractor,
+                                                 quality=args.quality)
     else:
-        all_units = extractor(all_urls, headers, file_formats)
+        all_units = extractor(all_urls, headers, file_formats, args.quality)
 
     parse_units(selections)
 

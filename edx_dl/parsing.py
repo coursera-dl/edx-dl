@@ -60,7 +60,7 @@ class PageExtractor(object):
       >>> ...
     """
 
-    def extract_units_from_html(self, page, BASE_URL, file_formats):
+    def extract_units_from_html(self, page, BASE_URL, file_formats, quality):
         """
         Method to extract the resources (units) from the given page
         """
@@ -81,7 +81,7 @@ class PageExtractor(object):
 
 class ClassicEdXPageExtractor(PageExtractor):
 
-    def extract_units_from_html(self, page, BASE_URL, file_formats):
+    def extract_units_from_html(self, page, BASE_URL, file_formats, quality):
         """
         Extract Units from the html of a subsection webpage as a list of
         resources
@@ -94,18 +94,18 @@ class ClassicEdXPageExtractor(PageExtractor):
         units = []
 
         for unit_html in re_units.findall(page):
-            unit = self.extract_unit(unit_html, BASE_URL, file_formats)
+            unit = self.extract_unit(unit_html, BASE_URL, file_formats, quality)
             if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
                 units.append(unit)
         return units
 
-    def extract_unit(self, text, BASE_URL, file_formats):
+    def extract_unit(self, text, BASE_URL, file_formats, quality = None):
         """
         Parses the <div> of each unit and extracts the urls of its resources
         """
         video_youtube_url = self.extract_video_youtube_url(text)
         available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
-        mp4_urls = self.extract_mp4_urls(text)
+        mp4_urls = self.extract_mp4_urls(text, quality)
         videos = [Video(video_youtube_url=video_youtube_url,
                         available_subs_url=available_subs_url,
                         sub_template_url=sub_template_url,
@@ -152,7 +152,7 @@ class ClassicEdXPageExtractor(PageExtractor):
 
         return available_subs_url, sub_template_url
 
-    def extract_mp4_urls(self, text):
+    def extract_mp4_urls(self, text, quality = None):
         """
         Looks for available links to the mp4 version of the videos
         """
@@ -283,7 +283,7 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     """
     A new page extractor for the recent changes in layout of edx
     """
-    def extract_unit(self, text, BASE_URL, file_formats):
+    def extract_unit(self, text, BASE_URL, file_formats, quality = None):
         re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         videos = []
         match_metadatas = re_metadata.findall(text)
@@ -407,6 +407,183 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         return sections
 
+class FunMoocPageExtractor(CurrentEdXPageExtractor):
+    """
+    A new page extractor for the latest changes of Fun Mooc
+    """
+    def extract_units_from_html(self, page, BASE_URL, file_formats, quality = None):
+        """
+        Extract Units from the html of a subsection webpage as a list of
+        resources
+        """
+        # in this function we avoid using beautifulsoup for performance reasons
+        # parsing html with regular expressions is really nasty, don't do this if
+        # you don't need to !
+        re_units = re.compile('(<div?[^>]id="seq_contents_\d+".*?>.*?<\/div>)',
+                              re.DOTALL)
+        units = []
+
+        for unit_html in re_units.findall(page):
+            unit = self.extract_unit(unit_html, BASE_URL, file_formats, quality)
+            if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
+                units.append(unit)
+        return units
+
+    def extract_mp4_urls(self, text, quality = None):
+        """
+        Looks for available links to the mp4 version of the videos
+        """
+        # mp4 urls may be in two places, in the field data-sources, and as <a>
+        # refs This regex tries to match all the appearances, however we
+        # exclude the ';' # character in the urls, since it is used to separate
+        # multiple urls in one string, however ';' is a valid url name
+        # character, but it is not really common.
+        re_mp4_urls = re.compile(r'(?:(https?://[^;]*?\.mp4))')
+        mp4_urls = list(set(re_mp4_urls.findall(text)))
+
+        # choose the good quality accordingly
+        new_mp4_urls = []
+        qualities_dict = {
+            '1080p': 'HD',
+            '720p': 'SD',
+            '480p': 'LD',
+            '240p': 'UL'
+        }
+        best_qualities_order = {
+            'HD': 1,
+            'SD': 2,
+            'LD': 3,
+            'UL': 4
+        }
+        url_quality_list = {}
+        if not quality:
+            return mp4_urls
+        if quality not in qualities_dict:
+            return mp4_urls
+        else:
+            # list all formats availables if the url is identical
+            for mp4_url in mp4_urls:
+                # split url and check the filename
+                url_split = mp4_url.rsplit('/', 1)
+                start_url = url_split[0]
+                file_name = url_split.pop().rsplit('.')[0]
+                if start_url and file_name:
+                    # file_name is not a known quality
+                    # add it in the final array to return
+                    if file_name not in best_qualities_order:
+                        new_mp4_urls.append(mp4_url)
+                    else:
+                        # add in a new dict the url as key and quality
+                        # in an array
+                        if start_url in url_quality_list and url_quality_list[start_url]:
+                            url_quality_list[start_url].append(file_name)
+                        else:
+                            # key do not exist
+                            url_quality_list[start_url] = [file_name]
+                else:
+                    # add it in the final array to return
+                    new_mp4_urls.append(mp4_url)
+
+            found = False
+            # pick the best quality
+            for url, qualities in url_quality_list.items():
+                if len(qualities) > 1:
+                    for quality_url in qualities:
+                        # quality selected by the user exists in the array
+                        if quality_url == qualities_dict[quality]:
+                            new_mp4_urls.append(url + '/' + quality_url + '.mp4')
+                            found = True
+                            break
+		    # pick the quality less that the one selected
+                    # by the user
+                    if not found:
+                        for quality_order, priority in best_qualities_order.items():
+                            args_quality = best_qualities_order[qualities_dict[quality]]
+                            if args_quality < priority:
+                                new_mp4_urls.append(url + '/' + quality_order + '.mp4')
+                                break
+                else:
+                    new_mp4_urls.append(url + '/' + qualities[0] + '.mp4')
+
+        return new_mp4_urls
+
+    def extract_unit(self, text, BASE_URL, file_formats, quality = None):
+        """
+        Parses the <div> of each unit and extracts the urls of its resources
+        """
+        video_youtube_url = self.extract_video_youtube_url(text)
+        available_subs_url, sub_template_url = self.extract_subtitle_urls(text, BASE_URL)
+        mp4_urls = self.extract_mp4_urls(text, quality)
+        videos = [Video(video_youtube_url=video_youtube_url,
+                        available_subs_url=available_subs_url,
+                        sub_template_url=sub_template_url,
+                        mp4_urls=mp4_urls)]
+
+        resources_urls = self.extract_resources_urls(text, BASE_URL,
+                                                     file_formats)
+        return Unit(videos=videos, resources_urls=resources_urls)
+
+    def extract_sections_from_html(self, page, BASE_URL):
+        """
+        Extract sections (Section->SubSection) from the html page
+        """
+        def _make_url(section_soup):  # FIXME: Extract from here and test
+            try:
+                # no url for the header section
+                return None
+            except AttributeError:
+                # Section might be empty and contain no links
+                return None
+
+        def _get_section_name(section_soup):  # FIXME: Extract from here and test
+            try:
+                return section_soup.a.span.get_text().strip()
+            except AttributeError:
+                return None
+
+        def _make_subsections(section_soup):
+            try:
+                subsections_soup = section_soup.find_all('div', class_=['menu-item'])
+            except AttributeError:
+                return []
+            # FIXME correct extraction of subsection.name (unicode)
+            subsections = [SubSection(position=i,
+                                      url=BASE_URL + s.a['href'],
+                                      name=s.a.p.string.strip())
+                           for i, s in enumerate(subsections_soup, 1)]
+            return subsections
+
+        soup = BeautifulSoup(page)
+        parent_sections_soup = soup.find('nav', class_=['course-navigation'])
+        chapter_sections_soup = parent_sections_soup.find_all('a', class_=['button-chapter', 'chapter'])
+        subsections_container_soup = parent_sections_soup.find_all('div', class_=['chapter-content-container'])
+
+        # Manipulate dom to put chapter section soup
+        # into subsections
+        sections_soup = []
+        for chapter_section_soup in chapter_sections_soup:
+            for subsection_container_soup in subsections_container_soup:
+                chapter_id = chapter_section_soup.get('href').replace('#', '')
+                if chapter_id == subsection_container_soup.get('id'):
+                    soup_empty = BeautifulSoup('<div></div>')
+                    section = soup_empty.new_tag('div')
+                    section.append(chapter_section_soup)
+                    section.append(subsection_container_soup.div.div)
+                    sections_soup.append(section)
+                    break
+
+        sections = [Section(position=i,
+                            name=_get_section_name(section_soup),
+                            url=_make_url(section_soup),
+                            subsections=_make_subsections(section_soup))
+                    for i, section_soup in enumerate(sections_soup, 1)]
+
+        # Filter out those sections for which name could not be parsed
+        sections = [section for section in sections
+                    if section.name]
+
+        return sections
+
 
 def get_page_extractor(url):
     """
@@ -419,10 +596,13 @@ def get_page_extractor(url):
         return NewEdXPageExtractor()
     elif (
         url.startswith('https://edge.edx.org') or
-        url.startswith('https://lagunita.stanford.edu') or
-        url.startswith('https://www.fun-mooc.fr')
+        url.startswith('https://lagunita.stanford.edu')
     ):
         return NewEdXPageExtractor()
+    elif (
+        url.startswith('https://www.fun-mooc.fr')
+    ):
+        return FunMoocPageExtractor()
     else:
         return ClassicEdXPageExtractor()
 

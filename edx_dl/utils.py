@@ -56,6 +56,13 @@ def get_page_contents(url, headers):
     request, we use the headers given in the dictionary in headers.
     """
     result = urlopen(Request(url, None, headers))
+
+    # get the final redirection
+    url = result.geturl()
+
+    if url:
+        result = urlopen(Request(url, None, headers))
+
     try:
         # for python3
         charset = result.headers.get_content_charset(failobj="utf-8")
