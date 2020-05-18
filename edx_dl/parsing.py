@@ -414,7 +414,9 @@ def get_page_extractor(url):
     """
     if (
         url.startswith('https://courses.edx.org') or
-        url.startswith('https://mitxpro.mit.edu')
+        url.startswith('https://mitxpro.mit.edu') or
+	url.startswith('https://mathesis.cup.gr')
+
     ):
         return NewEdXPageExtractor()
     elif (
