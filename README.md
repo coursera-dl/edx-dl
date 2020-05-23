@@ -71,6 +71,21 @@ execute:
 site along with the `-x` option. For example, `-x stanford`, if the course
 that you want to get is hosted on Stanford's site.
 
+
+*Alternative to providing username and password everytime:*
+
+On \*nix platforms, the use of a `~/.netrc` file is a good alternative to
+specifying both your username (i.e., your email address) and password every
+time on the command line. To use it, simply add a line like the one below to
+a file named `.netrc` in your home directory with contents like:
+
+    machine coursera-dl login <user> password <pass>
+
+Then, simply invoke your command using the `-n` option like:
+
+    edx-dl -n --list-courses
+
+
 # Docker container
 
 You can run this application via [Docker](https://docker.com) if you want. Just install docker and run
