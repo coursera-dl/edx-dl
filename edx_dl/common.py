@@ -95,7 +95,7 @@ class SubSection(object):
     """
     Representation of a subsection in a section.
     """
-    def __init__(self, position, name, url):
+    def __init__(self, position, name, url, scored=False):
         """
         @param position: Integer position of the subsection in the subsection
             list. Starts at 1.
@@ -106,10 +106,14 @@ class SubSection(object):
 
         @param url: URL of the subsection.
         @type url: str
+
+        @param scored: true if subsection have problem included
+        @type url: boolean
         """
         self.position = position
         self.name = name
         self.url = url
+        self.scored = scored
 
     def __repr__(self):
         return self.name + ": " + self.url

@@ -275,6 +275,13 @@ def parse_args():
                         default=False,
                         help='download subtitles with the videos')
 
+    parser.add_argument('-P',
+                        '--with-problems',
+                        dest='problems',
+                        action='store_true',
+                        default=False,
+                        help='download problems with the videos')
+
     parser.add_argument('-o',
                         '--output-dir',
                         action='store',
@@ -841,8 +848,24 @@ def download(args, selections, all_units, headers):
                                       clean_filename(section_dirname))
             mkdir_p(target_dir)
             counter = 0
+            counter_s = 1
             for subsection in selected_section.subsections:
                 units = all_units.get(subsection.url, [])
+                # if subsection is scored download it.
+                if args.problems and subsection.scored:
+                    filename = _build_filename_from_url(subsection.url, target_dir,
+                                                        "%02d" % counter_s)
+                    filename = filename + '.html'
+                    if os.path.exists(filename):
+                        logging.info('[skipping] %s => %s', subsection.url, filename)
+                    else:
+                        page = get_page_contents(subsection.url, headers)
+
+                        logging.info('[download] %s => %s', subsection.url, filename)
+                        # save the content of scored page0R4* to file
+                        with open(filename, 'wb') as f:
+                            f.write(page.encode('utf-8'))
+
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
