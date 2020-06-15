@@ -369,7 +369,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
         """
         def _make_url(section_soup):  # FIXME: Extract from here and test
             try:
-                return None
+                return section_soup.a['href']
             except AttributeError:
                 # Section might be empty and contain no links
                 return None
@@ -382,7 +382,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         def _make_subsections(section_soup):
             try:
-                subsections_soup = section_soup.select("li.vertical.outline-item.focusable")
+                subsections_soup = section_soup.find_all('li', class_=['subsection'])
             except AttributeError:
                 return []
 
@@ -399,7 +399,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
             return subsections
 
         soup = BeautifulSoup(page)
-        sections_soup = soup.select("li.outline-item.section")
+        sections_soup = soup.find_all('li', class_=['outline-item','section'])
 
         sections = [Section(position=i,
                             name=_get_section_name(section_soup),
@@ -427,7 +427,7 @@ def get_page_extractor(url):
         url.startswith('https://lagunita.stanford.edu') or
         url.startswith('https://www.fun-mooc.fr')
     ):
-        return CurrentEdXPageExtractor()
+        return NewEdXPageExtractor()
     else:
         return ClassicEdXPageExtractor()
 

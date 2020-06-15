@@ -3,4 +3,6 @@
 
 from edx_dl import edx_dl
 
-edx_dl.main()
+
+if __name__ == '__main__':
+    edx_dl.main()
