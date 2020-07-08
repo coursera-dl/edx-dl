@@ -369,7 +369,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
         """
         def _make_url(section_soup):  # FIXME: Extract from here and test
             try:
-                return section_soup.a['href']
+                return section_soup.ol
             except AttributeError:
                 # Section might be empty and contain no links
                 return None
