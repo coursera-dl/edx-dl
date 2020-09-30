@@ -817,6 +817,9 @@ def download_youtube_url(url, filename, headers, args):
 
     if args.format:
         opts['format'] = args.format + '/' + opts['format']
+    
+    if args.ignore_errors:
+        opts['ignoreerrors'] = True
 
     opts['outtmpl'] = filename
 
