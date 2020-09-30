@@ -300,7 +300,7 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
             re_youtube_url = re.compile(r"((?<=streams&#34;: &#34;\d.\d\d:).{11}(?=&#34))")
             match_video_youtube_url = re_youtube_url.findall(metadata)
 
-            if match_video_youtube_url is not None:
+            if match_video_youtube_url is not None and match_video_youtube_url:
                 video_id = match_video_youtube_url[0]
                 video_youtube_url = 'https://youtube.com/watch?v=' + video_id
             # notice that the concrete languages come now in
