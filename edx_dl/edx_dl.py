@@ -6,6 +6,8 @@ Main module for the edx-dl downloader.
 It corresponds to the cli interface
 """
 
+from __future__ import unicode_literals
+
 import argparse
 import getpass
 import json
@@ -17,6 +19,8 @@ import sys
 
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
+
+import youtube_dl
 
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.error import HTTPError, URLError
@@ -101,6 +105,48 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
+class MyLogger(object):
+    def debug(self, msg):
+        pass
+
+    def warning(self, msg):
+        pass
+
+    def error(self, msg):
+        print(msg)
+
+
+def my_hook(d):
+    if d['status'] == 'error':
+        print('Error downloading video from YouTube!')
+    #elif d['status'] == 'finished':
+    #    print('Done downloading, now converting ...')
+
+ydl_opts = {
+    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+    'merge_output_format': 'mp4',
+    'hls_prefer_native': True,
+    'nooverwrites': True,
+    'writethumbnail': False,
+    'prefer_ffmpeg': True,
+    'logger': MyLogger(),
+    'progress_hooks': [my_hook],
+}
+
+ydl_opts_subs = {
+    'format': 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/best[ext=mp4]/best',
+    'merge_output_format': 'mp4',
+    'hls_prefer_native': True,
+    'nooverwrites': True,
+    'writethumbnail': False,
+    'writesubtitles': True,
+    'allsubtitles': True,
+    'subtitlesformat': 'srt',
+    'prefer_ffmpeg': True,
+    'postprocessors': [{'key': 'FFmpegEmbedSubtitle'}],
+    'logger': MyLogger(),
+    'progress_hooks': [my_hook],
+}
 
 def change_openedx_site(site_name):
     """
@@ -422,7 +468,7 @@ def edx_get_headers():
     logging.info('Building initial headers for future requests.')
 
     headers = {
-        'User-Agent': 'edX-downloader/0.01',
+        'User-Agent': 'Mozilla/5.0',
         'Accept': 'application/json, text/javascript, */*; q=0.01',
         'Content-Type': 'application/x-www-form-urlencoded;charset=utf-8',
         'Referer': EDX_HOMEPAGE,
@@ -438,11 +484,21 @@ def extract_units(url, headers, file_formats):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
     """
+
+    end_of_url = url.split("/")[-1]
+    url = "https://courses.edx.org/api/courseware/sequence/" + end_of_url
+
     logging.info("Processing '%s'", url)
 
     page = get_page_contents(url, headers)
     page_extractor = get_page_extractor(url)
-    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
+    unit_urls = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
+
+    units = []
+    for unit_url in unit_urls:
+        unit_page = get_page_contents(unit_url, headers)
+        units.append(page_extractor.extract_unit(unit_page, BASE_URL, file_formats))
+
 
     return units
 
@@ -742,16 +798,30 @@ def download_youtube_url(url, filename, headers, args):
     """
     Downloads a youtube URL and applies the filters from args
     """
-    logging.info('Downloading video with URL %s from YouTube.', url)
-    video_format_option = args.format + '/mp4' if args.format else 'mp4'
-    cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
+
+    #video_format_option = args.format + '/mp4' if args.format else 'mp4'
+    #cmd = YOUTUBE_DL_CMD + ['-o', filename, '-f', video_format_option]
+
+    #if args.subtitles:
+    #    cmd.append('--all-subs')
+    #cmd.extend(args.youtube_dl_options.split())
+    #md.append(url)
+
+    #execute_command(cmd, args)
+
 
     if args.subtitles:
-        cmd.append('--all-subs')
-    cmd.extend(args.youtube_dl_options.split())
-    cmd.append(url)
+        opts = ydl_opts_subs
+    else:
+        opts = ydl_opts
 
-    execute_command(cmd, args)
+    if args.format:
+        opts['format'] = args.format + '/' + opts['format']
+
+    opts['outtmpl'] = filename
+
+    with youtube_dl.YoutubeDL(opts) as ydl:
+        ydl.download([url])
 
 
 def download_subtitle(url, filename, headers, args):
@@ -770,6 +840,9 @@ def skip_or_download(downloads, headers, args, f=download_url):
     downloads url into filename using download function f,
     if filename exists it skips
     """
+
+    downloadCount = 0
+
     for url, filename in downloads.items():
         if os.path.exists(filename):
             logging.info('[skipping] %s => %s', url, filename)
@@ -778,20 +851,25 @@ def skip_or_download(downloads, headers, args, f=download_url):
             logging.info('[download] %s => %s', url, filename)
         if args.dry_run:
             continue
+        downloadCount += 1
         f(url, filename, headers, args)
+
+    return downloadCount
 
 
 def download_video(video, args, target_dir, filename_prefix, headers):
+    downloadCount = 0
+
     if args.prefer_cdn_videos or video.video_youtube_url is None:
         mp4_downloads = _build_url_downloads(video.mp4_urls, target_dir,
                                              filename_prefix)
-        skip_or_download(mp4_downloads, headers, args)
+        downloadCount += skip_or_download(mp4_downloads, headers, args)
     else:
         if video.video_youtube_url is not None:
             youtube_downloads = _build_url_downloads([video.video_youtube_url],
                                                      target_dir,
                                                      filename_prefix)
-            skip_or_download(youtube_downloads, headers, args)
+            downloadCount += skip_or_download(youtube_downloads, headers, args)
 
     # the behavior with subtitles is different, since the subtitles don't know
     # the destination name until the video is downloaded with youtube-dl
@@ -799,7 +877,9 @@ def download_video(video, args, target_dir, filename_prefix, headers):
     if args.subtitles:
         sub_downloads = _build_subtitles_downloads(video, target_dir,
                                                    filename_prefix, headers)
-        skip_or_download(sub_downloads, headers, args, download_subtitle)
+        downloadCount += skip_or_download(sub_downloads, headers, args, download_subtitle)
+
+    return downloadCount
 
 
 def download_unit(unit, args, target_dir, filename_prefix, headers):
@@ -807,19 +887,24 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     Downloads the urls in unit based on args in the given target_dir
     with filename_prefix
     """
+
+    downloadCount = 0
+
     if len(unit.videos) == 1:
-        download_video(unit.videos[0], args, target_dir, filename_prefix,
+        downloadCount += download_video(unit.videos[0], args, target_dir, filename_prefix,
                        headers)
     else:
         # we change the filename_prefix to avoid conflicts when downloading
         # subtitles
         for i, video in enumerate(unit.videos, 1):
             new_prefix = filename_prefix + ('-%02d' % i)
-            download_video(video, args, target_dir, new_prefix, headers)
+            downloadCount += download_video(video, args, target_dir, new_prefix, headers)
 
     res_downloads = _build_url_downloads(unit.resources_urls, target_dir,
                                          filename_prefix)
-    skip_or_download(res_downloads, headers, args)
+    downloadCount += skip_or_download(res_downloads, headers, args)
+
+    return downloadCount
 
 
 def download(args, selections, all_units, headers):
@@ -827,6 +912,8 @@ def download(args, selections, all_units, headers):
     Downloads all the resources based on the selections
     """
     logging.info("Output directory: " + args.output_dir)
+
+    downloadCount = 0
 
     # Download Videos
     # notice that we could iterate over all_units, but we prefer to do it over
@@ -846,8 +933,10 @@ def download(args, selections, all_units, headers):
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
-                    download_unit(unit, args, target_dir, filename_prefix,
+                    downloadCount += download_unit(unit, args, target_dir, filename_prefix,
                                   headers)
+
+    return downloadCount
 
 
 def remove_repeated_urls(all_units):
@@ -1070,7 +1159,7 @@ def main():
         urls = extract_urls_from_units(filtered_units, args.export_format)
         save_urls_to_file(urls, args.export_filename)
     else:
-        download(args, selections, filtered_units, headers)
+        downloadCount = download(args, selections, filtered_units, headers)
 
 
 if __name__ == '__main__':
