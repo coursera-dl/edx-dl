@@ -284,33 +284,75 @@ class CurrentEdXPageExtractor(ClassicEdXPageExtractor):
     A new page extractor for the recent changes in layout of edx
     """
     def extract_unit(self, text, BASE_URL, file_formats):
-        re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
         videos = []
+        resources_urls = []
+
+        re_metadata = re.compile(r"((?<=data-metadata='{&#34;).*(?=}'\n))")
         match_metadatas = re_metadata.findall(text)
-        for match_metadata in match_metadatas:
-            metadata = html_parser.HTMLParser().unescape(match_metadata)
-            metadata = json.loads(html_parser.HTMLParser().unescape(metadata))
+
+        for metadata in match_metadatas:
+            #metadata = html_parser.HTMLParser().unescape(match_metadata)
+            #metadata = json.loads(metadata)
+
             video_youtube_url = None
-            re_video_speed = re.compile(r'1.0\d+\:(?:.*?)(.{11})')
-            match_video_youtube_url = re_video_speed.search(metadata['streams'])
+            re_video_speed = re.compile(r"((?<=streams&#34;: &#34;)\d.\d\d(?=:.{11}&#34))")
+            match_video_speed = re_video_speed.findall(metadata)
+            re_youtube_url = re.compile(r"((?<=streams&#34;: &#34;\d.\d\d:).{11}(?=&#34))")
+            match_video_youtube_url = re_youtube_url.findall(metadata)
+
             if match_video_youtube_url is not None:
-                video_id = match_video_youtube_url.group(1)
+                video_id = match_video_youtube_url[0]
                 video_youtube_url = 'https://youtube.com/watch?v=' + video_id
             # notice that the concrete languages come now in
             # so we can eventually build the full urls here
             # subtitles_download_urls = {sub_lang:
             #                            BASE_URL + metadata['transcriptTranslationUrl'].replace('__lang__', sub_lang)
             #                            for sub_lang in metadata['transcriptLanguages'].keys()}
-            available_subs_url = BASE_URL + metadata['transcriptAvailableTranslationsUrl']
-            sub_template_url = BASE_URL + metadata['transcriptTranslationUrl'].replace('__lang__', '%s')
-            mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
+
+            re_available_subs_url = re.compile(r"((?<=transcriptAvailableTranslationsUrl&#34;: &#34;).*?(?=&#34;))")
+            match_available_subs = re_available_subs_url.findall(metadata)
+            re_sub_template_url = re.compile(r"((?<=transcriptTranslationUrl&#34;: &#34;).*?(?=&#34;))")
+            match_sub_template_url = re_sub_template_url.findall(metadata)
+            
+            mp4_urls = []
+
+            re_mp4_urls = re.compile(r"((?<=sources&#34;: \[&#34;).*?(?=&#34;]))")
+            match_mp4_urls = re_mp4_urls.findall(metadata)
+            if match_mp4_urls is not None:
+                for match_mp4_url in match_mp4_urls:
+                    possible_mp4s = match_mp4_url.split("&#34;, &#34;")
+                    for possible_mp4 in possible_mp4s:
+                        if possible_mp4[-4:] == ".mp4":
+                            mp4_urls.append(possible_mp4)
+
+
+            available_subs_url = ""
+            if match_available_subs is not None:
+                available_subs_url = BASE_URL + match_available_subs[0]
+
+            sub_template_url = ""
+            if match_sub_template_url is not None:
+                sub_template_url = BASE_URL + match_sub_template_url[0].replace('__lang__', '%s')
+
             videos.append(Video(video_youtube_url=video_youtube_url,
                                 available_subs_url=available_subs_url,
                                 sub_template_url=sub_template_url,
                                 mp4_urls=mp4_urls))
 
-        resources_urls = self.extract_resources_urls(text, BASE_URL,
-                                                     file_formats)
+
+        re_resource_urls = re.compile(r'((?<=<a href=")[^#].*?(?="))')
+        match_resource_urls = re_resource_urls.findall(text)
+        if match_resource_urls is not None:
+            for res_url in match_resource_urls:
+                if len(res_url) > 3:
+                    if res_url[-3:] in file_formats:
+                        if res_url.startswith('http') or res_url.startswith('https'):
+                            resources_urls.append(res_url)
+                        elif res_url.startswith('//'):
+                            resources_urls.append('https:' + res_url)
+                        else:
+                            resources_urls.append(BASE_URL + res_url)
+        
         return Unit(videos=videos, resources_urls=resources_urls)
 
     def extract_sections_from_html(self, page, BASE_URL):
@@ -362,6 +404,22 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
     """
     A new page extractor for the latest changes in layout of edx
     """
+
+    def extract_units_from_html(self, page, BASE_URL, file_formats):
+        """
+        Extract Units from the html of a subsection webpage as a list of
+        resources
+        """
+        
+        re_units = re.compile('((?<="id":")[^"]*)', re.DOTALL)
+        match_units = re_units.findall(page)
+
+        units = []
+
+        for unit_url in match_units:
+            units.append("https://courses.edx.org/xblock/" + unit_url) # + "?show_title=0&show_bookmark_button=0&format=After-video%20Quiz%20M2")
+
+        return units
 
     def extract_sections_from_html(self, page, BASE_URL):
         """
