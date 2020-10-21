@@ -3,7 +3,13 @@
 
 # This module contains generic functions, ideally useful to any other module
 from six.moves.urllib.request import urlopen, Request
-from six.moves import html_parser
+
+import sys
+if sys.version_info[0] >= 3:
+    import html
+else:
+    from six.moves import html_parser    
+    html = html_parser.HTMLParser()
 
 import errno
 import json
@@ -119,7 +125,7 @@ def clean_filename(s, minimal_change=False):
     """
 
     # First, deal with URL encoded strings
-    h = html_parser.HTMLParser()
+    h = html
     s = h.unescape(s)
 
     # strip paren portions which contain trailing time length (...)
