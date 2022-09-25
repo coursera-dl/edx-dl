@@ -47,12 +47,12 @@ the simplest is to simply use:
 Once you have installed everything, to use `edx-dl.py`, let it discover the
 courses in which you are enrolled, by issuing:
 
-    edx-dl -u user@user.com --list-courses
+    edx-dl -u user@email.com --list-courses
 
 From there, choose the course you are interested in, copy its URL and use it
 in the following command:
 
-    edx-dl -u user@user.com COURSE_URL
+    edx-dl -u user@email.com COURSE_URL
 
 replacing `COURSE_URL` with the URL that you just copied in the first step.
 It should look something like:
