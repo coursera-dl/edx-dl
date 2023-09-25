@@ -45,6 +45,48 @@ def edx_json2srt(o):
 
     return ''.join(output)
 
+class JsonExtractor(object):
+    """
+    Base class for JsonExtractor
+    Every subclass can represent a different data structures from API of an OpenEdX site.
+    They should implement the given methods.
+
+    Usage:
+
+      >>> import parsing
+      >>> extractor = parsing.SubclassFromJsonExtractor()
+      >>> courses = extractor.extract_courses(response)
+      >>> ...
+    """
+
+    def extract_courses(self, response):
+        """
+        Method to extract the courses from response of courses api
+        """
+        raise NotImplementedError("Subclasses should implement this")
+
+class EdXJsonExtractor(JsonExtractor):
+
+    def extract_courses(self, response):
+        """
+        Extracts the courses from response of courses api
+        """
+        courses = []
+        for item in response['courses']:
+            course_id = item['courseRun']['courseId']
+            course_name = item['course']['courseName']
+            course_url = item['courseRun']['homeUrl']
+            if item['courseRun']['isStarted']:
+                course_state = 'Started'
+            elif item['enrollment']['isAudit'] and not item['enrollment']['isAuditAccessExpired']:
+                course_state = 'Started'
+            else:
+                course_state = 'Not yet'
+            courses.append(Course(id=course_id,
+                                  name=course_name,
+                                  url=course_url,
+                                  state=course_state))
+        return courses
 
 class PageExtractor(object):
     """
