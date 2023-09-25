@@ -44,6 +44,7 @@ from .parsing import (
     edx_json2srt,
     get_page_extractor,
     is_youtube_url,
+    EdXJsonExtractor,
 )
 from .utils import (
     clean_filename,
@@ -99,6 +100,7 @@ BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
+COURSE_LIST_API = BASE_URL + '/api/learner_home/init'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 
@@ -137,13 +139,13 @@ def _display_courses(courses):
 
 def get_courses_info(url, headers):
     """
-    Extracts the courses information from the dashboard.
+    Extracts the courses information.
     """
-    logging.info('Extracting course information from dashboard.')
+    logging.info('Extracting course information.')
 
-    page = get_page_contents(url, headers)
-    page_extractor = get_page_extractor(url)
-    courses = page_extractor.extract_courses_from_html(page, BASE_URL)
+    json_extractor = EdXJsonExtractor()
+    courses_json = get_page_contents_as_json(url, headers)
+    courses = json_extractor.extract_courses(courses_json)
 
     logging.debug('Data extracted: %s', courses)
 
@@ -1011,7 +1013,7 @@ def main():
         exit(ExitCode.WRONG_EMAIL_OR_PASSWORD)
 
     # Parse and select the available courses
-    courses = get_courses_info(DASHBOARD, headers)
+    courses = get_courses_info(COURSE_LIST_API, headers)
     available_courses = [course for course in courses if course.state == 'Started']
     selected_courses = parse_courses(args, available_courses)
 
