@@ -101,6 +101,7 @@ EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSE_LIST_API = BASE_URL + '/api/learner_home/init'
+COURSE_OUTLINE_API = BASE_URL + '/api/course_home/outline'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 
@@ -188,6 +189,21 @@ def get_available_sections(url, headers):
     sections = page_extractor.extract_sections_from_html(page, BASE_URL)
 
     logging.debug("Extracted sections: " + str(sections))
+    return sections
+
+
+def get_available_sections_by_courseid(course_id, headers):
+    """
+    Extracts the sections and subsections for a given course id
+    """
+    logging.debug("Extracting sections for " + course_id)
+
+    url = COURSE_OUTLINE_API + '/' + course_id
+    logging.debug("Extracting from " + url)
+
+    resp_dict = get_page_contents_as_json(url, headers=headers)
+    extractor = EdXJsonExtractor()
+    sections = extractor.extract_sections(resp_dict)
     return sections
 
 
@@ -1019,9 +1035,7 @@ def main():
 
     # Parse the sections and build the selections dict filtered by sections
     if args.platform == 'edx':
-        all_selections = {selected_course:
-                          get_available_sections(selected_course.url.replace('info', 'course'),
-                                                 headers)
+        all_selections = {selected_course: get_available_sections_by_courseid(selected_course.id, headers)
                           for selected_course in selected_courses}
     else:
         all_selections = {selected_course:

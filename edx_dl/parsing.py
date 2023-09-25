@@ -59,11 +59,18 @@ class JsonExtractor(object):
       >>> ...
     """
 
-    def extract_courses(self, response):
+    def extract_courses(self, deserialized_response):
         """
         Method to extract the courses from response of courses api
         """
         raise NotImplementedError("Subclasses should implement this")
+
+    def extract_sections(self, deserialized_response):
+        """
+        Method to extract the sections (and subsections) from deserialized response
+        """
+        raise NotImplementedError("Subclasses should implement this")
+
 
 class EdXJsonExtractor(JsonExtractor):
 
@@ -87,6 +94,35 @@ class EdXJsonExtractor(JsonExtractor):
                                   url=course_url,
                                   state=course_state))
         return courses
+
+    def extract_sections(self, response):
+        """
+        Extract the sections (and subsections) from deserialized response
+        """
+
+        def _make_subsections(all_blocks, children):
+            subsections = [SubSection(position=i,
+                                      name=all_blocks[block_id]['display_name'],
+                                      url=all_blocks[block_id]['lms_web_url']
+                                      )
+                           for i, block_id in enumerate(children, 1)]
+
+            return subsections
+
+        blocks = response['course_blocks']['blocks']
+        sections = []
+        for i, block_id in enumerate(blocks, 1):
+            section = Section(position=i,
+                              name=blocks[block_id]['display_name'],
+                              url=blocks[block_id]['lms_web_url'],
+                              subsections=_make_subsections(blocks, blocks[block_id]['children']))
+            sections.append(section)
+
+        # Filter out those sections for which name or url could not be parsed
+        sections = [section for section in sections
+                    if section.name and section.url]
+        return sections
+
 
 class PageExtractor(object):
     """
