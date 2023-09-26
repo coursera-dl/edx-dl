@@ -548,18 +548,34 @@ class RobustEdXPageExtractor(NewEdXPageExtractor):
             if xblock_type == 'html':
                 urls = self.extract_resources_urls(xblock, BASE_URL, file_formats)
                 resources_urls.extend(urls)
-            if xblock_type == 'video':
+            elif xblock_type == 'video':
+                video_youtube_url = None
+                available_subs_url = None
+                sub_template_url = None
                 mp4_urls = []
                 video_download_button = xblock.find('a', 'btn-link video-sources video-download-button')
                 if video_download_button:
                     mp4_urls.append(video_download_button['href'])
-                available_subs_url = ''
                 subtitle_download_button = xblock.find('a', text=re.compile('^Download SubRip'))
                 if subtitle_download_button:
                     available_subs_url = subtitle_download_button['href']
-                videos.append(Video(video_youtube_url=None,
+                if not video_download_button and not subtitle_download_button:
+                    re_metadata = re.compile(r'data-metadata=&#39;(.*?)&#39;')
+                    match_metadatas = re_metadata.findall(str(unit_soup))
+                    for match_metadata in match_metadatas:
+                        metadata = html_parser.HTMLParser().unescape(match_metadata)
+                        metadata = json.loads(html_parser.HTMLParser().unescape(metadata))
+                        re_video_speed = re.compile(r'1.0\d+\:(?:.*?)(.{11})')
+                        match_video_youtube_url = re_video_speed.search(metadata['streams'])
+                        if match_video_youtube_url is not None:
+                            video_id = match_video_youtube_url.group(1)
+                            video_youtube_url = 'https://youtube.com/watch?v=' + video_id
+                        available_subs_url = BASE_URL + metadata['transcriptAvailableTranslationsUrl']
+                        sub_template_url = BASE_URL + metadata['transcriptTranslationUrl'].replace('__lang__', '%s')
+                        mp4_urls = [url for url in metadata['sources'] if url.endswith('.mp4')]
+                videos.append(Video(video_youtube_url=video_youtube_url,
                                     available_subs_url=available_subs_url,
-                                    sub_template_url=None,
+                                    sub_template_url=sub_template_url,
                                     mp4_urls=mp4_urls))
         return Unit(videos=videos, resources_urls=resources_urls)
 

@@ -809,7 +809,9 @@ def download_url(url, filename, headers, args):
     Downloads the given url in filename.
     """
 
-    if is_youtube_url(url):
+    if is_youtube_url(url) and args.prefer_cdn_videos:
+        pass
+    elif is_youtube_url(url):
         download_youtube_url(url, filename, headers, args)
     else:
         import ssl
