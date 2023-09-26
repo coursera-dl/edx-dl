@@ -31,6 +31,8 @@ from six.moves.urllib.request import (
     urlretrieve,
 )
 
+import requests
+
 from ._version import __version__
 
 from .common import (
@@ -779,6 +781,25 @@ def _build_subtitles_downloads(video, target_dir, filename_prefix, headers):
     return downloads
 
 
+def _subtitles_info(video, target_dir, filename_prefix, headers):
+    """
+    Builds a dict {url: filename} for the subtitles, based on the
+    filename_prefix of the video
+    """
+    downloads = {}
+    if video.available_subs_url:
+        url = video.available_subs_url
+        filename = url.slit('/')[-1] if url.endswith('.srt') else None
+        if not filename or not os.path.exists(os.path.join(target_dir, filename)):
+            downloads[url] = filename
+    if video.sub_template_url:
+        url = video.sub_template_url
+        filename = url.slit('/')[-1] if url.endswith('.srt') else None
+        if not filename or not os.path.exists(os.path.join(target_dir, filename)):
+            downloads[url] = filename
+    return downloads
+
+
 def _build_url_downloads(urls, target_dir, filename_prefix):
     """
     Builds a dict {url: filename} for the given urls
@@ -884,6 +905,24 @@ def download_subtitle(url, filename, headers, args):
             f.write(subs_string.encode('utf-8'))
 
 
+def download_subtitle_without_name(url, target_dir, filename, headers, args):
+    """
+    Downloads the subtitle from the url
+    """
+    response = requests.get(url, headers)
+    if not filename:
+        resp_headers = response.headers['Content-Disposition']
+        m = re.compile(r'filename="(.*)"').search(resp_headers)
+        if m:
+            filename = m.group(1)
+        else:
+            logging.warning('Not setting file name for: %s', url)
+            return
+    file_path = os.path.join(target_dir, filename)
+    with open(file_path, 'wb') as f:
+        f.write(response)
+
+
 def skip_or_download(downloads, headers, args, f=download_url):
     """
     downloads url into filename using download function f,
@@ -916,9 +955,11 @@ def download_video(video, args, target_dir, filename_prefix, headers):
     # the destination name until the video is downloaded with youtube-dl
     # also, subtitles must be transformed from the raw data to the srt format
     if args.subtitles:
-        sub_downloads = _build_subtitles_downloads(video, target_dir,
-                                                   filename_prefix, headers)
-        skip_or_download(sub_downloads, headers, args, download_subtitle)
+        sub_downloads = _subtitles_info(video, target_dir,
+                                        filename_prefix, headers)
+        logging.info(sub_downloads)
+        for url, filename in sub_downloads.items():
+            download_subtitle_without_name(url, target_dir, filename, headers, args)
 
 
 def download_unit(unit, args, target_dir, filename_prefix, headers):
@@ -964,8 +1005,10 @@ def download(args, selections, all_units, headers):
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
-                    # download_unit(unit, args, seq_path, filename_prefix, headers)
-                    executor.submit(download_unit, unit, args, seq_path, filename_prefix, headers)
+                    if args.sequential:
+                        download_unit(unit, args, seq_path, filename_prefix, headers)
+                    else:
+                        executor.submit(download_unit, unit, args, seq_path, filename_prefix, headers)
     executor.shutdown(wait=True)
 
 
