@@ -17,6 +17,7 @@ import sys
 
 from functools import partial
 from multiprocessing.dummy import Pool as ThreadPool
+from concurrent import futures
 
 from six.moves.http_cookiejar import CookieJar
 from six.moves.urllib.error import HTTPError, URLError
@@ -57,6 +58,7 @@ from .utils import (
     mkdir_p,
     remove_duplicates,
     deprecated,
+    TqdmUpTo,
 )
 
 
@@ -816,6 +818,7 @@ def download_url(url, filename, headers, args):
     else:
         import ssl
         import requests
+        from tqdm.auto import tqdm
         # FIXME: Ugly hack for coping with broken SSL sites:
         # https://www.cs.duke.edu/~angl/papers/imc10-cloudcmp.pdf
         #
@@ -832,10 +835,18 @@ def download_url(url, filename, headers, args):
             # mitxpro fix for downloading compressed files
             if 'zip' in url and 'mitxpro' in url:
                 urlretrieve(url, filename)
+                desc = url.split('/')[-1]
+                with TqdmUpTo(unit='B', unit_scale=True, unit_divisor=1024, miniters=1, desc=desc) as t:
+                    urlretrieve(url, filename, reporthook=t.update_to, data=None)
+                    t.total = t.n
             else:
-                r = requests.get(url, headers=headers)
-                with open(filename, 'wb') as fp:
-                    fp.write(r.content)
+                response = requests.get(url, headers=headers, stream=True)
+                total_size = int(response.headers.get('content-length', 0))
+                desc = url.split('/')[-1]
+                with open(filename, 'wb') as fd:
+                    with tqdm.wrapattr(fd, "write", miniters=1, total=total_size, desc=desc) as fdw:
+                        for chunk in response.iter_content(chunk_size=4096):
+                            fdw.write(chunk)
         except Exception as e:
             logging.warn('Got SSL/Connection error: %s', e)
             if not args.ignore_errors:
@@ -936,28 +947,27 @@ def download(args, selections, all_units, headers):
     """
     logging.info("Output directory: " + args.output_dir)
 
-    # Download Videos
-    # notice that we could iterate over all_units, but we prefer to do it over
-    # sections/subsections to add correct prefixes and show nicer information.
-
+    executor = futures.ThreadPoolExecutor()
     for selected_course, selected_blocks in selections.items():
         course_name = directory_name(selected_course.name)
         for selected_block in selected_blocks:
             section_dir = "%02d-%s" % (selected_block.position, selected_block.name)
             section_path = os.path.join(args.output_dir, course_name, clean_filename(section_dir))
             mkdir_p(section_path)
-            counter = 0
             for sequential_block in selected_block.children:
                 seq_dir = "%02d-%s" % (sequential_block.position, sequential_block.name)
                 seq_path = os.path.join(args.output_dir, course_name,
                                         clean_filename(section_dir), clean_filename(seq_dir))
                 mkdir_p(seq_path)
+                counter = 0
                 units = all_units.get(sequential_block, [])
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
-                    download_unit(unit, args, seq_path, filename_prefix,
-                                  headers)
+                    # download_unit(unit, args, seq_path, filename_prefix, headers)
+                    executor.submit(download_unit, unit, args, seq_path, filename_prefix, headers)
+    executor.shutdown(wait=True)
+
 
 
 def remove_repeated_urls(all_units):
