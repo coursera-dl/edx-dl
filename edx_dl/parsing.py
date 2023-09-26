@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 from six.moves import html_parser
 from bs4 import BeautifulSoup as BeautifulSoup_
 
-from .common import Course, Section, SubSection, Unit, Video
+from .common import Course, Section, SubSection, Block, Unit, Video
 
 
 # Force use of bs4 with html.parser
@@ -53,7 +53,7 @@ class JsonExtractor(object):
 
     Usage:
 
-      >>> import parsing
+      >>> from edx_dl import parsing
       >>> extractor = parsing.SubclassFromJsonExtractor()
       >>> courses = extractor.extract_courses(response)
       >>> ...
@@ -65,12 +65,23 @@ class JsonExtractor(object):
         """
         raise NotImplementedError("Subclasses should implement this")
 
-    def extract_sections(self, deserialized_response):
+    def extract_sequential_blocks(self, deserialized_response):
         """
-        Method to extract the sections (and subsections) from deserialized response
+        Method to extract the sequential blocks from deserialized response
         """
         raise NotImplementedError("Subclasses should implement this")
 
+    def extract_vertical_blocks(self, deserialized_response):
+        """
+        Method to extract the vertical blocks from deserialized response
+        """
+        raise NotImplementedError("Subclasses should implement this")
+
+    def extract_units(self, deserialized_response):
+        """
+        Method to extract the units from deserialized response
+        """
+        raise NotImplementedError("Subclasses should implement this")
 
 class EdXJsonExtractor(JsonExtractor):
 
@@ -95,33 +106,58 @@ class EdXJsonExtractor(JsonExtractor):
                                   state=course_state))
         return courses
 
-    def extract_sections(self, response):
+    def extract_sequential_blocks(self, response):
         """
-        Extract the sections (and subsections) from deserialized response
+        Extract the sequential blocks from deserialized response
         """
 
-        def _make_subsections(all_blocks, children):
-            subsections = [SubSection(position=i,
-                                      name=all_blocks[block_id]['display_name'],
-                                      url=all_blocks[block_id]['lms_web_url']
-                                      )
-                           for i, block_id in enumerate(children, 1)]
+        def _make_children(info, ids):
+            children = [Block(position=idx,
+                              block_id=block_id,
+                              name=all_blocks[block_id]['display_name'],
+                              block_type=all_blocks[block_id]['type'],
+                              url=all_blocks[block_id]['lms_web_url'],
+                              children=None
+                              )
+                        for idx, block_id in enumerate(ids, 1)]
+            return children
 
-            return subsections
+        all_blocks = response['course_blocks']['blocks']
+        chapter_blocks = []
+        for _, block in all_blocks.items():
+            if block['type'] == 'course':
+                chapter_block_ids = block['children']
+                for i, chapter_block_id in enumerate(chapter_block_ids, 1):
+                    children_ids = all_blocks[chapter_block_id]['children']
+                    chapter_block = Block(position=i,
+                                          block_id=chapter_block_id,
+                                          name=all_blocks[chapter_block_id]['display_name'],
+                                          block_type=all_blocks[chapter_block_id]['type'],
+                                          url=all_blocks[chapter_block_id]['lms_web_url'],
+                                          children=_make_children(all_blocks, children_ids)
+                                          )
+                    chapter_blocks.append(chapter_block)
+        return chapter_blocks
 
-        blocks = response['course_blocks']['blocks']
-        sections = []
-        for i, block_id in enumerate(blocks, 1):
-            section = Section(position=i,
-                              name=blocks[block_id]['display_name'],
-                              url=blocks[block_id]['lms_web_url'],
-                              subsections=_make_subsections(blocks, blocks[block_id]['children']))
-            sections.append(section)
-
-        # Filter out those sections for which name or url could not be parsed
-        sections = [section for section in sections
-                    if section.name and section.url]
-        return sections
+    def extract_vertical_blocks(self, deserialized_response):
+        """
+        Method to extract the vertical blocks from deserialized response
+        """
+        sequential_block_id = deserialized_response['item_id']
+        items = deserialized_response['items']
+        vertical_blocks = []
+        for i, item in enumerate(items, 1):
+            block_id = item['id']
+            url = "https://learning.edx.org/course/" + sequential_block_id + '/' + block_id
+            block = Block(position=i,
+                          block_id=block_id,
+                          name=item['page_title'],
+                          block_type=item['type'],
+                          url=url,
+                          children=None,
+                          )
+            vertical_blocks.append(block)
+        return vertical_blocks
 
 
 class PageExtractor(object):
@@ -132,7 +168,7 @@ class PageExtractor(object):
 
     Usage:
 
-      >>> import parsing
+      >>> from edx_dl import parsing
       >>> d = parsing.SubclassFromPageExtractor()
       >>> units = d.extract_units_from_html(page, BASE_URL)
       >>> ...
@@ -485,6 +521,71 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
         return sections
 
+
+class RobustEdXPageExtractor(NewEdXPageExtractor):
+    def extract_units_from_html(self, page, BASE_URL, file_formats):
+        """
+        Extract Units from the html of a subsection webpage as a list of
+        resources
+        """
+        soup = BeautifulSoup(page)
+        units_soup = soup.find_all('div', attrs={'class': 'vert'})
+
+        units = []
+
+        for unit_soup in units_soup:
+            unit = self.extract_unit(unit_soup, BASE_URL, file_formats)
+            if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
+                units.append(unit)
+        return units
+
+    def extract_unit(self, unit_soup, BASE_URL, file_formats):
+        videos = []
+        resources_urls = []
+        xblock_list = unit_soup.find_all('div', 'xblock')
+        for xblock in xblock_list:
+            xblock_type = xblock['data-block-type']
+            if xblock_type == 'html':
+                urls = self.extract_resources_urls(xblock, BASE_URL, file_formats)
+                resources_urls.extend(urls)
+            if xblock_type == 'video':
+                mp4_urls = []
+                video_download_button = xblock.find('a', 'btn-link video-sources video-download-button')
+                if video_download_button:
+                    mp4_urls.append(video_download_button['href'])
+                available_subs_url = ''
+                subtitle_download_button = xblock.find('a', text=re.compile('^Download SubRip'))
+                if subtitle_download_button:
+                    available_subs_url = subtitle_download_button['href']
+                videos.append(Video(video_youtube_url=None,
+                                    available_subs_url=available_subs_url,
+                                    sub_template_url=None,
+                                    mp4_urls=mp4_urls))
+        return Unit(videos=videos, resources_urls=resources_urls)
+
+    def extract_resources_urls(self, soup, BASE_URL, file_formats):
+        """
+        Extract resources looking for <a> references in the webpage and
+        matching the given file formats
+        """
+        formats = '|'.join(file_formats)
+        re_resources_urls = re.compile(r'\<a href=(?:&#34;|")([^"&]*.(?:' + formats + '))(?:&#34;|")')
+        resources_urls = []
+        for url in re_resources_urls.findall(str(soup)):
+            if url.startswith('http') or url.startswith('https'):
+                resources_urls.append(url)
+            elif url.startswith('//'):
+                resources_urls.append('https:' + url)
+            else:
+                resources_urls.append(BASE_URL + url)
+
+        # we match links to youtube videos as <a href> and add them to the download list
+        re_youtube_links = re.compile(
+            r'\<a href=(?:&#34;|")(https?\:\/\/(?:www\.)?(?:youtube\.com|youtu\.?be)\/.*?)(?:&#34;|")')
+        youtube_links = re_youtube_links.findall(str(soup))
+        resources_urls += youtube_links
+
+        return resources_urls
 
 def get_page_extractor(url):
     """

@@ -114,6 +114,37 @@ class SubSection(object):
     def __repr__(self):
         return self.name + ": " + self.url
 
+
+class Block(object):
+    """
+    Representation of a block of the course.
+    """
+    def __init__(self, position, block_id, name, block_type, url, children):
+        """
+        @param position: Integer position of the block in the list of blocks. Starts at 1.
+        @type position: int
+
+        @param block_id: id of the block.
+        @type block_id: str
+
+        @param name: name of the block.
+        @type name: str
+
+        @param block_type: type of the block.
+        @type block_type: str
+            available value: course, chapter, sequential, vertical
+
+        @param url: url of the block.
+        @type url: str
+        """
+        self.position = position
+        self.block_id = block_id
+        self.name = name
+        self.block_type = block_type
+        self.url = url
+        self.children = children
+
+
 class Unit(object):
     """
     Representation of a single unit of the course.

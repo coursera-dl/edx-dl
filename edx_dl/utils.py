@@ -11,6 +11,8 @@ import logging
 import os
 import string
 import subprocess
+import warnings
+import functools
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
@@ -139,3 +141,19 @@ def clean_filename(s, minimal_change=False):
     s = s.strip().replace(' ', '_')
     valid_chars = '-_.()%s%s' % (string.ascii_letters, string.digits)
     return ''.join(c for c in s if c in valid_chars)
+
+
+def deprecated(func):
+    """
+    This is a decorator which can be used to mark functions as deprecated.
+    It will result in a warning being emitted when the function is used.
+    """
+    @functools.wraps(func)
+    def new_func(*args, **kwargs):
+        warnings.simplefilter('always', DeprecationWarning)  # turn off filter
+        warnings.warn("Call to deprecated function {}.".format(func.__name__),
+                      category=DeprecationWarning,
+                      stacklevel=2)
+        warnings.simplefilter('default', DeprecationWarning)  # reset filter
+        return func(*args, **kwargs)
+    return new_func

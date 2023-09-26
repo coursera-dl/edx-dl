@@ -45,6 +45,7 @@ from .parsing import (
     get_page_extractor,
     is_youtube_url,
     EdXJsonExtractor,
+    RobustEdXPageExtractor,
 )
 from .utils import (
     clean_filename,
@@ -55,6 +56,7 @@ from .utils import (
     get_page_contents_as_json,
     mkdir_p,
     remove_duplicates,
+    deprecated,
 )
 
 
@@ -102,6 +104,8 @@ LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSE_LIST_API = BASE_URL + '/api/learner_home/init'
 COURSE_OUTLINE_API = BASE_URL + '/api/course_home/outline'
+COURSE_SEQUENCE_API = BASE_URL + '/api/courseware/sequence'
+COURSE_XBLOCK_API = BASE_URL + '/xblock'
 COURSEWARE_SEL = OPENEDX_SITES['edx']['courseware-selector']
 
 
@@ -142,7 +146,7 @@ def get_courses_info(url, headers):
     """
     Extracts the courses information.
     """
-    logging.info('Extracting course information.')
+    logging.info('Extracting courses from dashboard api: %s', url)
 
     json_extractor = EdXJsonExtractor()
     courses_json = get_page_contents_as_json(url, headers)
@@ -192,19 +196,18 @@ def get_available_sections(url, headers):
     return sections
 
 
-def get_available_sections_by_courseid(course_id, headers):
+def get_available_sequential_blocks(course_id, headers):
     """
-    Extracts the sections and subsections for a given course id
+    Extracts the chapter blocks and sequential blocks for a given course id
     """
-    logging.debug("Extracting sections for " + course_id)
 
     url = COURSE_OUTLINE_API + '/' + course_id
-    logging.debug("Extracting from " + url)
+    logging.info("Extracting chapter blocks and sequential blocks from: \n%s", url)
 
     resp_dict = get_page_contents_as_json(url, headers=headers)
     extractor = EdXJsonExtractor()
-    sections = extractor.extract_sections(resp_dict)
-    return sections
+    blocks = extractor.extract_sequential_blocks(resp_dict)
+    return blocks
 
 
 def edx_get_subtitle(url, headers,
@@ -452,6 +455,7 @@ def edx_get_headers():
     return headers
 
 
+@deprecated
 def extract_units(url, headers, file_formats):
     """
     Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
@@ -465,6 +469,39 @@ def extract_units(url, headers, file_formats):
     return units
 
 
+def extract_units_from_vertical_block(vertical_block, headers, file_formats):
+    """
+    Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
+    """
+    vertical_block_api = COURSE_XBLOCK_API + '/' + vertical_block.block_id + '?show_title=0&show_bookmark_button=0&recheck_access=1&view=student_view'
+    logging.debug("Extracting units from: \n'%s'", vertical_block_api)
+
+    page = get_page_contents(vertical_block_api, headers)
+    page_extractor = RobustEdXPageExtractor()
+    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
+    return units
+
+
+def extract_units_from_sequential_block(block, headers, file_formats):
+    """
+    Parses a webpage and extracts its resources e.g. video_url, sub_url, etc.
+    """
+    logging.info("Processing '%s'", block.url)
+
+    url = COURSE_SEQUENCE_API + '/' + block.block_id
+    logging.debug("Extracting units from: \n%s" + url)
+
+    json_extractor = EdXJsonExtractor()
+    resp_dict = get_page_contents_as_json(url, headers)
+    vertical_blocks = json_extractor.extract_vertical_blocks(resp_dict)
+    all_units = []
+    for block in vertical_blocks:
+        units = extract_units_from_vertical_block(block, headers, file_formats)
+        all_units.extend(units)
+    return all_units
+
+
+@deprecated
 def extract_all_units_in_sequence(urls, headers, file_formats):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
@@ -479,6 +516,18 @@ def extract_all_units_in_sequence(urls, headers, file_formats):
     return all_units
 
 
+def extract_units_in_sequence(sequential_block_list, headers, file_formats):
+    """
+    Returns a dict of all the units in the selected_sections: {section, units}
+    sequentially, this is clearer for debug purposes
+    """
+    logging.info('Extracting all units information in sequentially.')
+    units = [extract_units_from_sequential_block(block, headers, file_formats) for block in sequential_block_list]
+    all_units = dict(zip(sequential_block_list, units))
+    return all_units
+
+
+@deprecated
 def extract_all_units_in_parallel(urls, headers, file_formats):
     """
     Returns a dict of all the units in the selected_sections: {url, units}
@@ -493,6 +542,23 @@ def extract_all_units_in_parallel(urls, headers, file_formats):
     pool.close()
     pool.join()
     all_units = dict(zip(urls, units))
+
+    return all_units
+
+
+def extract_units_in_parallel(sequential_block_list, headers, file_formats):
+    """
+    Returns a dict of all the units in the selected_sections: {url, units}
+    in parallel
+    """
+    logging.info('Extracting all units information in parallel.')
+
+    mapfunc = partial(extract_units_from_sequential_block, file_formats=file_formats, headers=headers)
+    pool = ThreadPool(16)
+    units = pool.map(mapfunc, sequential_block_list)
+    pool.close()
+    pool.join()
+    all_units = dict(zip(sequential_block_list, units))
 
     return all_units
 
@@ -546,6 +612,18 @@ def _display_sections(sections):
         logging.info('Section %2d: %s', section.position, section.name)
         for subsection in section.subsections:
             logging.info('  %s', subsection.name)
+
+
+def _display_blocks(blocks):
+    """
+    Displays a tree of blocks
+    """
+    logging.info('Downloading %d block(s)', len(blocks))
+
+    for block in blocks:
+        logging.info('block %2d: %s', block.position, block.name)
+        for sub_block in block.children:
+            logging.info('  %s', sub_block.name)
 
 
 def parse_courses(args, available_courses):
@@ -618,6 +696,16 @@ def _display_selections(selections):
         logging.info('Downloading %s [%s]',
                      selected_course.name, selected_course.id)
         _display_sections(selected_sections)
+
+
+def _display_selection_blocks(selections):
+    """
+    Displays the course, chapter blocks and sequential blocks to be downloaded
+    """
+    for selected_course, selected_blocks in selections.items():
+        logging.info('Downloading %s [%s]',
+                     selected_course.name, selected_course.id)
+        _display_blocks(selected_blocks)
 
 
 def parse_units(all_units):
@@ -850,21 +938,23 @@ def download(args, selections, all_units, headers):
     # notice that we could iterate over all_units, but we prefer to do it over
     # sections/subsections to add correct prefixes and show nicer information.
 
-    for selected_course, selected_sections in selections.items():
-        coursename = directory_name(selected_course.name)
-        for selected_section in selected_sections:
-            section_dirname = "%02d-%s" % (selected_section.position,
-                                           selected_section.name)
-            target_dir = os.path.join(args.output_dir, coursename,
-                                      clean_filename(section_dirname))
-            mkdir_p(target_dir)
+    for selected_course, selected_blocks in selections.items():
+        course_name = directory_name(selected_course.name)
+        for selected_block in selected_blocks:
+            section_dir = "%02d-%s" % (selected_block.position, selected_block.name)
+            section_path = os.path.join(args.output_dir, course_name, clean_filename(section_dir))
+            mkdir_p(section_path)
             counter = 0
-            for subsection in selected_section.subsections:
-                units = all_units.get(subsection.url, [])
+            for sequential_block in selected_block.children:
+                seq_dir = "%02d-%s" % (sequential_block.position, sequential_block.name)
+                seq_path = os.path.join(args.output_dir, course_name,
+                                        clean_filename(section_dir), clean_filename(seq_dir))
+                mkdir_p(seq_path)
+                units = all_units.get(sequential_block, [])
                 for unit in units:
                     counter += 1
                     filename_prefix = "%02d" % counter
-                    download_unit(unit, args, target_dir, filename_prefix,
+                    download_unit(unit, args, seq_path, filename_prefix,
                                   headers)
 
 
@@ -953,6 +1043,32 @@ def extract_all_units_with_cache(all_urls, headers, file_formats,
     return all_units
 
 
+def extract_units_with_cache(sequential_block_list, headers, file_formats,
+                                 filename=DEFAULT_CACHE_FILENAME,
+                                 extractor=extract_units_in_parallel):
+    """
+    Extracts the units which are not in the cache and extract their resources
+    returns the full list of units (cached+new)
+    """
+    cached_units = {}
+
+    if os.path.exists(filename):
+        with open(filename, 'rb') as f:
+            cached_units = pickle.load(f)
+
+    # we filter the cached urls
+    missing_sequential_blocks = [sequential_block
+                                 for sequential_block in sequential_block_list
+                                 if sequential_block not in cached_units]
+    logging.info('loading %d urls from cache [%s]', len(cached_units.keys()),
+                 filename)
+    new_units = extractor(missing_sequential_blocks, headers, file_formats)
+    all_units = cached_units.copy()
+    all_units.update(new_units)
+
+    return all_units
+
+
 def write_units_to_cache(units, filename=DEFAULT_CACHE_FILENAME):
     """
     writes units to cache
@@ -1035,37 +1151,38 @@ def main():
 
     # Parse the sections and build the selections dict filtered by sections
     if args.platform == 'edx':
-        all_selections = {selected_course: get_available_sections_by_courseid(selected_course.id, headers)
+        all_chapter_blocks = {selected_course: get_available_sequential_blocks(selected_course.id, headers)
                           for selected_course in selected_courses}
     else:
-        all_selections = {selected_course:
+        all_chapter_blocks = {selected_course:
                           get_available_sections(selected_course.url.replace('info', 'courseware'),
                                                  headers)
                           for selected_course in selected_courses}
 
-    selections = parse_sections(args, all_selections)
-    _display_selections(selections)
+    # selections = all_chapter_blocks
+    selections = parse_sections(args, all_chapter_blocks)
+    _display_selection_blocks(selections)
 
     # Extract the unit information (downloadable resources)
     # This parses the HTML of all the subsection.url and extracts
     # the URLs of the resources as Units.
-    all_urls = [subsection.url
-                for selected_sections in selections.values()
-                for selected_section in selected_sections
-                for subsection in selected_section.subsections]
+    sequential_block_list = [sequential_block
+                             for chapter_blocks_each_course in selections.values()
+                             for chapter_block in chapter_blocks_each_course
+                             for sequential_block in chapter_block.children]
 
-    extractor = extract_all_units_in_parallel
+    extractor = extract_units_in_parallel
     if args.sequential:
-        extractor = extract_all_units_in_sequence
+        extractor = extract_units_in_sequence
 
     if args.cache:
-        all_units = extract_all_units_with_cache(all_urls, headers,
-                                                 file_formats,
-                                                 extractor=extractor)
+        all_units = extract_units_with_cache(sequential_block_list,
+                                             headers, file_formats,
+                                             extractor=extract_units_in_parallel)
     else:
-        all_units = extractor(all_urls, headers, file_formats)
+        all_units = extractor(sequential_block_list, headers, file_formats)
 
-    parse_units(selections)
+    parse_units(all_units)
 
     if args.cache:
         write_units_to_cache(all_units)
@@ -1074,19 +1191,19 @@ def main():
     # FIXME: This is not the best way to do it but it is the simplest, a
     # better approach will be to create symbolic or hard links for the repeated
     # units to avoid losing information
-    filtered_units = remove_repeated_urls(all_units)
-    num_all_urls = num_urls_in_units_dict(all_units)
-    num_filtered_urls = num_urls_in_units_dict(filtered_units)
-    logging.warn('Removed %d duplicated urls from %d in total',
-                 (num_all_urls - num_filtered_urls), num_all_urls)
+    # filtered_units = remove_repeated_urls(all_units)
+    # num_all_urls = num_urls_in_units_dict(all_units)
+    # num_filtered_urls = num_urls_in_units_dict(filtered_units)
+    # logging.warn('Removed %d duplicated urls from %d in total',
+    #              (num_all_urls - num_filtered_urls), num_all_urls)
 
     # finally we download or export all the resources
     if args.export_filename is not None:
         logging.info('exporting urls to file %s', args.export_filename)
-        urls = extract_urls_from_units(filtered_units, args.export_format)
+        urls = extract_urls_from_units(all_units, args.export_format)
         save_urls_to_file(urls, args.export_filename)
     else:
-        download(args, selections, filtered_units, headers)
+        download(args, selections, all_units, headers)
 
 
 if __name__ == '__main__':
