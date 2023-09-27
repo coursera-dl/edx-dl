@@ -1,6 +1,6 @@
 beautifulsoup4>=4.6.0
 html5lib>=1.0.1
 six>=1.11.0
-youtube_dl>=2018.06.18
+youtube_dl>=2021.12.17
 requests>=2.18.4
 tqdm~=4.66.1
