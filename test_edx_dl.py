@@ -15,7 +15,7 @@ def test_failed_login():
 def test_remove_repeated_urls():
     url = "test/html/multiple_units.html"
     site = 'https://courses.edx.org'
-    with open(url, "r") as f:
+    with open(url, "r", encoding='UTF-8') as f:
         html_contents = f.read()
         page_extractor = parsing.CurrentEdXPageExtractor()
         units_extracted = page_extractor.extract_units_from_html(html_contents,
