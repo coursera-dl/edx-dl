@@ -3,8 +3,8 @@
 
 # This module contains generic functions, ideally useful to any other module
 from six.moves.urllib.request import urlopen, Request
-from six.moves import html_parser
 
+import sys
 import errno
 import json
 import logging
@@ -14,6 +14,13 @@ import subprocess
 import warnings
 import functools
 from tqdm.auto import tqdm
+
+
+if sys.version_info[:2] >= (3, 4):
+    import html
+else:
+    from six.moves import html_parser
+    html = html_parser.HTMLParser()
 
 
 def get_filename_from_prefix(target_dir, filename_prefix):
@@ -122,8 +129,7 @@ def clean_filename(s, minimal_change=False):
     """
 
     # First, deal with URL encoded strings
-    h = html_parser.HTMLParser()
-    s = h.unescape(s)
+    s = html.unescape(s)
 
     # strip paren portions which contain trailing time length (...)
     s = (
