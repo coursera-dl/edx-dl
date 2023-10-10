@@ -163,6 +163,18 @@ class Unit(object):
         self.resources_urls = resources_urls
 
 
+class WebpageUnit(Unit):
+    """
+    Representation of a Webpage for unit in the course.
+    Used for unit type: discussion, html, problem, etc, not video unit
+    """
+    def __init__(self, content):
+        """
+        """
+        super().__init__([], [])
+        self.content = content
+
+
 class Video(object):
     """
     Representation of a single video.

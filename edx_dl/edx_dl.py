@@ -39,6 +39,7 @@ from .common import (
     YOUTUBE_DL_CMD,
     DEFAULT_CACHE_FILENAME,
     Unit,
+    WebpageUnit,
     Video,
     ExitCode,
     DEFAULT_FILE_FORMATS,
@@ -104,6 +105,7 @@ OPENEDX_SITES = {
 }
 BASE_URL = OPENEDX_SITES['edx']['url']
 EDX_HOMEPAGE = BASE_URL + '/user_api/v1/account/login_session'
+EDX_LEARN_BASE_URL = 'https://learning.edx.org/course'
 LOGIN_API = BASE_URL + '/login_ajax'
 DASHBOARD = BASE_URL + '/dashboard'
 COURSE_LIST_API = BASE_URL + '/api/learner_home/init'
@@ -118,6 +120,7 @@ def change_openedx_site(site_name):
     Changes the openedx website for the given one via the key
     """
     global BASE_URL
+    global EDX_LEARN_BASE_URL
     global EDX_HOMEPAGE
     global LOGIN_API
     global DASHBOARD
@@ -497,7 +500,7 @@ def extract_units_from_sequential_block(block, headers, file_formats):
 
     json_extractor = EdXJsonExtractor()
     resp_dict = get_page_contents_as_json(url, headers)
-    vertical_blocks = json_extractor.extract_vertical_blocks(resp_dict)
+    vertical_blocks = json_extractor.extract_vertical_blocks(resp_dict, EDX_LEARN_BASE_URL)
     all_units = []
     for block in vertical_blocks:
         units = extract_units_from_vertical_block(block, headers, file_formats)
@@ -939,6 +942,15 @@ def skip_or_download(downloads, headers, args, f=download_url):
         f(url, filename, headers, args)
 
 
+def skip_or_save(file_path, content):
+    """
+    save content into file  if it not exists
+    """
+    if not os.path.exists(file_path):
+        with open(file_path, 'w', encoding='utf-8') as f:
+            f.write(content)
+
+
 def download_video(video, args, target_dir, filename_prefix, headers):
     if args.prefer_cdn_videos or video.video_youtube_url is None:
         mp4_downloads = _build_url_downloads(video.mp4_urls, target_dir,
@@ -980,6 +992,9 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
     res_downloads = _build_url_downloads(unit.resources_urls, target_dir,
                                          filename_prefix)
     skip_or_download(res_downloads, headers, args)
+    if isinstance(unit, WebpageUnit):
+        file_path = os.path.join(target_dir, filename_prefix + '.html')
+        skip_or_save(file_path, unit.content)
 
 
 def download(args, selections, all_units, headers):

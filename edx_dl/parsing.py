@@ -11,7 +11,7 @@ from datetime import timedelta, datetime
 from six.moves import html_parser
 from bs4 import BeautifulSoup as BeautifulSoup_
 
-from .common import Course, Section, SubSection, Block, Unit, Video
+from .common import Course, Section, SubSection, Block, Unit, WebpageUnit, Video
 
 
 # Force use of bs4 with html.parser
@@ -139,7 +139,7 @@ class EdXJsonExtractor(JsonExtractor):
                     chapter_blocks.append(chapter_block)
         return chapter_blocks
 
-    def extract_vertical_blocks(self, deserialized_response):
+    def extract_vertical_blocks(self, deserialized_response, EDX_LEARN_BASE_URL):
         """
         Method to extract the vertical blocks from deserialized response
         """
@@ -148,7 +148,7 @@ class EdXJsonExtractor(JsonExtractor):
         vertical_blocks = []
         for i, item in enumerate(items, 1):
             block_id = item['id']
-            url = "https://learning.edx.org/course/" + sequential_block_id + '/' + block_id
+            url = EDX_LEARN_BASE_URL + sequential_block_id + '/' + block_id
             block = Block(position=i,
                           block_id=block_id,
                           name=item['page_title'],
@@ -537,6 +537,12 @@ class RobustEdXPageExtractor(NewEdXPageExtractor):
             unit = self.extract_unit(unit_soup, BASE_URL, file_formats)
             if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
                 units.append(unit)
+
+        # If a unit is of these types, download it as a web page
+        content_types = ['discussion', 'html', 'poll', 'problem', 'survey']
+        block_type = re.findall(r'data-block-type="(.+?)"', page)
+        if [x for x in block_type if x in content_types]:
+            units.append(WebpageUnit(content=page))
         return units
 
     def extract_unit(self, unit_soup, BASE_URL, file_formats):
@@ -545,10 +551,7 @@ class RobustEdXPageExtractor(NewEdXPageExtractor):
         xblock_list = unit_soup.find_all('div', 'xblock')
         for xblock in xblock_list:
             xblock_type = xblock['data-block-type']
-            if xblock_type == 'html':
-                urls = self.extract_resources_urls(xblock, BASE_URL, file_formats)
-                resources_urls.extend(urls)
-            elif xblock_type == 'video':
+            if xblock_type == 'video':
                 video_youtube_url = None
                 available_subs_url = None
                 sub_template_url = None
@@ -577,7 +580,11 @@ class RobustEdXPageExtractor(NewEdXPageExtractor):
                                     available_subs_url=available_subs_url,
                                     sub_template_url=sub_template_url,
                                     mp4_urls=mp4_urls))
+            else:
+                urls = self.extract_resources_urls(xblock, BASE_URL, file_formats)
+                resources_urls.extend(urls)
         return Unit(videos=videos, resources_urls=resources_urls)
+
 
     def extract_resources_urls(self, soup, BASE_URL, file_formats):
         """
@@ -602,6 +609,7 @@ class RobustEdXPageExtractor(NewEdXPageExtractor):
         resources_urls += youtube_links
 
         return resources_urls
+
 
 def get_page_extractor(url):
     """
