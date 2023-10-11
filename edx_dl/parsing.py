@@ -523,7 +523,7 @@ class NewEdXPageExtractor(CurrentEdXPageExtractor):
 
 
 class RobustEdXPageExtractor(NewEdXPageExtractor):
-    def extract_units_from_html(self, page, BASE_URL, file_formats):
+    def extract_units_from_html(self, page, BASE_URL, file_formats, page_title):
         """
         Extract Units from the html of a subsection webpage as a list of
         resources
@@ -538,11 +538,12 @@ class RobustEdXPageExtractor(NewEdXPageExtractor):
             if len(unit.videos) > 0 or len(unit.resources_urls) > 0:
                 units.append(unit)
 
-        # If a unit is of these types, download it as a web page
-        content_types = ['discussion', 'html', 'poll', 'problem', 'survey']
-        block_type = re.findall(r'data-block-type="(.+?)"', page)
-        if [x for x in block_type if x in content_types]:
-            units.append(WebpageUnit(content=page))
+        # # If a unit is of these types, download it as a web page
+        # content_types = ['discussion', 'html', 'poll', 'problem', 'survey']
+        # block_type = re.findall(r'data-block-type="(.+?)"', page)
+        # if [x for x in block_type if x in content_types]:
+        #     units.append(WebpageUnit(page_title=page_title, content=page))
+        units.append(WebpageUnit(page_title=page_title, content=page))
         return units
 
     def extract_unit(self, unit_soup, BASE_URL, file_formats):

@@ -168,10 +168,11 @@ class WebpageUnit(Unit):
     Representation of a Webpage for unit in the course.
     Used for unit type: discussion, html, problem, etc, not video unit
     """
-    def __init__(self, content):
+    def __init__(self, page_title, content):
         """
         """
         super().__init__([], [])
+        self.page_title = page_title
         self.content = content
 
 

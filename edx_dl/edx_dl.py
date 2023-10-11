@@ -483,9 +483,10 @@ def extract_units_from_vertical_block(vertical_block, headers, file_formats):
     vertical_block_api = COURSE_XBLOCK_API + '/' + vertical_block.block_id + '?show_title=0&show_bookmark_button=0&recheck_access=1&view=student_view'
     logging.debug("Extracting units from: \n'%s'", vertical_block_api)
 
+    page_title = vertical_block.name
     page = get_page_contents(vertical_block_api, headers)
     page_extractor = RobustEdXPageExtractor()
-    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats)
+    units = page_extractor.extract_units_from_html(page, BASE_URL, file_formats, page_title)
     return units
 
 
@@ -993,7 +994,7 @@ def download_unit(unit, args, target_dir, filename_prefix, headers):
                                          filename_prefix)
     skip_or_download(res_downloads, headers, args)
     if isinstance(unit, WebpageUnit):
-        file_path = os.path.join(target_dir, filename_prefix + '.html')
+        file_path = os.path.join(target_dir, unit.page_title + '.html')
         skip_or_save(file_path, unit.content)
 
 
